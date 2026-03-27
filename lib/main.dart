@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:watch_it/watch_it.dart';
 
+import 'firebase_options.dart';
 import 'theme/extensions.dart';
 import 'theme/theme.dart';
 import 'util/display_mode.dart';

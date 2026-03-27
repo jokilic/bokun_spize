@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "178689254446",
+    "project_id": "bokun-spize",
+    "storage_bucket": "bokun-spize.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178689254446:android:c95263b04b1a8d27edabbf",
+        "android_client_info": {
+          "package_name": "com.josipkilic.bokun_spize"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzpStf8NHt8B1rOp9UI0SiKMLZfktlZFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
