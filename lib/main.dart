@@ -131,7 +131,7 @@ class BokunSpizeWidget extends WatchingWidget {
     // themeMode: activeBokunSpizeTheme == null ? ThemeMode.system : null,
     // themeAnimationDuration: BokunSpizeDurations.animation,
     theme: BokunSpizeTheme.light(
-      primaryColor: BokunSpizeColors.darkBlue,
+      primaryColor: BokunSpizeColors.bokunSpizeGreen,
     ),
     themeAnimationCurve: Curves.easeIn,
     builder: (_, child) {

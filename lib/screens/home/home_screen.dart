@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../services/ai_service.dart';
@@ -49,36 +50,114 @@ class _HomeScreenState extends State<HomeScreen> {
     final speechToTextState = watchIt<SpeechToTextService>().value;
 
     final available = speechToTextState.available;
-    final isListening = speechToTextState.isListening;
-
-    final isGenerating = watchIt<AIService>().value.isGenerating;
 
     final meals = watchIt<HiveService>().value;
-
-    final state = watchIt<HomeController>().value;
-
-    final userWords = state.userWords;
-    final aiError = state.aiError;
+    final locale = context.locale.toLanguageTag();
 
     return Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
-      body: const CustomScrollView(
+      body: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         slivers: [
           ///
           /// APP BAR
           ///
-          BokunSpizeAppBar(
+          const BokunSpizeAppBar(
             smallTitle: 'Bokun spize 🥗',
             bigTitle: 'Bokun spize 🥗',
             bigSubtitle: 'Tvoj dnevnik prehrane',
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 4),
           ),
 
-          // TODO: List of ListTile meals from Hive
+          ///
+          /// MEALS
+          ///
+          if (meals.isNotEmpty)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              sliver: SliverList.builder(
+                itemCount: meals.length,
+                itemBuilder: (context, index) {
+                  final meal = meals[meals.length - index - 1];
+                  final nutrition = meal.nutrition;
+                  final foods = meal.foods
+                      .map(
+                        (food) => '${food.name} (${food.quantity.toStringAsFixed(food.quantity % 1 == 0 ? 0 : 1)} ${food.unit})',
+                      )
+                      .join(', ');
+
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: index == meals.length - 1 ? 0 : 12,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: context.colors.listTileBackground,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        title: Text(
+                          meal.name,
+                          style: context.textStyles.homeTitleBold,
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            '${DateFormat('d. M. y. HH:mm', locale).format(meal.postedAt)}\n'
+                            '${nutrition.calories.toStringAsFixed(0)} kcal • '
+                            'P ${nutrition.protein.toStringAsFixed(1)} g • '
+                            'U ${nutrition.carbs.toStringAsFixed(1)} g • '
+                            'M ${nutrition.fat.toStringAsFixed(1)} g'
+                            '${foods.isNotEmpty ? '\n$foods' : ''}',
+                            style: context.textStyles.homeTitle,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ///
+          /// NO MEALS
+          ///
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(24, 64, 24, 24),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    PhosphorIcon(
+                      PhosphorIcons.bowlFood(
+                        PhosphorIconsStyle.duotone,
+                      ),
+                      color: context.colors.text,
+                      size: 56,
+                      duotoneSecondaryColor: context.colors.buttonPrimary,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Nema obroka',
+                      textAlign: TextAlign.center,
+                      style: context.textStyles.homeTitle,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Dodaj neki pritiskom na tipku ispod',
+                      textAlign: TextAlign.center,
+                      style: context.textStyles.homeTitle,
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
       bottomNavigationBar: Padding(

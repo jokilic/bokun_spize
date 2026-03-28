@@ -71,7 +71,7 @@ class _AddMealModalState extends State<AddMealModal> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Text(
-              'Nova spiza',
+              'Novi obrok',
               style: context.textStyles.homeTitle,
             ),
           ),
@@ -84,7 +84,7 @@ class _AddMealModalState extends State<AddMealModal> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: BokunSpizeTextField(
               controller: textEditingController,
-              labelText: 'Šta si izija?',
+              labelText: 'Što si imao za obrok?',
               keyboardType: TextInputType.multiline,
               minLines: null,
               maxLines: 3,

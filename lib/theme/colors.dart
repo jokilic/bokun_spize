@@ -29,6 +29,8 @@ abstract class BokunSpizeColors {
   static const purple = Color(0xFF947BD3);
   static const yellow = Color(0xFFF0C987);
   static const pink = Color(0xFFFAB2EA);
+
+  static const bokunSpizeGreen = Color(0xFF7CA982);
 }
 
 class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension> {

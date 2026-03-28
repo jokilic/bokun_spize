@@ -60,7 +60,7 @@ class Food {
 You will get text which should be about a meal user has eaten.
 
 It's up to you to understand what the user meant and try to fill out as much as possible data for `Meal`.
-If you don't manage to fill out data, return `null` instead of a `Meal`.
+If you don't manage to fill out data, return a `Meal` with a `title: No data found` and default values.
 
 Text can be in English or Croatian.
 Generate fields using the language user spoke.
@@ -70,7 +70,6 @@ Example of user's text:
 
 Example of your response:
 ```dart
-[
   {
     name: 'Eggs with banana & honey',
     nutrition: {
@@ -97,7 +96,6 @@ Example of your response:
       },
     ],
   }
-]
 ```
 ''';
 
@@ -184,6 +182,8 @@ Example of your response:
       try {
         final response = await value.generativeModel!.generateContent(contents);
 
+        logger.f('generativeModel -> ${response.text}');
+
         updateState(
           isGenerating: false,
         );
@@ -202,6 +202,8 @@ Example of your response:
     if (value.alternativeGenerativeModel != null) {
       try {
         final response = await value.alternativeGenerativeModel!.generateContent(contents);
+
+        logger.f('alternativeGenerativeModel -> ${response.text}');
 
         updateState(
           isGenerating: false,

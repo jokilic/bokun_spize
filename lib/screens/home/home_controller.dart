@@ -119,6 +119,8 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
         prompt: value.userWords!,
       );
 
+      logger.f('AI Result -> $result');
+
       /// Update `state` with potential `error`
       updateState(
         aiError: result.error,
@@ -141,6 +143,8 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
           await hive.writeMeal(
             newMeal: aiMeal,
           );
+
+          logger.f('Meal -> $aiMeal');
         }
       }
     }
