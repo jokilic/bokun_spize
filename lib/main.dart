@@ -8,10 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'firebase_options.dart';
+import 'generated/codegen_loader.g.dart';
 import 'screens/home/home_screen.dart';
+import 'theme/colors.dart';
 import 'theme/extensions.dart';
+import 'theme/theme.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
+import 'util/localization.dart';
 
 Future<void> main() async {
   /// Initialize Flutter related tasks
@@ -52,7 +56,7 @@ Future<void> initializeBeforeAppStart() async {
   await setDisplayMode();
 
   /// Initialize [EasyLocalization]
-  // await initializeLocalization();
+  await initializeLocalization();
 
   /// Initialize [Firebase]
   await Firebase.initializeApp(
@@ -79,7 +83,7 @@ class BokunSpizeApp extends StatelessWidget {
     ],
     fallbackLocale: const Locale('hr'),
     path: 'assets/translations',
-    // assetLoader: const CodegenLoader(),
+    assetLoader: const CodegenLoader(),
     child: BokunSpizeWidget(
       isLoggedIn: isLoggedIn,
     ),
@@ -126,6 +130,9 @@ class BokunSpizeWidget extends WatchingWidget {
     //     ),
     // themeMode: activeBokunSpizeTheme == null ? ThemeMode.system : null,
     // themeAnimationDuration: BokunSpizeDurations.animation,
+    theme: BokunSpizeTheme.light(
+      primaryColor: BokunSpizeColors.darkBlue,
+    ),
     themeAnimationCurve: Curves.easeIn,
     builder: (_, child) {
       final appWidget =

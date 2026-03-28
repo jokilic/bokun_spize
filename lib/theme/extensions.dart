@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'colors.dart';
+import 'text_style.dart';
 import 'theme.dart';
 
 extension BokunSpizeThemeExtension on ThemeData {

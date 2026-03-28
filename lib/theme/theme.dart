@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'colors.dart';
+import 'extensions.dart';
+import 'text_style.dart';
+
 class BokunSpizeTheme {
   ///
   /// LIGHT
@@ -90,9 +94,9 @@ class BokunSpizeTheme {
       extensions: [
         lightAppColors,
         lightTextTheme,
-        const BokunSpizeThemeTag(
-          BokunSpizeThemeId.light,
-        ),
+        // const TroskoThemeTag(
+        //   TroskoThemeId.light,
+        // ),
       ],
     );
   }

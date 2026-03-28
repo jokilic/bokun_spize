@@ -14,4 +14,16 @@ class Food {
     required this.quantity,
     required this.unit,
   });
+
+  factory Food.fromMap(Map<String, dynamic> map) => Food(
+    name: map['name'],
+    quantity: map['quantity'],
+    unit: map['unit'],
+  );
+
+  Map<String, dynamic> toMap() => {
+    'name': name,
+    'quantity': quantity,
+    'unit': unit,
+  };
 }

@@ -17,4 +17,18 @@ class Nutrition {
     required this.carbs,
     required this.fat,
   });
+
+  factory Nutrition.fromMap(Map<String, dynamic> map) => Nutrition(
+    calories: map['calories'],
+    protein: map['protein'],
+    carbs: map['carbs'],
+    fat: map['fat'],
+  );
+
+  Map<String, dynamic> toMap() => {
+    'calories': calories,
+    'protein': protein,
+    'carbs': carbs,
+    'fat': fat,
+  };
 }

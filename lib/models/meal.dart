@@ -29,4 +29,27 @@ class Meal {
     required this.foods,
     required this.originalText,
   });
+
+  factory Meal.fromMap(
+    Map<String, dynamic> map, {
+    required String id,
+    required DateTime postedAt,
+    required String originalText,
+  }) => Meal(
+    id: id,
+    name: map['name'],
+    postedAt: postedAt,
+    nutrition: Nutrition.fromMap(map['nutrition']),
+    foods: map['foods'].map((food) => Food.fromMap(food)).toList(),
+    originalText: originalText,
+  );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'postedAt': postedAt.toIso8601String(),
+    'nutrition': nutrition.toMap(),
+    'foods': foods.map((food) => food.toMap()).toList(),
+    'originalText': originalText,
+  };
 }
