@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:hive_ce/hive_ce.dart';
 
+import '../util/parsing.dart';
 import 'food.dart';
 import 'nutrition.dart';
 
@@ -39,8 +42,8 @@ class Meal {
     id: id,
     name: map['name'],
     postedAt: postedAt,
-    nutrition: Nutrition.fromMap(map['nutrition']),
-    foods: map['foods'].map((food) => Food.fromMap(food)).toList(),
+    nutrition: Nutrition.fromMap(decodeMap(map['nutrition'])),
+    foods: decodeList(map['foods']).map<Food>((food) => Food.fromMap(decodeMap(food))).toList(),
     originalText: originalText,
   );
 

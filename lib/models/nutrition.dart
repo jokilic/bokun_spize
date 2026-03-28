@@ -19,10 +19,10 @@ class Nutrition {
   });
 
   factory Nutrition.fromMap(Map<String, dynamic> map) => Nutrition(
-    calories: map['calories'],
-    protein: map['protein'],
-    carbs: map['carbs'],
-    fat: map['fat'],
+    calories: (map['calories'] as num).toDouble(),
+    protein: (map['protein'] as num).toDouble(),
+    carbs: (map['carbs'] as num).toDouble(),
+    fat: (map['fat'] as num).toDouble(),
   );
 
   Map<String, dynamic> toMap() => {

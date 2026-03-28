@@ -2,11 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
-
-import '../models/food.dart';
-import '../models/meal.dart';
-import '../models/nutrition.dart';
 import 'hive_service.dart';
 import 'logger_service.dart';
 
@@ -30,93 +25,95 @@ class AIService extends ValueNotifier<({GenerativeModel? generativeModel, Genera
   ///
 
   final systemInstruction = '''
-Only thing you should generate is a `Meal` in `JSON` format using `Dart` language.
-
-```dart
-class Meal {
-  final String name;
-  final Nutrition nutrition;
-  final List<Food> foods;
-}
-```
-
-```dart
-class Nutrition {
-  final double calories;
-  final double protein;
-  final double carbs;
-  final double fat;
-}
-```
-
-```dart
-class Food {
-  final String name;
-  final double quantity;
-  final String unit;
-}
-```
+Return only valid JSON for a single `Meal` object.
+Do not wrap the response in markdown, code fences, or explanations.
+Nested fields must stay as JSON objects and arrays, not JSON-encoded strings.
 
 You will get text which should be about a meal user has eaten.
 
 It's up to you to understand what the user meant and try to fill out as much as possible data for `Meal`.
-If you don't manage to fill out data, return a `Meal` with a `title: No data found` and default values.
+If you don't manage to fill out data, return a `Meal` with `name: "No data found"` and numeric values set to `0`.
 
 Text can be in English or Croatian.
 Generate fields using the language user spoke.
+
+Rules:
+- `nutrition` must be an object with numeric fields: `calories`, `protein`, `carbs`, `fat`
+- `foods` must be an array of objects with fields: `name`, `quantity`, `unit`
+- `quantity` and all nutrition values must be numbers, not strings
 
 Example of user's text:
 "I ate 4 boiled eggs with a banana and some honey on top"
 
 Example of your response:
-```dart
+```json
   {
-    name: 'Eggs with banana & honey',
-    nutrition: {
-      calories: 100,
-      protein: 20,
-      carbs: 15,
-      fat: 5,
+    "name": "Eggs with banana & honey",
+    "nutrition": {
+      "calories": 100,
+      "protein": 20,
+      "carbs": 15,
+      "fat": 5
     },
-    foods: [
+    "foods": [
       {
-        name: 'Eggs',
-        quantity: 4,
-        unit: 'piece',
+        "name": "Eggs",
+        "quantity": 4,
+        "unit": "piece"
       },
       {
-        name: 'Banana',
-        quantity: 1,
-        unit: 'piece',
+        "name": "Banana",
+        "quantity": 1,
+        "unit": "piece"
       },
       {
-        name: 'Honey',
-        quantity: 1,
-        unit: 'tbsp',
-      },
-    ],
+        "name": "Honey",
+        "quantity": 1,
+        "unit": "tbsp"
+      }
+    ]
   }
 ```
 ''';
 
-  final exampleMeal = Meal(
-    id: const Uuid().v1(),
-    name: 'name of meal',
-    nutrition: Nutrition(
-      calories: 100,
-      protein: 20,
-      carbs: 15,
-      fat: 5,
-    ),
-    foods: [
-      Food(
-        name: 'some food',
-        quantity: 1,
-        unit: 'piece',
-      ),
+  // Keep the schema explicit so AI returns nested `JSON`
+  final responseSchema = Schema.object(
+    propertyOrdering: [
+      'name',
+      'nutrition',
+      'foods',
     ],
-    originalText: 'I ate some meal now',
-    postedAt: DateTime.now(),
+    properties: {
+      'name': Schema.string(),
+      'nutrition': Schema.object(
+        propertyOrdering: [
+          'calories',
+          'protein',
+          'carbs',
+          'fat',
+        ],
+        properties: {
+          'calories': Schema.number(),
+          'protein': Schema.number(),
+          'carbs': Schema.number(),
+          'fat': Schema.number(),
+        },
+      ),
+      'foods': Schema.array(
+        items: Schema.object(
+          propertyOrdering: [
+            'name',
+            'quantity',
+            'unit',
+          ],
+          properties: {
+            'name': Schema.string(),
+            'quantity': Schema.number(),
+            'unit': Schema.string(),
+          },
+        ),
+      ),
+    },
   );
 
   ///
@@ -156,7 +153,7 @@ Example of your response:
     systemInstruction: Content.system(systemInstruction),
     generationConfig: GenerationConfig(
       responseMimeType: 'application/json',
-      responseJsonSchema: exampleMeal.toMap(),
+      responseSchema: responseSchema,
     ),
   );
 

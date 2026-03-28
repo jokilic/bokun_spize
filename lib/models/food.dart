@@ -17,7 +17,7 @@ class Food {
 
   factory Food.fromMap(Map<String, dynamic> map) => Food(
     name: map['name'],
-    quantity: map['quantity'],
+    quantity: (map['quantity'] as num).toDouble(),
     unit: map['unit'],
   );
 
