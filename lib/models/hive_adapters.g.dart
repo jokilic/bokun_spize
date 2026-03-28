@@ -18,30 +18,39 @@ class MealAdapter extends TypeAdapter<Meal> {
     };
     return Meal(
       id: fields[0] as String,
-      name: fields[1] as String,
-      postedAt: fields[2] as DateTime,
-      nutrition: fields[3] as Nutrition,
-      foods: (fields[4] as List).cast<Food>(),
+      createdAt: fields[6] as DateTime,
       originalText: fields[5] as String,
+      isLoading: fields[7] as bool,
+      name: fields[1] as String?,
+      emoji: fields[9] as String?,
+      nutrition: fields[3] as Nutrition?,
+      foods: (fields[4] as List?)?.cast<Food>(),
+      error: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Meal obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.postedAt)
       ..writeByte(3)
       ..write(obj.nutrition)
       ..writeByte(4)
       ..write(obj.foods)
       ..writeByte(5)
-      ..write(obj.originalText);
+      ..write(obj.originalText)
+      ..writeByte(6)
+      ..write(obj.createdAt)
+      ..writeByte(7)
+      ..write(obj.isLoading)
+      ..writeByte(8)
+      ..write(obj.error)
+      ..writeByte(9)
+      ..write(obj.emoji);
   }
 
   @override

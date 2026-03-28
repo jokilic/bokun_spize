@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ///
           if (meals.isNotEmpty)
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              padding: const EdgeInsets.only(top: 2),
               sliver: SliverList.builder(
                 itemCount: meals.length,
                 itemBuilder: (context, index) {

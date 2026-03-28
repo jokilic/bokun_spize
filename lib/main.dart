@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'firebase_options.dart';
@@ -47,6 +48,10 @@ Future<void> initializeBeforeAppStart() async {
 
   /// Set refresh rate to high
   await setDisplayMode();
+
+  /// Initialize date formatting
+  await initializeDateFormatting('en');
+  await initializeDateFormatting('hr');
 
   /// Initialize [Firebase]
   await Firebase.initializeApp(

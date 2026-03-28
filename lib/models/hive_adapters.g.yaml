@@ -5,20 +5,26 @@ nextTypeId: 3
 types:
   Meal:
     typeId: 0
-    nextIndex: 6
+    nextIndex: 10
     fields:
       id:
         index: 0
       name:
         index: 1
-      postedAt:
-        index: 2
       nutrition:
         index: 3
       foods:
         index: 4
       originalText:
         index: 5
+      createdAt:
+        index: 6
+      isLoading:
+        index: 7
+      error:
+        index: 8
+      emoji:
+        index: 9
   Nutrition:
     typeId: 1
     nextIndex: 4

@@ -10,16 +10,18 @@ class Meal {
   @HiveField(1)
   final String? name;
   @HiveField(2)
-  final DateTime createdAt;
+  final String? emoji;
   @HiveField(3)
-  final Nutrition? nutrition;
+  final DateTime createdAt;
   @HiveField(4)
-  final List<Food>? foods;
+  final Nutrition? nutrition;
   @HiveField(5)
+  final List<Food>? foods;
+  @HiveField(6)
   final String originalText;
-  @HiveField(6)
+  @HiveField(7)
   final bool isLoading;
-  @HiveField(6)
+  @HiveField(8)
   final String? error;
 
   Meal({
@@ -28,6 +30,7 @@ class Meal {
     required this.originalText,
     required this.isLoading,
     this.name,
+    this.emoji,
     this.nutrition,
     this.foods,
     this.error,
@@ -36,6 +39,7 @@ class Meal {
   Meal copyWith({
     String? id,
     String? name,
+    String? emoji,
     DateTime? createdAt,
     Nutrition? nutrition,
     List<Food>? foods,
@@ -45,6 +49,7 @@ class Meal {
   }) => Meal(
     id: id ?? this.id,
     name: name ?? this.name,
+    emoji: emoji ?? this.emoji,
     createdAt: createdAt ?? this.createdAt,
     nutrition: nutrition ?? this.nutrition,
     foods: foods ?? this.foods,
@@ -63,6 +68,7 @@ class Meal {
   }) => Meal(
     id: id,
     name: map['name'],
+    emoji: map['emoji'],
     createdAt: createdAt,
     nutrition: map['nutrition'] != null ? Nutrition.fromMap(map['nutrition'] as Map<String, dynamic>) : null,
     foods: map['foods'] != null ? List<Food>.from(map['foods'].map((x) => Food.fromMap(x))) : null,
@@ -74,6 +80,7 @@ class Meal {
   Map<String, dynamic> toMap() => {
     'id': id,
     'name': name,
+    'emoji': emoji,
     'createdAt': createdAt.toIso8601String(),
     'nutrition': nutrition?.toMap(),
     'foods': foods?.map((food) => food.toMap()).toList(),
@@ -83,7 +90,8 @@ class Meal {
   };
 
   @override
-  String toString() => 'Meal(id: $id, name: $name, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, error: $error)';
+  String toString() =>
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, error: $error)';
 
   @override
   bool operator ==(Object other) =>
@@ -92,6 +100,7 @@ class Meal {
           runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
+          emoji == other.emoji &&
           createdAt == other.createdAt &&
           nutrition == other.nutrition &&
           foods == other.foods &&
@@ -100,5 +109,6 @@ class Meal {
           error == other.error;
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ createdAt.hashCode ^ nutrition.hashCode ^ foods.hashCode ^ originalText.hashCode ^ isLoading.hashCode ^ error.hashCode;
+  int get hashCode =>
+      id.hashCode ^ name.hashCode ^ emoji.hashCode ^ createdAt.hashCode ^ nutrition.hashCode ^ foods.hashCode ^ originalText.hashCode ^ isLoading.hashCode ^ error.hashCode;
 }

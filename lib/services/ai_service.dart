@@ -26,15 +26,14 @@ class AIService extends ValueNotifier<({GenerativeModel? generativeModel, Genera
 
   final systemInstruction = '''
 Return ONLY valid JSON for a single Meal object.
+If the meal cannot be determined, return ONLY null.
+
 Do NOT include markdown, code fences, or explanations.
 Do NOT return JSON as a string.
 Nested fields must be proper JSON objects/arrays.
 
 You will receive a sentence describing what the user ate.
 Extract foods and estimate nutrition.
-
-If the meal cannot be determined, return:
-null
 
 Language:
 Use the same language as the user (English or Croatian).
@@ -51,6 +50,7 @@ Rules:
 Meal JSON structure:
 {
   "name": "string",
+  "emoji": "string",
   "nutrition": {
     "calories": number,
     "protein": number,
