@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'firebase_options.dart';
+import 'screens/home/home_screen.dart';
 import 'theme/extensions.dart';
-import 'theme/theme.dart';
+import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
 Future<void> main() async {
@@ -60,7 +60,7 @@ Future<void> initializeBeforeAppStart() async {
   );
 
   /// Initialize services
-  // await initializeServices();
+  await initializeServices();
 }
 
 class BokunSpizeApp extends StatelessWidget {
@@ -94,57 +94,55 @@ class BokunSpizeWidget extends WatchingWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final settings = watchIt<HiveService>().value.settings;
+  Widget build(BuildContext context)
+  // final settings = watchIt<HiveService>().value.settings;
+  // final activeBokunSpizeTheme = getBokunSpizeTheme(
+  //   id: settings?.bokunSpizeThemeId,
+  //   primaryColor: settings?.primaryColor ?? context.colors.buttonPrimary,
+  // );
+  => MaterialApp(
+    localizationsDelegates: context.localizationDelegates,
+    supportedLocales: context.supportedLocales,
+    locale: context.locale,
+    debugShowCheckedModeBanner: false,
+    home: HomeScreen(),
+    // home: isLoggedIn
+    //     ? const HomeScreen(
+    //         key: ValueKey('home'),
+    //       )
+    //     : const EntranceScreen(
+    //         key: ValueKey('entrance'),
+    //       ),
+    onGenerateTitle: (_) => 'appName'.tr(),
+    // theme:
+    //     activeBokunSpizeTheme ??
+    //     BokunSpizeTheme.light(
+    //       primaryColor: settings?.primaryColor,
+    //     ),
+    // darkTheme:
+    //     activeBokunSpizeTheme ??
+    //     BokunSpizeTheme.dark(
+    //       primaryColor: settings?.primaryColor,
+    //     ),
+    // themeMode: activeBokunSpizeTheme == null ? ThemeMode.system : null,
+    // themeAnimationDuration: BokunSpizeDurations.animation,
+    themeAnimationCurve: Curves.easeIn,
+    builder: (_, child) {
+      final appWidget =
+          child ??
+          const Scaffold(
+            body: SizedBox.shrink(),
+          );
 
-    final activeBokunSpizeTheme = getBokunSpizeTheme(
-      id: settings?.bokunSpizeThemeId,
-      primaryColor: settings?.primaryColor ?? context.colors.buttonPrimary,
-    );
-
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      debugShowCheckedModeBanner: false,
-      home: isLoggedIn
-          ? const HomeScreen(
-              key: ValueKey('home'),
+      return kDebugMode
+          ? Banner(
+              message: '',
+              color: context.colors.buttonPrimary,
+              location: BannerLocation.topEnd,
+              layoutDirection: TextDirection.ltr,
+              child: appWidget,
             )
-          : const EntranceScreen(
-              key: ValueKey('entrance'),
-            ),
-      onGenerateTitle: (_) => 'appName'.tr(),
-      theme:
-          activeBokunSpizeTheme ??
-          BokunSpizeTheme.light(
-            primaryColor: settings?.primaryColor,
-          ),
-      darkTheme:
-          activeBokunSpizeTheme ??
-          BokunSpizeTheme.dark(
-            primaryColor: settings?.primaryColor,
-          ),
-      themeMode: activeBokunSpizeTheme == null ? ThemeMode.system : null,
-      themeAnimationDuration: BokunSpizeDurations.animation,
-      themeAnimationCurve: Curves.easeIn,
-      builder: (_, child) {
-        final appWidget =
-            child ??
-            const Scaffold(
-              body: SizedBox.shrink(),
-            );
-
-        return kDebugMode
-            ? Banner(
-                message: '',
-                color: context.colors.buttonPrimary,
-                location: BannerLocation.topEnd,
-                layoutDirection: TextDirection.ltr,
-                child: appWidget,
-              )
-            : appWidget;
-      },
-    );
-  }
+          : appWidget;
+    },
+  );
 }
