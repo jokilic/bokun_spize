@@ -105,8 +105,8 @@ class BokunSpizeTheme {
     required Color? primaryColor,
   }) => BokunSpizeColorsExtension(
     text: BokunSpizeColors.lightThemeBlackText,
-    buttonPrimary: primaryColor ?? BokunSpizeColors.bokunSpizeGreen,
-    delete: BokunSpizeColors.redDelete,
+    buttonPrimary: primaryColor ?? BokunSpizeColors.green,
+    delete: BokunSpizeColors.red,
     listTileBackground: BokunSpizeColors.lightThemeWhiteBackground,
     buttonBackground: BokunSpizeColors.lightThemeButtonBackground,
     scaffoldBackground: BokunSpizeColors.lightThemeWhiteScaffold,

@@ -13,24 +13,11 @@ abstract class BokunSpizeColors {
   static const lightThemeDisabledBackground = Color(0xFFE4E6ED);
 
   ///
-  /// DELETE
-  ///
-
-  static const redDelete = Color(0xFFE0777D);
-
-  ///
   /// PRIMARY COLORS
   ///
 
-  static const green = Color(0xFF57CC99);
+  static const green = Color(0xFF7CA982);
   static const red = Color(0xFFE0777D);
-  static const blue = Color(0xFF90BEDE);
-  static const darkBlue = Color(0xFF556CC9);
-  static const purple = Color(0xFF947BD3);
-  static const yellow = Color(0xFFF0C987);
-  static const pink = Color(0xFFFAB2EA);
-
-  static const bokunSpizeGreen = Color(0xFF7CA982);
 }
 
 class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension> {

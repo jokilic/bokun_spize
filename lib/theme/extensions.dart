@@ -8,12 +8,12 @@ extension BokunSpizeThemeExtension on ThemeData {
   BokunSpizeColorsExtension get bokunSpizeColors =>
       extension<BokunSpizeColorsExtension>() ??
       BokunSpizeTheme.getLightAppColors(
-        primaryColor: BokunSpizeColors.bokunSpizeGreen,
+        primaryColor: BokunSpizeColors.green,
       );
   BokunSpizeTextThemesExtension get bokunSpizeTextStyles =>
       extension<BokunSpizeTextThemesExtension>() ??
       BokunSpizeTheme.getLightTextTheme(
-        primaryColor: BokunSpizeColors.bokunSpizeGreen,
+        primaryColor: BokunSpizeColors.green,
       );
 }
 

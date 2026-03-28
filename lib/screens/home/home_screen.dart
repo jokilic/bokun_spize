@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -52,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final available = speechToTextState.available;
 
     final meals = watchIt<HiveService>().value;
-    final locale = context.locale.toLanguageTag();
 
     return Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
@@ -110,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
-                            '${DateFormat('d. M. y. HH:mm', locale).format(meal.postedAt)}\n'
+                            '${DateFormat('d. M. y. HH:mm', 'hr').format(meal.postedAt)}\n'
                             '${nutrition.calories.toStringAsFixed(0)} kcal • '
                             'P ${nutrition.protein.toStringAsFixed(1)} g • '
                             'U ${nutrition.carbs.toStringAsFixed(1)} g • '
