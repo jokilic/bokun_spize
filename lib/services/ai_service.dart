@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'hive_service.dart';
 import 'logger_service.dart';
 
-class AIService extends ValueNotifier<({GenerativeModel? generativeModel, GenerativeModel? alternativeGenerativeModel, bool isGenerating})> {
+class AIService extends ValueNotifier<({GenerativeModel? generativeModel, GenerativeModel? alternativeGenerativeModel})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -18,65 +18,56 @@ class AIService extends ValueNotifier<({GenerativeModel? generativeModel, Genera
     required this.logger,
     required this.hive,
     required this.ai,
-  }) : super((generativeModel: null, alternativeGenerativeModel: null, isGenerating: false));
+  }) : super((generativeModel: null, alternativeGenerativeModel: null));
 
   ///
   /// VARIABLES
   ///
 
   final systemInstruction = '''
-Return only valid JSON for a single `Meal` object.
-Do not wrap the response in markdown, code fences, or explanations.
-Nested fields must stay as JSON objects and arrays, not JSON-encoded strings.
+Return ONLY valid JSON for a single Meal object.
+Do NOT include markdown, code fences, or explanations.
+Do NOT return JSON as a string.
+Nested fields must be proper JSON objects/arrays.
 
-You will get text which should be about a meal user has eaten.
+You will receive a sentence describing what the user ate.
+Extract foods and estimate nutrition.
 
-It's up to you to understand what the user meant and try to fill out as much as possible data for `Meal`.
-If you don't manage to fill out data, return a `Meal` with `name: "No data found"` and numeric values set to `0`.
+If the meal cannot be determined, return:
+null
 
-Text can be in English or Croatian.
-Generate fields using the language user spoke.
+Language:
+Use the same language as the user (English or Croatian).
 
 Rules:
-- `nutrition` must be an object with numeric fields: `calories`, `protein`, `carbs`, `fat`
-- `foods` must be an array of objects with fields: `name`, `quantity`, `unit`
-- `quantity` and all nutrition values must be numbers, not strings
+- nutrition must contain numeric values: calories, protein, carbs, fat
+- foods must be an array of objects: name, quantity, unit
+- quantity must be a number
+- All nutrition values must be numbers, not strings
+- Units examples: piece, g, ml, tbsp, tsp, slice
+- If quantity is unclear, make a reasonable estimate
+- If nutrition is unknown, estimate based on typical values
 
-Example of user's text:
-"I ate 4 boiled eggs with a banana and some honey on top"
-
-Example of your response:
-```json
-  {
-    "name": "Eggs with banana & honey",
-    "nutrition": {
-      "calories": 100,
-      "protein": 20,
-      "carbs": 15,
-      "fat": 5
-    },
-    "foods": [
-      {
-        "name": "Eggs",
-        "quantity": 4,
-        "unit": "piece"
-      },
-      {
-        "name": "Banana",
-        "quantity": 1,
-        "unit": "piece"
-      },
-      {
-        "name": "Honey",
-        "quantity": 1,
-        "unit": "tbsp"
-      }
-    ]
-  }
-```
+Meal JSON structure:
+{
+  "name": "string",
+  "nutrition": {
+    "calories": number,
+    "protein": number,
+    "carbs": number,
+    "fat": number
+  },
+  "foods": [
+    {
+      "name": "string",
+      "quantity": number,
+      "unit": "string"
+    }
+  ]
+}
 ''';
 
-  // Keep the schema explicit so AI returns nested `JSON`
+  /// `JSON` schema which the AI should return
   final responseSchema = Schema.object(
     propertyOrdering: [
       'name',
@@ -158,16 +149,7 @@ Example of your response:
   );
 
   /// Triggers `AI` with `prompt` and all necessary data
-  Future<({String? aiResult, String? error})> triggerAI({required String prompt}) async {
-    /// Create `errors` list
-    final errors = <String>[
-      'AIService -> triggerAI()',
-    ];
-
-    updateState(
-      isGenerating: true,
-    );
-
+  Future<String?> triggerAI({required String prompt}) async {
     /// Generate `contents` to pass into `AI`
     final contents = [
       /// Prompt
@@ -179,20 +161,13 @@ Example of your response:
       try {
         final response = await value.generativeModel!.generateContent(contents);
 
-        logger.f('generativeModel -> ${response.text}');
+        logger.f('Result -> ${response.text}');
 
-        updateState(
-          isGenerating: false,
-        );
-
-        return (aiResult: response.text, error: null);
+        return response.text;
       } catch (e) {
         final error = 'generativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
         logger.e(error);
-        errors.add(error);
       }
-    } else {
-      errors.add('generativeModel == null');
     }
 
     /// Fallback to `alternativeGenerativeModel`
@@ -200,40 +175,24 @@ Example of your response:
       try {
         final response = await value.alternativeGenerativeModel!.generateContent(contents);
 
-        logger.f('alternativeGenerativeModel -> ${response.text}');
+        logger.f('Result2 -> ${response.text}');
 
-        updateState(
-          isGenerating: false,
-        );
-
-        return (aiResult: response.text, error: null);
+        return response.text;
       } catch (e) {
         final error = 'alternativeGenerativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
         logger.e(error);
-        errors.add(error);
       }
-    } else {
-      errors.add('alternativeGenerativeModel == null');
     }
 
-    updateState(
-      isGenerating: false,
-    );
-
-    return (
-      aiResult: null,
-      error: errors.toString(),
-    );
+    return null;
   }
 
   /// Updates state
   void updateState({
     GenerativeModel? generativeModel,
     GenerativeModel? alternativeGenerativeModel,
-    bool? isGenerating,
   }) => value = (
     generativeModel: generativeModel ?? value.generativeModel,
     alternativeGenerativeModel: alternativeGenerativeModel ?? value.alternativeGenerativeModel,
-    isGenerating: isGenerating ?? value.isGenerating,
   );
 }

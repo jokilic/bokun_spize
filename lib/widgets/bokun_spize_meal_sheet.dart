@@ -6,12 +6,12 @@ import '../../../theme/extensions.dart';
 import '../../../util/color.dart';
 import 'bokun_spize_text_field.dart';
 
-class AddMealModal extends StatefulWidget {
+class BokunSpizeMealSheet extends StatefulWidget {
   @override
-  State<AddMealModal> createState() => _AddMealModalState();
+  State<BokunSpizeMealSheet> createState() => _BokunSpizeMealSheetState();
 }
 
-class _AddMealModalState extends State<AddMealModal> {
+class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
   var isWordsValid = false;
 
   late final textEditingController = TextEditingController();
@@ -118,8 +118,8 @@ class _AddMealModalState extends State<AddMealModal> {
                   backgroundColor: context.colors.buttonPrimary,
                   foregroundColor: getWhiteOrBlackColor(
                     backgroundColor: context.colors.buttonPrimary,
-                    whiteColor: BokunSpizeColors.lightThemeWhiteBackground,
-                    blackColor: BokunSpizeColors.lightThemeBlackText,
+                    whiteColor: BokunSpizeColors.whiteBackground,
+                    blackColor: BokunSpizeColors.black,
                   ),
                   overlayColor: context.colors.buttonBackground,
                   disabledBackgroundColor: context.colors.disabledBackground,

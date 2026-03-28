@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -15,6 +14,7 @@ import '../../theme/extensions.dart';
 import '../../util/color.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/bokun_spize_app_bar.dart';
+import '../../widgets/bokun_spize_list_tile.dart';
 import 'home_controller.dart';
 
 class HomeScreen extends WatchingStatefulWidget {
@@ -46,15 +46,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final homeController = getIt.get<HomeController>();
+    final hiveService = getIt.get<HiveService>();
 
+    // TODO: This should go in the sheet
     final speechToTextState = watchIt<SpeechToTextService>().value;
-
     final available = speechToTextState.available;
 
     final meals = watchIt<HiveService>().value;
 
     return Scaffold(
-      backgroundColor: context.colors.scaffoldBackground,
       body: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
@@ -80,46 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
               sliver: SliverList.builder(
                 itemCount: meals.length,
                 itemBuilder: (context, index) {
-                  final meal = meals[meals.length - index - 1];
-                  final nutrition = meal.nutrition;
-                  final foods = meal.foods
-                      .map(
-                        (food) => '${food.name} (${food.quantity.toStringAsFixed(food.quantity % 1 == 0 ? 0 : 1)} ${food.unit})',
-                      )
-                      .join(', ');
+                  final meal = meals[index];
 
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: index == meals.length - 1 ? 0 : 12,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: context.colors.listTileBackground,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        title: Text(
-                          meal.name,
-                          style: context.textStyles.homeTitleBold,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            '${DateFormat('d. M. y. HH:mm', 'hr').format(meal.postedAt)}\n'
-                            '${nutrition.calories.toStringAsFixed(0)} kcal • '
-                            'P ${nutrition.protein.toStringAsFixed(1)} g • '
-                            'U ${nutrition.carbs.toStringAsFixed(1)} g • '
-                            'M ${nutrition.fat.toStringAsFixed(1)} g'
-                            '${foods.isNotEmpty ? '\n$foods' : ''}',
-                            style: context.textStyles.homeTitle,
-                          ),
-                        ),
-                      ),
-                    ),
+                  return BokunSpizeListTile(
+                    onLongPressed: () {},
+                    onDeletePressed: () {
+                      HapticFeedback.lightImpact();
+                      hiveService.deleteMeal(meal: meal);
+                    },
+                    meal: meal,
                   );
                 },
               ),
@@ -185,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: context.colors.buttonPrimary,
               foregroundColor: getWhiteOrBlackColor(
                 backgroundColor: context.colors.buttonPrimary,
-                whiteColor: BokunSpizeColors.lightThemeWhiteBackground,
-                blackColor: BokunSpizeColors.lightThemeBlackText,
+                whiteColor: BokunSpizeColors.whiteBackground,
+                blackColor: BokunSpizeColors.black,
               ),
               overlayColor: context.colors.buttonBackground,
               disabledBackgroundColor: context.colors.disabledBackground,

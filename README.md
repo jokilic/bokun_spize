@@ -3,6 +3,7 @@
 - [ ] Finish `Readme.md`
 - [ ] Add icon & splash screen
 - [ ] Cleanup unnecessary code
+- [ ] Add `error` for each [Meal]
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 

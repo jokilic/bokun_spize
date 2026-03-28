@@ -5,12 +5,12 @@ abstract class BokunSpizeColors {
   /// LIGHT THEME
   ///
 
-  static const lightThemeBlackText = Color(0xFF121C2B);
-  static const lightThemeWhiteBackground = Color(0xFFF9F9FF);
-  static const lightThemeButtonBackground = Color(0xFFE4E6ED);
-  static const lightThemeWhiteScaffold = Color(0xFFEDEDF4);
-  static const lightThemeDisabledText = Color(0xFF2D2F34);
-  static const lightThemeDisabledBackground = Color(0xFFE4E6ED);
+  static const black = Color(0xFF121C2B);
+  static const whiteBackground = Color(0xFFF9F9FF);
+  static const buttonBackground = Color(0xFFE4E6ED);
+  static const whiteScaffold = Color(0xFFEDEDF4);
+  static const disabledText = Color(0xFF2D2F34);
+  static const disabledBackground = Color(0xFFE4E6ED);
 
   ///
   /// PRIMARY COLORS

@@ -10,7 +10,7 @@ import '../../services/hive_service.dart';
 import '../../services/logger_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
-import '../../widgets/add_meal_modal.dart';
+import '../../widgets/bokun_spize_meal_sheet.dart';
 
 /// Class to distinguish `no argument passed` from `explicitly passed null`
 class HomeStateNoChange {
@@ -19,7 +19,7 @@ class HomeStateNoChange {
 
 const homeStateNoChange = HomeStateNoChange();
 
-class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, String? aiError})> implements Disposable {
+class HomeController extends ValueNotifier<({String? speechToTextWords})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -34,7 +34,7 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
     required this.hive,
     required this.speechToText,
     required this.ai,
-  }) : super((userWords: null, aiResult: null, aiError: null));
+  }) : super((speechToTextWords: null));
 
   ///
   /// DISPOSE
@@ -52,16 +52,14 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
   ///
 
   /// Triggered when the user presses the 'Add' button
-  Future<bool> onAddPressed(BuildContext context) async {
+  Future<void> onAddPressed(BuildContext context) async {
     /// Reset `state`
     updateState(
-      userWords: null,
-      aiResult: null,
-      aiError: null,
+      speechToTextWords: null,
     );
 
-    /// Show [SettingsDeleteAccountModal] for email users
-    final value = await showModalBottomSheet<String?>(
+    /// Show [BokunSpizeMealSheet] for adding meal
+    final userWords = await showModalBottomSheet<String?>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
       isScrollControlled: true,
@@ -69,21 +67,16 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      builder: (context) => AddMealModal(),
+      builder: (context) => BokunSpizeMealSheet(),
     );
 
     /// User entered words
-    if (value?.isNotEmpty ?? false) {
-      /// Update `state` with new `words`
-      updateState(
-        userWords: value,
-      );
-
+    if (userWords?.isNotEmpty ?? false) {
       /// Trigger AI
-      await triggerAI();
+      await triggerAI(
+        prompt: userWords!,
+      );
     }
-
-    return false;
   }
 
   /// Triggered when the user presses [SpeechToText] button
@@ -92,60 +85,81 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
   }) async {
     /// [SpeechToText] was disabled, start listening
     if (!speechToText.value.isListening) {
+      /// Reset `state`
       updateState(
-        userWords: null,
-        aiResult: null,
-        aiError: null,
+        speechToTextWords: null,
       );
 
       await speechToText.startListening(
-        onResult: (words) => updateState(
-          userWords: words,
-        ),
+        onResult: (words) {
+          /// Update `state`
+          updateState(
+            speechToTextWords: words,
+          );
+
+          /// Update [TextEditingController] with `words`
+          // TODO
+        },
         locale: locale,
       );
     }
-    /// [SpeechToText] was enabled, stop listening & trigger `AI`
+    /// [SpeechToText] was enabled, stop listening
     else {
       await speechToText.stopListening();
-      await triggerAI();
     }
   }
 
-  /// Triggers AI with `prompt` used from `state`
-  Future<void> triggerAI() async {
-    if (value.userWords?.isNotEmpty ?? false) {
-      final result = await ai.triggerAI(
-        prompt: value.userWords!,
+  /// Triggers AI with `prompt`
+  Future<void> triggerAI({required String prompt}) async {
+    if (prompt.isEmpty) {
+      return;
+    }
+
+    /// Create `loadingMeal` with loading state
+    final loadingMeal = Meal(
+      id: const Uuid().v1(),
+      createdAt: DateTime.now(),
+      originalText: prompt,
+      isLoading: true,
+    );
+
+    /// Add `loadingMeal` to [Hive]
+    await hive.writeMeal(
+      newMeal: loadingMeal,
+    );
+
+    /// Trigger `AI`
+    final result = await ai.triggerAI(
+      prompt: prompt,
+    );
+
+    logger.d('AI Result -> $result');
+
+    /// AI generated result, parse it to `Meal`
+    if (result?.isNotEmpty ?? false) {
+      final meal = parseAIResultToMeal(
+        aiResult: result!,
+        id: loadingMeal.id,
+        createdAt: loadingMeal.createdAt,
+        originalText: prompt,
       );
 
-      logger.f('AI Result -> $result');
-
-      /// Update `state` with potential `error`
-      updateState(
-        aiError: result.error,
-      );
-
-      /// AI generated result, parse it to `Meal`
-      if (result.aiResult?.isNotEmpty ?? false) {
-        final aiMeal = parseAIResultToMeal(
-          aiResult: result.aiResult!,
+      /// Result is successfully parsed
+      if (meal != null) {
+        /// Create `finalMeal` with `meal` data
+        final finalMeal = loadingMeal.copyWith(
+          name: meal.name,
+          nutrition: meal.nutrition,
+          foods: meal.foods,
+          isLoading: false,
         );
 
-        /// Result is successfully parsed, add meal to `state`
-        if (aiMeal != null) {
-          /// Update `state` with parsed `meal`
-          updateState(
-            aiResult: aiMeal,
-          );
+        /// Update `loadingMeal` with `finalMeal`
+        await hive.updateMeal(
+          newMeal: finalMeal,
+        );
 
-          /// Add new `meal` to [Hive]
-          await hive.writeMeal(
-            newMeal: aiMeal,
-          );
-
-          logger.f('Meal -> $aiMeal');
-        }
+        logger.w('New meal -> $finalMeal');
       }
     }
   }
@@ -153,6 +167,9 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
   /// Parses AI result to `Meal`
   Meal? parseAIResultToMeal({
     required String aiResult,
+    required String id,
+    required DateTime createdAt,
+    required String originalText,
   }) {
     try {
       final decoded = jsonDecode(aiResult);
@@ -160,9 +177,11 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
       if (decoded is Map<String, dynamic>) {
         return Meal.fromMap(
           decoded,
-          id: const Uuid().v1(),
-          postedAt: DateTime.now(),
-          originalText: value.userWords!,
+          id: id,
+          createdAt: createdAt,
+          originalText: originalText,
+          isLoading: false,
+          error: null,
         );
       }
 
@@ -175,12 +194,8 @@ class HomeController extends ValueNotifier<({String? userWords, Meal? aiResult, 
 
   /// Updates `state`
   void updateState({
-    Object? userWords = homeStateNoChange,
-    Object? aiResult = homeStateNoChange,
-    Object? aiError = homeStateNoChange,
+    Object? speechToTextWords = homeStateNoChange,
   }) => value = (
-    userWords: identical(userWords, homeStateNoChange) ? value.userWords : userWords as String?,
-    aiResult: identical(aiResult, homeStateNoChange) ? value.aiResult : aiResult as Meal?,
-    aiError: identical(aiError, homeStateNoChange) ? value.aiError : aiError as String?,
+    speechToTextWords: identical(speechToTextWords, homeStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
   );
 }

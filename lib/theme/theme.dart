@@ -104,14 +104,14 @@ class BokunSpizeTheme {
   static BokunSpizeColorsExtension getLightAppColors({
     required Color? primaryColor,
   }) => BokunSpizeColorsExtension(
-    text: BokunSpizeColors.lightThemeBlackText,
+    text: BokunSpizeColors.black,
     buttonPrimary: primaryColor ?? BokunSpizeColors.green,
     delete: BokunSpizeColors.red,
-    listTileBackground: BokunSpizeColors.lightThemeWhiteBackground,
-    buttonBackground: BokunSpizeColors.lightThemeButtonBackground,
-    scaffoldBackground: BokunSpizeColors.lightThemeWhiteScaffold,
-    disabledText: BokunSpizeColors.lightThemeDisabledText,
-    disabledBackground: BokunSpizeColors.lightThemeDisabledBackground,
+    listTileBackground: BokunSpizeColors.whiteBackground,
+    buttonBackground: BokunSpizeColors.buttonBackground,
+    scaffoldBackground: BokunSpizeColors.whiteScaffold,
+    disabledText: BokunSpizeColors.disabledText,
+    disabledBackground: BokunSpizeColors.disabledBackground,
   );
 
   static BokunSpizeTextThemesExtension getLightTextTheme({

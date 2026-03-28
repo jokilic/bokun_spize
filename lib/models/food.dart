@@ -15,6 +15,16 @@ class Food {
     required this.unit,
   });
 
+  Food copyWith({
+    String? name,
+    double? quantity,
+    String? unit,
+  }) => Food(
+    name: name ?? this.name,
+    quantity: quantity ?? this.quantity,
+    unit: unit ?? this.unit,
+  );
+
   factory Food.fromMap(Map<String, dynamic> map) => Food(
     name: map['name'],
     quantity: (map['quantity'] as num).toDouble(),
@@ -26,4 +36,14 @@ class Food {
     'quantity': quantity,
     'unit': unit,
   };
+
+  @override
+  String toString() => 'Food(name: $name, quantity: $quantity, unit: $unit)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Food && runtimeType == other.runtimeType && name == other.name && quantity == other.quantity && unit == other.unit;
+
+  @override
+  int get hashCode => name.hashCode ^ quantity.hashCode ^ unit.hashCode;
 }
