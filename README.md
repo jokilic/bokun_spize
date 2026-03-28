@@ -2,8 +2,9 @@
 
 - [ ] Finish `Readme.md`
 - [ ] Add icon & splash screen
-- [ ] Cleanup unnecessary code
+- [ ] Split `meals` into days, like in [Troško]
 - [ ] Add `error` for each [Meal]
+- [x] Cleanup unnecessary code
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 

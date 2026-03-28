@@ -28,13 +28,6 @@ class BokunSpizeTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: primaryColor ?? lightAppColors.buttonPrimary,
       ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: primaryColor ?? lightAppColors.buttonPrimary,
-        foregroundColor: lightAppColors.text,
-        elevation: 1,
-        disabledElevation: 1,
-        highlightElevation: 2,
-      ),
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.all(
@@ -59,29 +52,6 @@ class BokunSpizeTheme {
           ),
         ),
       ),
-      chipTheme: ChipThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        side: BorderSide.none,
-        backgroundColor: lightAppColors.buttonBackground,
-        selectedColor: primaryColor ?? lightAppColors.buttonPrimary,
-        showCheckmark: false,
-        labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-        elevation: 1,
-        pressElevation: 2,
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: lightAppColors.text,
-          highlightColor: Colors.transparent,
-          iconSize: 28,
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(16),
-          elevation: 1,
-        ),
-      ),
       splashColor: Colors.transparent,
       highlightColor: lightAppColors.buttonBackground,
       scaffoldBackgroundColor: lightAppColors.scaffoldBackground,
@@ -94,9 +64,6 @@ class BokunSpizeTheme {
       extensions: [
         lightAppColors,
         lightTextTheme,
-        // const TroskoThemeTag(
-        //   TroskoThemeId.light,
-        // ),
       ],
     );
   }
