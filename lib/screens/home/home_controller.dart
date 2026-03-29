@@ -200,6 +200,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         final successMeal = loadingMeal.copyWith(
           name: meal.name,
           emoji: meal.emoji,
+          color: meal.color,
           nutrition: meal.nutrition,
           foods: meal.foods,
           isLoading: false,
