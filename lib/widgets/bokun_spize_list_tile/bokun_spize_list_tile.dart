@@ -43,14 +43,22 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     required String? emoji,
   }) {
     if (isLoading) {
-      // TODO: I want this spinner to rotate like a loading spinner
-      return PhosphorIcon(
-        PhosphorIcons.spinnerGap(
-          PhosphorIconsStyle.duotone,
+      return Animate(
+        onPlay: (controller) => controller.loop(),
+        effects: const [
+          RotateEffect(
+            duration: BokunSpizeDurations.loading,
+            curve: Curves.linear,
+          ),
+        ],
+        child: PhosphorIcon(
+          PhosphorIcons.spinner(
+            PhosphorIconsStyle.duotone,
+          ),
+          color: context.colors.text,
+          duotoneSecondaryColor: context.colors.text,
+          size: 20,
         ),
-        color: context.colors.text,
-        duotoneSecondaryColor: context.colors.text,
-        size: 20,
       );
     }
 
@@ -102,102 +110,102 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
         ? context.colors.buttonPrimary
         : context.colors.delete;
 
-    return AnimatedSize(
-      alignment: Alignment.topCenter,
-      duration: BokunSpizeDurations.animation,
-      curve: Curves.easeIn,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 1,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: SwipeActionCell(
-            key: ValueKey(widget.meal.id),
-            backgroundColor: context.colors.scaffoldBackground,
-            openAnimationDuration: 175,
-            closeAnimationDuration: 175,
-            deleteAnimationDuration: 175,
-            openAnimationCurve: Curves.easeIn,
-            closeAnimationCurve: Curves.easeIn,
-            leadingActions: [
-              SwipeAction(
-                onTap: (handler) async {
-                  await handler(true);
-                  await widget.onDeletePressed();
-                },
-                color: context.colors.delete,
-                backgroundRadius: 16,
-                icon: PhosphorIcon(
-                  PhosphorIcons.trash(
-                    PhosphorIconsStyle.duotone,
-                  ),
-                  color: context.colors.listTileBackground,
-                  duotoneSecondaryColor: context.colors.buttonPrimary,
-                  size: 28,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 1,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SwipeActionCell(
+          key: ValueKey(widget.meal.id),
+          backgroundColor: context.colors.scaffoldBackground,
+          openAnimationDuration: 175,
+          closeAnimationDuration: 175,
+          deleteAnimationDuration: 175,
+          openAnimationCurve: Curves.easeIn,
+          closeAnimationCurve: Curves.easeIn,
+          leadingActions: [
+            SwipeAction(
+              onTap: (handler) async {
+                await handler(true);
+                await widget.onDeletePressed();
+              },
+              color: context.colors.delete,
+              backgroundRadius: 16,
+              icon: PhosphorIcon(
+                PhosphorIcons.trash(
+                  PhosphorIconsStyle.duotone,
                 ),
+                color: context.colors.listTileBackground,
+                duotoneSecondaryColor: context.colors.buttonPrimary,
+                size: 28,
               ),
-            ],
-            child: Material(
-              color: context.colors.listTileBackground,
+            ),
+          ],
+          child: Material(
+            color: context.colors.listTileBackground,
+            borderRadius: BorderRadius.circular(8),
+            child: InkWell(
+              onTap: toggleExpanded,
+              onLongPress: widget.onLongPressed,
+              highlightColor: context.colors.buttonBackground,
               borderRadius: BorderRadius.circular(8),
-              child: InkWell(
-                onTap: toggleExpanded,
-                onLongPress: widget.onLongPressed,
-                highlightColor: context.colors.buttonBackground,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 18,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ///
-                      /// LEADING
-                      ///
-                      Container(
-                        height: 32,
-                        width: 32,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: leadingColor,
-                          border: Border.all(
-                            color: leadingBorderColor,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: getLeadingWidget(
-                          isLoading: isLoading,
-                          hasError: hasError,
-                          emoji: widget.meal.emoji,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 18,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ///
+                    /// LEADING
+                    ///
+                    Container(
+                      height: 32,
+                      width: 32,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: leadingColor,
+                        border: Border.all(
+                          color: leadingBorderColor,
+                          width: 1.5,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      child: getLeadingWidget(
+                        isLoading: isLoading,
+                        hasError: hasError,
+                        emoji: widget.meal.emoji,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
 
-                      ///
-                      /// TITLE & SUBTITLE
-                      ///
-                      Expanded(
-                        child: Animate(
-                          key: ValueKey(isLoading),
-                          onPlay: (controller) => controller.loop(
-                            reverse: true,
-                            min: 0.6,
-                          ),
-                          effects: [
-                            if (isLoading)
-                              const FadeEffect(
-                                curve: Curves.easeIn,
-                                duration: BokunSpizeDurations.loading,
-                              ),
-                          ],
+                    ///
+                    /// TITLE & SUBTITLE
+                    ///
+                    Expanded(
+                      child: Animate(
+                        key: ValueKey(isLoading),
+                        onPlay: (controller) => controller.loop(
+                          reverse: true,
+                          min: 0.6,
+                        ),
+                        effects: [
+                          if (isLoading)
+                            const FadeEffect(
+                              duration: BokunSpizeDurations.shimmer,
+                              curve: Curves.easeIn,
+                            ),
+                        ],
+                        child: AnimatedSize(
+                          alignment: Alignment.topLeft,
+                          duration: BokunSpizeDurations.animation,
+                          curve: Curves.easeIn,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -213,35 +221,15 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                 secondCurve: Curves.easeIn,
                                 sizeCurve: Curves.easeIn,
                                 crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: AnimatedSwitcher(
-                                  duration: BokunSpizeDurations.animation,
-                                  switchInCurve: Curves.easeIn,
-                                  switchOutCurve: Curves.easeIn,
-                                  transitionBuilder: (child, animation) => FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  ),
-                                  child: Text(
-                                    titleText,
-                                    key: ValueKey('collapsed-$titleText'),
-                                    style: context.textStyles.homeMealTitle,
-                                    maxLines: isLoading ? null : 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                firstChild: Text(
+                                  titleText,
+                                  style: context.textStyles.homeMealTitle,
+                                  maxLines: isLoading ? null : 1,
+                                  overflow: isLoading ? TextOverflow.visible : TextOverflow.ellipsis,
                                 ),
-                                secondChild: AnimatedSwitcher(
-                                  duration: BokunSpizeDurations.animation,
-                                  switchInCurve: Curves.easeIn,
-                                  switchOutCurve: Curves.easeIn,
-                                  transitionBuilder: (child, animation) => FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  ),
-                                  child: Text(
-                                    titleText,
-                                    key: ValueKey('expanded-$titleText'),
-                                    style: context.textStyles.homeMealTitle,
-                                  ),
+                                secondChild: Text(
+                                  titleText,
+                                  style: context.textStyles.homeMealTitle,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -451,38 +439,38 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                           ),
                         ),
                       ),
+                    ),
 
-                      ///
-                      /// TRAILING
-                      ///
-                      const SizedBox(width: 12),
-                      AnimatedOpacity(
-                        opacity: (!isLoading && !hasError) ? 1 : 0,
-                        duration: BokunSpizeDurations.animation,
-                        curve: Curves.easeIn,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 2),
-                            Text.rich(
-                              TextSpan(
-                                text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',
-                                children: [
-                                  TextSpan(
-                                    text: 'kcal',
-                                    style: context.textStyles.homeMealKcal,
-                                  ),
-                                ],
-                              ),
-                              style: context.textStyles.homeMealValue,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                    ///
+                    /// TRAILING
+                    ///
+                    const SizedBox(width: 12),
+                    AnimatedOpacity(
+                      opacity: (!isLoading && !hasError) ? 1 : 0,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeIn,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 2),
+                          Text.rich(
+                            TextSpan(
+                              text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',
+                              children: [
+                                TextSpan(
+                                  text: 'kcal',
+                                  style: context.textStyles.homeMealKcal,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                            style: context.textStyles.homeMealValue,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

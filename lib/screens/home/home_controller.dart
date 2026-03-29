@@ -203,6 +203,8 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       isLoading: false,
     ).toJson();
 
+    await Future.delayed(const Duration(seconds: 5));
+
     logger.f('Result: $result');
 
     /// AI did not generate result
@@ -241,10 +243,9 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         );
 
         /// Update `loadingMeal` with `successMeal`
-        // TODO: Restore
-        // await hive.updateMeal(
-        //   newMeal: successMeal,
-        // );
+        await hive.updateMeal(
+          newMeal: successMeal,
+        );
       }
       /// Result is not successfully parsed
       else {
