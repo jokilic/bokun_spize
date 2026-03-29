@@ -1,8 +1,8 @@
 ### To-Do
 
-- [ ] Add icon & splash screen
 - [ ] Add missing values when expanding [BokunSpizeListTile]
 
+- [x] Add icon & splash screen
 - [x] Finish `Readme.md`
 - [x] Split `meals` into days, like in [Troško]
 - [x] Changing from `isLoading` to proper [Meal] or `error` should be animated
