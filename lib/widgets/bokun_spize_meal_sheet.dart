@@ -112,15 +112,18 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                         HapticFeedback.lightImpact(),
                       );
 
-                      /// Speech to text is available, trigger it
-                      if (available) {
+                      /// Speech to text is not available, initialize & trigger it
+                      if (!available) {
+                        await speechToTextService.loadSpeechToText();
                         await homeController.onSpeechToTextPressed(
                           locale: 'en',
                         );
                       }
-                      /// Speech to text is not available, initialize it
+                      /// Speech to text is available, trigger it
                       else {
-                        await speechToTextService.loadSpeechToText();
+                        await homeController.onSpeechToTextPressed(
+                          locale: 'en',
+                        );
                       }
                     },
                     highlightColor: context.colors.listTileBackground,
