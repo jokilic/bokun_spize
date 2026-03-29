@@ -233,46 +233,22 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                               ///
                               /// TITLE
                               ///
-                              AnimatedCrossFade(
-                                alignment: Alignment.centerLeft,
+                              AnimatedSwitcher(
                                 duration: BokunSpizeDurations.animation,
-                                firstCurve: Curves.easeIn,
-                                secondCurve: Curves.easeIn,
-                                sizeCurve: Curves.easeIn,
-                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: AnimatedSwitcher(
-                                  duration: BokunSpizeDurations.animation,
-                                  switchInCurve: Curves.easeIn,
-                                  switchOutCurve: Curves.easeIn,
-                                  transitionBuilder: (child, animation) => FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  ),
-                                  child: Text(
-                                    titleText,
-                                    key: ValueKey(
-                                      'title-collapsed-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.error}',
-                                    ),
-                                    style: context.textStyles.homeMealTitle,
-                                    maxLines: isLoading ? null : 1,
-                                    overflow: isLoading ? TextOverflow.visible : TextOverflow.ellipsis,
-                                  ),
+                                switchInCurve: Curves.easeIn,
+                                switchOutCurve: Curves.easeIn,
+                                transitionBuilder: (child, animation) => FadeTransition(
+                                  opacity: animation,
+                                  child: child,
                                 ),
-                                secondChild: AnimatedSwitcher(
-                                  duration: BokunSpizeDurations.animation,
-                                  switchInCurve: Curves.easeIn,
-                                  switchOutCurve: Curves.easeIn,
-                                  transitionBuilder: (child, animation) => FadeTransition(
-                                    opacity: animation,
-                                    child: child,
+                                child: Text(
+                                  titleText,
+                                  key: ValueKey(
+                                    'title-$expanded-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.error}',
                                   ),
-                                  child: Text(
-                                    titleText,
-                                    key: ValueKey(
-                                      'title-expanded-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.error}',
-                                    ),
-                                    style: context.textStyles.homeMealTitle,
-                                  ),
+                                  style: context.textStyles.homeMealTitle,
+                                  maxLines: expanded || isLoading ? null : 1,
+                                  overflow: expanded || isLoading ? TextOverflow.visible : TextOverflow.ellipsis,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -280,56 +256,27 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                               ///
                               /// TIME
                               ///
-                              AnimatedCrossFade(
-                                alignment: Alignment.centerLeft,
+                              AnimatedSwitcher(
                                 duration: BokunSpizeDurations.animation,
-                                firstCurve: Curves.easeIn,
-                                secondCurve: Curves.easeIn,
-                                sizeCurve: Curves.easeIn,
-                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: AnimatedSwitcher(
-                                  duration: BokunSpizeDurations.animation,
-                                  switchInCurve: Curves.easeIn,
-                                  switchOutCurve: Curves.easeIn,
-                                  transitionBuilder: (child, animation) => FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  ),
-                                  child: Text(
-                                    DateFormat(
-                                      'HH:mm',
-                                      'hr',
-                                    ).format(
-                                      widget.meal.createdAt,
-                                    ),
-                                    key: ValueKey(
-                                      'time-collapsed-${widget.meal.createdAt.toIso8601String()}',
-                                    ),
-                                    style: context.textStyles.homeMealTime,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                switchInCurve: Curves.easeIn,
+                                switchOutCurve: Curves.easeIn,
+                                transitionBuilder: (child, animation) => FadeTransition(
+                                  opacity: animation,
+                                  child: child,
                                 ),
-                                secondChild: AnimatedSwitcher(
-                                  duration: BokunSpizeDurations.animation,
-                                  switchInCurve: Curves.easeIn,
-                                  switchOutCurve: Curves.easeIn,
-                                  transitionBuilder: (child, animation) => FadeTransition(
-                                    opacity: animation,
-                                    child: child,
+                                child: Text(
+                                  DateFormat(
+                                    'HH:mm',
+                                    'hr',
+                                  ).format(
+                                    widget.meal.createdAt,
                                   ),
-                                  child: Text(
-                                    DateFormat(
-                                      'HH:mm',
-                                      'hr',
-                                    ).format(
-                                      widget.meal.createdAt,
-                                    ),
-                                    key: ValueKey(
-                                      'time-expanded-${widget.meal.createdAt.toIso8601String()}',
-                                    ),
-                                    style: context.textStyles.homeMealTime,
+                                  key: ValueKey(
+                                    'time-$expanded-${widget.meal.createdAt.toIso8601String()}',
                                   ),
+                                  style: context.textStyles.homeMealTime,
+                                  maxLines: expanded ? null : 1,
+                                  overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
                                 ),
                               ),
 

@@ -4,22 +4,6 @@
 - [ ] Long-pressing [BokunSpizeListTile] will open a bottom sheet to edit or delete the meal (maybe with grayed-out [TextField])
 - [ ] Voice recording doesn't seem to work on Android
 - [ ] Show proper `error` in [BokunSpizeListTile]
-- [ ] Animate change between `isLoading` and `Meal` or `error`
-
-- [x] Show `time` in [BokunSpizeListTile] when `isLoading`
-- [x] Animate size of [BokunSpizeListTile]
-- [x] Update background color of icon & splash
-- [x] Colors of `Hranjive vrijednosti`
-- [x] Add missing values when expanding [BokunSpizeListTile]
-- [x] Add icon & splash screen
-- [x] Finish `Readme.md`
-- [x] Split `meals` into days, like in [Troško]
-- [x] Changing from `isLoading` to proper [Meal] or `error` should be animated
-- [x] Add `error` for each [Meal]
-- [x] Place speech along with logic and permissions into [Sheet]
-- [x] When starting app, if there's any [Meal] with `isLoading` in [Hive], remove it
-- [x] Add `Be explicit` text in [Sheet]
-- [x] Cleanup unnecessary code
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
