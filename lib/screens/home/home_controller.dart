@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
+import '../../models/food.dart';
 import '../../models/meal.dart';
 import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
@@ -69,9 +70,12 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Show [BokunSpizeMealSheet] for adding meal
-    final userWords = await showModalBottomSheet<String?>(
+    final result = await showModalBottomSheet<({String? words, DateTime? dateTime})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+      ),
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -84,14 +88,16 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       ),
       builder: (context) => BokunSpizeMealSheet(
         textEditingController: textEditingController,
+        passedMeal: null,
       ),
     );
 
-    /// User entered words
-    if (userWords?.isNotEmpty ?? false) {
+    /// User entered `words` and `dateTime`
+    if ((result?.words?.isNotEmpty ?? false) && result?.dateTime != null) {
       /// Trigger AI
       await triggerAI(
-        prompt: userWords!,
+        prompt: result!.words!,
+        dateTime: result.dateTime!,
       );
     }
   }
@@ -145,7 +151,10 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   }
 
   /// Triggers AI with `prompt`
-  Future<void> triggerAI({required String prompt}) async {
+  Future<void> triggerAI({
+    required String prompt,
+    required DateTime dateTime,
+  }) async {
     final trimmedPrompt = prompt.trim();
 
     if (trimmedPrompt.isEmpty) {
@@ -155,7 +164,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     /// Create `loadingMeal` with loading state
     final loadingMeal = Meal(
       id: const Uuid().v1(),
-      createdAt: DateTime.now(),
+      createdAt: dateTime,
       originalText: trimmedPrompt.trim(),
       isLoading: true,
     );
@@ -166,8 +175,34 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Trigger `AI`
-    final result = await ai.triggerAI(
-      prompt: trimmedPrompt,
+    // final result = await ai.triggerAI(
+    //   prompt: trimmedPrompt,
+    // );
+
+    final result = (
+      aiResult: Meal(
+        id: const Uuid().v1(),
+        createdAt: dateTime,
+        originalText: 'Some text here',
+        isLoading: false,
+        color: Colors.indigo,
+        emoji: '🍔',
+        name: 'Some text here',
+        nutrition: Nutrition(
+          calories: 20,
+          protein: 12,
+          carbs: 5,
+          fat: 0.4,
+        ),
+        foods: [
+          Food(
+            name: 'Some text here',
+            quantity: 45,
+            unit: 'komad',
+          ),
+        ],
+      ).toJson(),
+      errors: null,
     );
 
     /// AI did not generate result

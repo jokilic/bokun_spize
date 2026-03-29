@@ -28,6 +28,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  calendar_date_picker2: 2.0.1
   firebase_ai: 3.10.0
   firebase_core: 4.6.0
   flutter_animate: 4.5.2
@@ -39,6 +40,7 @@ dependencies:
   intl: 0.20.2
   logger: 2.7.0
   phosphor_flutter: 2.1.0
+  scroll_datetime_picker: 0.2.2
   speech_to_text: 7.3.0
   uuid: 4.5.3
   watch_it: 2.4.2

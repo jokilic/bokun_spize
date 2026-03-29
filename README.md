@@ -1,9 +1,8 @@
 ### To-Do
 
-- [ ] Add date & time pickers in [BokunSpizeListTile]
+- [ ] Update styling for date & time pickers in [BokunSpizeMealSheet]
 - [ ] Long-pressing [BokunSpizeListTile] will open a bottom sheet to edit or delete the meal (maybe with grayed-out [TextField])
 - [ ] Voice recording doesn't seem to work on Android
-- [ ] Make AI create color for `meal`
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
