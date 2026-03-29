@@ -1,18 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-import 'logger_service.dart';
-
 class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bool available, bool isListening})> {
   ///
   /// CONSTRUCTOR
   ///
 
-  final LoggerService logger;
-
-  SpeechToTextService({
-    required this.logger,
-  }) : super((speechToText: null, available: false, isListening: false));
+  SpeechToTextService() : super((speechToText: null, available: false, isListening: false));
 
   ///
   /// METHODS
@@ -47,8 +41,6 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
           updateState(
             isListening: false,
           );
-
-          logger.e('SpeechToTextService -> onError() -> $error');
         },
       );
 
@@ -57,7 +49,7 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
         available: available,
       );
     } catch (e) {
-      logger.e('SpeechToTextService -> loadSpeechToText() -> $e');
+      return;
     }
   }
 
@@ -67,7 +59,6 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
     required String locale,
   }) async {
     if (value.speechToText == null) {
-      logger.e('SpeechToTextService -> startListening() -> speechToText == null');
       return;
     }
 
@@ -88,14 +79,13 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
         isListening: true,
       );
     } catch (e) {
-      logger.e('SpeechToTextService -> startListening() -> $e');
+      return;
     }
   }
 
   /// Manually stop the speech recognition session
   Future<void> stopListening() async {
     if (value.speechToText == null) {
-      logger.e('SpeechToTextService -> stopListening() -> speechToText == null');
       return;
     }
 
@@ -106,7 +96,7 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
         isListening: false,
       );
     } catch (e) {
-      logger.e('SpeechToTextService -> stopListening() -> $e');
+      return;
     }
   }
 

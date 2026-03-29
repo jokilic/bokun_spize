@@ -9,7 +9,6 @@ import '../../models/day_header.dart';
 import '../../models/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
-import '../../services/logger_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/colors.dart';
 import '../../theme/extensions.dart';
@@ -31,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     registerIfNotInitialized<HomeController>(
       () => HomeController(
-        logger: getIt.get<LoggerService>(),
         hive: getIt.get<HiveService>(),
         speechToText: getIt.get<SpeechToTextService>(),
         ai: getIt.get<AIService>(),

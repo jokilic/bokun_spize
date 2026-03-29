@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 
 import '../services/ai_service.dart';
 import '../services/hive_service.dart';
-import '../services/logger_service.dart';
 import '../services/speech_to_text_service.dart';
 
 final getIt = GetIt.instance;
@@ -41,42 +40,30 @@ void unRegisterIfNotDisposed<T extends Object>({
 }
 
 Future<void> initializeServices() async {
-  if (!getIt.isRegistered<LoggerService>()) {
-    getIt.registerSingletonAsync(
-      () async => LoggerService(),
-    );
-  }
-
   if (!getIt.isRegistered<HiveService>()) {
     getIt.registerSingletonAsync(
       () async {
-        final hive = HiveService(
-          logger: getIt.get<LoggerService>(),
-        );
+        final hive = HiveService();
         await hive.init();
         return hive;
       },
-      dependsOn: [LoggerService],
     );
   }
 
   if (!getIt.isRegistered<SpeechToTextService>()) {
     getIt.registerSingletonAsync(
-      () async => SpeechToTextService(
-        logger: getIt.get<LoggerService>(),
-      ),
-      dependsOn: [LoggerService, HiveService],
+      () async => SpeechToTextService(),
+      dependsOn: [HiveService],
     );
   }
 
   if (!getIt.isRegistered<AIService>()) {
     getIt.registerSingletonAsync(
       () async => AIService(
-        logger: getIt.get<LoggerService>(),
         hive: getIt.get<HiveService>(),
         ai: FirebaseAI.googleAI(),
       )..init(),
-      dependsOn: [LoggerService, HiveService],
+      dependsOn: [HiveService],
     );
   }
 

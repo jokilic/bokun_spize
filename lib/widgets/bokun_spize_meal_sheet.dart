@@ -364,7 +364,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                           currentDate: now,
                           customModePickerIcon: const SizedBox.shrink(),
                           daySplashColor: Colors.transparent,
-                          // dayTextStyle: context.textStyles.transactionDateInactive,
+                          dayTextStyle: context.textStyles.homeMealKcal,
                           dynamicCalendarRows: true,
                           hideMonthPickerDividers: true,
                           hideScrollViewMonthWeekHeader: true,
@@ -379,7 +379,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                             duotoneSecondaryColor: context.colors.buttonPrimary,
                             size: 28,
                           ),
-                          // monthTextStyle: context.textStyles.transactionDateInactive,
+                          monthTextStyle: context.textStyles.homeMealKcal,
                           nextMonthIcon: PhosphorIcon(
                             PhosphorIcons.caretCircleRight(
                               PhosphorIconsStyle.duotone,
@@ -389,12 +389,12 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                             size: 28,
                           ),
                           selectedDayHighlightColor: context.colors.text,
-                          // selectedDayTextStyle: context.textStyles.transactionDateActive,
-                          // selectedMonthTextStyle: context.textStyles.transactionDateActive,
-                          // selectedYearTextStyle: context.textStyles.transactionDateActive,
-                          // todayTextStyle: context.textStyles.transactionDateInactive,
-                          // weekdayLabelTextStyle: context.textStyles.homeTransactionNote,
-                          // yearTextStyle: context.textStyles.transactionDateInactive,
+                          selectedDayTextStyle: context.textStyles.homeMealKcal,
+                          selectedMonthTextStyle: context.textStyles.homeMealKcal,
+                          selectedYearTextStyle: context.textStyles.homeMealKcal,
+                          todayTextStyle: context.textStyles.homeMealKcal,
+                          weekdayLabelTextStyle: context.textStyles.homeMealNote,
+                          yearTextStyle: context.textStyles.homeMealKcal,
                         ),
                         value: [chosenDate],
                         onValueChanged: (dates) => dateChanged(
@@ -433,11 +433,11 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                         onChange: timeChanged,
                         itemExtent: 64,
                         style: DateTimePickerStyle(
-                          // activeStyle: context.textStyles.transactionTimeActive,
-                          // inactiveStyle: context.textStyles.transactionTimeInactive,
-                          // disabledStyle: context.textStyles.transactionTimeInactive.copyWith(
-                          //   color: context.colors.disabledText,
-                          // ),
+                          activeStyle: context.textStyles.homeMealValue,
+                          inactiveStyle: context.textStyles.homeMealKcal,
+                          disabledStyle: context.textStyles.homeMealKcal.copyWith(
+                            color: context.colors.disabledText,
+                          ),
                         ),
                         wheelOption: const DateTimePickerWheelOption(
                           physics: BouncingScrollPhysics(),

@@ -5,12 +5,9 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
-import '../../models/food.dart';
 import '../../models/meal.dart';
-import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
-import '../../services/logger_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../widgets/bokun_spize_meal_sheet.dart';
@@ -27,13 +24,11 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   /// CONSTRUCTOR
   ///
 
-  final LoggerService logger;
   final HiveService hive;
   final SpeechToTextService speechToText;
   final AIService ai;
 
   HomeController({
-    required this.logger,
     required this.hive,
     required this.speechToText,
     required this.ai,
@@ -199,34 +194,8 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Trigger `AI`
-    // final result = await ai.triggerAI(
-    //   prompt: trimmedPrompt,
-    // );
-
-    final result = (
-      aiResult: Meal(
-        id: const Uuid().v1(),
-        createdAt: dateTime,
-        originalText: 'Some text here',
-        isLoading: false,
-        color: Colors.indigo,
-        emoji: '🍔',
-        name: 'Some text here',
-        nutrition: Nutrition(
-          calories: 20,
-          protein: 12,
-          carbs: 5,
-          fat: 0.4,
-        ),
-        foods: [
-          Food(
-            name: 'Some text here',
-            quantity: 45,
-            unit: 'komad',
-          ),
-        ],
-      ).toJson(),
-      errors: null,
+    final result = await ai.triggerAI(
+      prompt: trimmedPrompt,
     );
 
     /// AI did not generate result
@@ -309,7 +278,6 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
 
       return null;
     } catch (e) {
-      logger.e('HomeController -> parseAIResultToMeal() -> $e');
       return null;
     }
   }

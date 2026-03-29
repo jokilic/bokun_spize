@@ -3,19 +3,16 @@ import 'dart:async';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 import 'hive_service.dart';
-import 'logger_service.dart';
 
 class AIService extends ValueNotifier<({GenerativeModel? generativeModel, GenerativeModel? alternativeGenerativeModel})> {
   ///
   /// CONSTRUCTOR
   ///
 
-  final LoggerService logger;
   final HiveService hive;
   final FirebaseAI ai;
 
   AIService({
-    required this.logger,
     required this.hive,
     required this.ai,
   }) : super((generativeModel: null, alternativeGenerativeModel: null));
@@ -32,7 +29,7 @@ Two values can be returned:
 1. ONLY valid JSON for a single Meal object
 2. ONLY null if the meal cannot be determined
 
-For the name, use the same language as the received text (English or Croatian).
+For the name, use the same language as the received text (Croatian or English).
 
 If quantity is unclear, make a reasonable estimate
 If nutrition is unknown, estimate based on typical values
@@ -188,7 +185,7 @@ JSON structure to follow strictly:
         alternativeGenerativeModel: alternativeModel,
       );
     } catch (e) {
-      logger.e('AIService -> initializeGemini() -> $e');
+      return;
     }
   }
 
@@ -221,12 +218,11 @@ JSON structure to follow strictly:
         final response = await value.generativeModel!.generateContent(contents);
         return (aiResult: response.text, errors: null);
       } catch (e) {
-        final error = 'generativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
-        logger.e(error);
+        final error = e.toString().contains('quota') ? 'Kvota primarnog modela je prekoračena, pokušaj ponovno kasnije' : e.toString();
         errors.add(error);
       }
     } else {
-      errors.add('generativeModel == null');
+      errors.add('Primarni model ne postoji');
     }
 
     /// Fallback to `alternativeGenerativeModel`
@@ -235,12 +231,11 @@ JSON structure to follow strictly:
         final response = await value.alternativeGenerativeModel!.generateContent(contents);
         return (aiResult: response.text, errors: null);
       } catch (e) {
-        final error = 'alternativeGenerativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
-        logger.e(error);
+        final error = e.toString().contains('quota') ? 'Kvota sekundarnog modela je prekoračena, pokušaj ponovno kasnije' : e.toString();
         errors.add(error);
       }
     } else {
-      errors.add('alternativeGenerativeModel == null');
+      errors.add('Sekundarni model ne postoji');
     }
 
     return (aiResult: null, errors: errors);

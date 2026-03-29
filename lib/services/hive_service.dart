@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 
 import '../models/hive_registrar.g.dart';
 import '../models/meal.dart';
 import '../util/group_meals.dart';
 import '../util/path.dart';
-import 'logger_service.dart';
 
 class HiveService extends ValueNotifier<List<Object>> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
 
-  final LoggerService logger;
-
-  HiveService({
-    required this.logger,
-  }) : super([]);
+  HiveService() : super([]);
 
   ///
   /// VARIABLES

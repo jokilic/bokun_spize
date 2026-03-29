@@ -1,9 +1,3 @@
-### To-Do
-
-- [ ] Update styling for date & time pickers in [BokunSpizeMealSheet]
-- [ ] Voice recording doesn't seem to work on Android
-- [ ] Screenshots for `Readme.md`
-
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 

@@ -70,6 +70,11 @@ class BokunSpizeApp extends StatelessWidget {
 class BokunSpizeWidget extends WatchingWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
+    locale: const Locale('hr'),
+    supportedLocales: const [
+      Locale('en'),
+      Locale('hr'),
+    ],
     debugShowCheckedModeBanner: false,
     home: HomeScreen(),
     theme: BokunSpizeTheme.light(
