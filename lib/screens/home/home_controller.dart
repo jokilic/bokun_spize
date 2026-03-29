@@ -171,37 +171,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     //   prompt: trimmedPrompt,
     // );
 
-    final result = Meal(
-      id: const Uuid().v1(),
-      name: 'Some food',
-      emoji: '🍔',
-      nutrition: Nutrition(
-        calories: 15,
-        protein: 9,
-        carbs: 2,
-        fat: 4,
-      ),
-      foods: [
-        Food(
-          name: 'banana',
-          quantity: 2,
-          unit: 'piece',
-        ),
-        Food(
-          name: 'kruh',
-          quantity: 1,
-          unit: 'piece',
-        ),
-        Food(
-          name: 'majoneza',
-          quantity: 0.4,
-          unit: 'gram',
-        ),
-      ],
-      createdAt: DateTime.now(),
-      originalText: 'This is my original text',
-      isLoading: false,
-    ).toJson();
+    const result = null;
 
     await Future.delayed(const Duration(seconds: 5));
 

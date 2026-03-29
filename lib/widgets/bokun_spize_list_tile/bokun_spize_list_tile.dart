@@ -91,12 +91,14 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     );
   }
 
+  // TODO: Can we use Animate widget with Fade animation on leading widget, title, subtitle and trailing widget, so those values fade when they change?
+
   @override
   Widget build(BuildContext context) {
     final isLoading = widget.meal.isLoading;
     final hasError = widget.meal.error != null;
 
-    final titleText = isLoading ? widget.meal.originalText : widget.meal.name ?? widget.meal.error ?? '--';
+    final titleText = isLoading ? widget.meal.originalText : widget.meal.name ?? 'Dogodila se greška';
 
     final leadingColor = isLoading
         ? Colors.transparent
@@ -189,23 +191,26 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                     /// TITLE & SUBTITLE
                     ///
                     Expanded(
-                      child: Animate(
-                        key: ValueKey(isLoading),
-                        onPlay: (controller) => controller.loop(
-                          reverse: true,
-                          min: 0.6,
-                        ),
-                        effects: [
-                          if (isLoading)
-                            const FadeEffect(
-                              duration: BokunSpizeDurations.shimmer,
-                              curve: Curves.easeIn,
-                            ),
-                        ],
-                        child: AnimatedSize(
-                          alignment: Alignment.topLeft,
-                          duration: BokunSpizeDurations.animation,
-                          curve: Curves.easeIn,
+                      child: AnimatedSize(
+                        alignment: Alignment.topLeft,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeIn,
+                        child: Animate(
+                          onPlay: (controller) {
+                            if (isLoading) {
+                              controller.loop(
+                                reverse: true,
+                                min: 0.6,
+                              );
+                            }
+                          },
+                          effects: [
+                            if (isLoading)
+                              const FadeEffect(
+                                duration: BokunSpizeDurations.shimmer,
+                                curve: Curves.easeIn,
+                              ),
+                          ],
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -281,7 +286,24 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                   secondChild: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: 6),
+
+                                      ///
+                                      /// ERROR
+                                      ///
+                                      if (hasError) ...[
+                                        Text(
+                                          'Greška',
+                                          style: context.textStyles.homeTitleBold,
+                                        ),
+                                        const SizedBox(height: 4),
+
+                                        Text(
+                                          widget.meal.error ?? '--',
+                                          style: context.textStyles.homeMealNote,
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
 
                                       if (!hasError) ...[
                                         ///
