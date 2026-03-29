@@ -184,13 +184,13 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                         if (!available) {
                           await speechToTextService.loadSpeechToText();
                           await homeController.onSpeechToTextPressed(
-                            locale: 'en',
+                            locale: 'hr',
                           );
                         }
                         /// Speech to text is available, trigger it
                         else {
                           await homeController.onSpeechToTextPressed(
-                            locale: 'en',
+                            locale: 'hr',
                           );
                         }
                       }
