@@ -25,14 +25,14 @@ class AIService extends ValueNotifier<({GenerativeModel? generativeModel, Genera
   ///
 
   final systemInstruction = '''
-You will receive a sentence describing what the user ate.
+You will receive a text describing what the user ate.
 Estimate nutrition and extract foods.
 
 Two values can be returned:
 1. ONLY valid JSON for a single Meal object
 2. ONLY null if the meal cannot be determined
 
-Use the same language as the user (English or Croatian).
+For the name, use the same language as the received text (English or Croatian).
 
 If quantity is unclear, make a reasonable estimate
 If nutrition is unknown, estimate based on typical values
@@ -71,7 +71,7 @@ JSON structure to follow strictly:
     properties: {
       'name': Schema.string(
         title: 'Meal name',
-        description: 'name best describing meal from user input',
+        description: 'name best describing meal from user input, use language which is used in user input (English or Croatian)',
         format: 'string',
         nullable: false,
       ),

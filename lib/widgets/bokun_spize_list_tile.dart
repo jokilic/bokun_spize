@@ -21,6 +21,7 @@ class BokunSpizeListTile extends StatefulWidget {
     required this.onLongPressed,
     required this.onDeletePressed,
     required this.meal,
+    required super.key,
   });
 
   @override
@@ -110,7 +111,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: SwipeActionCell(
-            key: ValueKey(widget.meal),
+            key: ValueKey(widget.meal.id),
             backgroundColor: context.colors.scaffoldBackground,
             openAnimationDuration: 175,
             closeAnimationDuration: 175,

@@ -132,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ///
                   if (item is Meal) {
                     return BokunSpizeListTile(
+                      key: ValueKey(item.id),
                       onLongPressed: () {},
                       onDeletePressed: () {
                         HapticFeedback.lightImpact();
