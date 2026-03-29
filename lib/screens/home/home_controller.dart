@@ -62,15 +62,18 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   /// METHODS
   ///
 
-  /// Triggered when the user presses the 'Add' button
-  Future<void> onAddPressed(BuildContext context) async {
+  /// Triggered when the user presses the 'Add' button or edits existing meal
+  Future<void> onMealPressed(
+    BuildContext context, {
+    Meal? passedMeal,
+  }) async {
     /// Reset `state`
     updateState(
       speechToTextWords: null,
     );
 
     /// Show [BokunSpizeMealSheet] for adding meal
-    final result = await showModalBottomSheet<({String? words, DateTime? dateTime})>(
+    final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
       constraints: BoxConstraints(
@@ -87,18 +90,39 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         reverseCurve: Curves.easeIn,
       ),
       builder: (context) => BokunSpizeMealSheet(
-        textEditingController: textEditingController,
-        passedMeal: null,
+        textEditingController: textEditingController..text = passedMeal?.originalText ?? '',
+        passedMeal: passedMeal,
       ),
     );
 
-    /// User entered `words` and `dateTime`
-    if ((result?.words?.isNotEmpty ?? false) && result?.dateTime != null) {
-      /// Trigger AI
-      await triggerAI(
-        prompt: result!.words!,
-        dateTime: result.dateTime!,
-      );
+    /// User was editing existing `meal`
+    if (passedMeal != null) {
+      /// User deleted `meal`
+      if (result?.deleteMeal ?? false) {
+        await hive.deleteMeal(
+          meal: passedMeal,
+        );
+      }
+      /// User changed `dateTime`
+      else if (result?.dateTime != passedMeal.createdAt) {
+        /// Update `dateTime` in [Hive]
+        await hive.updateMeal(
+          newMeal: passedMeal.copyWith(
+            createdAt: result!.dateTime,
+          ),
+        );
+      }
+    }
+    /// User added a new `meal`
+    else {
+      /// User entered `words` and `dateTime`
+      if ((result?.words?.isNotEmpty ?? false) && result?.dateTime != null) {
+        /// Trigger AI which generates a new `meal` and stores into [Hive]
+        await triggerAI(
+          prompt: result!.words!,
+          dateTime: result.dateTime!,
+        );
+      }
     }
   }
 

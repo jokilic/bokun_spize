@@ -111,22 +111,3 @@ class HiveService extends ValueNotifier<List<Object>> implements Disposable {
     newMeals ?? getMeals(),
   );
 }
-
-String getDayHeaderLabel(
-  DateTime day, {
-  required DateTime today,
-  required DateTime yesterday,
-  required String locale,
-  required DateFormat dayFormatter,
-  required DateFormat dayFormatterYear,
-}) {
-  if (day == today) {
-    return locale == 'hr' ? 'Danas' : 'Today';
-  }
-
-  if (day == yesterday) {
-    return locale == 'hr' ? 'Jučer' : 'Yesterday';
-  }
-
-  return day.year == today.year ? dayFormatter.format(day) : dayFormatterYear.format(day);
-}

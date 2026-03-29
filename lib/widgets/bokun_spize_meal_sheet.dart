@@ -124,6 +124,13 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
     final available = speechToTextState.available;
     final isListening = speechToTextState.isListening;
 
+    final hasMeal = widget.passedMeal != null;
+
+    final title = hasMeal ? 'Uredi obrok' : 'Novi obrok';
+    final buttonText = hasMeal ? 'Uredi obrok' : 'Dodaj obrok';
+
+    final description = hasMeal ? 'Ne možeš uređivati opis obroka, jedino datum i vrijeme.' : 'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.';
+
     return SingleChildScrollView(
       padding: const EdgeInsets.only(top: 16),
       physics: const BouncingScrollPhysics(),
@@ -145,14 +152,14 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      'Novi obrok',
+                      title,
                       style: context.textStyles.homeTitle,
                     ),
                   ),
                 ),
 
                 ///
-                /// VOICE BUTTON
+                /// VOICE OR DELETE BUTTON
                 ///
                 const SizedBox(width: 4),
                 Material(
@@ -160,23 +167,36 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                   borderRadius: BorderRadius.circular(8),
                   child: InkWell(
                     onTap: () async {
+                      /// Meal exists, trigger delete
+                      if (hasMeal) {
+                        /// Dismiss sheet
+                        Navigator.of(context).pop(
+                          (
+                            words: null,
+                            dateTime: null,
+                            deleteMeal: true,
+                          ),
+                        );
+                      }
+                      /// New meal, trigger speech to text
+                      else {
+                        /// Speech to text is not available, initialize & trigger it
+                        if (!available) {
+                          await speechToTextService.loadSpeechToText();
+                          await homeController.onSpeechToTextPressed(
+                            locale: 'en',
+                          );
+                        }
+                        /// Speech to text is available, trigger it
+                        else {
+                          await homeController.onSpeechToTextPressed(
+                            locale: 'en',
+                          );
+                        }
+                      }
                       unawaited(
                         HapticFeedback.lightImpact(),
                       );
-
-                      /// Speech to text is not available, initialize & trigger it
-                      if (!available) {
-                        await speechToTextService.loadSpeechToText();
-                        await homeController.onSpeechToTextPressed(
-                          locale: 'en',
-                        );
-                      }
-                      /// Speech to text is available, trigger it
-                      else {
-                        await homeController.onSpeechToTextPressed(
-                          locale: 'en',
-                        );
-                      }
                     },
                     highlightColor: context.colors.listTileBackground,
                     borderRadius: BorderRadius.circular(8),
@@ -189,11 +209,15 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                       curve: Curves.easeIn,
                       padding: const EdgeInsets.all(8),
                       child: PhosphorIcon(
-                        PhosphorIcons.microphone(
-                          PhosphorIconsStyle.duotone,
-                        ),
+                        hasMeal
+                            ? PhosphorIcons.trash(
+                                PhosphorIconsStyle.duotone,
+                              )
+                            : PhosphorIcons.microphone(
+                                PhosphorIconsStyle.duotone,
+                              ),
                         color: context.colors.text,
-                        duotoneSecondaryColor: context.colors.buttonPrimary,
+                        duotoneSecondaryColor: hasMeal ? context.colors.delete : context.colors.buttonPrimary,
                         size: 16,
                       ),
                     ),
@@ -210,6 +234,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: BokunSpizeTextField(
+              enabled: !hasMeal,
               controller: widget.textEditingController,
               labelText: 'Što si imao za obrok?',
               keyboardType: TextInputType.multiline,
@@ -228,7 +253,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Text(
-              'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.',
+              description,
               style: context.textStyles.homeMealNote,
             ),
           ),
@@ -475,6 +500,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                               transactionDate: chosenDate,
                               transactionTime: chosenTime,
                             ),
+                            deleteMeal: false,
                           ),
                         );
                       }
@@ -497,7 +523,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                   disabledForegroundColor: context.colors.disabledText,
                 ),
                 child: Text(
-                  'Dodaj'.toUpperCase(),
+                  buttonText.toUpperCase(),
                 ),
               ),
             ),

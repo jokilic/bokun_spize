@@ -136,7 +136,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (item is Meal) {
                     return BokunSpizeListTile(
                       key: ValueKey(item.id),
-                      onLongPressed: () {},
+                      onLongPressed: () async {
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
+                        await homeController.onMealPressed(
+                          context,
+                          passedMeal: item,
+                        );
+                      },
                       onDeletePressed: () async {
                         unawaited(
                           HapticFeedback.lightImpact(),
@@ -176,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Dodaj neki pritiskom na tipku ispod',
+                      'Dodaj obrok pritiskom na tipku ispod',
                       textAlign: TextAlign.center,
                       style: context.textStyles.homeTitle,
                     ),
@@ -197,8 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
               unawaited(
                 HapticFeedback.lightImpact(),
               );
-
-              await homeController.onAddPressed(context);
+              await homeController.onMealPressed(context);
             },
             style: FilledButton.styleFrom(
               padding: EdgeInsets.fromLTRB(
@@ -218,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
               disabledForegroundColor: context.colors.disabledText,
             ),
             child: Text(
-              'Dodaj'.toUpperCase(),
+              'Dodaj obrok'.toUpperCase(),
             ),
           ),
         ),

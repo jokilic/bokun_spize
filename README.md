@@ -1,8 +1,8 @@
 ### To-Do
 
 - [ ] Update styling for date & time pickers in [BokunSpizeMealSheet]
-- [ ] Long-pressing [BokunSpizeListTile] will open a bottom sheet to edit or delete the meal (maybe with grayed-out [TextField])
 - [ ] Voice recording doesn't seem to work on Android
+- [ ] Screenshots for `Readme.md`
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
@@ -29,4 +29,5 @@ It's grouped by day, so you can see everything properly structured.
 
 Add new meal here.\
 You need to write about your meal.\
-Be detailed, so the estimate can be as accurate as possible.
+Be detailed, so the estimate can be as accurate as possible.\
+You can update date & time if necessary.

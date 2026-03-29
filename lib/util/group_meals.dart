@@ -8,11 +8,20 @@ import 'date_time.dart';
 /// [DayHeader, Meal, Meal, DayHeader, ...]
 List<Object> getGroupedMealsByDate(List<Meal> meals) {
   final now = DateTime.now();
-  final today = toYmd(now);
-  final yesterday = today.subtract(const Duration(days: 1));
 
-  final dayFormatter = DateFormat('dd. MMMM', 'hr');
-  final dayFormatterYear = DateFormat('dd. MMMM yyyy', 'hr');
+  final today = toYmd(now);
+  final yesterday = today.subtract(
+    const Duration(days: 1),
+  );
+
+  final dayFormatter = DateFormat(
+    'dd. MMMM',
+    'hr',
+  );
+  final dayFormatterYear = DateFormat(
+    'dd. MMMM yyyy',
+    'hr',
+  );
 
   String labelFor(DateTime d) {
     if (d == today) {

@@ -15,6 +15,7 @@ class BokunSpizeTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final TextInputAction textInputAction;
   final bool obscureText;
+  final bool enabled;
   final Function(String value)? onSubmitted;
   final Iterable<String>? autofillHints;
 
@@ -31,61 +32,58 @@ class BokunSpizeTextField extends StatelessWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.obscureText = false,
+    this.enabled = true,
     this.onSubmitted,
     this.autofillHints,
   });
 
   @override
-  Widget build(BuildContext context) => TextField(
-    autofillHints: autofillHints,
-    onSubmitted: onSubmitted,
-    obscureText: obscureText,
-    autocorrect: autocorrect,
-    autofocus: autofocus,
-    controller: controller,
-    focusNode: focusNode,
-    cursorHeight: 24,
-    cursorRadius: const Radius.circular(8),
-    cursorWidth: 1.5,
-    cursorColor: context.colors.text,
-    decoration: InputDecoration(
-      filled: true,
-      fillColor: context.colors.listTileBackground,
-      alignLabelWithHint: true,
-      border: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: context.colors.text,
-          width: 1.5,
+  Widget build(BuildContext context) {
+    final border = OutlineInputBorder(
+      borderSide: BorderSide(
+        color: context.colors.text,
+        width: 1.5,
+      ),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    return TextField(
+      autofillHints: autofillHints,
+      enabled: enabled,
+      onSubmitted: onSubmitted,
+      obscureText: obscureText,
+      autocorrect: autocorrect,
+      autofocus: autofocus,
+      controller: controller,
+      focusNode: focusNode,
+      cursorHeight: 24,
+      cursorRadius: const Radius.circular(8),
+      cursorWidth: 1.5,
+      cursorColor: context.colors.text,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: enabled ? context.colors.listTileBackground : null,
+        alignLabelWithHint: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 16,
         ),
-        borderRadius: BorderRadius.circular(8),
+        border: border,
+        enabledBorder: border,
+        focusedBorder: border,
+        errorBorder: border,
+        disabledBorder: border,
+        focusedErrorBorder: border,
+        labelText: labelText,
+        labelStyle: context.textStyles.textField,
       ),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 16,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: context.colors.text,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: context.colors.text,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      labelText: labelText,
-      labelStyle: context.textStyles.textField,
-    ),
-    keyboardType: keyboardType,
-    minLines: minLines,
-    maxLines: maxLines,
-    style: context.textStyles.textField,
-    textAlign: textAlign,
-    textCapitalization: textCapitalization,
-    textInputAction: textInputAction,
-  );
+      keyboardType: keyboardType,
+      minLines: minLines,
+      maxLines: maxLines,
+      style: context.textStyles.textField,
+      textAlign: textAlign,
+      textCapitalization: textCapitalization,
+      textInputAction: textInputAction,
+    );
+  }
 }

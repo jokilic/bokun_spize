@@ -295,7 +295,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                   secondChild: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: 8),
 
                                       if (hasError) ...[
                                         ///
