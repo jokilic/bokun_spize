@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
+import '../../models/day_header.dart';
+import '../../models/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/logger_service.dart';
@@ -48,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeController = getIt.get<HomeController>();
     final hiveService = getIt.get<HiveService>();
 
-    final meals = watchIt<HiveService>().value;
+    final items = watchIt<HiveService>().value;
 
     return Scaffold(
       body: CustomScrollView(
@@ -68,24 +70,75 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           ///
-          /// MEALS
+          /// ITEMS
           ///
-          if (meals.isNotEmpty)
+          if (items.isNotEmpty)
             SliverPadding(
               padding: const EdgeInsets.only(top: 2),
               sliver: SliverList.builder(
-                itemCount: meals.length,
+                itemCount: items.length,
                 itemBuilder: (context, index) {
-                  final meal = meals[index];
+                  final item = items[index];
 
-                  return BokunSpizeListTile(
-                    onLongPressed: () {},
-                    onDeletePressed: () {
-                      HapticFeedback.lightImpact();
-                      hiveService.deleteMeal(meal: meal);
-                    },
-                    meal: meal,
-                  );
+                  ///
+                  /// DAY HEADER
+                  ///
+                  if (item is DayHeader) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(28, index == 0 ? 8 : 28, 28, 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ///
+                          /// DAY
+                          ///
+                          Expanded(
+                            child: Text(
+                              item.label,
+                              style: context.textStyles.homeTitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+
+                          ///
+                          /// AMOUNT
+                          ///
+                          Text.rich(
+                            TextSpan(
+                              text: formatCentsToCurrency(
+                                item.amountCents,
+                                locale: context.locale.languageCode,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'homeCurrency'.tr(),
+                                  style: context.textStyles.homeTitleEuro,
+                                ),
+                              ],
+                            ),
+                            style: context.textStyles.homeTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  ///
+                  /// MEAL
+                  ///
+                  if (item is Meal) {
+                    return BokunSpizeListTile(
+                      onLongPressed: () {},
+                      onDeletePressed: () {
+                        HapticFeedback.lightImpact();
+                        hiveService.deleteMeal(meal: item);
+                      },
+                      meal: item,
+                    );
+                  }
                 },
               ),
             )
