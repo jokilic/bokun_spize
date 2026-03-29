@@ -14,7 +14,7 @@ import '../util/color.dart';
 
 class BokunSpizeListTile extends StatefulWidget {
   final Function() onLongPressed;
-  final Function() onDeletePressed;
+  final Future<void> Function() onDeletePressed;
   final Meal meal;
 
   const BokunSpizeListTile({
@@ -121,9 +121,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
             leadingActions: [
               SwipeAction(
                 onTap: (handler) async {
-                  unawaited(
-                    handler(true),
-                  );
+                  await handler(true);
                   await widget.onDeletePressed();
                 },
                 color: context.colors.delete,

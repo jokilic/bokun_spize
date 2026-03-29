@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../models/food.dart';
 import '../../models/meal.dart';
+import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/logger_service.dart';
@@ -159,9 +161,31 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Trigger `AI`
-    final result = await ai.triggerAI(
-      prompt: trimmedPrompt,
-    );
+    // final result = await ai.triggerAI(
+    //   prompt: trimmedPrompt,
+    // );
+
+    final result = Meal(
+      id: const Uuid().v1(),
+      name: 'Some food',
+      emoji: '🍔',
+      nutrition: Nutrition(
+        calories: 15,
+        protein: 9,
+        carbs: 2,
+        fat: 4,
+      ),
+      foods: [
+        Food(
+          name: 'banana',
+          quantity: 2,
+          unit: 'piece',
+        ),
+      ],
+      createdAt: DateTime.now(),
+      originalText: 'This is my original text',
+      isLoading: false,
+    ).toJson();
 
     logger.f('Result: $result');
 

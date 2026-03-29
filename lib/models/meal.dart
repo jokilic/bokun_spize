@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive_ce/hive_ce.dart';
 
 import 'food.dart';
@@ -76,6 +78,8 @@ class Meal {
     isLoading: isLoading,
     error: error,
   );
+
+  String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
     'id': id,

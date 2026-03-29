@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/icons.dart';
 import '../theme/extensions.dart';
 
 class BokunSpizeAppBar extends StatelessWidget {
@@ -20,11 +21,24 @@ class BokunSpizeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SliverAppBar.large(
     centerTitle: false,
-    title: Text(
-      smallTitle,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: context.textStyles.appBarTitleSmall,
+    title: Row(
+      children: [
+        Flexible(
+          child: Text(
+            smallTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyles.appBarTitleSmall,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Image.asset(
+          BokunSpizeIcons.logo,
+          height: 26,
+          width: 26,
+          fit: BoxFit.cover,
+        ),
+      ],
     ),
     backgroundColor: context.colors.scaffoldBackground,
     titleSpacing: leadingWidget != null ? 4 : 16,
@@ -41,11 +55,24 @@ class BokunSpizeAppBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              bigTitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.textStyles.appBarTitleBig,
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    bigTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textStyles.appBarTitleBig,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Image.asset(
+                  BokunSpizeIcons.logo,
+                  height: 26,
+                  width: 26,
+                  fit: BoxFit.cover,
+                ),
+              ],
             ),
             const SizedBox(height: 2),
             Text(

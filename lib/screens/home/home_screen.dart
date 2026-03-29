@@ -61,8 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
           /// APP BAR
           ///
           const BokunSpizeAppBar(
-            smallTitle: 'Bokun spize 🥗',
-            bigTitle: 'Bokun spize 🥗',
+            smallTitle: 'Bokun spize',
+            bigTitle: 'Bokun spize',
             bigSubtitle: 'Tvoj dnevnik prehrane',
           ),
           const SliverToBoxAdapter(
@@ -134,9 +134,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     return BokunSpizeListTile(
                       key: ValueKey(item.id),
                       onLongPressed: () {},
-                      onDeletePressed: () {
-                        HapticFeedback.lightImpact();
-                        hiveService.deleteMeal(meal: item);
+                      onDeletePressed: () async {
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
+                        await hiveService.deleteMeal(meal: item);
                       },
                       meal: item,
                     );
