@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -63,6 +65,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
   @override
   Widget build(BuildContext context) {
     final homeController = getIt.get<HomeController>();
+    final speechToTextService = getIt.get<SpeechToTextService>();
 
     final speechToTextState = watchIt<SpeechToTextService>().value;
 
@@ -103,37 +106,48 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                   ///
                   /// VOICE BUTTON
                   ///
-                  if (available) ...[
-                    const SizedBox(width: 4),
-                    Material(
-                      color: context.colors.scaffoldBackground,
+                  const SizedBox(width: 4),
+                  Material(
+                    color: context.colors.scaffoldBackground,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      onTap: () async {
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
+
+                        /// Speech to text is available, trigger it
+                        if (available) {
+                          await homeController.onSpeechToTextPressed(
+                            locale: 'en',
+                          );
+                        }
+                        /// Speech to text is not available, initialize it
+                        else {
+                          await speechToTextService.loadSpeechToText();
+                        }
+                      },
+                      highlightColor: context.colors.buttonBackground,
                       borderRadius: BorderRadius.circular(8),
-                      child: InkWell(
-                        onTap: () => homeController.onSpeechToTextPressed(
-                          locale: 'en',
+                      child: AnimatedContainer(
+                        decoration: BoxDecoration(
+                          color: isListening ? context.colors.buttonPrimary : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        highlightColor: context.colors.buttonBackground,
-                        borderRadius: BorderRadius.circular(8),
-                        child: AnimatedContainer(
-                          decoration: BoxDecoration(
-                            color: isListening ? context.colors.buttonPrimary : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeIn,
+                        padding: const EdgeInsets.all(8),
+                        child: PhosphorIcon(
+                          PhosphorIcons.microphone(
+                            PhosphorIconsStyle.duotone,
                           ),
-                          duration: BokunSpizeDurations.animation,
-                          curve: Curves.easeIn,
-                          padding: const EdgeInsets.all(8),
-                          child: PhosphorIcon(
-                            PhosphorIcons.microphone(
-                              PhosphorIconsStyle.duotone,
-                            ),
-                            color: context.colors.text,
-                            duotoneSecondaryColor: context.colors.buttonPrimary,
-                            size: 16,
-                          ),
+                          color: context.colors.text,
+                          duotoneSecondaryColor: context.colors.buttonPrimary,
+                          size: 16,
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
@@ -164,6 +178,13 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 28),
               child: Text(
                 'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.',
+                style: context.textStyles.homeMealNote,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: Text(
+                'Nešto poput "Dva komada pohanog mesa uz malo pire krumpira i čašu Coca Cole"',
                 style: context.textStyles.homeMealNote,
               ),
             ),

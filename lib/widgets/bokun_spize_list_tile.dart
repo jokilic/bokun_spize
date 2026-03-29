@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../constants/durations.dart';
 import '../models/meal.dart';
+import '../theme/colors.dart';
 import '../theme/extensions.dart';
+import '../util/color.dart';
 
 class BokunSpizeListTile extends StatefulWidget {
   final Function() onLongPressed;
@@ -99,24 +102,54 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: context.colors.buttonPrimary,
+                        color: widget.meal.isLoading
+                            ? Colors.transparent
+                            : widget.meal.error == null
+                            ? context.colors.buttonPrimary
+                            : context.colors.delete,
                         border: Border.all(
-                          color: context.colors.buttonPrimary,
+                          color: widget.meal.isLoading
+                              ? context.colors.text
+                              : widget.meal.error == null
+                              ? context.colors.buttonPrimary
+                              : context.colors.delete,
                           width: 1.5,
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            widget.meal.emoji ?? '--',
-                            style: context.textStyles.homeMealTitle,
-                            maxLines: 1,
-                            softWrap: false,
-                          ),
-                        ),
-                      ),
+                      child: widget.meal.isLoading
+                          ? PhosphorIcon(
+                              PhosphorIcons.spinnerGap(
+                                PhosphorIconsStyle.duotone,
+                              ),
+                              color: context.colors.text,
+                              duotoneSecondaryColor: context.colors.text,
+                              size: 20,
+                            )
+                          : widget.meal.error == null
+                          ? Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  widget.meal.emoji ?? '--',
+                                  style: context.textStyles.homeMealTitle,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                ),
+                              ),
+                            )
+                          : PhosphorIcon(
+                              PhosphorIcons.exclamationMark(
+                                PhosphorIconsStyle.duotone,
+                              ),
+                              color: getWhiteOrBlackColor(
+                                backgroundColor: context.colors.delete,
+                                whiteColor: BokunSpizeColors.whiteBackground,
+                                blackColor: BokunSpizeColors.black,
+                              ),
+                              duotoneSecondaryColor: context.colors.delete,
+                              size: 20,
+                            ),
                     ),
                     const SizedBox(width: 12),
 
@@ -124,91 +157,124 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                     /// TITLE & SUBTITLE
                     ///
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 2),
-
-                          ///
-                          /// TITLE
-                          ///
-                          AnimatedCrossFade(
-                            duration: BokunSpizeDurations.animation,
-                            firstCurve: Curves.easeIn,
-                            secondCurve: Curves.easeIn,
-                            sizeCurve: Curves.easeIn,
-                            crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                            firstChild: Text(
-                              widget.meal.name ?? '--',
-                              style: context.textStyles.homeMealTitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                      child: Animate(
+                        key: ValueKey(widget.meal.isLoading),
+                        onPlay: (controller) => controller.loop(
+                          reverse: true,
+                          min: 0.6,
+                        ),
+                        effects: [
+                          if (widget.meal.isLoading)
+                            const FadeEffect(
+                              curve: Curves.easeIn,
+                              duration: BokunSpizeDurations.loading,
                             ),
-                            secondChild: Text(
-                              widget.meal.name ?? '--',
-                              style: context.textStyles.homeMealTitle,
-                            ),
-                          ),
-
-                          ///
-                          /// TIME
-                          ///
-                          const SizedBox(height: 4),
-                          AnimatedCrossFade(
-                            duration: BokunSpizeDurations.animation,
-                            firstCurve: Curves.easeIn,
-                            secondCurve: Curves.easeIn,
-                            sizeCurve: Curves.easeIn,
-                            crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                            firstChild: Text(
-                              DateFormat(
-                                'HH:mm',
-                                'hr',
-                              ).format(
-                                widget.meal.createdAt,
-                              ),
-                              style: context.textStyles.homeMealTime,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            secondChild: Text(
-                              DateFormat(
-                                'HH:mm',
-                                'hr',
-                              ).format(
-                                widget.meal.createdAt,
-                              ),
-                              style: context.textStyles.homeMealTime,
-                            ),
-                          ),
                         ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 2),
+
+                            ///
+                            /// TITLE
+                            ///
+                            AnimatedCrossFade(
+                              duration: BokunSpizeDurations.animation,
+                              firstCurve: Curves.easeIn,
+                              secondCurve: Curves.easeIn,
+                              sizeCurve: Curves.easeIn,
+                              crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                              firstChild: Text(
+                                widget.meal.isLoading ? widget.meal.originalText : widget.meal.name ?? widget.meal.error ?? '--',
+                                style: context.textStyles.homeMealTitle,
+                                maxLines: widget.meal.isLoading ? null : 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              secondChild: Text(
+                                widget.meal.isLoading ? widget.meal.originalText : widget.meal.name ?? widget.meal.error ?? '--',
+                                style: context.textStyles.homeMealTitle,
+                              ),
+                            ),
+
+                            ///
+                            /// TIME
+                            ///
+                            if (!widget.meal.isLoading) ...[
+                              const SizedBox(height: 4),
+                              AnimatedCrossFade(
+                                duration: BokunSpizeDurations.animation,
+                                firstCurve: Curves.easeIn,
+                                secondCurve: Curves.easeIn,
+                                sizeCurve: Curves.easeIn,
+                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                firstChild: Text(
+                                  DateFormat(
+                                    'HH:mm',
+                                    'hr',
+                                  ).format(
+                                    widget.meal.createdAt,
+                                  ),
+                                  style: context.textStyles.homeMealTime,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                secondChild: Text(
+                                  DateFormat(
+                                    'HH:mm',
+                                    'hr',
+                                  ).format(
+                                    widget.meal.createdAt,
+                                  ),
+                                  style: context.textStyles.homeMealTime,
+                                ),
+                              ),
+
+                              ///
+                              /// ADDITIONAL INFO
+                              ///
+                              AnimatedCrossFade(
+                                duration: BokunSpizeDurations.animation,
+                                firstCurve: Curves.easeIn,
+                                secondCurve: Curves.easeIn,
+                                sizeCurve: Curves.easeIn,
+                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                firstChild: const SizedBox.shrink(),
+                                secondChild: const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
                     ),
 
                     ///
                     /// TRAILING
                     ///
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 2),
-                        Text.rich(
-                          TextSpan(
-                            text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '--',
-                            children: [
-                              TextSpan(
-                                text: 'kcal',
-                                style: context.textStyles.homeMealKcal,
-                              ),
-                            ],
+                    if (!widget.meal.isLoading && widget.meal.error == null) ...[
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 2),
+                          Text.rich(
+                            TextSpan(
+                              text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '--',
+                              children: [
+                                TextSpan(
+                                  text: 'kcal',
+                                  style: context.textStyles.homeMealKcal,
+                                ),
+                              ],
+                            ),
+                            style: context.textStyles.homeMealValue,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          style: context.textStyles.homeMealValue,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

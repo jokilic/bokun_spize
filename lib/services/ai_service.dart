@@ -206,9 +206,6 @@ JSON structure to follow strictly:
     if (value.generativeModel != null) {
       try {
         final response = await value.generativeModel!.generateContent(contents);
-
-        logger.f('Result -> ${response.text}');
-
         return response.text;
       } catch (e) {
         final error = 'generativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
@@ -220,9 +217,6 @@ JSON structure to follow strictly:
     if (value.alternativeGenerativeModel != null) {
       try {
         final response = await value.alternativeGenerativeModel!.generateContent(contents);
-
-        logger.f('Result2 -> ${response.text}');
-
         return response.text;
       } catch (e) {
         final error = 'alternativeGenerativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';

@@ -110,8 +110,6 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
             speechToTextWords: words,
           );
 
-          logger.t('Words -> $words');
-
           /// Add new `words` to [TextEditingController]
           if (currentText.isNotEmpty) {
             textEditingController.text = '$currentText $words';
@@ -165,10 +163,25 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       prompt: trimmedPrompt,
     );
 
-    logger.d('AI Result -> $result');
+    logger.f('Result: $result');
 
-    /// AI generated result, parse it to `Meal`
+    /// AI did not generate result
+    if (result == null) {
+      /// Create `errorMeal` with `error` data
+      final errorMeal = loadingMeal.copyWith(
+        error: 'Obrok nije generiran',
+        isLoading: false,
+      );
+
+      /// Update `loadingMeal` with `errorMeal`
+      await hive.updateMeal(
+        newMeal: errorMeal,
+      );
+    }
+
+    /// AI generated result
     if (result?.isNotEmpty ?? false) {
+      /// Parse to `Meal`
       final meal = parseAIResultToMeal(
         aiResult: result!,
         id: loadingMeal.id,
@@ -178,8 +191,8 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
 
       /// Result is successfully parsed
       if (meal != null) {
-        /// Create `finalMeal` with `meal` data
-        final finalMeal = loadingMeal.copyWith(
+        /// Create `successMeal` with `meal` data
+        final successMeal = loadingMeal.copyWith(
           name: meal.name,
           emoji: meal.emoji,
           nutrition: meal.nutrition,
@@ -187,12 +200,23 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
           isLoading: false,
         );
 
-        /// Update `loadingMeal` with `finalMeal`
+        /// Update `loadingMeal` with `successMeal`
         await hive.updateMeal(
-          newMeal: finalMeal,
+          newMeal: successMeal,
+        );
+      }
+      /// Result is not successfully parsed
+      else {
+        /// Create `errorMeal` with `error` data
+        final errorMeal = loadingMeal.copyWith(
+          error: 'Obrok nije dekodiran',
+          isLoading: false,
         );
 
-        logger.w('New meal -> $finalMeal');
+        /// Update `loadingMeal` with `errorMeal`
+        await hive.updateMeal(
+          newMeal: errorMeal,
+        );
       }
     }
   }

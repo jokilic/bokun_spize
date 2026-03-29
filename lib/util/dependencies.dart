@@ -62,13 +62,9 @@ Future<void> initializeServices() async {
 
   if (!getIt.isRegistered<SpeechToTextService>()) {
     getIt.registerSingletonAsync(
-      () async {
-        final speechToText = SpeechToTextService(
-          logger: getIt.get<LoggerService>(),
-        );
-        await speechToText.init();
-        return speechToText;
-      },
+      () async => SpeechToTextService(
+        logger: getIt.get<LoggerService>(),
+      ),
       dependsOn: [LoggerService, HiveService],
     );
   }

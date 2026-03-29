@@ -15,14 +15,6 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
   }) : super((speechToText: null, available: false, isListening: false));
 
   ///
-  /// INIT
-  ///
-
-  Future<void> init() async {
-    await loadSpeechToText();
-  }
-
-  ///
   /// METHODS
   ///
 
