@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 
 import '../models/hive_registrar.g.dart';
 import '../models/meal.dart';
+import '../util/group_meals.dart';
 import '../util/path.dart';
 import 'logger_service.dart';
 
-class HiveService extends ValueNotifier<List<Meal>> implements Disposable {
+class HiveService extends ValueNotifier<List<Object>> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -72,12 +74,6 @@ class HiveService extends ValueNotifier<List<Meal>> implements Disposable {
   /// Called to get `meals` from [Hive]
   List<Meal> getMeals() => meals.values.toList();
 
-  /// Clears old list and stores a new `List<Meal>` in [Hive]
-  Future<void> writeListMeals(List<Meal> newMeals) async {
-    await meals.clear();
-    await meals.addAll(newMeals);
-  }
-
   /// Stores a new `meal` in [Hive]
   Future<void> writeMeal({required Meal newMeal}) async {
     await meals.add(newMeal);
@@ -110,6 +106,27 @@ class HiveService extends ValueNotifier<List<Meal>> implements Disposable {
     updateState();
   }
 
-  /// Updates `state`
-  void updateState({List<Meal>? newMeals}) => value = newMeals ?? getMeals();
+  /// Updates grouped `state`
+  void updateState({List<Meal>? newMeals}) => value = getGroupedMealsByDate(
+    newMeals ?? getMeals(),
+  );
+}
+
+String getDayHeaderLabel(
+  DateTime day, {
+  required DateTime today,
+  required DateTime yesterday,
+  required String locale,
+  required DateFormat dayFormatter,
+  required DateFormat dayFormatterYear,
+}) {
+  if (day == today) {
+    return locale == 'hr' ? 'Danas' : 'Today';
+  }
+
+  if (day == yesterday) {
+    return locale == 'hr' ? 'Jučer' : 'Yesterday';
+  }
+
+  return day.year == today.year ? dayFormatter.format(day) : dayFormatterYear.format(day);
 }

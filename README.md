@@ -1,10 +1,10 @@
 ### To-Do
 
-- [ ] Finish `Readme.md`
 - [ ] Add icon & splash screen
-- [ ] Split `meals` into days, like in [Troško]
 - [ ] Add missing values when expanding [BokunSpizeListTile]
 
+- [x] Finish `Readme.md`
+- [x] Split `meals` into days, like in [Troško]
 - [x] Changing from `isLoading` to proper [Meal] or `error` should be animated
 - [x] Add `error` for each [Meal]
 - [x] Place speech along with logic and permissions into [Sheet]
@@ -19,37 +19,22 @@
 
 🥗 **Bokun spize** is a simple calorie tracker made in **Flutter**. 👨‍💻
 
-It gives you the ability to add expenses into various categories. 💰\
-Expenses are displayed using a minimalistic design which gives you all info at a glance. 📈\
-You can filter data by month and keep everything organized. 🗂️
+It gives you the ability to add your meals into a list. 💰\
+Meals are displayed using a minimalistic design which gives you all info at a glance. 📈\
+You can see data by day and keep everything organized. 🗂️
 
 ### Bokun spize can be downloaded from [HERE](https://play.google.com/store/apps/details?id=com.josipkilic.bokun_spize).
 &nbsp;
 
 ![Multi](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/multi.png)
 
-**Expenses** 💶
+**Meals** 💶
 
-Shows a list of your expenses.\
-You can change the month, which will filter the values.\
-You can filter by category, which will let you see data more clearly.
+Shows a list of your meals.\
+It's grouped by day, so you can see everything properly structured.
 
-**New expense** 🧾
+**New meal** 🧾
 
-Add new expense here.\
-You need to choose a category, expense name and amount spent.\
-There's a possibility to write a more detailed note or change the time of the expense.\
-Expense can also be edited or deleted if necessary.
-
-**New category** 🎨
-
-Add new category here.\
-You need to choose a color, category name and icon.\
-Category can also be edited or deleted if necessary.
-
-**New location** 📍
-
-Add new location here.\
-You need to choose a color, location name and icon.\
-You can add an address to your location.\
-Location can also be edited or deleted if necessary.
+Add new meal here.\
+You need to write about your meal.\
+Be detailed, so the estimate can be as accurate as possible.

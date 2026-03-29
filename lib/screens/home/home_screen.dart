@@ -106,14 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           ///
                           Text.rich(
                             TextSpan(
-                              text: formatCentsToCurrency(
-                                item.amountCents,
-                                locale: context.locale.languageCode,
-                              ),
+                              text: item.amountCalories.toStringAsFixed(0),
                               children: [
                                 TextSpan(
-                                  text: 'homeCurrency'.tr(),
-                                  style: context.textStyles.homeTitleEuro,
+                                  text: ' ',
+                                  style: context.textStyles.homeMealKcal,
+                                ),
+                                TextSpan(
+                                  text: 'kcal',
+                                  style: context.textStyles.homeMealKcal,
                                 ),
                               ],
                             ),
@@ -139,6 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       meal: item,
                     );
                   }
+
+                  return const SizedBox.shrink();
                 },
               ),
             )
