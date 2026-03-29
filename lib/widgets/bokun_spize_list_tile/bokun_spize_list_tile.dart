@@ -494,7 +494,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                             ),
                             child: Text.rich(
                               key: ValueKey(
-                                'trailing-${widget.meal.nutrition?.calories?.toStringAsFixed(0) ?? ''}-${widget.meal.isLoading}-${widget.meal.error}',
+                                'trailing-${widget.meal.nutrition?.calories.toStringAsFixed(0) ?? ''}-${widget.meal.isLoading}-${widget.meal.error}',
                               ),
                               TextSpan(
                                 text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',

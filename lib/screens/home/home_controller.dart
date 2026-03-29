@@ -5,9 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
-import '../../models/food.dart';
 import '../../models/meal.dart';
-import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/logger_service.dart';
