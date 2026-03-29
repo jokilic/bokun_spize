@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../constants/durations.dart';
 import '../../models/food.dart';
 import '../../models/meal.dart';
 import '../../models/nutrition.dart';
@@ -73,9 +74,14 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
       isScrollControlled: true,
-      useSafeArea: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
+      ),
+      sheetAnimationStyle: const AnimationStyle(
+        duration: BokunSpizeDurations.animation,
+        reverseDuration: BokunSpizeDurations.animation,
+        curve: Curves.easeIn,
+        reverseCurve: Curves.easeIn,
       ),
       builder: (context) => BokunSpizeMealSheet(
         textEditingController: textEditingController,
