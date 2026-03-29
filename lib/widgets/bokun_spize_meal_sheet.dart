@@ -360,11 +360,9 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                       child: CalendarDatePicker2(
                         config: CalendarDatePicker2Config(
                           calendarViewScrollPhysics: const BouncingScrollPhysics(),
-                          controlsTextStyle: context.textStyles.homeTitle,
                           currentDate: now,
                           customModePickerIcon: const SizedBox.shrink(),
                           daySplashColor: Colors.transparent,
-                          dayTextStyle: context.textStyles.homeMealKcal,
                           dynamicCalendarRows: true,
                           hideMonthPickerDividers: true,
                           hideScrollViewMonthWeekHeader: true,
@@ -379,7 +377,6 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                             duotoneSecondaryColor: context.colors.buttonPrimary,
                             size: 28,
                           ),
-                          monthTextStyle: context.textStyles.homeMealKcal,
                           nextMonthIcon: PhosphorIcon(
                             PhosphorIcons.caretCircleRight(
                               PhosphorIconsStyle.duotone,
@@ -389,7 +386,12 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                             size: 28,
                           ),
                           selectedDayHighlightColor: context.colors.text,
-                          selectedDayTextStyle: context.textStyles.homeMealKcal,
+                          controlsTextStyle: context.textStyles.homeTitle,
+                          dayTextStyle: context.textStyles.homeMealKcal,
+                          monthTextStyle: context.textStyles.homeMealKcal,
+                          selectedDayTextStyle: context.textStyles.homeMealKcal.copyWith(
+                            color: context.colors.listTileBackground,
+                          ),
                           selectedMonthTextStyle: context.textStyles.homeMealKcal,
                           selectedYearTextStyle: context.textStyles.homeMealKcal,
                           todayTextStyle: context.textStyles.homeMealKcal,
