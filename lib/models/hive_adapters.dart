@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive_ce/hive_ce.dart';
 
 import 'food.dart';
@@ -5,6 +6,7 @@ import 'meal.dart';
 import 'nutrition.dart';
 
 @GenerateAdapters([
+  AdapterSpec<Color>(),
   AdapterSpec<Meal>(),
   AdapterSpec<Nutrition>(),
   AdapterSpec<Food>(),

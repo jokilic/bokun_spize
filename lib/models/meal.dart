@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:hive_ce/hive_ce.dart';
 
+import '../util/color.dart';
 import 'food.dart';
 import 'nutrition.dart';
 
@@ -14,17 +16,19 @@ class Meal {
   @HiveField(2)
   final String? emoji;
   @HiveField(3)
-  final DateTime createdAt;
+  final Color? color;
   @HiveField(4)
-  final Nutrition? nutrition;
+  final DateTime createdAt;
   @HiveField(5)
-  final List<Food>? foods;
+  final Nutrition? nutrition;
   @HiveField(6)
-  final String originalText;
+  final List<Food>? foods;
   @HiveField(7)
-  final bool isLoading;
+  final String originalText;
   @HiveField(8)
-  final String? error;
+  final bool isLoading;
+  @HiveField(9)
+  final List<String>? errors;
 
   Meal({
     required this.id,
@@ -33,31 +37,34 @@ class Meal {
     required this.isLoading,
     this.name,
     this.emoji,
+    this.color,
     this.nutrition,
     this.foods,
-    this.error,
+    this.errors,
   });
 
   Meal copyWith({
     String? id,
     String? name,
     String? emoji,
+    Color? color,
     DateTime? createdAt,
     Nutrition? nutrition,
     List<Food>? foods,
     String? originalText,
     bool? isLoading,
-    String? error,
+    List<String>? errors,
   }) => Meal(
     id: id ?? this.id,
     name: name ?? this.name,
     emoji: emoji ?? this.emoji,
+    color: color ?? this.color,
     createdAt: createdAt ?? this.createdAt,
     nutrition: nutrition ?? this.nutrition,
     foods: foods ?? this.foods,
     originalText: originalText ?? this.originalText,
     isLoading: isLoading ?? this.isLoading,
-    error: error ?? this.error,
+    errors: errors ?? this.errors,
   );
 
   factory Meal.fromMap(
@@ -66,17 +73,18 @@ class Meal {
     required DateTime createdAt,
     required String originalText,
     required bool isLoading,
-    required String? error,
+    required List<String>? errors,
   }) => Meal(
     id: id,
     name: map['name'],
     emoji: map['emoji'],
+    color: map['color'] != null ? colorFromHex(map['color']) : null,
     createdAt: createdAt,
     nutrition: map['nutrition'] != null ? Nutrition.fromMap(map['nutrition'] as Map<String, dynamic>) : null,
     foods: map['foods'] != null ? List<Food>.from(map['foods'].map((x) => Food.fromMap(x))) : null,
     originalText: originalText,
     isLoading: isLoading,
-    error: error,
+    errors: errors,
   );
 
   String toJson() => json.encode(toMap());
@@ -85,17 +93,18 @@ class Meal {
     'id': id,
     'name': name,
     'emoji': emoji,
+    'color': color != null ? colorToHex(color!) : null,
     'createdAt': createdAt.toIso8601String(),
     'nutrition': nutrition?.toMap(),
     'foods': foods?.map((food) => food.toMap()).toList(),
     'originalText': originalText,
     'isLoading': isLoading,
-    'error': error,
+    'errors': errors,
   };
 
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, error: $error)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors)';
 
   @override
   bool operator ==(Object other) =>
@@ -110,9 +119,9 @@ class Meal {
           foods == other.foods &&
           originalText == other.originalText &&
           isLoading == other.isLoading &&
-          error == other.error;
+          errors == other.errors;
 
   @override
   int get hashCode =>
-      id.hashCode ^ name.hashCode ^ emoji.hashCode ^ createdAt.hashCode ^ nutrition.hashCode ^ foods.hashCode ^ originalText.hashCode ^ isLoading.hashCode ^ error.hashCode;
+      id.hashCode ^ name.hashCode ^ emoji.hashCode ^ createdAt.hashCode ^ nutrition.hashCode ^ foods.hashCode ^ originalText.hashCode ^ isLoading.hashCode ^ errors.hashCode;
 }

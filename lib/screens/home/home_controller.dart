@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
 import '../../models/meal.dart';
+import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/logger_service.dart';
@@ -165,21 +166,15 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Trigger `AI`
-    // final result = await ai.triggerAI(
-    //   prompt: trimmedPrompt,
-    // );
-
-    const result = null;
-
-    await Future.delayed(const Duration(seconds: 5));
-
-    logger.f('Result: $result');
+    final result = await ai.triggerAI(
+      prompt: trimmedPrompt,
+    );
 
     /// AI did not generate result
-    if (result == null) {
-      /// Create `errorMeal` with `error` data
+    if (result.aiResult == null) {
+      /// Create `errorMeal` with `errors` data
       final errorMeal = loadingMeal.copyWith(
-        error: 'Obrok nije generiran',
+        errors: result.errors,
         isLoading: false,
       );
 
@@ -190,10 +185,10 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     }
 
     /// AI generated result
-    if (result?.isNotEmpty ?? false) {
+    if (result.aiResult?.isNotEmpty ?? false) {
       /// Parse to `Meal`
       final meal = parseAIResultToMeal(
-        aiResult: result!,
+        aiResult: result.aiResult!,
         id: loadingMeal.id,
         createdAt: loadingMeal.createdAt,
         originalText: trimmedPrompt,
@@ -219,7 +214,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       else {
         /// Create `errorMeal` with `error` data
         final errorMeal = loadingMeal.copyWith(
-          error: 'Obrok nije dekodiran',
+          errors: ['Obrok nije dekodiran'],
           isLoading: false,
         );
 
@@ -248,7 +243,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
           createdAt: createdAt,
           originalText: originalText,
           isLoading: false,
-          error: null,
+          errors: null,
         );
       }
 

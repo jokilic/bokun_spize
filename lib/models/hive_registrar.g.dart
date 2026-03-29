@@ -10,6 +10,7 @@ import 'package:bokun_spize/models/nutrition.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(ColorAdapter());
     registerAdapter(MealAdapter());
     registerAdapter(NutritionAdapter());
     registerAdapter(FoodAdapter());

@@ -23,16 +23,17 @@ class MealAdapter extends TypeAdapter<Meal> {
       isLoading: fields[7] as bool,
       name: fields[1] as String?,
       emoji: fields[9] as String?,
+      color: fields[11] as Color?,
       nutrition: fields[3] as Nutrition?,
       foods: (fields[4] as List?)?.cast<Food>(),
-      error: fields[8] as String?,
+      errors: (fields[10] as List?)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Meal obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,10 +48,12 @@ class MealAdapter extends TypeAdapter<Meal> {
       ..write(obj.createdAt)
       ..writeByte(7)
       ..write(obj.isLoading)
-      ..writeByte(8)
-      ..write(obj.error)
       ..writeByte(9)
-      ..write(obj.emoji);
+      ..write(obj.emoji)
+      ..writeByte(10)
+      ..write(obj.errors)
+      ..writeByte(11)
+      ..write(obj.color);
   }
 
   @override
@@ -143,6 +146,38 @@ class FoodAdapter extends TypeAdapter<Food> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is FoodAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ColorAdapter extends TypeAdapter<Color> {
+  @override
+  final typeId = 3;
+
+  @override
+  Color read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Color((fields[0] as num).toInt());
+  }
+
+  @override
+  void write(BinaryWriter writer, Color obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.value);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ColorAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

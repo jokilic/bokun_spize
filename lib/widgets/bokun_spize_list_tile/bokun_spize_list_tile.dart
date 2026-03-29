@@ -94,21 +94,21 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
   @override
   Widget build(BuildContext context) {
     final isLoading = widget.meal.isLoading;
-    final hasError = widget.meal.error != null;
+    final hasError = widget.meal.errors?.isNotEmpty ?? false;
 
     final titleText = isLoading ? widget.meal.originalText : widget.meal.name ?? 'Dogodila se greška';
 
     final leadingColor = isLoading
         ? Colors.transparent
-        : !hasError
-        ? context.colors.buttonPrimary
-        : context.colors.delete;
+        : hasError
+        ? context.colors.delete
+        : widget.meal.color ?? context.colors.fat;
 
     final leadingBorderColor = isLoading
         ? context.colors.text
-        : !hasError
-        ? context.colors.buttonPrimary
-        : context.colors.delete;
+        : hasError
+        ? context.colors.delete
+        : widget.meal.color ?? context.colors.fat;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -189,7 +189,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                         ),
                         child: SizedBox.expand(
                           key: ValueKey(
-                            'leading-${widget.meal.isLoading}-${widget.meal.error}-${widget.meal.emoji}',
+                            'leading-${widget.meal.isLoading}-${widget.meal.errors}-${widget.meal.emoji}',
                           ),
                           child: getLeadingWidget(
                             isLoading: isLoading,
@@ -244,7 +244,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                 child: Text(
                                   titleText,
                                   key: ValueKey(
-                                    'title-$expanded-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.error}',
+                                    'title-$expanded-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.errors}',
                                   ),
                                   style: context.textStyles.homeMealTitle,
                                   maxLines: expanded || isLoading ? null : 1,
@@ -297,19 +297,48 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                     children: [
                                       const SizedBox(height: 6),
 
-                                      ///
-                                      /// ERROR
-                                      ///
                                       if (hasError) ...[
+                                        ///
+                                        /// ERRORS TITLE
+                                        ///
                                         Text(
                                           'Greška',
                                           style: context.textStyles.homeTitleBold,
                                         ),
                                         const SizedBox(height: 4),
 
-                                        Text(
-                                          widget.meal.error ?? '--',
-                                          style: context.textStyles.homeMealNote,
+                                        ///
+                                        /// ERRORS
+                                        ///
+                                        ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          itemCount: widget.meal.errors!.length,
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemBuilder: (_, index) {
+                                            final error = widget.meal.errors![index];
+
+                                            return Row(
+                                              children: [
+                                                PhosphorIcon(
+                                                  PhosphorIcons.dotOutline(
+                                                    PhosphorIconsStyle.duotone,
+                                                  ),
+                                                  color: context.colors.text,
+                                                  duotoneSecondaryColor: context.colors.buttonPrimary,
+                                                  size: 24,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    error,
+                                                    style: context.textStyles.homeMealKcal,
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
                                         ),
                                         const SizedBox(height: 12),
                                       ],
@@ -494,7 +523,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                             ),
                             child: Text.rich(
                               key: ValueKey(
-                                'trailing-${widget.meal.nutrition?.calories.toStringAsFixed(0) ?? ''}-${widget.meal.isLoading}-${widget.meal.error}',
+                                'trailing-${widget.meal.nutrition?.calories.toStringAsFixed(0) ?? ''}-${widget.meal.isLoading}-${widget.meal.errors}',
                               ),
                               TextSpan(
                                 text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',

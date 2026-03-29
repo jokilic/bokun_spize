@@ -41,6 +41,7 @@ JSON structure to follow strictly:
 {
   "name": "string",
   "emoji": "string",
+  "color": "string",
   "nutrition": {
     "calories": number,
     "protein": number,
@@ -65,6 +66,7 @@ JSON structure to follow strictly:
     propertyOrdering: [
       'name',
       'emoji',
+      'color',
       'nutrition',
       'foods',
     ],
@@ -78,6 +80,12 @@ JSON structure to follow strictly:
       'emoji': Schema.string(
         title: 'Meal emoji',
         description: 'only one emoji best describing meal',
+        format: 'string',
+        nullable: false,
+      ),
+      'color': Schema.string(
+        title: 'Meal color',
+        description: 'color best describing meal in hex format (e.g. #FF0000)',
         format: 'string',
         nullable: false,
       ),
@@ -195,7 +203,12 @@ JSON structure to follow strictly:
   );
 
   /// Triggers `AI` with `prompt` and all necessary data
-  Future<String?> triggerAI({required String prompt}) async {
+  Future<({String? aiResult, List<String>? errors})> triggerAI({
+    required String prompt,
+  }) async {
+    /// Create `errors` list
+    final errors = <String>[];
+
     /// Generate `contents` to pass into `AI`
     final contents = [
       /// Prompt
@@ -206,25 +219,31 @@ JSON structure to follow strictly:
     if (value.generativeModel != null) {
       try {
         final response = await value.generativeModel!.generateContent(contents);
-        return response.text;
+        return (aiResult: response.text, errors: null);
       } catch (e) {
         final error = 'generativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
         logger.e(error);
+        errors.add(error);
       }
+    } else {
+      errors.add('generativeModel == null');
     }
 
     /// Fallback to `alternativeGenerativeModel`
     if (value.alternativeGenerativeModel != null) {
       try {
         final response = await value.alternativeGenerativeModel!.generateContent(contents);
-        return response.text;
+        return (aiResult: response.text, errors: null);
       } catch (e) {
         final error = 'alternativeGenerativeModel -> ${e.toString().contains('quota') ? 'quota exceeded, try again later' : e.toString()}';
         logger.e(error);
+        errors.add(error);
       }
+    } else {
+      errors.add('alternativeGenerativeModel == null');
     }
 
-    return null;
+    return (aiResult: null, errors: errors);
   }
 
   /// Updates state
