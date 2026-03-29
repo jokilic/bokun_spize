@@ -43,6 +43,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     required String? emoji,
   }) {
     if (isLoading) {
+      // TODO: I want this spinner to rotate like a loading spinner
       return PhosphorIcon(
         PhosphorIcons.spinnerGap(
           PhosphorIconsStyle.duotone,
@@ -243,41 +244,41 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 4),
 
                               ///
                               /// TIME
                               ///
-                              if (!isLoading) ...[
-                                const SizedBox(height: 4),
-                                AnimatedCrossFade(
-                                  alignment: Alignment.centerLeft,
-                                  duration: BokunSpizeDurations.animation,
-                                  firstCurve: Curves.easeIn,
-                                  secondCurve: Curves.easeIn,
-                                  sizeCurve: Curves.easeIn,
-                                  crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                  firstChild: Text(
-                                    DateFormat(
-                                      'HH:mm',
-                                      'hr',
-                                    ).format(
-                                      widget.meal.createdAt,
-                                    ),
-                                    style: context.textStyles.homeMealTime,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                              AnimatedCrossFade(
+                                alignment: Alignment.centerLeft,
+                                duration: BokunSpizeDurations.animation,
+                                firstCurve: Curves.easeIn,
+                                secondCurve: Curves.easeIn,
+                                sizeCurve: Curves.easeIn,
+                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                firstChild: Text(
+                                  DateFormat(
+                                    'HH:mm',
+                                    'hr',
+                                  ).format(
+                                    widget.meal.createdAt,
                                   ),
-                                  secondChild: Text(
-                                    DateFormat(
-                                      'HH:mm',
-                                      'hr',
-                                    ).format(
-                                      widget.meal.createdAt,
-                                    ),
-                                    style: context.textStyles.homeMealTime,
-                                  ),
+                                  style: context.textStyles.homeMealTime,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                secondChild: Text(
+                                  DateFormat(
+                                    'HH:mm',
+                                    'hr',
+                                  ).format(
+                                    widget.meal.createdAt,
+                                  ),
+                                  style: context.textStyles.homeMealTime,
+                                ),
+                              ),
 
+                              if (!isLoading) ...[
                                 ///
                                 /// ADDITIONAL INFO
                                 ///

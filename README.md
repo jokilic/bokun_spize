@@ -5,8 +5,10 @@
 - [ ] Voice recording doesn't seem to work on Android
 - [ ] Show proper `error` in [BokunSpizeListTile]
 - [ ] Show `time` in [BokunSpizeListTile] when `isLoading`
-- [ ] Update background color of icon & splash
+- [ ] Animate change between `isLoading` and `Meal` or `error`
+- [ ] Animate size of [BokunSpizeListTile]
 
+- [x] Update background color of icon & splash
 - [x] Colors of `Hranjive vrijednosti`
 - [x] Add missing values when expanding [BokunSpizeListTile]
 - [x] Add icon & splash screen

@@ -241,9 +241,10 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         );
 
         /// Update `loadingMeal` with `successMeal`
-        await hive.updateMeal(
-          newMeal: successMeal,
-        );
+        // TODO: Restore
+        // await hive.updateMeal(
+        //   newMeal: successMeal,
+        // );
       }
       /// Result is not successfully parsed
       else {
