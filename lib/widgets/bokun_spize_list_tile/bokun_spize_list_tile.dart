@@ -91,8 +91,6 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     );
   }
 
-  // TODO: Can we use Animate widget with Fade animation on leading widget, title, subtitle and trailing widget, so those values fade when they change?
-
   @override
   Widget build(BuildContext context) {
     final isLoading = widget.meal.isLoading;
@@ -167,7 +165,9 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                     ///
                     /// LEADING
                     ///
-                    Container(
+                    AnimatedContainer(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeIn,
                       height: 32,
                       width: 32,
                       alignment: Alignment.center,
@@ -179,10 +179,24 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                           width: 1.5,
                         ),
                       ),
-                      child: getLeadingWidget(
-                        isLoading: isLoading,
-                        hasError: hasError,
-                        emoji: widget.meal.emoji,
+                      child: AnimatedSwitcher(
+                        duration: BokunSpizeDurations.animation,
+                        switchInCurve: Curves.easeIn,
+                        switchOutCurve: Curves.easeIn,
+                        transitionBuilder: (child, animation) => FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                        child: SizedBox.expand(
+                          key: ValueKey(
+                            'leading-${widget.meal.isLoading}-${widget.meal.error}-${widget.meal.emoji}',
+                          ),
+                          child: getLeadingWidget(
+                            isLoading: isLoading,
+                            hasError: hasError,
+                            emoji: widget.meal.emoji,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -226,15 +240,39 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                 secondCurve: Curves.easeIn,
                                 sizeCurve: Curves.easeIn,
                                 crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: Text(
-                                  titleText,
-                                  style: context.textStyles.homeMealTitle,
-                                  maxLines: isLoading ? null : 1,
-                                  overflow: isLoading ? TextOverflow.visible : TextOverflow.ellipsis,
+                                firstChild: AnimatedSwitcher(
+                                  duration: BokunSpizeDurations.animation,
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: (child, animation) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                  child: Text(
+                                    titleText,
+                                    key: ValueKey(
+                                      'title-collapsed-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.error}',
+                                    ),
+                                    style: context.textStyles.homeMealTitle,
+                                    maxLines: isLoading ? null : 1,
+                                    overflow: isLoading ? TextOverflow.visible : TextOverflow.ellipsis,
+                                  ),
                                 ),
-                                secondChild: Text(
-                                  titleText,
-                                  style: context.textStyles.homeMealTitle,
+                                secondChild: AnimatedSwitcher(
+                                  duration: BokunSpizeDurations.animation,
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: (child, animation) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                  child: Text(
+                                    titleText,
+                                    key: ValueKey(
+                                      'title-expanded-${widget.meal.isLoading}-${widget.meal.name}-${widget.meal.originalText}-${widget.meal.error}',
+                                    ),
+                                    style: context.textStyles.homeMealTitle,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -249,25 +287,49 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                 secondCurve: Curves.easeIn,
                                 sizeCurve: Curves.easeIn,
                                 crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: Text(
-                                  DateFormat(
-                                    'HH:mm',
-                                    'hr',
-                                  ).format(
-                                    widget.meal.createdAt,
+                                firstChild: AnimatedSwitcher(
+                                  duration: BokunSpizeDurations.animation,
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: (child, animation) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
                                   ),
-                                  style: context.textStyles.homeMealTime,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                  child: Text(
+                                    DateFormat(
+                                      'HH:mm',
+                                      'hr',
+                                    ).format(
+                                      widget.meal.createdAt,
+                                    ),
+                                    key: ValueKey(
+                                      'time-collapsed-${widget.meal.createdAt.toIso8601String()}',
+                                    ),
+                                    style: context.textStyles.homeMealTime,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                                secondChild: Text(
-                                  DateFormat(
-                                    'HH:mm',
-                                    'hr',
-                                  ).format(
-                                    widget.meal.createdAt,
+                                secondChild: AnimatedSwitcher(
+                                  duration: BokunSpizeDurations.animation,
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: (child, animation) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
                                   ),
-                                  style: context.textStyles.homeMealTime,
+                                  child: Text(
+                                    DateFormat(
+                                      'HH:mm',
+                                      'hr',
+                                    ).format(
+                                      widget.meal.createdAt,
+                                    ),
+                                    key: ValueKey(
+                                      'time-expanded-${widget.meal.createdAt.toIso8601String()}',
+                                    ),
+                                    style: context.textStyles.homeMealTime,
+                                  ),
                                 ),
                               ),
 
@@ -475,19 +537,31 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 2),
-                          Text.rich(
-                            TextSpan(
-                              text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',
-                              children: [
-                                TextSpan(
-                                  text: 'kcal',
-                                  style: context.textStyles.homeMealKcal,
-                                ),
-                              ],
+                          AnimatedSwitcher(
+                            duration: BokunSpizeDurations.animation,
+                            switchInCurve: Curves.easeIn,
+                            switchOutCurve: Curves.easeIn,
+                            transitionBuilder: (child, animation) => FadeTransition(
+                              opacity: animation,
+                              child: child,
                             ),
-                            style: context.textStyles.homeMealValue,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            child: Text.rich(
+                              key: ValueKey(
+                                'trailing-${widget.meal.nutrition?.calories?.toStringAsFixed(0) ?? ''}-${widget.meal.isLoading}-${widget.meal.error}',
+                              ),
+                              TextSpan(
+                                text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',
+                                children: [
+                                  TextSpan(
+                                    text: 'kcal',
+                                    style: context.textStyles.homeMealKcal,
+                                  ),
+                                ],
+                              ),
+                              style: context.textStyles.homeMealValue,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
