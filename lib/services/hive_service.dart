@@ -37,6 +37,8 @@ class HiveService extends ValueNotifier<List<Meal>> implements Disposable {
 
     meals = await Hive.openBox<Meal>('mealsBox');
 
+    await deleteLoadingMeals();
+
     updateState();
   }
 
@@ -53,6 +55,19 @@ class HiveService extends ValueNotifier<List<Meal>> implements Disposable {
   ///
   /// METHODS
   ///
+
+  /// Deletes all `meals` with `isLoading` in [Hive]
+  Future<void> deleteLoadingMeals() async {
+    final staleLoadingMealKeys = meals.keys
+        .where(
+          (key) => meals.get(key)?.isLoading ?? false,
+        )
+        .toList();
+
+    if (staleLoadingMealKeys.isNotEmpty) {
+      await meals.deleteAll(staleLoadingMealKeys);
+    }
+  }
 
   /// Called to get `meals` from [Hive]
   List<Meal> getMeals() => meals.values.toList();

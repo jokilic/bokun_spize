@@ -4,8 +4,10 @@
 - [ ] Add icon & splash screen
 - [ ] Split `meals` into days, like in [Troško]
 - [ ] Add `error` for each [Meal]
-- [ ] Add `Be explicit` text in [Sheet]
-- [ ] When starting app, if there's any [Meal] with `isLoading` in [Hive], remove it
+- [ ] Changing from `isLoading` to proper [Meal] or `error` should be animated
+- [x] Place speech along with logic and permissions into [Sheet]
+- [x] When starting app, if there's any [Meal] with `isLoading` in [Hive], remove it
+- [x] Add `Be explicit` text in [Sheet]
 - [x] Cleanup unnecessary code
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)

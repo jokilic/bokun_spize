@@ -25,29 +25,19 @@ class AIService extends ValueNotifier<({GenerativeModel? generativeModel, Genera
   ///
 
   final systemInstruction = '''
-Return ONLY valid JSON for a single Meal object.
-If the meal cannot be determined, return ONLY null.
-
-Do NOT include markdown, code fences, or explanations.
-Do NOT return JSON as a string.
-Nested fields must be proper JSON objects/arrays.
-
 You will receive a sentence describing what the user ate.
-Extract foods and estimate nutrition.
+Estimate nutrition and extract foods.
 
-Language:
+Two values can be returned:
+1. ONLY valid JSON for a single Meal object
+2. ONLY null if the meal cannot be determined
+
 Use the same language as the user (English or Croatian).
 
-Rules:
-- nutrition must contain numeric values: calories, protein, carbs, fat
-- foods must be an array of objects: name, quantity, unit
-- quantity must be a number
-- All nutrition values must be numbers, not strings
-- Units examples: piece, g, ml, tbsp, tsp, slice
-- If quantity is unclear, make a reasonable estimate
-- If nutrition is unknown, estimate based on typical values
+If quantity is unclear, make a reasonable estimate
+If nutrition is unknown, estimate based on typical values
 
-Meal JSON structure:
+JSON structure to follow strictly:
 {
   "name": "string",
   "emoji": "string",
@@ -69,14 +59,32 @@ Meal JSON structure:
 
   /// `JSON` schema which the AI should return
   final responseSchema = Schema.object(
+    title: 'Meal',
+    description: 'Meal JSON schema',
+    nullable: true,
     propertyOrdering: [
       'name',
+      'emoji',
       'nutrition',
       'foods',
     ],
     properties: {
-      'name': Schema.string(),
+      'name': Schema.string(
+        title: 'Meal name',
+        description: 'name best describing meal from user input',
+        format: 'string',
+        nullable: false,
+      ),
+      'emoji': Schema.string(
+        title: 'Meal emoji',
+        description: 'only one emoji best describing meal',
+        format: 'string',
+        nullable: false,
+      ),
       'nutrition': Schema.object(
+        title: 'Nutrition',
+        description: 'Nutrition of the meal',
+        nullable: false,
         propertyOrdering: [
           'calories',
           'protein',
@@ -84,13 +92,36 @@ Meal JSON structure:
           'fat',
         ],
         properties: {
-          'calories': Schema.number(),
-          'protein': Schema.number(),
-          'carbs': Schema.number(),
-          'fat': Schema.number(),
+          'calories': Schema.number(
+            title: 'Calories',
+            description: 'calories in kcal',
+            format: 'number',
+            nullable: false,
+          ),
+          'protein': Schema.number(
+            title: 'Protein',
+            description: 'protein in g',
+            format: 'number',
+            nullable: false,
+          ),
+          'carbs': Schema.number(
+            title: 'Carbs',
+            description: 'carbs in g',
+            format: 'number',
+            nullable: false,
+          ),
+          'fat': Schema.number(
+            title: 'Fat',
+            description: 'fat in g',
+            format: 'number',
+            nullable: false,
+          ),
         },
       ),
       'foods': Schema.array(
+        title: 'Foods',
+        description: 'Foods in the meal',
+        nullable: false,
         items: Schema.object(
           propertyOrdering: [
             'name',
@@ -98,9 +129,24 @@ Meal JSON structure:
             'unit',
           ],
           properties: {
-            'name': Schema.string(),
-            'quantity': Schema.number(),
-            'unit': Schema.string(),
+            'name': Schema.string(
+              title: 'Food name',
+              description: 'name of food',
+              format: 'string',
+              nullable: false,
+            ),
+            'quantity': Schema.number(
+              title: 'Food quantity',
+              description: 'quantity of food',
+              format: 'string',
+              nullable: false,
+            ),
+            'unit': Schema.string(
+              title: 'Food unit',
+              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...)',
+              format: 'string',
+              nullable: false,
+            ),
           },
         ),
       ),

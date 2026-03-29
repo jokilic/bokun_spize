@@ -37,6 +37,12 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   }) : super((speechToTextWords: null));
 
   ///
+  /// VARIABLES
+  ///
+
+  late final textEditingController = TextEditingController();
+
+  ///
   /// DISPOSE
   ///
 
@@ -45,6 +51,8 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     speechToText.updateState(
       isListening: false,
     );
+
+    textEditingController.dispose();
   }
 
   ///
@@ -67,7 +75,9 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      builder: (context) => BokunSpizeMealSheet(),
+      builder: (context) => BokunSpizeMealSheet(
+        textEditingController: textEditingController,
+      ),
     );
 
     /// User entered words
@@ -83,6 +93,9 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   Future<void> onSpeechToTextPressed({
     required String locale,
   }) async {
+    /// Save current [TextEditingController] text
+    final currentText = textEditingController.text;
+
     /// [SpeechToText] was disabled, start listening
     if (!speechToText.value.isListening) {
       /// Reset `state`
@@ -97,8 +110,14 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
             speechToTextWords: words,
           );
 
-          /// Update [TextEditingController] with `words`
-          // TODO
+          logger.t('Words -> $words');
+
+          /// Add new `words` to [TextEditingController]
+          if (currentText.isNotEmpty) {
+            textEditingController.text = '$currentText $words';
+          } else {
+            textEditingController.text = words;
+          }
         },
         locale: locale,
       );
@@ -109,9 +128,22 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     }
   }
 
+  /// Triggered when dismissing [BokunSpizeMealSheet]
+  Future<void> onDismissSheet() async {
+    /// Stop listener
+    if (speechToText.value.isListening) {
+      await speechToText.stopListening();
+    }
+
+    /// Clear [TextEditingController]
+    textEditingController.clear();
+  }
+
   /// Triggers AI with `prompt`
   Future<void> triggerAI({required String prompt}) async {
-    if (prompt.isEmpty) {
+    final trimmedPrompt = prompt.trim();
+
+    if (trimmedPrompt.isEmpty) {
       return;
     }
 
@@ -119,7 +151,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     final loadingMeal = Meal(
       id: const Uuid().v1(),
       createdAt: DateTime.now(),
-      originalText: prompt,
+      originalText: trimmedPrompt.trim(),
       isLoading: true,
     );
 
@@ -130,7 +162,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
 
     /// Trigger `AI`
     final result = await ai.triggerAI(
-      prompt: prompt,
+      prompt: trimmedPrompt,
     );
 
     logger.d('AI Result -> $result');
@@ -141,7 +173,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         aiResult: result!,
         id: loadingMeal.id,
         createdAt: loadingMeal.createdAt,
-        originalText: prompt,
+        originalText: trimmedPrompt,
       );
 
       /// Result is successfully parsed
@@ -149,6 +181,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         /// Create `finalMeal` with `meal` data
         final finalMeal = loadingMeal.copyWith(
           name: meal.name,
+          emoji: meal.emoji,
           nutrition: meal.nutrition,
           foods: meal.foods,
           isLoading: false,

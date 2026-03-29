@@ -7,9 +7,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../constants/durations.dart';
 import '../models/meal.dart';
-import '../theme/colors.dart';
 import '../theme/extensions.dart';
-import '../util/color.dart';
 
 class BokunSpizeListTile extends StatefulWidget {
   final Function() onLongPressed;
@@ -107,17 +105,17 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                           width: 1.5,
                         ),
                       ),
-                      child: PhosphorIcon(
-                        PhosphorIcons.bowlFood(
-                          PhosphorIconsStyle.duotone,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            widget.meal.emoji ?? '--',
+                            style: context.textStyles.homeMealTitle,
+                            maxLines: 1,
+                            softWrap: false,
+                          ),
                         ),
-                        color: getWhiteOrBlackColor(
-                          backgroundColor: context.colors.buttonPrimary,
-                          whiteColor: BokunSpizeColors.whiteBackground,
-                          blackColor: BokunSpizeColors.black,
-                        ),
-                        duotoneSecondaryColor: context.colors.buttonPrimary,
-                        size: 16,
                       ),
                     ),
                     const SizedBox(width: 12),

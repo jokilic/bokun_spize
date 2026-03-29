@@ -48,10 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeController = getIt.get<HomeController>();
     final hiveService = getIt.get<HiveService>();
 
-    // TODO: This should go in the sheet
-    final speechToTextState = watchIt<SpeechToTextService>().value;
-    final available = speechToTextState.available;
-
     final meals = watchIt<HiveService>().value;
 
     return Scaffold(
@@ -135,15 +131,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SizedBox(
           width: double.infinity,
           child: FilledButton(
-            onPressed: available
-                ? () async {
-                    unawaited(
-                      HapticFeedback.lightImpact(),
-                    );
+            onPressed: () async {
+              unawaited(
+                HapticFeedback.lightImpact(),
+              );
 
-                    await homeController.onAddPressed(context);
-                  }
-                : null,
+              await homeController.onAddPressed(context);
+            },
             style: FilledButton.styleFrom(
               padding: EdgeInsets.fromLTRB(
                 24,
