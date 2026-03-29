@@ -5,12 +5,9 @@ abstract class BokunSpizeColors {
   /// LIGHT THEME
   ///
 
-  static const black = Color(0xFF121C2B);
-  static const whiteBackground = Color(0xFFF9F9FF);
-  static const buttonBackground = Color(0xFFE4E6ED);
-  static const whiteScaffold = Color(0xFFEDEDF4);
-  static const disabledText = Color(0xFF2D2F34);
-  static const disabledBackground = Color(0xFFE4E6ED);
+  static const black = Color(0xFF171717);
+  static const whiteBackground = Color(0xFFE8E8E8);
+  static const whiteScaffold = Color(0xFFDADADA);
 
   ///
   /// PRIMARY COLORS
@@ -18,12 +15,18 @@ abstract class BokunSpizeColors {
 
   static const green = Color(0xFF439775);
   static const red = Color(0xFFE0777D);
+  static const blue = Color(0xFF3DA5D9);
+  static const orange = Color(0xFFDE9151);
+  static const purple = Color(0xFFCBBAED);
 }
 
 class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension> {
   final Color text;
   final Color buttonPrimary;
   final Color delete;
+  final Color protein;
+  final Color carbs;
+  final Color fat;
   final Color listTileBackground;
   final Color buttonBackground;
   final Color scaffoldBackground;
@@ -34,6 +37,9 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     required this.text,
     required this.buttonPrimary,
     required this.delete,
+    required this.protein,
+    required this.carbs,
+    required this.fat,
     required this.listTileBackground,
     required this.buttonBackground,
     required this.scaffoldBackground,
@@ -46,6 +52,9 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     Color? text,
     Color? buttonPrimary,
     Color? delete,
+    Color? protein,
+    Color? carbs,
+    Color? fat,
     Color? listTileBackground,
     Color? buttonBackground,
     Color? filledButtonBackground,
@@ -56,6 +65,9 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     text: text ?? this.text,
     buttonPrimary: buttonPrimary ?? this.buttonPrimary,
     delete: delete ?? this.delete,
+    protein: protein ?? this.protein,
+    carbs: carbs ?? this.carbs,
+    fat: fat ?? this.fat,
     listTileBackground: listTileBackground ?? this.listTileBackground,
     buttonBackground: buttonBackground ?? this.buttonBackground,
     scaffoldBackground: scaffoldBackground ?? this.scaffoldBackground,
@@ -76,6 +88,9 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
       text: Color.lerp(text, other.text, t)!,
       buttonPrimary: Color.lerp(buttonPrimary, other.buttonPrimary, t)!,
       delete: Color.lerp(delete, other.delete, t)!,
+      protein: Color.lerp(protein, other.protein, t)!,
+      carbs: Color.lerp(carbs, other.carbs, t)!,
+      fat: Color.lerp(fat, other.fat, t)!,
       listTileBackground: Color.lerp(listTileBackground, other.listTileBackground, t)!,
       buttonBackground: Color.lerp(buttonBackground, other.buttonBackground, t)!,
       scaffoldBackground: Color.lerp(scaffoldBackground, other.scaffoldBackground, t)!,

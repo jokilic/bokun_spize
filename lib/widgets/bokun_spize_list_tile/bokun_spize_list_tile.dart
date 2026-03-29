@@ -6,11 +6,13 @@ import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../constants/durations.dart';
-import '../models/meal.dart';
-import '../theme/colors.dart';
-import '../theme/extensions.dart';
-import '../util/color.dart';
+import '../../constants/durations.dart';
+import '../../models/meal.dart';
+import '../../theme/colors.dart';
+import '../../theme/extensions.dart';
+import '../../util/color.dart';
+import '../../util/formatting.dart';
+import 'bokun_spize_list_tile_nutritional_value.dart';
 
 class BokunSpizeListTile extends StatefulWidget {
   final Function() onLongPressed;
@@ -287,8 +289,160 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                   sizeCurve: Curves.easeIn,
                                   crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                                   firstChild: const SizedBox.shrink(),
-                                  secondChild: const Column(
+                                  secondChild: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 4),
+
+                                      if (!hasError) ...[
+                                        ///
+                                        /// NUTRITION TITLE
+                                        ///
+                                        Text(
+                                          'Hranjive vrijednosti',
+                                          style: context.textStyles.homeTitleBold,
+                                        ),
+                                        const SizedBox(height: 10),
+
+                                        ///
+                                        /// NUTRITION
+                                        ///
+                                        Row(
+                                          spacing: 20,
+                                          children: [
+                                            ///
+                                            /// PROTEIN
+                                            ///
+                                            Expanded(
+                                              child: BokunSpizeListTileNutritionalValue(
+                                                valueText: formatNutritionValue(
+                                                  widget.meal.nutrition?.protein,
+                                                ),
+                                                bottomText: 'bje.',
+                                                backgroundColor: context.colors.protein,
+                                                isLoading: isLoading,
+                                              ),
+                                            ),
+
+                                            ///
+                                            /// CARBS
+                                            ///
+                                            Expanded(
+                                              child: BokunSpizeListTileNutritionalValue(
+                                                valueText: formatNutritionValue(
+                                                  widget.meal.nutrition?.carbs,
+                                                ),
+                                                bottomText: 'uglj.',
+                                                backgroundColor: context.colors.carbs,
+                                                isLoading: isLoading,
+                                              ),
+                                            ),
+
+                                            ///
+                                            /// FATS
+                                            ///
+                                            Expanded(
+                                              child: BokunSpizeListTileNutritionalValue(
+                                                valueText: formatNutritionValue(
+                                                  widget.meal.nutrition?.fat,
+                                                ),
+                                                bottomText: 'mas.',
+                                                backgroundColor: context.colors.fat,
+                                                isLoading: isLoading,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
+                                        if (widget.meal.foods?.isNotEmpty ?? false) ...[
+                                          const SizedBox(height: 16),
+
+                                          ///
+                                          /// FOODS TITLE
+                                          ///
+                                          Text(
+                                            'Hrana',
+                                            style: context.textStyles.homeTitleBold,
+                                          ),
+                                          const SizedBox(height: 2),
+
+                                          ///
+                                          /// FOODS
+                                          ///
+                                          ListView.builder(
+                                            padding: EdgeInsets.zero,
+                                            itemCount: widget.meal.foods!.length,
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemBuilder: (_, index) {
+                                              final food = widget.meal.foods![index];
+
+                                              final quantity = formatNutritionValue(
+                                                food.quantity,
+                                              );
+
+                                              return Row(
+                                                children: [
+                                                  PhosphorIcon(
+                                                    PhosphorIcons.dotOutline(
+                                                      PhosphorIconsStyle.duotone,
+                                                    ),
+                                                    color: context.colors.text,
+                                                    duotoneSecondaryColor: context.colors.buttonPrimary,
+                                                    size: 24,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text.rich(
+                                                      TextSpan(
+                                                        text: capitalizeFirstLetter(
+                                                          food.name,
+                                                        ),
+                                                        children: [
+                                                          TextSpan(
+                                                            text: ' ',
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
+                                                          TextSpan(
+                                                            text: quantity,
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
+                                                          TextSpan(
+                                                            text: ' ',
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
+                                                          TextSpan(
+                                                            text: food.unit,
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      style: context.textStyles.homeMealKcal,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                        const SizedBox(height: 12),
+                                      ],
+
+                                      ///
+                                      /// ORIGINAL TEXT TITLE
+                                      ///
+                                      Text(
+                                        'Opis',
+                                        style: context.textStyles.homeTitleBold,
+                                      ),
+                                      const SizedBox(height: 4),
+
+                                      Text(
+                                        widget.meal.originalText,
+                                        style: context.textStyles.homeMealNote,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -300,15 +454,18 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                       ///
                       /// TRAILING
                       ///
-                      if (!isLoading && !hasError) ...[
-                        const SizedBox(width: 12),
-                        Column(
+                      const SizedBox(width: 12),
+                      AnimatedOpacity(
+                        opacity: (!isLoading && !hasError) ? 1 : 0,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeIn,
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 2),
                             Text.rich(
                               TextSpan(
-                                text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '--',
+                                text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',
                                 children: [
                                   TextSpan(
                                     text: 'kcal',
@@ -322,7 +479,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ],
                   ),
                 ),

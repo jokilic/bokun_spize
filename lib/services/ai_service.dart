@@ -143,7 +143,7 @@ JSON structure to follow strictly:
             ),
             'unit': Schema.string(
               title: 'Food unit',
-              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...)',
+              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...), use language which is used in user input (English or Croatian)',
               format: 'string',
               nullable: false,
             ),

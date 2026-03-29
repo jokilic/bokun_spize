@@ -127,7 +127,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                           await speechToTextService.loadSpeechToText();
                         }
                       },
-                      highlightColor: context.colors.buttonBackground,
+                      highlightColor: context.colors.listTileBackground,
                       borderRadius: BorderRadius.circular(8),
                       child: AnimatedContainer(
                         decoration: BoxDecoration(
@@ -216,7 +216,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                       whiteColor: BokunSpizeColors.whiteBackground,
                       blackColor: BokunSpizeColors.black,
                     ),
-                    overlayColor: context.colors.buttonBackground,
+                    overlayColor: context.colors.listTileBackground,
                     disabledBackgroundColor: context.colors.disabledBackground,
                     disabledForegroundColor: context.colors.disabledText,
                   ),

@@ -74,11 +74,14 @@ class BokunSpizeTheme {
     text: BokunSpizeColors.black,
     buttonPrimary: primaryColor ?? BokunSpizeColors.green,
     delete: BokunSpizeColors.red,
+    protein: BokunSpizeColors.blue,
+    carbs: BokunSpizeColors.orange,
+    fat: BokunSpizeColors.purple,
     listTileBackground: BokunSpizeColors.whiteBackground,
-    buttonBackground: BokunSpizeColors.buttonBackground,
+    buttonBackground: BokunSpizeColors.whiteBackground,
     scaffoldBackground: BokunSpizeColors.whiteScaffold,
-    disabledText: BokunSpizeColors.disabledText,
-    disabledBackground: BokunSpizeColors.disabledBackground,
+    disabledText: BokunSpizeColors.black,
+    disabledBackground: BokunSpizeColors.whiteBackground,
   );
 
   static BokunSpizeTextThemesExtension getLightTextTheme({

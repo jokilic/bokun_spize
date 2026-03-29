@@ -181,6 +181,16 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
           quantity: 2,
           unit: 'piece',
         ),
+        Food(
+          name: 'kruh',
+          quantity: 1,
+          unit: 'piece',
+        ),
+        Food(
+          name: 'majoneza',
+          quantity: 0.4,
+          unit: 'gram',
+        ),
       ],
       createdAt: DateTime.now(),
       originalText: 'This is my original text',

@@ -1,10 +1,11 @@
 ### To-Do
 
-- [ ] Add missing values when expanding [BokunSpizeListTile]
 - [ ] Add date & time pickers in [BokunSpizeListTile]
 - [ ] Long-pressing [BokunSpizeListTile] will open a bottom sheet to edit or delete the meal (maybe with grayed-out [TextField])
 - [ ] Voice recording doesn't seem to work on Android
 
+- [x] Colors of `Hranjive vrijednosti`
+- [x] Add missing values when expanding [BokunSpizeListTile]
 - [x] Add icon & splash screen
 - [x] Finish `Readme.md`
 - [x] Split `meals` into days, like in [Troško]
