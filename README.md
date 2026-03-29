@@ -3,9 +3,9 @@
 - [ ] Finish `Readme.md`
 - [ ] Add icon & splash screen
 - [ ] Split `meals` into days, like in [Troško]
-- [ ] Changing from `isLoading` to proper [Meal] or `error` should be animated
 - [ ] Add missing values when expanding [BokunSpizeListTile]
 
+- [x] Changing from `isLoading` to proper [Meal] or `error` should be animated
 - [x] Add `error` for each [Meal]
 - [x] Place speech along with logic and permissions into [Sheet]
 - [x] When starting app, if there's any [Meal] with `isLoading` in [Hive], remove it

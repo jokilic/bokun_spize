@@ -34,254 +34,304 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     () => expanded = !expanded,
   );
 
-  @override
-  Widget build(BuildContext context) => AnimatedSize(
-    alignment: Alignment.topCenter,
-    duration: BokunSpizeDurations.animation,
-    curve: Curves.easeIn,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 1,
+  Widget getLeadingWidget({
+    required bool isLoading,
+    required bool hasError,
+    required String? emoji,
+  }) {
+    if (isLoading) {
+      return PhosphorIcon(
+        PhosphorIcons.spinnerGap(
+          PhosphorIconsStyle.duotone,
+        ),
+        color: context.colors.text,
+        duotoneSecondaryColor: context.colors.text,
+        size: 20,
+      );
+    }
+
+    if (hasError) {
+      return PhosphorIcon(
+        PhosphorIcons.exclamationMark(
+          PhosphorIconsStyle.duotone,
+        ),
+        color: getWhiteOrBlackColor(
+          backgroundColor: context.colors.delete,
+          whiteColor: BokunSpizeColors.whiteBackground,
+          blackColor: BokunSpizeColors.black,
+        ),
+        duotoneSecondaryColor: context.colors.delete,
+        size: 20,
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          widget.meal.emoji ?? '--',
+          style: context.textStyles.homeMealTitle,
+          maxLines: 1,
+          softWrap: false,
+        ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: SwipeActionCell(
-          key: ValueKey(widget.meal),
-          backgroundColor: context.colors.scaffoldBackground,
-          openAnimationDuration: 175,
-          closeAnimationDuration: 175,
-          deleteAnimationDuration: 175,
-          openAnimationCurve: Curves.easeIn,
-          closeAnimationCurve: Curves.easeIn,
-          leadingActions: [
-            SwipeAction(
-              onTap: (handler) async {
-                unawaited(
-                  handler(true),
-                );
-                await widget.onDeletePressed();
-              },
-              color: context.colors.delete,
-              backgroundRadius: 16,
-              icon: PhosphorIcon(
-                PhosphorIcons.trash(
-                  PhosphorIconsStyle.duotone,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLoading = widget.meal.isLoading;
+    final hasError = widget.meal.error != null;
+
+    final titleText = isLoading ? widget.meal.originalText : widget.meal.name ?? widget.meal.error ?? '--';
+
+    final leadingColor = isLoading
+        ? Colors.transparent
+        : !hasError
+        ? context.colors.buttonPrimary
+        : context.colors.delete;
+
+    final leadingBorderColor = isLoading
+        ? context.colors.text
+        : !hasError
+        ? context.colors.buttonPrimary
+        : context.colors.delete;
+
+    return AnimatedSize(
+      alignment: Alignment.topCenter,
+      duration: BokunSpizeDurations.animation,
+      curve: Curves.easeIn,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 1,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SwipeActionCell(
+            key: ValueKey(widget.meal),
+            backgroundColor: context.colors.scaffoldBackground,
+            openAnimationDuration: 175,
+            closeAnimationDuration: 175,
+            deleteAnimationDuration: 175,
+            openAnimationCurve: Curves.easeIn,
+            closeAnimationCurve: Curves.easeIn,
+            leadingActions: [
+              SwipeAction(
+                onTap: (handler) async {
+                  unawaited(
+                    handler(true),
+                  );
+                  await widget.onDeletePressed();
+                },
+                color: context.colors.delete,
+                backgroundRadius: 16,
+                icon: PhosphorIcon(
+                  PhosphorIcons.trash(
+                    PhosphorIconsStyle.duotone,
+                  ),
+                  color: context.colors.listTileBackground,
+                  duotoneSecondaryColor: context.colors.buttonPrimary,
+                  size: 28,
                 ),
-                color: context.colors.listTileBackground,
-                duotoneSecondaryColor: context.colors.buttonPrimary,
-                size: 28,
               ),
-            ),
-          ],
-          child: Material(
-            color: context.colors.listTileBackground,
-            borderRadius: BorderRadius.circular(8),
-            child: InkWell(
-              onTap: toggleExpanded,
-              onLongPress: widget.onLongPressed,
-              highlightColor: context.colors.buttonBackground,
+            ],
+            child: Material(
+              color: context.colors.listTileBackground,
               borderRadius: BorderRadius.circular(8),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 18,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ///
-                    /// LEADING
-                    ///
-                    Container(
-                      height: 32,
-                      width: 32,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: widget.meal.isLoading
-                            ? Colors.transparent
-                            : widget.meal.error == null
-                            ? context.colors.buttonPrimary
-                            : context.colors.delete,
-                        border: Border.all(
-                          color: widget.meal.isLoading
-                              ? context.colors.text
-                              : widget.meal.error == null
-                              ? context.colors.buttonPrimary
-                              : context.colors.delete,
-                          width: 1.5,
+              child: InkWell(
+                onTap: toggleExpanded,
+                onLongPress: widget.onLongPressed,
+                highlightColor: context.colors.buttonBackground,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 18,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ///
+                      /// LEADING
+                      ///
+                      Container(
+                        height: 32,
+                        width: 32,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: leadingColor,
+                          border: Border.all(
+                            color: leadingBorderColor,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: getLeadingWidget(
+                          isLoading: isLoading,
+                          hasError: hasError,
+                          emoji: widget.meal.emoji,
                         ),
                       ),
-                      child: widget.meal.isLoading
-                          ? PhosphorIcon(
-                              PhosphorIcons.spinnerGap(
-                                PhosphorIconsStyle.duotone,
+                      const SizedBox(width: 12),
+
+                      ///
+                      /// TITLE & SUBTITLE
+                      ///
+                      Expanded(
+                        child: Animate(
+                          key: ValueKey(isLoading),
+                          onPlay: (controller) => controller.loop(
+                            reverse: true,
+                            min: 0.6,
+                          ),
+                          effects: [
+                            if (isLoading)
+                              const FadeEffect(
+                                curve: Curves.easeIn,
+                                duration: BokunSpizeDurations.loading,
                               ),
-                              color: context.colors.text,
-                              duotoneSecondaryColor: context.colors.text,
-                              size: 20,
-                            )
-                          : widget.meal.error == null
-                          ? Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  widget.meal.emoji ?? '--',
-                                  style: context.textStyles.homeMealTitle,
-                                  maxLines: 1,
-                                  softWrap: false,
+                          ],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 2),
+
+                              ///
+                              /// TITLE
+                              ///
+                              AnimatedCrossFade(
+                                alignment: Alignment.centerLeft,
+                                duration: BokunSpizeDurations.animation,
+                                firstCurve: Curves.easeIn,
+                                secondCurve: Curves.easeIn,
+                                sizeCurve: Curves.easeIn,
+                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                firstChild: AnimatedSwitcher(
+                                  duration: BokunSpizeDurations.animation,
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: (child, animation) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                  child: Text(
+                                    titleText,
+                                    key: ValueKey('collapsed-$titleText'),
+                                    style: context.textStyles.homeMealTitle,
+                                    maxLines: isLoading ? null : 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                secondChild: AnimatedSwitcher(
+                                  duration: BokunSpizeDurations.animation,
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: (child, animation) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                  child: Text(
+                                    titleText,
+                                    key: ValueKey('expanded-$titleText'),
+                                    style: context.textStyles.homeMealTitle,
+                                  ),
                                 ),
                               ),
-                            )
-                          : PhosphorIcon(
-                              PhosphorIcons.exclamationMark(
-                                PhosphorIconsStyle.duotone,
-                              ),
-                              color: getWhiteOrBlackColor(
-                                backgroundColor: context.colors.delete,
-                                whiteColor: BokunSpizeColors.whiteBackground,
-                                blackColor: BokunSpizeColors.black,
-                              ),
-                              duotoneSecondaryColor: context.colors.delete,
-                              size: 20,
-                            ),
-                    ),
-                    const SizedBox(width: 12),
 
-                    ///
-                    /// TITLE & SUBTITLE
-                    ///
-                    Expanded(
-                      child: Animate(
-                        key: ValueKey(widget.meal.isLoading),
-                        onPlay: (controller) => controller.loop(
-                          reverse: true,
-                          min: 0.6,
+                              ///
+                              /// TIME
+                              ///
+                              if (!isLoading) ...[
+                                const SizedBox(height: 4),
+                                AnimatedCrossFade(
+                                  alignment: Alignment.centerLeft,
+                                  duration: BokunSpizeDurations.animation,
+                                  firstCurve: Curves.easeIn,
+                                  secondCurve: Curves.easeIn,
+                                  sizeCurve: Curves.easeIn,
+                                  crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                  firstChild: Text(
+                                    DateFormat(
+                                      'HH:mm',
+                                      'hr',
+                                    ).format(
+                                      widget.meal.createdAt,
+                                    ),
+                                    style: context.textStyles.homeMealTime,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  secondChild: Text(
+                                    DateFormat(
+                                      'HH:mm',
+                                      'hr',
+                                    ).format(
+                                      widget.meal.createdAt,
+                                    ),
+                                    style: context.textStyles.homeMealTime,
+                                  ),
+                                ),
+
+                                ///
+                                /// ADDITIONAL INFO
+                                ///
+                                AnimatedCrossFade(
+                                  alignment: Alignment.centerLeft,
+                                  duration: BokunSpizeDurations.animation,
+                                  firstCurve: Curves.easeIn,
+                                  secondCurve: Curves.easeIn,
+                                  sizeCurve: Curves.easeIn,
+                                  crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                  firstChild: const SizedBox.shrink(),
+                                  secondChild: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                        effects: [
-                          if (widget.meal.isLoading)
-                            const FadeEffect(
-                              curve: Curves.easeIn,
-                              duration: BokunSpizeDurations.loading,
-                            ),
-                        ],
-                        child: Column(
+                      ),
+
+                      ///
+                      /// TRAILING
+                      ///
+                      if (!isLoading && !hasError) ...[
+                        const SizedBox(width: 12),
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 2),
-
-                            ///
-                            /// TITLE
-                            ///
-                            AnimatedCrossFade(
-                              duration: BokunSpizeDurations.animation,
-                              firstCurve: Curves.easeIn,
-                              secondCurve: Curves.easeIn,
-                              sizeCurve: Curves.easeIn,
-                              crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                              firstChild: Text(
-                                widget.meal.isLoading ? widget.meal.originalText : widget.meal.name ?? widget.meal.error ?? '--',
-                                style: context.textStyles.homeMealTitle,
-                                maxLines: widget.meal.isLoading ? null : 1,
-                                overflow: TextOverflow.ellipsis,
+                            Text.rich(
+                              TextSpan(
+                                text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '--',
+                                children: [
+                                  TextSpan(
+                                    text: 'kcal',
+                                    style: context.textStyles.homeMealKcal,
+                                  ),
+                                ],
                               ),
-                              secondChild: Text(
-                                widget.meal.isLoading ? widget.meal.originalText : widget.meal.name ?? widget.meal.error ?? '--',
-                                style: context.textStyles.homeMealTitle,
-                              ),
+                              style: context.textStyles.homeMealValue,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-
-                            ///
-                            /// TIME
-                            ///
-                            if (!widget.meal.isLoading) ...[
-                              const SizedBox(height: 4),
-                              AnimatedCrossFade(
-                                duration: BokunSpizeDurations.animation,
-                                firstCurve: Curves.easeIn,
-                                secondCurve: Curves.easeIn,
-                                sizeCurve: Curves.easeIn,
-                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: Text(
-                                  DateFormat(
-                                    'HH:mm',
-                                    'hr',
-                                  ).format(
-                                    widget.meal.createdAt,
-                                  ),
-                                  style: context.textStyles.homeMealTime,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                secondChild: Text(
-                                  DateFormat(
-                                    'HH:mm',
-                                    'hr',
-                                  ).format(
-                                    widget.meal.createdAt,
-                                  ),
-                                  style: context.textStyles.homeMealTime,
-                                ),
-                              ),
-
-                              ///
-                              /// ADDITIONAL INFO
-                              ///
-                              AnimatedCrossFade(
-                                duration: BokunSpizeDurations.animation,
-                                firstCurve: Curves.easeIn,
-                                secondCurve: Curves.easeIn,
-                                sizeCurve: Curves.easeIn,
-                                crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                firstChild: const SizedBox.shrink(),
-                                secondChild: const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                ),
-                              ),
-                            ],
                           ],
                         ),
-                      ),
-                    ),
-
-                    ///
-                    /// TRAILING
-                    ///
-                    if (!widget.meal.isLoading && widget.meal.error == null) ...[
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 2),
-                          Text.rich(
-                            TextSpan(
-                              text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '--',
-                              children: [
-                                TextSpan(
-                                  text: 'kcal',
-                                  style: context.textStyles.homeMealKcal,
-                                ),
-                              ],
-                            ),
-                            style: context.textStyles.homeMealValue,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
