@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
@@ -71,23 +72,18 @@ class HomeController {
     Meal? passedMeal,
   }) async {
     /// Show [MealScreen] for adding meal
-    final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
+    final result = await showCupertinoModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
-      ),
-      isScrollControlled: true,
+      barrierColor: context.colors.text.withValues(alpha: 0.5),
+      duration: BokunSpizeDurations.animation,
+      animationCurve: Curves.easeIn,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      sheetAnimationStyle: const AnimationStyle(
-        duration: BokunSpizeDurations.animation,
-        reverseDuration: BokunSpizeDurations.animation,
-        curve: Curves.easeIn,
-        reverseCurve: Curves.easeIn,
-      ),
+      topRadius: const Radius.circular(8),
       builder: (context) => MealScreen(
+        scrollController: ModalScrollController.of(context),
         passedMeal: passedMeal,
       ),
     );
