@@ -1,3 +1,5 @@
+- [ ] Check `https://pub.dev/packages/flutter_gemma`
+
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 

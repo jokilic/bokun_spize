@@ -132,6 +132,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
     final description = hasMeal ? 'Ne možeš uređivati opis obroka, jedino datum i vrijeme.' : 'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.';
 
     return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       padding: const EdgeInsets.only(top: 16),
       physics: const BouncingScrollPhysics(),
       child: Column(

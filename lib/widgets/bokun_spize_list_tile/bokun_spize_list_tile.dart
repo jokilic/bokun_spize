@@ -311,6 +311,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                         /// ERRORS
                                         ///
                                         ListView.builder(
+                                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                           padding: EdgeInsets.zero,
                                           itemCount: widget.meal.errors!.length,
                                           shrinkWrap: true,
@@ -419,6 +420,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                           /// FOODS
                                           ///
                                           ListView.separated(
+                                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                             padding: EdgeInsets.zero,
                                             itemCount: widget.meal.foods!.length,
                                             shrinkWrap: true,
@@ -488,15 +490,44 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                         ///
                                                         /// NUTRITION
                                                         ///
-                                                        Text(
-                                                          'P ${formatNutritionValue(
-                                                            food.nutrition.protein,
-                                                          )}g • U ${formatNutritionValue(
-                                                            food.nutrition.carbs,
-                                                          )}g • M ${formatNutritionValue(
-                                                            food.nutrition.fat,
-                                                          )}g',
-                                                          style: context.textStyles.homeMealTime,
+                                                        Text.rich(
+                                                          TextSpan(
+                                                            text:
+                                                                '${formatNutritionValue(
+                                                                  food.nutrition.protein,
+                                                                )}g',
+                                                            children: [
+                                                              TextSpan(
+                                                                text: ' • ',
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text:
+                                                                    '${formatNutritionValue(
+                                                                      food.nutrition.carbs,
+                                                                    )}g',
+                                                                style: context.textStyles.homeMealTime.copyWith(
+                                                                  color: context.colors.carbs,
+                                                                ),
+                                                              ),
+                                                              TextSpan(
+                                                                text: ' • ',
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text:
+                                                                    '${formatNutritionValue(
+                                                                      food.nutrition.fat,
+                                                                    )}g',
+                                                                style: context.textStyles.homeMealTime.copyWith(
+                                                                  color: context.colors.fat,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          style: context.textStyles.homeMealTime.copyWith(
+                                                            color: context.colors.protein,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
