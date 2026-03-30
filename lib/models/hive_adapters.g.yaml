@@ -41,7 +41,7 @@ types:
         index: 3
   Food:
     typeId: 2
-    nextIndex: 3
+    nextIndex: 4
     fields:
       name:
         index: 0
@@ -49,6 +49,8 @@ types:
         index: 1
       unit:
         index: 2
+      calories:
+        index: 3
   Color:
     typeId: 3
     nextIndex: 1

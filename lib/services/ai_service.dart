@@ -49,7 +49,8 @@ JSON structure to follow strictly:
     {
       "name": "string",
       "quantity": number,
-      "unit": "string"
+      "unit": "string",
+      "calories": number,
     }
   ]
 }
@@ -132,6 +133,7 @@ JSON structure to follow strictly:
             'name',
             'quantity',
             'unit',
+            'calories',
           ],
           properties: {
             'name': Schema.string(
@@ -150,6 +152,12 @@ JSON structure to follow strictly:
               title: 'Food unit',
               description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...), use language which is used in user input (English or Croatian)',
               format: 'string',
+              nullable: false,
+            ),
+            'calories': Schema.number(
+              title: 'Food calories',
+              description: 'calories in kcal for a specific food with passed quantity and unit',
+              format: 'number',
               nullable: false,
             ),
           },

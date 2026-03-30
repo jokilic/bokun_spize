@@ -5,7 +5,9 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
+import '../../models/food.dart';
 import '../../models/meal.dart';
+import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/speech_to_text_service.dart';
@@ -197,8 +199,35 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Trigger `AI`
-    final result = await ai.triggerAI(
-      prompt: trimmedPrompt,
+    // final result = await ai.triggerAI(
+    //   prompt: trimmedPrompt,
+    // );
+
+    final result = (
+      aiResult: Meal(
+        id: const Uuid().v1(),
+        createdAt: dateTime,
+        originalText: trimmedPrompt,
+        isLoading: false,
+        name: 'Piletina',
+        emoji: '🐔',
+        color: Colors.deepPurple,
+        nutrition: Nutrition(
+          calories: 100,
+          protein: 10,
+          carbs: 10,
+          fat: 10,
+        ),
+        foods: [
+          Food(
+            name: 'Piletina',
+            quantity: 12,
+            unit: 'komads',
+            calories: 300,
+          ),
+        ],
+      ).toJson(),
+      errors: null,
     );
 
     /// AI did not generate result

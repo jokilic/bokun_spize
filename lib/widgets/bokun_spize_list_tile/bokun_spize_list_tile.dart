@@ -367,7 +367,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                 valueText: formatNutritionValue(
                                                   widget.meal.nutrition?.protein,
                                                 ),
-                                                bottomText: 'bje.',
+                                                bottomText: 'pro.',
                                                 backgroundColor: context.colors.protein,
                                                 isLoading: isLoading,
                                               ),
@@ -404,7 +404,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                         ),
 
                                         if (widget.meal.foods?.isNotEmpty ?? false) ...[
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 10),
 
                                           ///
                                           /// FOODS TITLE
@@ -431,6 +431,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                               );
 
                                               return Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   PhosphorIcon(
                                                     PhosphorIcons.dotOutline(
@@ -463,11 +464,23 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                             text: food.unit,
                                                             style: context.textStyles.homeMealTime,
                                                           ),
+                                                          TextSpan(
+                                                            text: ' • ',
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
+                                                          TextSpan(
+                                                            text: formatNutritionValue(
+                                                              food.calories,
+                                                            ),
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
+                                                          TextSpan(
+                                                            text: 'kcal',
+                                                            style: context.textStyles.homeMealTime,
+                                                          ),
                                                         ],
                                                       ),
                                                       style: context.textStyles.homeMealKcal,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
                                                     ),
                                                   ),
                                                 ],
@@ -475,7 +488,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                             },
                                           ),
                                         ],
-                                        const SizedBox(height: 12),
+                                        const SizedBox(height: 8),
                                       ],
 
                                       ///
