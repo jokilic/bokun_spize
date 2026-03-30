@@ -67,6 +67,9 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       speechToTextWords: null,
     );
 
+    /// Update TextEditingController] with proper text
+    textEditingController.text = passedMeal?.originalText ?? '';
+
     /// Show [BokunSpizeMealSheet] for adding meal
     final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
       context: context,
@@ -85,7 +88,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         reverseCurve: Curves.easeIn,
       ),
       builder: (context) => BokunSpizeMealSheet(
-        textEditingController: textEditingController..text = passedMeal?.originalText ?? '',
+        textEditingController: textEditingController,
         passedMeal: passedMeal,
       ),
     );
