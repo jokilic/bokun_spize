@@ -11,22 +11,31 @@ import 'nutrition.dart';
 class Meal {
   @HiveField(0)
   final String id;
+
   @HiveField(1)
   final String? name;
+
   @HiveField(2)
   final String? emoji;
+
   @HiveField(3)
   final Color? color;
+
   @HiveField(4)
   final DateTime createdAt;
+
   @HiveField(5)
   final Nutrition? nutrition;
+
   @HiveField(6)
   final List<Food>? foods;
+
   @HiveField(7)
   final String originalText;
+
   @HiveField(8)
   final bool isLoading;
+
   @HiveField(9)
   final List<String>? errors;
 

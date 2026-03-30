@@ -6,10 +6,13 @@ import 'nutrition.dart';
 class Food {
   @HiveField(0)
   final String name;
+
   @HiveField(1)
   final double quantity;
+
   @HiveField(2)
   final String unit;
+
   @HiveField(3)
   final Nutrition nutrition;
 

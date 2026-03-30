@@ -5,7 +5,9 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
+import '../../models/food.dart';
 import '../../models/meal.dart';
+import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/speech_to_text_service.dart';
@@ -39,6 +41,35 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   ///
 
   late final textEditingController = TextEditingController();
+
+  final placeholderMeal = Meal(
+    id: const Uuid().v1(),
+    name: 'Some name',
+    emoji: '🥗',
+    color: Colors.blue,
+    createdAt: DateTime.now(),
+    nutrition: Nutrition(
+      calories: 125,
+      protein: 40,
+      carbs: 25,
+      fat: 10,
+    ),
+    foods: [
+      Food(
+        name: 'Some food',
+        quantity: 100,
+        unit: 'g',
+        nutrition: Nutrition(
+          calories: 40,
+          protein: 15,
+          carbs: 35,
+          fat: 5,
+        ),
+      ),
+    ],
+    originalText: 'Some original text',
+    isLoading: false,
+  );
 
   ///
   /// DISPOSE
@@ -200,6 +231,11 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     final result = await ai.triggerAI(
       prompt: trimmedPrompt,
     );
+
+    // final result = (
+    //   aiResult: placeholderMeal.toJson(),
+    //   errors: null,
+    // );
 
     /// AI did not generate result
     if (result.aiResult == null) {

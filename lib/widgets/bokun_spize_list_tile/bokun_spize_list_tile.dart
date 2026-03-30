@@ -448,43 +448,36 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         ///
-                                                        /// TITLE & QUANTITY + UNIT
+                                                        /// TITLE
+                                                        ///
+                                                        Text(
+                                                          capitalizeFirstLetter(
+                                                                food.name,
+                                                              ) ??
+                                                              '--',
+                                                          style: context.textStyles.homeMealKcal,
+                                                        ),
+
+                                                        ///
+                                                        /// QUANTITY AND UNIT
                                                         ///
                                                         Text.rich(
                                                           TextSpan(
-                                                            text: capitalizeFirstLetter(
-                                                              food.name,
-                                                            ),
+                                                            text: '$quantity${food.unit}',
                                                             children: [
                                                               TextSpan(
                                                                 text: ' • ',
                                                                 style: context.textStyles.homeMealTime,
                                                               ),
                                                               TextSpan(
-                                                                text: quantity,
-                                                                style: context.textStyles.homeMealTime,
-                                                              ),
-                                                              TextSpan(
-                                                                text: food.unit,
-                                                                style: context.textStyles.homeMealTime,
-                                                              ),
-                                                              TextSpan(
-                                                                text: ' • ',
-                                                                style: context.textStyles.homeMealTime,
-                                                              ),
-                                                              TextSpan(
-                                                                text: formatNutritionValue(
-                                                                  food.nutrition.calories,
-                                                                ),
-                                                                style: context.textStyles.homeMealTime,
-                                                              ),
-                                                              TextSpan(
-                                                                text: 'kcal',
-                                                                style: context.textStyles.homeMealTime,
+                                                                text:
+                                                                    '${formatNutritionValue(
+                                                                      food.nutrition.calories,
+                                                                    )}kcal',
                                                               ),
                                                             ],
                                                           ),
-                                                          style: context.textStyles.homeMealKcal,
+                                                          style: context.textStyles.homeMealTime,
                                                         ),
 
                                                         ///
