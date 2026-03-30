@@ -4,7 +4,7 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 import 'hive_service.dart';
 
-class AIService extends ValueNotifier<({GenerativeModel? generativeModel, GenerativeModel? alternativeGenerativeModel})> {
+class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -15,11 +15,18 @@ class AIService extends ValueNotifier<({GenerativeModel? generativeModel, Genera
   AIService({
     required this.hive,
     required this.ai,
-  }) : super((generativeModel: null, alternativeGenerativeModel: null));
+  }) : super((generativeModels: []));
 
   ///
   /// VARIABLES
   ///
+
+  final modelNames = [
+    'gemini-3-flash-preview',
+    'gemini-3.1-flash-lite-preview',
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+  ];
 
   final systemInstruction = '''
 You will receive a text describing what the user ate.
@@ -212,25 +219,19 @@ JSON structure to follow strictly:
   /// Initialize `Gemini` backend service
   void initializeGemini() {
     try {
-      final models = [
-        'gemini-3-flash-preview',
-        'gemini-3.1-flash-lite-preview',
-        'gemini-2.5-flash',
-        'gemini-2.5-flash-lite',
-      ];
+      final generativeModels = <GenerativeModel>[];
 
-      // TODO: Go through list and initialize each
-
-      final model = initializeGenerativeModel(
-        model: 'gemini-2.5-flash',
-      );
-      final alternativeModel = initializeGenerativeModel(
-        model: 'gemini-2.5-flash-lite',
-      );
+      /// Keep the order intact so `triggerAI()` can use this list as a fallback chain
+      for (final model in modelNames) {
+        generativeModels.add(
+          initializeGenerativeModel(
+            model: model,
+          ),
+        );
+      }
 
       updateState(
-        generativeModel: model,
-        alternativeGenerativeModel: alternativeModel,
+        generativeModels: generativeModels,
       );
     } catch (e) {
       return;
@@ -260,32 +261,19 @@ JSON structure to follow strictly:
       Content.text(prompt),
     ];
 
-    // TODO: Update this code so it tries models from the list from first to last, instead of this hardcoded two models
-
-    /// Try `generativeModel` first
-    if (value.generativeModel != null) {
-      try {
-        final response = await value.generativeModel!.generateContent(contents);
-        return (aiResult: response.text, errors: null);
-      } catch (e) {
-        final error = e.toString().contains('quota') ? 'Kvota primarnog modela je prekoračena, pokušaj ponovno kasnije' : e.toString();
-        errors.add(error);
-      }
-    } else {
-      errors.add('Primarni model ne postoji');
+    if (value.generativeModels.isEmpty) {
+      errors.add('Nema dostupnih modela');
+      return (aiResult: null, errors: errors);
     }
 
-    /// Fallback to `alternativeGenerativeModel`
-    if (value.alternativeGenerativeModel != null) {
+    for (final model in value.generativeModels) {
       try {
-        final response = await value.alternativeGenerativeModel!.generateContent(contents);
+        final response = await model.generateContent(contents);
         return (aiResult: response.text, errors: null);
       } catch (e) {
-        final error = e.toString().contains('quota') ? 'Kvota sekundarnog modela je prekoračena, pokušaj ponovno kasnije' : e.toString();
+        final error = e.toString().contains('quota') ? 'Kvota modela ${model.model.name} je prekoračena, pokušaj ponovno kasnije' : 'Greška kod modela ${model.model.name}: $e';
         errors.add(error);
       }
-    } else {
-      errors.add('Sekundarni model ne postoji');
     }
 
     return (aiResult: null, errors: errors);
@@ -293,10 +281,8 @@ JSON structure to follow strictly:
 
   /// Updates state
   void updateState({
-    GenerativeModel? generativeModel,
-    GenerativeModel? alternativeGenerativeModel,
+    List<GenerativeModel>? generativeModels,
   }) => value = (
-    generativeModel: generativeModel ?? value.generativeModel,
-    alternativeGenerativeModel: alternativeGenerativeModel ?? value.alternativeGenerativeModel,
+    generativeModels: generativeModels ?? value.generativeModels,
   );
 }

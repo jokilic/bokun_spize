@@ -1,4 +1,4 @@
-- [ ] TDDD screen
+- [ ] Implement [CalorieScreen] with `TDEE`, `BMR`, etc.
 - [ ] Try to use `modal_bottom_sheet` with scroll
 - [ ] Long-pressing disabled [TextField] in [MealScreen] should copy it's contents
 - [ ] Check `https://pub.dev/packages/flutter_gemma`
