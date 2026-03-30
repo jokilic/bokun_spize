@@ -101,7 +101,7 @@ class HomeController {
         );
       }
       /// User changed `dateTime`
-      else if (result?.dateTime != passedMeal.createdAt) {
+      else if (result?.dateTime != null && result?.dateTime != passedMeal.createdAt) {
         /// Update `dateTime` in [Hive]
         await hive.updateMeal(
           newMeal: passedMeal.copyWith(

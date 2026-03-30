@@ -112,6 +112,10 @@ class _MealScreenState extends State<MealScreen> {
                   borderRadius: BorderRadius.circular(8),
                   child: InkWell(
                     onTap: () async {
+                      unawaited(
+                        HapticFeedback.lightImpact(),
+                      );
+
                       /// Meal exists, trigger delete
                       if (hasMeal) {
                         /// Dismiss sheet
@@ -139,9 +143,6 @@ class _MealScreenState extends State<MealScreen> {
                           );
                         }
                       }
-                      unawaited(
-                        HapticFeedback.lightImpact(),
-                      );
                     },
                     highlightColor: context.colors.listTileBackground,
                     borderRadius: BorderRadius.circular(8),
@@ -178,16 +179,44 @@ class _MealScreenState extends State<MealScreen> {
           ///
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BokunSpizeTextField(
-              enabled: !hasMeal,
-              controller: mealController.textEditingController,
-              labelText: 'Što si imao za obrok?',
-              keyboardType: TextInputType.multiline,
-              minLines: null,
-              maxLines: 3,
-              textAlign: TextAlign.left,
-              textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.newline,
+            child: Material(
+              color: context.colors.scaffoldBackground,
+              borderRadius: BorderRadius.circular(8),
+              child: InkWell(
+                onLongPress: hasMeal
+                    ? () {
+                        HapticFeedback.lightImpact();
+
+                        /// Get text from [TextEditingController]
+                        final text = mealController.textEditingController.text.trim();
+
+                        /// No text, return
+                        if (text.isEmpty) {
+                          return;
+                        }
+
+                        /// Copy text to clipboard
+                        Clipboard.setData(
+                          ClipboardData(
+                            text: text,
+                          ),
+                        );
+                      }
+                    : null,
+                highlightColor: context.colors.listTileBackground,
+                borderRadius: BorderRadius.circular(8),
+                child: BokunSpizeTextField(
+                  enabled: !hasMeal,
+                  controller: mealController.textEditingController,
+                  labelText: 'Što si imao za obrok?',
+                  keyboardType: TextInputType.multiline,
+                  minLines: null,
+                  maxLines: 3,
+                  textAlign: TextAlign.left,
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.newline,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -284,72 +313,76 @@ class _MealScreenState extends State<MealScreen> {
                 ///
                 /// DATE
                 ///
-                InkWell(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    mealController.updateState(
-                      dateEditMode: true,
-                    );
-                  },
-                  highlightColor: context.colors.buttonBackground,
+                Material(
+                  color: context.colors.scaffoldBackground,
                   borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
-                    decoration: BoxDecoration(
-                      color: mealState.dateEditMode ? context.colors.listTileBackground : null,
-                      border: Border.all(
-                        color: context.colors.text,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: IgnorePointer(
-                      ignoring: !mealState.dateEditMode,
-                      child: CalendarDatePicker2(
-                        config: CalendarDatePicker2Config(
-                          calendarViewScrollPhysics: const BouncingScrollPhysics(),
-                          currentDate: DateTime.now(),
-                          customModePickerIcon: const SizedBox.shrink(),
-                          daySplashColor: Colors.transparent,
-                          dynamicCalendarRows: true,
-                          hideMonthPickerDividers: true,
-                          hideScrollViewMonthWeekHeader: true,
-                          hideScrollViewTopHeader: true,
-                          hideScrollViewTopHeaderDivider: true,
-                          hideYearPickerDividers: true,
-                          lastMonthIcon: PhosphorIcon(
-                            PhosphorIcons.caretCircleLeft(
-                              PhosphorIconsStyle.duotone,
-                            ),
-                            color: context.colors.text,
-                            duotoneSecondaryColor: context.colors.buttonPrimary,
-                            size: 28,
-                          ),
-                          nextMonthIcon: PhosphorIcon(
-                            PhosphorIcons.caretCircleRight(
-                              PhosphorIconsStyle.duotone,
-                            ),
-                            color: context.colors.text,
-                            duotoneSecondaryColor: context.colors.buttonPrimary,
-                            size: 28,
-                          ),
-                          selectedDayHighlightColor: context.colors.text,
-                          controlsTextStyle: context.textStyles.homeTitle,
-                          dayTextStyle: context.textStyles.homeMealKcal,
-                          monthTextStyle: context.textStyles.homeMealKcal,
-                          selectedDayTextStyle: context.textStyles.homeMealKcal.copyWith(
-                            color: context.colors.listTileBackground,
-                          ),
-                          selectedMonthTextStyle: context.textStyles.homeMealKcal,
-                          selectedYearTextStyle: context.textStyles.homeMealKcal,
-                          todayTextStyle: context.textStyles.homeMealKcal,
-                          weekdayLabelTextStyle: context.textStyles.homeMealNote,
-                          yearTextStyle: context.textStyles.homeMealKcal,
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      mealController.updateState(
+                        dateEditMode: true,
+                      );
+                    },
+                    highlightColor: context.colors.buttonBackground,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
+                      decoration: BoxDecoration(
+                        color: mealState.dateEditMode ? context.colors.listTileBackground : null,
+                        border: Border.all(
+                          color: context.colors.text,
+                          width: 1.5,
                         ),
-                        value: [mealState.transactionDate],
-                        onValueChanged: (dates) => mealController.updateState(
-                          transactionDate: dates.first,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: IgnorePointer(
+                        ignoring: !mealState.dateEditMode,
+                        child: CalendarDatePicker2(
+                          config: CalendarDatePicker2Config(
+                            calendarViewScrollPhysics: const BouncingScrollPhysics(),
+                            currentDate: DateTime.now(),
+                            customModePickerIcon: const SizedBox.shrink(),
+                            daySplashColor: Colors.transparent,
+                            dynamicCalendarRows: true,
+                            hideMonthPickerDividers: true,
+                            hideScrollViewMonthWeekHeader: true,
+                            hideScrollViewTopHeader: true,
+                            hideScrollViewTopHeaderDivider: true,
+                            hideYearPickerDividers: true,
+                            lastMonthIcon: PhosphorIcon(
+                              PhosphorIcons.caretCircleLeft(
+                                PhosphorIconsStyle.duotone,
+                              ),
+                              color: context.colors.text,
+                              duotoneSecondaryColor: context.colors.buttonPrimary,
+                              size: 28,
+                            ),
+                            nextMonthIcon: PhosphorIcon(
+                              PhosphorIcons.caretCircleRight(
+                                PhosphorIconsStyle.duotone,
+                              ),
+                              color: context.colors.text,
+                              duotoneSecondaryColor: context.colors.buttonPrimary,
+                              size: 28,
+                            ),
+                            selectedDayHighlightColor: context.colors.text,
+                            controlsTextStyle: context.textStyles.homeTitle,
+                            dayTextStyle: context.textStyles.homeMealKcal,
+                            monthTextStyle: context.textStyles.homeMealKcal,
+                            selectedDayTextStyle: context.textStyles.homeMealKcal.copyWith(
+                              color: context.colors.listTileBackground,
+                            ),
+                            selectedMonthTextStyle: context.textStyles.homeMealKcal,
+                            selectedYearTextStyle: context.textStyles.homeMealKcal,
+                            todayTextStyle: context.textStyles.homeMealKcal,
+                            weekdayLabelTextStyle: context.textStyles.homeMealNote,
+                            yearTextStyle: context.textStyles.homeMealKcal,
+                          ),
+                          value: [mealState.transactionDate],
+                          onValueChanged: (dates) => mealController.updateState(
+                            transactionDate: dates.first,
+                          ),
                         ),
                       ),
                     ),
@@ -360,64 +393,68 @@ class _MealScreenState extends State<MealScreen> {
                 ///
                 /// TIME
                 ///
-                InkWell(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    mealController.updateState(
-                      timeEditMode: true,
-                    );
-                  },
-                  highlightColor: context.colors.buttonBackground,
+                Material(
+                  color: context.colors.scaffoldBackground,
                   borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: mealState.timeEditMode ? context.colors.listTileBackground : null,
-                      border: Border.all(
-                        color: context.colors.text,
-                        width: 1.5,
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      mealController.updateState(
+                        timeEditMode: true,
+                      );
+                    },
+                    highlightColor: context.colors.buttonBackground,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: mealState.timeEditMode ? context.colors.listTileBackground : null,
+                        border: Border.all(
+                          color: context.colors.text,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: IgnorePointer(
-                      ignoring: !mealState.timeEditMode,
-                      child: ScrollDateTimePicker(
-                        onChange: (newTime) => mealController.updateState(
-                          transactionTime: newTime,
-                        ),
-                        itemExtent: 64,
-                        style: DateTimePickerStyle(
-                          activeStyle: context.textStyles.homeMealValue,
-                          inactiveStyle: context.textStyles.homeMealKcal,
-                          disabledStyle: context.textStyles.homeMealKcal.copyWith(
-                            color: context.colors.disabledText,
+                      child: IgnorePointer(
+                        ignoring: !mealState.timeEditMode,
+                        child: ScrollDateTimePicker(
+                          onChange: (newTime) => mealController.updateState(
+                            transactionTime: newTime,
                           ),
-                        ),
-                        wheelOption: const DateTimePickerWheelOption(
-                          physics: BouncingScrollPhysics(),
-                        ),
-                        dateOption: DateTimePickerOption(
-                          dateFormat: DateFormat(
-                            'HH:mm',
-                            'hr',
+                          itemExtent: 64,
+                          style: DateTimePickerStyle(
+                            activeStyle: context.textStyles.homeMealValue,
+                            inactiveStyle: context.textStyles.homeMealKcal,
+                            disabledStyle: context.textStyles.homeMealKcal.copyWith(
+                              color: context.colors.disabledText,
+                            ),
                           ),
-                          minDate: DateTime(2010),
-                          maxDate: DateTime(2040),
-                          initialDate: mealState.transactionTime,
-                        ),
-                        centerWidget: DateTimePickerCenterWidget(
-                          builder: (context, constraints, child) => Container(
-                            decoration: ShapeDecoration(
-                              color: context.colors.listTileBackground,
-                              shape: StadiumBorder(
-                                side: BorderSide(
-                                  color: context.colors.text,
-                                  width: 1.5,
+                          wheelOption: const DateTimePickerWheelOption(
+                            physics: BouncingScrollPhysics(),
+                          ),
+                          dateOption: DateTimePickerOption(
+                            dateFormat: DateFormat(
+                              'HH:mm',
+                              'hr',
+                            ),
+                            minDate: DateTime(2010),
+                            maxDate: DateTime(2040),
+                            initialDate: mealState.transactionTime,
+                          ),
+                          centerWidget: DateTimePickerCenterWidget(
+                            builder: (context, constraints, child) => Container(
+                              decoration: ShapeDecoration(
+                                color: context.colors.listTileBackground,
+                                shape: StadiumBorder(
+                                  side: BorderSide(
+                                    color: context.colors.text,
+                                    width: 1.5,
+                                  ),
                                 ),
                               ),
+                              child: child,
                             ),
-                            child: child,
                           ),
                         ),
                       ),
