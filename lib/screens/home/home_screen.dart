@@ -14,6 +14,7 @@ import '../../theme/colors.dart';
 import '../../theme/extensions.dart';
 import '../../util/color.dart';
 import '../../util/dependencies.dart';
+import '../../util/formatting.dart';
 import '../../widgets/bokun_spize_app_bar.dart';
 import '../../widgets/bokun_spize_list_tile/bokun_spize_list_tile.dart';
 import 'home_controller.dart';
@@ -107,12 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ///
                           Text.rich(
                             TextSpan(
-                              text: item.amountCalories.toStringAsFixed(0),
+                              text: formatNutritionValue(
+                                item.amountCalories,
+                              ),
                               children: [
-                                TextSpan(
-                                  text: ' ',
-                                  style: context.textStyles.homeMealKcal,
-                                ),
                                 TextSpan(
                                   text: 'kcal',
                                   style: context.textStyles.homeMealKcal,

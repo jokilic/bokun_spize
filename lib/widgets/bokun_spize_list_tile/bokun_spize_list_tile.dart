@@ -463,7 +463,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                         ///
                                                         Text.rich(
                                                           TextSpan(
-                                                            text: '$quantity${food.unit}',
+                                                            text: '$quantity ${food.unit}',
                                                             children: [
                                                               TextSpan(
                                                                 text: ' • ',
@@ -528,9 +528,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                 ],
                                               );
                                             },
-                                            separatorBuilder: (context, index) => const SizedBox(
-                                              height: 4,
-                                            ),
+                                            separatorBuilder: (_, __) => const SizedBox(height: 4),
                                           ),
                                         ],
                                         const SizedBox(height: 8),
@@ -581,10 +579,16 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                             ),
                             child: Text.rich(
                               key: ValueKey(
-                                'trailing-${widget.meal.nutrition?.calories.toStringAsFixed(0) ?? ''}-${widget.meal.isLoading}-${widget.meal.errors}',
+                                'trailing-${formatNutritionValue(
+                                      widget.meal.nutrition?.calories,
+                                    ) ?? ''}-${widget.meal.isLoading}-${widget.meal.errors}',
                               ),
                               TextSpan(
-                                text: widget.meal.nutrition?.calories.toStringAsFixed(0) ?? '',
+                                text:
+                                    formatNutritionValue(
+                                      widget.meal.nutrition?.calories,
+                                    ) ??
+                                    '',
                                 children: [
                                   TextSpan(
                                     text: 'kcal',
