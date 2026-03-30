@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -73,6 +74,11 @@ class BokunSpizeWidget extends WatchingWidget {
     debugShowCheckedModeBanner: false,
     home: HomeScreen(),
     locale: const Locale('hr'),
+    supportedLocales: const [
+      Locale('hr'),
+      Locale('en'),
+    ],
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: BokunSpizeTheme.light(
       primaryColor: BokunSpizeColors.green,
     ),

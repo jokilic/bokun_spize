@@ -27,6 +27,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   calendar_date_picker2: 2.0.1
   firebase_ai: 3.10.0
