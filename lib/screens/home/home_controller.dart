@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
@@ -72,18 +71,24 @@ class HomeController {
     Meal? passedMeal,
   }) async {
     /// Show [MealScreen] for adding meal
-    final result = await showCupertinoModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
+    final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
       barrierColor: context.colors.text.withValues(alpha: 0.5),
-      duration: BokunSpizeDurations.animation,
-      animationCurve: Curves.easeIn,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.875,
+      ),
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      topRadius: const Radius.circular(8),
+      sheetAnimationStyle: const AnimationStyle(
+        duration: BokunSpizeDurations.animation,
+        reverseDuration: BokunSpizeDurations.animation,
+        curve: Curves.easeIn,
+        reverseCurve: Curves.easeIn,
+      ),
       builder: (context) => MealScreen(
-        scrollController: ModalScrollController.of(context),
         passedMeal: passedMeal,
       ),
     );
@@ -144,14 +149,14 @@ class HomeController {
     );
 
     /// Trigger `AI`
-    // final result = await ai.triggerAI(
-    //   prompt: trimmedPrompt,
-    // );
-
-    final result = (
-      aiResult: placeholderMeal.toJson(),
-      errors: null,
+    final result = await ai.triggerAI(
+      prompt: trimmedPrompt,
     );
+
+    // final result = (
+    //   aiResult: placeholderMeal.toJson(),
+    //   errors: null,
+    // );
 
     /// AI did not generate result
     if (result.aiResult == null) {
