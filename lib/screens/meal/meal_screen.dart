@@ -8,117 +8,61 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../theme/colors.dart';
-import '../../../theme/extensions.dart';
-import '../../../util/color.dart';
-import '../constants/durations.dart';
-import '../models/meal.dart';
-import '../screens/home/home_controller.dart';
-import '../services/speech_to_text_service.dart';
-import '../util/date_time.dart';
-import '../util/dependencies.dart';
-import 'bokun_spize_text_field.dart';
+import '../../../../theme/colors.dart';
+import '../../../../theme/extensions.dart';
+import '../../../../util/color.dart';
+import '../../constants/durations.dart';
+import '../../models/meal.dart';
+import '../../services/speech_to_text_service.dart';
+import '../../util/date_time.dart';
+import '../../util/dependencies.dart';
+import '../../widgets/bokun_spize_text_field.dart';
+import 'meal_controller.dart';
 
-class BokunSpizeMealSheet extends WatchingStatefulWidget {
-  final TextEditingController textEditingController;
+class MealScreen extends WatchingStatefulWidget {
   final Meal? passedMeal;
 
-  const BokunSpizeMealSheet({
-    required this.textEditingController,
+  const MealScreen({
     required this.passedMeal,
   });
 
   @override
-  State<BokunSpizeMealSheet> createState() => _BokunSpizeMealSheetState();
+  State<MealScreen> createState() => _MealScreenState();
 }
 
-class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
-  final now = DateTime.now();
-
-  var isExpanded = false;
-
-  var isDateEditMode = false;
-  var isTimeEditMode = false;
-
-  late var isWordsValid = widget.passedMeal?.originalText.isNotEmpty ?? false;
-
-  late var chosenDate = widget.passedMeal?.createdAt ?? now;
-  late var chosenTime = widget.passedMeal?.createdAt ?? now;
-
+class _MealScreenState extends State<MealScreen> {
   @override
   void initState() {
     super.initState();
-    widget.textEditingController.addListener(validateTextField);
+
+    registerIfNotInitialized<MealController>(
+      () => MealController(
+        speechToText: getIt.get<SpeechToTextService>(),
+        passedMeal: widget.passedMeal,
+      ),
+      instanceName: widget.passedMeal?.id,
+      afterRegister: (controller) => controller.init(),
+    );
   }
 
   @override
   void dispose() {
-    widget.textEditingController.removeListener(validateTextField);
-    getIt.get<HomeController>().onDismissSheet();
+    unRegisterIfNotDisposed<MealController>(
+      instanceName: widget.passedMeal?.id,
+    );
     super.dispose();
   }
 
-  /// Triggered on every [TextField] change
-  /// Updates `Add` button state
-  void validateTextField() {
-    /// Parse values
-    final words = widget.textEditingController.text.trim();
-
-    /// Validate values
-    updateState(
-      wordsValid: words.isNotEmpty,
-    );
-  }
-
-  /// Triggered when the user enables date edit mode
-  void dateEditModeChanged() => updateState(
-    dateEditMode: true,
-  );
-
-  /// Triggered when the user enables time edit mode
-  void timeEditModeChanged() => updateState(
-    timeEditMode: true,
-  );
-
-  /// Triggered when the user changes date
-  void dateChanged(DateTime newDate) => updateState(
-    transactionDate: newDate,
-  );
-
-  /// Triggered when the user changes time
-  void timeChanged(DateTime newTime) => updateState(
-    transactionTime: newTime,
-  );
-
-  /// Triggered when the user taps on the expand button
-  void toggleExpanded() => updateState(
-    expanded: !isExpanded,
-  );
-
-  /// Updates `state`
-  void updateState({
-    bool? wordsValid,
-    bool? dateEditMode,
-    bool? timeEditMode,
-    DateTime? transactionDate,
-    DateTime? transactionTime,
-    bool? expanded,
-  }) => setState(
-    () {
-      isWordsValid = wordsValid ?? isWordsValid;
-      isDateEditMode = dateEditMode ?? isDateEditMode;
-      isTimeEditMode = timeEditMode ?? isTimeEditMode;
-      chosenDate = transactionDate ?? chosenDate;
-      chosenTime = transactionTime ?? chosenTime;
-      isExpanded = expanded ?? isExpanded;
-    },
-  );
-
   @override
   Widget build(BuildContext context) {
-    final homeController = getIt.get<HomeController>();
+    final mealController = getIt.get<MealController>(
+      instanceName: widget.passedMeal?.id,
+    );
     final speechToTextService = getIt.get<SpeechToTextService>();
 
+    final mealState = watchIt<MealController>(
+      instanceName: widget.passedMeal?.id,
+    ).value;
     final speechToTextState = watchIt<SpeechToTextService>().value;
 
     final available = speechToTextState.available;
@@ -184,13 +128,13 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                         /// Speech to text is not available, initialize & trigger it
                         if (!available) {
                           await speechToTextService.loadSpeechToText();
-                          await homeController.onSpeechToTextPressed(
+                          await mealController.onSpeechToTextPressed(
                             locale: 'hr',
                           );
                         }
                         /// Speech to text is available, trigger it
                         else {
-                          await homeController.onSpeechToTextPressed(
+                          await mealController.onSpeechToTextPressed(
                             locale: 'hr',
                           );
                         }
@@ -236,7 +180,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: BokunSpizeTextField(
               enabled: !hasMeal,
-              controller: widget.textEditingController,
+              controller: mealController.textEditingController,
               labelText: 'Što si imao za obrok?',
               keyboardType: TextInputType.multiline,
               minLines: null,
@@ -290,7 +234,9 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                   child: InkWell(
                     onTap: () {
                       HapticFeedback.lightImpact();
-                      toggleExpanded();
+                      mealController.updateState(
+                        expanded: !mealController.value.expanded,
+                      );
                     },
                     highlightColor: context.colors.listTileBackground,
                     borderRadius: BorderRadius.circular(8),
@@ -303,7 +249,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                       curve: Curves.easeIn,
                       padding: const EdgeInsets.all(8),
                       child: PhosphorIcon(
-                        isExpanded
+                        mealState.expanded
                             ? PhosphorIcons.caretUp(
                                 PhosphorIconsStyle.duotone,
                               )
@@ -331,7 +277,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
             firstCurve: Curves.easeIn,
             secondCurve: Curves.easeIn,
             sizeCurve: Curves.easeIn,
-            crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: mealState.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
             firstChild: const SizedBox.shrink(),
             secondChild: Column(
               children: [
@@ -341,7 +287,9 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                 InkWell(
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    dateEditModeChanged();
+                    mealController.updateState(
+                      dateEditMode: true,
+                    );
                   },
                   highlightColor: context.colors.buttonBackground,
                   borderRadius: BorderRadius.circular(8),
@@ -349,7 +297,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
                     decoration: BoxDecoration(
-                      color: isDateEditMode ? context.colors.listTileBackground : null,
+                      color: mealState.dateEditMode ? context.colors.listTileBackground : null,
                       border: Border.all(
                         color: context.colors.text,
                         width: 1.5,
@@ -357,11 +305,11 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IgnorePointer(
-                      ignoring: !isDateEditMode,
+                      ignoring: !mealState.dateEditMode,
                       child: CalendarDatePicker2(
                         config: CalendarDatePicker2Config(
                           calendarViewScrollPhysics: const BouncingScrollPhysics(),
-                          currentDate: now,
+                          currentDate: DateTime.now(),
                           customModePickerIcon: const SizedBox.shrink(),
                           daySplashColor: Colors.transparent,
                           dynamicCalendarRows: true,
@@ -399,9 +347,9 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                           weekdayLabelTextStyle: context.textStyles.homeMealNote,
                           yearTextStyle: context.textStyles.homeMealKcal,
                         ),
-                        value: [chosenDate],
-                        onValueChanged: (dates) => dateChanged(
-                          dates.first,
+                        value: [mealState.transactionDate],
+                        onValueChanged: (dates) => mealController.updateState(
+                          transactionDate: dates.first,
                         ),
                       ),
                     ),
@@ -415,7 +363,9 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                 InkWell(
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    timeEditModeChanged();
+                    mealController.updateState(
+                      timeEditMode: true,
+                    );
                   },
                   highlightColor: context.colors.buttonBackground,
                   borderRadius: BorderRadius.circular(8),
@@ -423,7 +373,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: isTimeEditMode ? context.colors.listTileBackground : null,
+                      color: mealState.timeEditMode ? context.colors.listTileBackground : null,
                       border: Border.all(
                         color: context.colors.text,
                         width: 1.5,
@@ -431,9 +381,11 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IgnorePointer(
-                      ignoring: !isTimeEditMode,
+                      ignoring: !mealState.timeEditMode,
                       child: ScrollDateTimePicker(
-                        onChange: timeChanged,
+                        onChange: (newTime) => mealController.updateState(
+                          transactionTime: newTime,
+                        ),
                         itemExtent: 64,
                         style: DateTimePickerStyle(
                           activeStyle: context.textStyles.homeMealValue,
@@ -452,7 +404,7 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
                           ),
                           minDate: DateTime(2010),
                           maxDate: DateTime(2040),
-                          initialDate: chosenTime,
+                          initialDate: mealState.transactionTime,
                         ),
                         centerWidget: DateTimePickerCenterWidget(
                           builder: (context, constraints, child) => Container(
@@ -488,20 +440,20 @@ class _BokunSpizeMealSheetState extends State<BokunSpizeMealSheet> {
             child: SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: isWordsValid
+                onPressed: mealState.wordsValid
                     ? () {
                         HapticFeedback.lightImpact();
 
-                        /// Parse values
-                        final words = widget.textEditingController.text.trim();
+                        /// Get `words` from [TextEditingController]
+                        final words = mealController.textEditingController.text.trim();
 
                         /// Dismiss sheet
                         Navigator.of(context).pop(
                           (
                             words: words,
                             dateTime: getTransactionDateTime(
-                              transactionDate: chosenDate,
-                              transactionTime: chosenTime,
+                              transactionDate: mealState.transactionDate,
+                              transactionTime: mealState.transactionTime,
                             ),
                             deleteMeal: false,
                           ),

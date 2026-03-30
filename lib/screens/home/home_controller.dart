@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/durations.dart';
@@ -12,16 +11,9 @@ import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
-import '../../widgets/bokun_spize_meal_sheet.dart';
+import '../meal/meal_screen.dart';
 
-/// Class to distinguish `no argument passed` from `explicitly passed null`
-class HomeStateNoChange {
-  const HomeStateNoChange();
-}
-
-const homeStateNoChange = HomeStateNoChange();
-
-class HomeController extends ValueNotifier<({String? speechToTextWords})> implements Disposable {
+class HomeController {
   ///
   /// CONSTRUCTOR
   ///
@@ -34,13 +26,11 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     required this.hive,
     required this.speechToText,
     required this.ai,
-  }) : super((speechToTextWords: null));
+  });
 
   ///
   /// VARIABLES
   ///
-
-  late final textEditingController = TextEditingController();
 
   final placeholderMeal = Meal(
     id: const Uuid().v1(),
@@ -72,19 +62,6 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
   );
 
   ///
-  /// DISPOSE
-  ///
-
-  @override
-  void onDispose() {
-    speechToText.updateState(
-      isListening: false,
-    );
-
-    textEditingController.dispose();
-  }
-
-  ///
   /// METHODS
   ///
 
@@ -93,15 +70,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     BuildContext context, {
     Meal? passedMeal,
   }) async {
-    /// Reset `state`
-    updateState(
-      speechToTextWords: null,
-    );
-
-    /// Update TextEditingController] with proper text
-    textEditingController.text = passedMeal?.originalText ?? '';
-
-    /// Show [BokunSpizeMealSheet] for adding meal
+    /// Show [MealScreen] for adding meal
     final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
@@ -118,8 +87,7 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
         curve: Curves.easeIn,
         reverseCurve: Curves.easeIn,
       ),
-      builder: (context) => BokunSpizeMealSheet(
-        textEditingController: textEditingController,
+      builder: (context) => MealScreen(
         passedMeal: passedMeal,
       ),
     );
@@ -155,54 +123,6 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     }
   }
 
-  /// Triggered when the user presses [SpeechToText] button
-  Future<void> onSpeechToTextPressed({
-    required String locale,
-  }) async {
-    /// Save current [TextEditingController] text
-    final currentText = textEditingController.text;
-
-    /// [SpeechToText] was disabled, start listening
-    if (!speechToText.value.isListening) {
-      /// Reset `state`
-      updateState(
-        speechToTextWords: null,
-      );
-
-      await speechToText.startListening(
-        onResult: (words) {
-          /// Update `state`
-          updateState(
-            speechToTextWords: words,
-          );
-
-          /// Add new `words` to [TextEditingController]
-          if (currentText.isNotEmpty) {
-            textEditingController.text = '$currentText $words';
-          } else {
-            textEditingController.text = words;
-          }
-        },
-        locale: locale,
-      );
-    }
-    /// [SpeechToText] was enabled, stop listening
-    else {
-      await speechToText.stopListening();
-    }
-  }
-
-  /// Triggered when dismissing [BokunSpizeMealSheet]
-  Future<void> onDismissSheet() async {
-    /// Stop listener
-    if (speechToText.value.isListening) {
-      await speechToText.stopListening();
-    }
-
-    /// Clear [TextEditingController]
-    textEditingController.clear();
-  }
-
   /// Triggers AI with `prompt`
   Future<void> triggerAI({
     required String prompt,
@@ -228,14 +148,14 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
     );
 
     /// Trigger `AI`
-    final result = await ai.triggerAI(
-      prompt: trimmedPrompt,
-    );
-
-    // final result = (
-    //   aiResult: placeholderMeal.toJson(),
-    //   errors: null,
+    // final result = await ai.triggerAI(
+    //   prompt: trimmedPrompt,
     // );
+
+    final result = (
+      aiResult: placeholderMeal.toJson(),
+      errors: null,
+    );
 
     /// AI did not generate result
     if (result.aiResult == null) {
@@ -320,11 +240,4 @@ class HomeController extends ValueNotifier<({String? speechToTextWords})> implem
       return null;
     }
   }
-
-  /// Updates `state`
-  void updateState({
-    Object? speechToTextWords = homeStateNoChange,
-  }) => value = (
-    speechToTextWords: identical(speechToTextWords, homeStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
-  );
 }

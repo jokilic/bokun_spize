@@ -212,6 +212,15 @@ JSON structure to follow strictly:
   /// Initialize `Gemini` backend service
   void initializeGemini() {
     try {
+      final models = [
+        'gemini-3-flash-preview',
+        'gemini-3.1-flash-lite-preview',
+        'gemini-2.5-flash',
+        'gemini-2.5-flash-lite',
+      ];
+
+      // TODO: Go through list and initialize each
+
       final model = initializeGenerativeModel(
         model: 'gemini-2.5-flash',
       );
@@ -250,6 +259,8 @@ JSON structure to follow strictly:
       /// Prompt
       Content.text(prompt),
     ];
+
+    // TODO: Update this code so it tries models from the list from first to last, instead of this hardcoded two models
 
     /// Try `generativeModel` first
     if (value.generativeModel != null) {

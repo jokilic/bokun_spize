@@ -16,7 +16,7 @@ import '../../util/color.dart';
 import '../../util/dependencies.dart';
 import '../../util/formatting.dart';
 import '../../widgets/bokun_spize_app_bar.dart';
-import '../../widgets/bokun_spize_list_tile/bokun_spize_list_tile.dart';
+import '../../widgets/bokun_spize_list_tile.dart';
 import 'home_controller.dart';
 
 class HomeScreen extends WatchingStatefulWidget {

@@ -1,4 +1,8 @@
+- [ ] TDDD screen
+- [ ] Try to use `modal_bottom_sheet` with scroll
+- [ ] Long-pressing disabled [TextField] in [MealScreen] should copy it's contents
 - [ ] Check `https://pub.dev/packages/flutter_gemma`
+- [ ] Update `AIService` to use list of models instead of two hardcoded models
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
