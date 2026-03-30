@@ -418,7 +418,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                           ///
                                           /// FOODS
                                           ///
-                                          ListView.builder(
+                                          ListView.separated(
                                             padding: EdgeInsets.zero,
                                             itemCount: widget.meal.foods!.length,
                                             shrinkWrap: true,
@@ -442,50 +442,71 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                     size: 24,
                                                   ),
                                                   Expanded(
-                                                    child: Text.rich(
-                                                      TextSpan(
-                                                        text: capitalizeFirstLetter(
-                                                          food.name,
-                                                        ),
-                                                        children: [
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        ///
+                                                        /// TITLE & QUANTITY + UNIT
+                                                        ///
+                                                        Text.rich(
                                                           TextSpan(
-                                                            text: ' ',
-                                                            style: context.textStyles.homeMealTime,
-                                                          ),
-                                                          TextSpan(
-                                                            text: quantity,
-                                                            style: context.textStyles.homeMealTime,
-                                                          ),
-                                                          TextSpan(
-                                                            text: ' ',
-                                                            style: context.textStyles.homeMealTime,
-                                                          ),
-                                                          TextSpan(
-                                                            text: food.unit,
-                                                            style: context.textStyles.homeMealTime,
-                                                          ),
-                                                          TextSpan(
-                                                            text: ' • ',
-                                                            style: context.textStyles.homeMealTime,
-                                                          ),
-                                                          TextSpan(
-                                                            text: formatNutritionValue(
-                                                              food.calories,
+                                                            text: capitalizeFirstLetter(
+                                                              food.name,
                                                             ),
-                                                            style: context.textStyles.homeMealTime,
+                                                            children: [
+                                                              TextSpan(
+                                                                text: ' • ',
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text: quantity,
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text: food.unit,
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text: ' • ',
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text: formatNutritionValue(
+                                                                  food.nutrition.calories,
+                                                                ),
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                              TextSpan(
+                                                                text: 'kcal',
+                                                                style: context.textStyles.homeMealTime,
+                                                              ),
+                                                            ],
                                                           ),
-                                                          TextSpan(
-                                                            text: 'kcal',
-                                                            style: context.textStyles.homeMealTime,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      style: context.textStyles.homeMealKcal,
+                                                          style: context.textStyles.homeMealKcal,
+                                                        ),
+
+                                                        ///
+                                                        /// NUTRITION
+                                                        ///
+                                                        Text(
+                                                          'P ${formatNutritionValue(
+                                                            food.nutrition.protein,
+                                                          )}g • U ${formatNutritionValue(
+                                                            food.nutrition.carbs,
+                                                          )}g • M ${formatNutritionValue(
+                                                            food.nutrition.fat,
+                                                          )}g',
+                                                          style: context.textStyles.homeMealTime,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
                                               );
                                             },
+                                            separatorBuilder: (context, index) => const SizedBox(
+                                              height: 4,
+                                            ),
                                           ),
                                         ],
                                         const SizedBox(height: 8),

@@ -124,7 +124,7 @@ class FoodAdapter extends TypeAdapter<Food> {
       name: fields[0] as String,
       quantity: (fields[1] as num).toDouble(),
       unit: fields[2] as String,
-      calories: (fields[3] as num).toDouble(),
+      nutrition: fields[4] as Nutrition,
     );
   }
 
@@ -138,8 +138,8 @@ class FoodAdapter extends TypeAdapter<Food> {
       ..write(obj.quantity)
       ..writeByte(2)
       ..write(obj.unit)
-      ..writeByte(3)
-      ..write(obj.calories);
+      ..writeByte(4)
+      ..write(obj.nutrition);
   }
 
   @override

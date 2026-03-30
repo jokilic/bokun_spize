@@ -133,7 +133,7 @@ JSON structure to follow strictly:
             'name',
             'quantity',
             'unit',
-            'calories',
+            'nutrition',
           ],
           properties: {
             'name': Schema.string(
@@ -154,11 +154,42 @@ JSON structure to follow strictly:
               format: 'string',
               nullable: false,
             ),
-            'calories': Schema.number(
-              title: 'Food calories',
-              description: 'calories in kcal for a specific food with passed quantity and unit',
-              format: 'number',
+            'nutrition': Schema.object(
+              title: 'Food nutrition',
+              description: 'nutrition for a specific food with passed quantity and unit',
               nullable: false,
+              propertyOrdering: [
+                'calories',
+                'protein',
+                'carbs',
+                'fat',
+              ],
+              properties: {
+                'calories': Schema.number(
+                  title: 'Calories',
+                  description: 'calories in kcal for a specific food with passed quantity and unit',
+                  format: 'number',
+                  nullable: false,
+                ),
+                'protein': Schema.number(
+                  title: 'Protein',
+                  description: 'protein in g for a specific food with passed quantity and unit',
+                  format: 'number',
+                  nullable: false,
+                ),
+                'carbs': Schema.number(
+                  title: 'Carbs',
+                  description: 'carbs in g for a specific food with passed quantity and unit',
+                  format: 'number',
+                  nullable: false,
+                ),
+                'fat': Schema.number(
+                  title: 'Fat',
+                  description: 'fat in g for a specific food with passed quantity and unit',
+                  format: 'number',
+                  nullable: false,
+                ),
+              },
             ),
           },
         ),
