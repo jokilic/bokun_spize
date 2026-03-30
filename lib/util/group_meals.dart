@@ -11,10 +11,10 @@ List<Object> getGroupedMealsByDate(List<Meal> meals) {
     DateTime.now(),
   );
 
-  final yesterday = toYmd(
-    today.subtract(
-      const Duration(days: 1),
-    ),
+  final yesterday = DateTime(
+    today.year,
+    today.month,
+    today.day - 1,
   );
 
   final dayFormatter = DateFormat(
@@ -27,11 +27,11 @@ List<Object> getGroupedMealsByDate(List<Meal> meals) {
   );
 
   String labelFor(DateTime d) {
-    if (d == today) {
+    if (isSameYmd(d, today)) {
       return 'Danas';
     }
 
-    if (d == yesterday) {
+    if (isSameYmd(d, yesterday)) {
       return 'Jučer';
     }
 
