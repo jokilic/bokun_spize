@@ -310,7 +310,6 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                         /// ERRORS
                                         ///
                                         ListView.builder(
-                                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                           padding: EdgeInsets.zero,
                                           itemCount: widget.meal.errors!.length,
                                           shrinkWrap: true,
@@ -419,7 +418,6 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                           /// FOODS
                                           ///
                                           ListView.separated(
-                                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                             padding: EdgeInsets.zero,
                                             itemCount: widget.meal.foods!.length,
                                             shrinkWrap: true,

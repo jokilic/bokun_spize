@@ -53,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: CustomScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
         slivers: [
           ///

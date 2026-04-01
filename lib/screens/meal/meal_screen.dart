@@ -80,7 +80,6 @@ class _MealScreenState extends State<MealScreen> {
       borderRadius: BorderRadius.circular(8),
       child: ListView(
         shrinkWrap: true,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.only(top: 16),
         physics: const BouncingScrollPhysics(),
         children: [
