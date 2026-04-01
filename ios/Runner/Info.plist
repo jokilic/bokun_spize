@@ -24,6 +24,10 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Bokun spize needs access to photo library in order to create meals using your photos.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Bokun spize needs access to camera in order to create meals using your photos.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Bokun spize needs access to microphone in order to create meals using your voice.</string>
 		<key>NSSpeechRecognitionUsageDescription</key>

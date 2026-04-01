@@ -120,6 +120,7 @@ class HomeController {
         /// Trigger AI which generates a new `meal` and stores into [Hive]
         await triggerAI(
           textPrompt: result!.words!,
+          imageFile: result.imageFile,
           dateTime: result.dateTime!,
         );
       }
@@ -129,6 +130,7 @@ class HomeController {
   /// Triggers AI with `prompt`
   Future<void> triggerAI({
     required String textPrompt,
+    required File? imageFile,
     required DateTime dateTime,
   }) async {
     final trimmedPrompt = textPrompt.trim();
@@ -153,6 +155,7 @@ class HomeController {
     /// Trigger `AI`
     final result = await ai.triggerAI(
       textPrompt: trimmedPrompt,
+      imageFile: imageFile,
     );
 
     // final result = (
@@ -182,6 +185,7 @@ class HomeController {
         id: loadingMeal.id,
         createdAt: loadingMeal.createdAt,
         originalText: trimmedPrompt,
+        imageFile: imageFile,
       );
 
       /// Result is successfully parsed
@@ -223,6 +227,7 @@ class HomeController {
     required String id,
     required DateTime createdAt,
     required String originalText,
+    required File? imageFile,
   }) {
     try {
       final decoded = jsonDecode(aiResult);
@@ -233,6 +238,7 @@ class HomeController {
           id: id,
           createdAt: createdAt,
           originalText: originalText,
+          imageFilePath: imageFile?.path,
           isLoading: false,
           errors: null,
         );

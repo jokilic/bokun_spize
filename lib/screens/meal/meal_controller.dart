@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../models/meal.dart';
 import '../../services/speech_to_text_service.dart';
@@ -42,6 +43,8 @@ class MealController
 
   late final textEditingController = TextEditingController();
 
+  late final imagePicker = ImagePicker();
+
   ///
   /// INIT
   ///
@@ -54,7 +57,7 @@ class MealController
       wordsValid: passedMeal?.originalText.isNotEmpty ?? false,
       transactionDate: passedMeal?.createdAt ?? now,
       transactionTime: passedMeal?.createdAt ?? now,
-      imageFile: passedMeal?.imageFile,
+      imageFile: passedMeal?.imageFilePath != null ? File(passedMeal!.imageFilePath!) : null,
     );
 
     /// Update [TextEditingController] text
@@ -104,7 +107,12 @@ class MealController
   /// Triggered when the user presses [SpeechToText] button
   Future<void> onSpeechToTextPressed({
     required String locale,
+    required bool speechToTextAvailable,
   }) async {
+    if (!speechToTextAvailable) {
+      await speechToText.loadSpeechToText();
+    }
+
     /// Save current [TextEditingController] text
     final currentText = textEditingController.text;
 
@@ -138,6 +146,42 @@ class MealController
     }
   }
 
+  /// Triggered when the user presses [Camera] button
+  Future<void> onCameraPressed() async {
+    /// Trigger `imagePicker`
+    final image = await imagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+      maxHeight: 1000,
+      maxWidth: 1000,
+    );
+
+    /// Image is taken, update `state`
+    if (image != null) {
+      updateState(
+        imageFile: File(image.path),
+      );
+    }
+  }
+
+  /// Triggered when the user presses [Gallery] button
+  Future<void> onGalleryPressed() async {
+    /// Trigger `imagePicker`
+    final image = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 1000,
+      maxWidth: 1000,
+    );
+
+    /// Image is picked, update `state`
+    if (image != null) {
+      updateState(
+        imageFile: File(image.path),
+      );
+    }
+  }
+
   /// Updates `state`
   void updateState({
     bool? wordsValid,
@@ -146,7 +190,7 @@ class MealController
     bool? timeEditMode,
     DateTime? transactionDate,
     DateTime? transactionTime,
-    File? imageFile,
+    Object? imageFile = nullStateNoChange,
     bool? expanded,
   }) => value = (
     wordsValid: wordsValid ?? value.wordsValid,
@@ -155,7 +199,7 @@ class MealController
     timeEditMode: timeEditMode ?? value.timeEditMode,
     transactionDate: transactionDate ?? value.transactionDate,
     transactionTime: transactionTime ?? value.transactionTime,
-    imageFile: imageFile ?? value.imageFile,
+    imageFile: identical(imageFile, nullStateNoChange) ? value.imageFile : imageFile as File?,
     expanded: expanded ?? value.expanded,
   );
 }

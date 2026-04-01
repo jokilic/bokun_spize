@@ -16,6 +16,7 @@ import '../../models/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../widgets/bokun_spize_little_button.dart';
 import '../../widgets/bokun_spize_text_field.dart';
 import 'meal_controller.dart';
 
@@ -58,7 +59,6 @@ class _MealScreenState extends State<MealScreen> {
     final mealController = getIt.get<MealController>(
       instanceName: widget.passedMeal?.id,
     );
-    final speechToTextService = getIt.get<SpeechToTextService>();
 
     final mealState = watchIt<MealController>(
       instanceName: widget.passedMeal?.id,
@@ -84,7 +84,7 @@ class _MealScreenState extends State<MealScreen> {
         physics: const BouncingScrollPhysics(),
         children: [
           ///
-          /// NEW MEAL TITLE & VOICE BUTTON
+          /// NEW MEAL TITLE & BUTTONS
           ///
           Padding(
             padding: const EdgeInsets.only(left: 28, right: 20),
@@ -102,72 +102,80 @@ class _MealScreenState extends State<MealScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 4),
 
                 ///
                 /// VOICE OR DELETE BUTTON
                 ///
-                const SizedBox(width: 4),
-                Material(
-                  color: context.colors.scaffoldBackground,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () async {
-                      unawaited(
-                        HapticFeedback.lightImpact(),
-                      );
+                BokunSpizeLittleButton(
+                  onPressed: () async {
+                    unawaited(
+                      HapticFeedback.lightImpact(),
+                    );
 
-                      /// Meal exists, trigger delete
-                      if (hasMeal) {
-                        /// Dismiss sheet
-                        Navigator.of(context).pop(
-                          (
-                            words: null,
-                            dateTime: null,
-                            imageFile: null,
-                            deleteMeal: true,
-                          ),
-                        );
-                      }
-                      /// New meal, trigger speech to text
-                      else {
-                        /// Speech to text is not available, initialize & trigger it
-                        if (!available) {
-                          await speechToTextService.loadSpeechToText();
-                          await mealController.onSpeechToTextPressed(
-                            locale: 'hr',
-                          );
-                        }
-                        /// Speech to text is available, trigger it
-                        else {
-                          await mealController.onSpeechToTextPressed(
-                            locale: 'hr',
-                          );
-                        }
-                      }
-                    },
-                    highlightColor: context.colors.listTileBackground,
-                    borderRadius: BorderRadius.circular(8),
-                    child: AnimatedContainer(
-                      decoration: BoxDecoration(
-                        color: isListening ? context.colors.buttonPrimary : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeIn,
-                      padding: const EdgeInsets.all(8),
-                      child: PhosphorIcon(
-                        hasMeal
-                            ? PhosphorIcons.trash(
-                                PhosphorIconsStyle.duotone,
-                              )
-                            : PhosphorIcons.microphone(
-                                PhosphorIconsStyle.duotone,
-                              ),
-                        color: context.colors.text,
-                        duotoneSecondaryColor: hasMeal ? context.colors.delete : context.colors.buttonPrimary,
-                        size: 16,
-                      ),
-                    ),
+                    /// New meal, trigger speech to text
+                    if (!hasMeal) {
+                      await mealController.onSpeechToTextPressed(
+                        locale: 'hr',
+                        speechToTextAvailable: available,
+                      );
+                    }
+                    /// Meal exists, trigger delete & dismiss sheet
+                    else {
+                      Navigator.of(context).pop(
+                        (
+                          words: null,
+                          dateTime: null,
+                          imageFile: null,
+                          deleteMeal: true,
+                        ),
+                      );
+                    }
+                  },
+                  icon: hasMeal
+                      ? PhosphorIcons.trash(
+                          PhosphorIconsStyle.duotone,
+                        )
+                      : PhosphorIcons.microphone(
+                          PhosphorIconsStyle.duotone,
+                        ),
+                  backgroundColor: isListening ? context.colors.buttonPrimary : Colors.transparent,
+                  duotoneSecondaryColor: hasMeal ? context.colors.delete : null,
+                ),
+                const SizedBox(width: 4),
+
+                ///
+                /// GALLERY BUTTON
+                ///
+                BokunSpizeLittleButton(
+                  onPressed: () async {
+                    unawaited(
+                      HapticFeedback.lightImpact(),
+                    );
+
+                    /// Trigger camera
+                    await mealController.onGalleryPressed();
+                  },
+                  icon: PhosphorIcons.images(
+                    PhosphorIconsStyle.duotone,
+                  ),
+                ),
+                const SizedBox(width: 4),
+
+                ///
+                /// CAMERA BUTTON
+                ///
+                BokunSpizeLittleButton(
+                  onPressed: () async {
+                    unawaited(
+                      HapticFeedback.lightImpact(),
+                    );
+
+                    /// Trigger camera
+                    await mealController.onCameraPressed();
+                  },
+                  icon: PhosphorIcons.camera(
+                    PhosphorIconsStyle.duotone,
                   ),
                 ),
               ],
@@ -232,7 +240,118 @@ class _MealScreenState extends State<MealScreen> {
               style: context.textStyles.homeMealNote,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
+
+          ///
+          /// IMAGE
+          ///
+          AnimatedSize(
+            alignment: Alignment.topLeft,
+            duration: BokunSpizeDurations.animation,
+            curve: Curves.easeIn,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: mealState.imageFile != null
+                  ? [
+                      ///
+                      /// TITLE & DELETE BUTTON
+                      ///
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28, right: 20),
+                        child: Row(
+                          children: [
+                            ///
+                            /// TITLE
+                            ///
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Text(
+                                  'Slika obroka',
+                                  style: context.textStyles.homeTitle,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+
+                            ///
+                            /// DELETE BUTTON
+                            ///
+                            BokunSpizeLittleButton(
+                              onPressed: () async {
+                                unawaited(
+                                  HapticFeedback.lightImpact(),
+                                );
+
+                                mealController.updateState(
+                                  imageFile: null,
+                                );
+                              },
+                              icon: PhosphorIcons.trash(
+                                PhosphorIconsStyle.duotone,
+                              ),
+                              duotoneSecondaryColor: context.colors.delete,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+
+                      ///
+                      /// IMAGE
+                      ///
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: context.colors.text,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Image.file(
+                          mealState.imageFile!,
+                          height: 160,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 160,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: context.colors.text,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: PhosphorIcon(
+                              PhosphorIcons.imageBroken(
+                                PhosphorIconsStyle.duotone,
+                              ),
+                              color: context.colors.text,
+                              size: 56,
+                              duotoneSecondaryColor: context.colors.delete,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      ///
+                      /// TEXT
+                      ///
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: Text(
+                          'Dodana slika će pomoći u procjeni obroka.',
+                          style: context.textStyles.homeMealNote,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ]
+                  : [],
+            ),
+          ),
 
           ///
           /// DATE TITLE & EXPAND BUTTON
