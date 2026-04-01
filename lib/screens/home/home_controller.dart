@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -72,7 +73,7 @@ class HomeController {
     Meal? passedMeal,
   }) async {
     /// Show [MealScreen] for adding meal
-    final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
+    final result = await showModalBottomSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
       barrierColor: BokunSpizeColors.lightThemeText.withValues(alpha: 0.7),
@@ -118,7 +119,7 @@ class HomeController {
       if ((result?.words?.isNotEmpty ?? false) && result?.dateTime != null) {
         /// Trigger AI which generates a new `meal` and stores into [Hive]
         await triggerAI(
-          prompt: result!.words!,
+          textPrompt: result!.words!,
           dateTime: result.dateTime!,
         );
       }
@@ -127,10 +128,10 @@ class HomeController {
 
   /// Triggers AI with `prompt`
   Future<void> triggerAI({
-    required String prompt,
+    required String textPrompt,
     required DateTime dateTime,
   }) async {
-    final trimmedPrompt = prompt.trim();
+    final trimmedPrompt = textPrompt.trim();
 
     if (trimmedPrompt.isEmpty) {
       return;
@@ -151,7 +152,7 @@ class HomeController {
 
     /// Trigger `AI`
     final result = await ai.triggerAI(
-      prompt: trimmedPrompt,
+      textPrompt: trimmedPrompt,
     );
 
     // final result = (

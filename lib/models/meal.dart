@@ -39,6 +39,9 @@ class Meal {
   @HiveField(9)
   final List<String>? errors;
 
+  @HiveField(10)
+  final String? imageFilePath;
+
   Meal({
     required this.id,
     required this.createdAt,
@@ -50,6 +53,7 @@ class Meal {
     this.nutrition,
     this.foods,
     this.errors,
+    this.imageFilePath,
   });
 
   Meal copyWith({
@@ -63,6 +67,7 @@ class Meal {
     String? originalText,
     bool? isLoading,
     List<String>? errors,
+    String? imageFilePath,
   }) => Meal(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -74,6 +79,7 @@ class Meal {
     originalText: originalText ?? this.originalText,
     isLoading: isLoading ?? this.isLoading,
     errors: errors ?? this.errors,
+    imageFilePath: imageFilePath ?? this.imageFilePath,
   );
 
   factory Meal.fromMap(
@@ -83,6 +89,7 @@ class Meal {
     required String originalText,
     required bool isLoading,
     required List<String>? errors,
+    required String? imageFilePath,
   }) => Meal(
     id: id,
     name: map['name'],
@@ -94,6 +101,7 @@ class Meal {
     originalText: originalText,
     isLoading: isLoading,
     errors: errors,
+    imageFilePath: imageFilePath,
   );
 
   String toJson() => json.encode(toMap());
@@ -109,11 +117,12 @@ class Meal {
     'originalText': originalText,
     'isLoading': isLoading,
     'errors': errors,
+    'imageFilePath': imageFilePath,
   };
 
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageFilePath: $imageFilePath)';
 
   @override
   bool operator ==(Object other) =>
@@ -128,9 +137,19 @@ class Meal {
           foods == other.foods &&
           originalText == other.originalText &&
           isLoading == other.isLoading &&
-          errors == other.errors;
+          errors == other.errors &&
+          imageFilePath == other.imageFilePath;
 
   @override
   int get hashCode =>
-      id.hashCode ^ name.hashCode ^ emoji.hashCode ^ createdAt.hashCode ^ nutrition.hashCode ^ foods.hashCode ^ originalText.hashCode ^ isLoading.hashCode ^ errors.hashCode;
+      id.hashCode ^
+      name.hashCode ^
+      emoji.hashCode ^
+      createdAt.hashCode ^
+      nutrition.hashCode ^
+      foods.hashCode ^
+      originalText.hashCode ^
+      isLoading.hashCode ^
+      errors.hashCode ^
+      imageFilePath.hashCode;
 }

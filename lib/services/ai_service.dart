@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
@@ -250,15 +251,30 @@ JSON structure to follow strictly:
 
   /// Triggers `AI` with `prompt` and all necessary data
   Future<({String? aiResult, List<String>? errors})> triggerAI({
-    required String prompt,
+    required String textPrompt,
+    required File? imageFile,
   }) async {
     /// Create `errors` list
     final errors = <String>[];
 
+    /// Generate a text prompt
+    final textPart = TextPart(textPrompt);
+
+    /// Generate an image prompt
+    InlineDataPart? imagePart;
+    if (imageFile != null) {
+      final image = await imageFile.readAsBytes();
+      imagePart = InlineDataPart('image/jpeg', image);
+    }
+
     /// Generate `contents` to pass into `AI`
     final contents = [
-      /// Prompt
-      Content.text(prompt),
+      Content.multi(
+        [
+          textPart,
+          if (imagePart != null) imagePart,
+        ],
+      ),
     ];
 
     if (value.generativeModels.isEmpty) {

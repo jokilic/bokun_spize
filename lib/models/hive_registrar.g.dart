@@ -16,3 +16,12 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(FoodAdapter());
   }
 }
+
+extension IsolatedHiveRegistrar on IsolatedHiveInterface {
+  void registerAdapters() {
+    registerAdapter(ColorAdapter());
+    registerAdapter(MealAdapter());
+    registerAdapter(NutritionAdapter());
+    registerAdapter(FoodAdapter());
+  }
+}

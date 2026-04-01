@@ -27,13 +27,14 @@ class MealAdapter extends TypeAdapter<Meal> {
       nutrition: fields[3] as Nutrition?,
       foods: (fields[4] as List?)?.cast<Food>(),
       errors: (fields[10] as List?)?.cast<String>(),
+      imageFilePath: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Meal obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class MealAdapter extends TypeAdapter<Meal> {
       ..writeByte(10)
       ..write(obj.errors)
       ..writeByte(11)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(12)
+      ..write(obj.imageFilePath);
   }
 
   @override

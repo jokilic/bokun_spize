@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -6,7 +8,10 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/null_state.dart';
 
 class MealController
-    extends ValueNotifier<({bool wordsValid, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, bool expanded})>
+    extends
+        ValueNotifier<
+          ({bool wordsValid, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, File? imageFile, bool expanded})
+        >
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -26,6 +31,7 @@ class MealController
            timeEditMode: false,
            transactionDate: DateTime.now(),
            transactionTime: DateTime.now(),
+           imageFile: null,
            expanded: false,
          ),
        );
@@ -48,6 +54,7 @@ class MealController
       wordsValid: passedMeal?.originalText.isNotEmpty ?? false,
       transactionDate: passedMeal?.createdAt ?? now,
       transactionTime: passedMeal?.createdAt ?? now,
+      imageFile: passedMeal?.imageFile,
     );
 
     /// Update [TextEditingController] text
@@ -139,6 +146,7 @@ class MealController
     bool? timeEditMode,
     DateTime? transactionDate,
     DateTime? transactionTime,
+    File? imageFile,
     bool? expanded,
   }) => value = (
     wordsValid: wordsValid ?? value.wordsValid,
@@ -147,6 +155,7 @@ class MealController
     timeEditMode: timeEditMode ?? value.timeEditMode,
     transactionDate: transactionDate ?? value.transactionDate,
     transactionTime: transactionTime ?? value.transactionTime,
+    imageFile: imageFile ?? value.imageFile,
     expanded: expanded ?? value.expanded,
   );
 }

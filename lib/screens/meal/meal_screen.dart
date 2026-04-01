@@ -123,6 +123,7 @@ class _MealScreenState extends State<MealScreen> {
                           (
                             words: null,
                             dateTime: null,
+                            imageFile: null,
                             deleteMeal: true,
                           ),
                         );
@@ -492,6 +493,7 @@ class _MealScreenState extends State<MealScreen> {
                               transactionDate: mealState.transactionDate,
                               transactionTime: mealState.transactionTime,
                             ),
+                            imageFile: mealState.imageFile,
                             deleteMeal: false,
                           ),
                         );
