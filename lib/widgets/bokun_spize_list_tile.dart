@@ -68,8 +68,8 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
         ),
         color: getWhiteOrBlackColor(
           backgroundColor: context.colors.delete,
-          whiteColor: BokunSpizeColors.whiteBackground,
-          blackColor: BokunSpizeColors.black,
+          whiteColor: context.colors.listTileBackground,
+          blackColor: context.colors.text,
         ),
         duotoneSecondaryColor: context.colors.delete,
         size: 20,
@@ -646,8 +646,8 @@ class BokunSpizeListTileNutritionalValue extends StatelessWidget {
                   style: context.textStyles.homeMealTime.copyWith(
                     color: getWhiteOrBlackColor(
                       backgroundColor: backgroundColor,
-                      whiteColor: BokunSpizeColors.whiteBackground,
-                      blackColor: BokunSpizeColors.black,
+                      whiteColor: context.colors.listTileBackground,
+                      blackColor: context.colors.text,
                     ),
                   ),
                 ),
@@ -656,8 +656,8 @@ class BokunSpizeListTileNutritionalValue extends StatelessWidget {
           style: context.textStyles.homeMealKcal.copyWith(
             color: getWhiteOrBlackColor(
               backgroundColor: backgroundColor,
-              whiteColor: BokunSpizeColors.whiteBackground,
-              blackColor: BokunSpizeColors.black,
+              whiteColor: context.colors.listTileBackground,
+              blackColor: context.colors.text,
             ),
           ),
           maxLines: isLoading ? null : 1,

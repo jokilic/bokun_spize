@@ -213,8 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: context.colors.buttonPrimary,
               foregroundColor: getWhiteOrBlackColor(
                 backgroundColor: context.colors.buttonPrimary,
-                whiteColor: BokunSpizeColors.whiteBackground,
-                blackColor: BokunSpizeColors.black,
+                whiteColor: context.colors.buttonBackground,
+                blackColor: context.colors.text,
               ),
               overlayColor: context.colors.buttonBackground,
               disabledBackgroundColor: context.colors.disabledBackground,

@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:watch_it/watch_it.dart';
 
+import 'constants/durations.dart';
 import 'firebase_options.dart';
 import 'screens/home/home_screen.dart';
 import 'theme/colors.dart';
@@ -79,9 +80,15 @@ class BokunSpizeWidget extends WatchingWidget {
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    themeMode: ThemeMode.dark,
     theme: BokunSpizeTheme.light(
-      primaryColor: BokunSpizeColors.green,
+      primaryColor: BokunSpizeColors.primaryLight,
     ),
+    darkTheme: BokunSpizeTheme.dark(
+      primaryColor: BokunSpizeColors.primaryDark,
+    ),
+    themeAnimationCurve: Curves.easeIn,
+    themeAnimationDuration: BokunSpizeDurations.animation,
     builder: (_, child) {
       final appWidget =
           child ??

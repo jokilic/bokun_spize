@@ -507,8 +507,8 @@ class _MealScreenState extends State<MealScreen> {
                   backgroundColor: context.colors.buttonPrimary,
                   foregroundColor: getWhiteOrBlackColor(
                     backgroundColor: context.colors.buttonPrimary,
-                    whiteColor: BokunSpizeColors.whiteBackground,
-                    blackColor: BokunSpizeColors.black,
+                    whiteColor: context.colors.buttonBackground,
+                    blackColor: context.colors.text,
                   ),
                   overlayColor: context.colors.listTileBackground,
                   disabledBackgroundColor: context.colors.disabledBackground,
