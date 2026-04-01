@@ -38,7 +38,6 @@ class MealController
   ///
 
   late final textEditingController = TextEditingController();
-
   late final imagePicker = ImagePicker();
 
   ///

@@ -1,6 +1,4 @@
 - [ ] Implement [CalorieScreen] with `TDEE`, `BMR`, etc.
-- [ ] Add taking photo of meal
-- [ ] Make [MealScreen] open in a cupertino sheet
 - [ ] AI should trigger when having text or image (make text nullable)
 - [ ] Date & time open when pressing little icon
 - [ ] Make image widget visible and pressing it will open camera

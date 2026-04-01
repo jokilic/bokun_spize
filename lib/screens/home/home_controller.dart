@@ -73,21 +73,6 @@ class HomeController {
     /// Show [MealScreen] for adding meal
     final result = await showCupertinoSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
       context: context,
-      // backgroundColor: context.colors.scaffoldBackground,
-      // barrierColor: BokunSpizeColors.lightThemeText.withValues(alpha: 0.7),
-      // constraints: BoxConstraints(
-      //   maxHeight: MediaQuery.of(context).size.height * 0.875,
-      // ),
-      // isScrollControlled: true,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(8),
-      // ),
-      // sheetAnimationStyle: const AnimationStyle(
-      //   duration: BokunSpizeDurations.animation,
-      //   reverseDuration: BokunSpizeDurations.animation,
-      //   curve: Curves.easeIn,
-      //   reverseCurve: Curves.easeIn,
-      // ),
       builder: (context) => MealScreen(
         passedMeal: passedMeal,
       ),
@@ -113,13 +98,13 @@ class HomeController {
     }
     /// User added a new `meal`
     else {
-      /// User entered `words` and `dateTime`
-      if ((result?.words?.isNotEmpty ?? false) && result?.dateTime != null) {
+      /// user entered `words` or `imageFile` and `dateTime` exists
+      if (((result?.words?.isNotEmpty ?? false) || result?.imageFile != null) && result?.dateTime != null) {
         /// Trigger AI which generates a new `meal` and stores into [Hive]
         await triggerAI(
-          textPrompt: result!.words!,
-          imageFile: result.imageFile,
-          dateTime: result.dateTime!,
+          textPrompt: result?.words,
+          imageFile: result?.imageFile,
+          dateTime: result!.dateTime!,
         );
       }
     }
@@ -127,21 +112,18 @@ class HomeController {
 
   /// Triggers AI with `prompt`
   Future<void> triggerAI({
-    required String textPrompt,
+    required String? textPrompt,
     required File? imageFile,
     required DateTime dateTime,
   }) async {
-    final trimmedPrompt = textPrompt.trim();
-
-    if (trimmedPrompt.isEmpty) {
-      return;
-    }
+    /// Get `trimmedPrompt` or photo emoji if `textPrompt` is null
+    final trimmedPrompt = textPrompt?.trim() ?? '📷';
 
     /// Create `loadingMeal` with loading state
     final loadingMeal = Meal(
       id: const Uuid().v1(),
       createdAt: dateTime,
-      originalText: trimmedPrompt.trim(),
+      originalText: trimmedPrompt,
       isLoading: true,
     );
 

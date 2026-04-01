@@ -222,7 +222,6 @@ JSON structure to follow strictly:
     try {
       final generativeModels = <GenerativeModel>[];
 
-      /// Keep the order intact so `triggerAI()` can use this list as a fallback chain
       for (final model in modelNames) {
         generativeModels.add(
           initializeGenerativeModel(
@@ -251,14 +250,17 @@ JSON structure to follow strictly:
 
   /// Triggers `AI` with `prompt` and all necessary data
   Future<({String? aiResult, List<String>? errors})> triggerAI({
-    required String textPrompt,
+    required String? textPrompt,
     required File? imageFile,
   }) async {
     /// Create `errors` list
     final errors = <String>[];
 
     /// Generate a text prompt
-    final textPart = TextPart(textPrompt);
+    TextPart? textPart;
+    if (textPrompt != null) {
+      textPart = TextPart(textPrompt);
+    }
 
     /// Generate an image prompt
     InlineDataPart? imagePart;
@@ -267,11 +269,17 @@ JSON structure to follow strictly:
       imagePart = InlineDataPart('image/jpeg', image);
     }
 
+    /// Text and image don't exist, return
+    if (textPart == null && imagePart == null) {
+      errors.add('Nema teksta ni slike');
+      return (aiResult: null, errors: errors);
+    }
+
     /// Generate `contents` to pass into `AI`
     final contents = [
       Content.multi(
         [
-          textPart,
+          if (textPart != null) textPart,
           if (imagePart != null) imagePart,
         ],
       ),
