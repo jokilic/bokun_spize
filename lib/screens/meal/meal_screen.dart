@@ -16,6 +16,7 @@ import '../../models/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../widgets/bokun_spize_app_bar.dart';
 import '../../widgets/bokun_spize_little_button.dart';
 import '../../widgets/bokun_spize_text_field.dart';
 import 'meal_controller.dart';
@@ -71,236 +72,310 @@ class _MealScreenState extends State<MealScreen> {
     final hasMeal = widget.passedMeal != null;
 
     final title = hasMeal ? 'Uredi obrok' : 'Novi obrok';
+    final subtitle = hasMeal ? 'Uredi već postojeći obrok' : 'Dodaj novi obrok u svoj dnevnik';
     final buttonText = hasMeal ? 'Uredi obrok' : 'Dodaj obrok';
 
     final description = hasMeal ? 'Ne možeš uređivati opis obroka, jedino datum i vrijeme.' : 'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.';
 
-    return Material(
-      color: context.colors.scaffoldBackground,
-      borderRadius: BorderRadius.circular(8),
-      child: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(top: 16),
+    final imageText = hasMeal ? 'Ne možeš mijenjati sliku obroka, jedino datum i vrijeme.' : 'Dodaj sliku obroka uz opis, tako će procjena biti preciznija.';
+
+    return Scaffold(
+      body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        children: [
+        slivers: [
+          ///
+          /// APP BAR
+          ///
+          BokunSpizeAppBar(
+            smallTitle: title,
+            bigTitle: title,
+            bigSubtitle: subtitle,
+            leadingWidget: IconButton(
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                Navigator.of(context).pop();
+              },
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                highlightColor: context.colors.buttonBackground,
+              ),
+              icon: PhosphorIcon(
+                PhosphorIcons.arrowLeft(
+                  PhosphorIconsStyle.duotone,
+                ),
+                color: context.colors.text,
+                duotoneSecondaryColor: context.colors.buttonPrimary,
+                size: 28,
+              ),
+            ),
+            actionWidgets: [
+              IconButton(
+                onPressed: () async {
+                  unawaited(
+                    HapticFeedback.lightImpact(),
+                  );
+
+                  /// Trigger delete & dismiss sheet
+                  Navigator.of(context).pop(
+                    (
+                      words: null,
+                      dateTime: null,
+                      imageFile: null,
+                      deleteMeal: true,
+                    ),
+                  );
+                },
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  highlightColor: context.colors.buttonBackground,
+                ),
+                icon: PhosphorIcon(
+                  PhosphorIcons.trash(
+                    PhosphorIconsStyle.duotone,
+                  ),
+                  color: context.colors.text,
+                  duotoneSecondaryColor: context.colors.delete,
+                  size: 28,
+                ),
+              ),
+            ],
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 4),
+          ),
+
           ///
           /// NEW MEAL TITLE & BUTTONS
           ///
-          Padding(
-            padding: const EdgeInsets.only(left: 28, right: 20),
-            child: Row(
-              children: [
-                ///
-                /// TITLE
-                ///
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      title,
-                      style: context.textStyles.homeTitle,
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(28, 2, 20, 0),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  ///
+                  /// TITLE
+                  ///
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'Opis obroka',
+                        style: context.textStyles.homeTitle,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 4),
+                  const SizedBox(width: 4),
 
-                ///
-                /// VOICE OR DELETE BUTTON
-                ///
-                BokunSpizeLittleButton(
-                  onPressed: () async {
-                    unawaited(
-                      HapticFeedback.lightImpact(),
-                    );
+                  ///
+                  /// VOICE BUTTON
+                  ///
+                  if (!hasMeal)
+                    BokunSpizeLittleButton(
+                      onPressed: () async {
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
 
-                    /// New meal, trigger speech to text
-                    if (!hasMeal) {
-                      await mealController.onSpeechToTextPressed(
-                        locale: 'hr',
-                        speechToTextAvailable: available,
-                      );
-                    }
-                    /// Meal exists, trigger delete & dismiss sheet
-                    else {
-                      Navigator.of(context).pop(
-                        (
-                          words: null,
-                          dateTime: null,
-                          imageFile: null,
-                          deleteMeal: true,
-                        ),
-                      );
-                    }
-                  },
-                  icon: hasMeal
-                      ? PhosphorIcons.trash(
-                          PhosphorIconsStyle.duotone,
-                        )
-                      : PhosphorIcons.microphone(
-                          PhosphorIconsStyle.duotone,
-                        ),
-                  backgroundColor: isListening ? context.colors.buttonPrimary : Colors.transparent,
-                  duotoneSecondaryColor: hasMeal ? context.colors.delete : null,
-                ),
-                const SizedBox(width: 4),
-
-                ///
-                /// GALLERY BUTTON
-                ///
-                BokunSpizeLittleButton(
-                  onPressed: () async {
-                    unawaited(
-                      HapticFeedback.lightImpact(),
-                    );
-
-                    /// Trigger camera
-                    await mealController.onGalleryPressed();
-                  },
-                  icon: PhosphorIcons.images(
-                    PhosphorIconsStyle.duotone,
-                  ),
-                ),
-                const SizedBox(width: 4),
-
-                ///
-                /// CAMERA BUTTON
-                ///
-                BokunSpizeLittleButton(
-                  onPressed: () async {
-                    unawaited(
-                      HapticFeedback.lightImpact(),
-                    );
-
-                    /// Trigger camera
-                    await mealController.onCameraPressed();
-                  },
-                  icon: PhosphorIcons.camera(
-                    PhosphorIconsStyle.duotone,
-                  ),
-                ),
-              ],
+                        /// Trigger speech to text
+                        await mealController.onSpeechToTextPressed(
+                          locale: 'hr',
+                          speechToTextAvailable: available,
+                        );
+                      },
+                      icon: PhosphorIcons.microphone(
+                        PhosphorIconsStyle.duotone,
+                      ),
+                      backgroundColor: isListening ? context.colors.buttonPrimary : Colors.transparent,
+                    ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 4),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 4),
+          ),
 
           ///
           /// TEXT FIELD
           ///
-          Padding(
+          SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Material(
-              color: context.colors.scaffoldBackground,
-              borderRadius: BorderRadius.circular(8),
-              child: InkWell(
-                onLongPress: hasMeal
-                    ? () {
-                        HapticFeedback.lightImpact();
-
-                        /// Get text from [TextEditingController]
-                        final text = mealController.textEditingController.text.trim();
-
-                        /// No text, return
-                        if (text.isEmpty) {
-                          return;
-                        }
-
-                        /// Copy text to clipboard
-                        Clipboard.setData(
-                          ClipboardData(
-                            text: text,
-                          ),
-                        );
-                      }
-                    : null,
-                highlightColor: context.colors.listTileBackground,
+            sliver: SliverToBoxAdapter(
+              child: Material(
+                color: context.colors.scaffoldBackground,
                 borderRadius: BorderRadius.circular(8),
-                child: BokunSpizeTextField(
-                  enabled: !hasMeal,
-                  controller: mealController.textEditingController,
-                  labelText: 'Što si imao za obrok?',
-                  keyboardType: TextInputType.multiline,
-                  minLines: null,
-                  maxLines: 3,
-                  textAlign: TextAlign.left,
-                  textCapitalization: TextCapitalization.sentences,
-                  textInputAction: TextInputAction.newline,
+                child: InkWell(
+                  onLongPress: hasMeal
+                      ? () {
+                          HapticFeedback.lightImpact();
+
+                          /// Get text from [TextEditingController]
+                          final text = mealController.textEditingController.text.trim();
+
+                          /// No text, return
+                          if (text.isEmpty) {
+                            return;
+                          }
+
+                          /// Copy text to clipboard
+                          Clipboard.setData(
+                            ClipboardData(
+                              text: text,
+                            ),
+                          );
+                        }
+                      : null,
+                  highlightColor: context.colors.listTileBackground,
+                  borderRadius: BorderRadius.circular(8),
+                  child: BokunSpizeTextField(
+                    enabled: !hasMeal,
+                    controller: mealController.textEditingController,
+                    labelText: 'Što si imao za obrok?',
+                    keyboardType: TextInputType.multiline,
+                    minLines: null,
+                    maxLines: 3,
+                    textAlign: TextAlign.left,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.newline,
+                  ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 8),
+          ),
 
           ///
           /// TEXT
           ///
-          Padding(
+          SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Text(
-              description,
-              style: context.textStyles.homeMealNote,
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                description,
+                style: context.textStyles.homeMealNote,
+              ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 12),
+          ),
 
           ///
           /// IMAGE
           ///
-          AnimatedSize(
-            alignment: Alignment.topLeft,
-            duration: BokunSpizeDurations.animation,
-            curve: Curves.easeIn,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: mealState.imageFile != null
-                  ? [
-                      ///
-                      /// TITLE & DELETE BUTTON
-                      ///
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28, right: 20),
-                        child: Row(
-                          children: [
-                            ///
-                            /// TITLE
-                            ///
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                child: Text(
-                                  'Slika obroka',
-                                  style: context.textStyles.homeTitle,
-                                ),
-                              ),
+          SliverToBoxAdapter(
+            child: AnimatedSize(
+              alignment: Alignment.topLeft,
+              duration: BokunSpizeDurations.animation,
+              curve: Curves.easeIn,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ///
+                  /// TITLE & BUTTONS
+                  ///
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28, right: 20),
+                    child: Row(
+                      children: [
+                        ///
+                        /// TITLE
+                        ///
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              'Slika obroka',
+                              style: context.textStyles.homeTitle,
                             ),
-                            const SizedBox(width: 4),
-
-                            ///
-                            /// DELETE BUTTON
-                            ///
-                            BokunSpizeLittleButton(
-                              onPressed: () async {
-                                unawaited(
-                                  HapticFeedback.lightImpact(),
-                                );
-
-                                mealController.updateState(
-                                  imageFile: null,
-                                );
-                              },
-                              icon: PhosphorIcons.trash(
-                                PhosphorIconsStyle.duotone,
-                              ),
-                              duotoneSecondaryColor: context.colors.delete,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
+                        const SizedBox(width: 4),
 
-                      ///
-                      /// IMAGE
-                      ///
-                      Container(
+                        if (!hasMeal) ...[
+                          ///
+                          /// GALLERY BUTTON
+                          ///
+                          BokunSpizeLittleButton(
+                            onPressed: () async {
+                              unawaited(
+                                HapticFeedback.lightImpact(),
+                              );
+
+                              /// Trigger camera
+                              await mealController.onGalleryPressed();
+                            },
+                            icon: PhosphorIcons.images(
+                              PhosphorIconsStyle.duotone,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+
+                          ///
+                          /// CAMERA BUTTON
+                          ///
+                          BokunSpizeLittleButton(
+                            onPressed: () async {
+                              unawaited(
+                                HapticFeedback.lightImpact(),
+                              );
+
+                              /// Trigger camera
+                              await mealController.onCameraPressed();
+                            },
+                            icon: PhosphorIcons.camera(
+                              PhosphorIconsStyle.duotone,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+
+                        ///
+                        /// DELETE BUTTON
+                        ///
+                        if (!hasMeal && mealState.imageFile != null)
+                          BokunSpizeLittleButton(
+                            onPressed: () async {
+                              unawaited(
+                                HapticFeedback.lightImpact(),
+                              );
+
+                              mealController.updateState(
+                                imageFile: null,
+                              );
+                            },
+                            icon: PhosphorIcons.trash(
+                              PhosphorIconsStyle.duotone,
+                            ),
+                            duotoneSecondaryColor: context.colors.delete,
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+
+                  ///
+                  /// IMAGE
+                  ///
+                  Material(
+                    color: context.colors.scaffoldBackground,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      onTap: !hasMeal && mealState.imageFile == null
+                          ? () async {
+                              unawaited(
+                                HapticFeedback.lightImpact(),
+                              );
+
+                              /// Trigger camera
+                              await mealController.onCameraPressed();
+                            }
+                          : null,
+                      highlightColor: context.colors.listTileBackground,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -309,126 +384,112 @@ class _MealScreenState extends State<MealScreen> {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Image.file(
-                          mealState.imageFile!,
-                          height: 160,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            height: 160,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: context.colors.text,
-                                width: 1.5,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: PhosphorIcon(
-                              PhosphorIcons.imageBroken(
-                                PhosphorIconsStyle.duotone,
-                              ),
-                              color: context.colors.text,
-                              size: 56,
-                              duotoneSecondaryColor: context.colors.delete,
-                            ),
-                          ),
+                        child: AnimatedSwitcher(
+                          duration: BokunSpizeDurations.animation,
+                          reverseDuration: BokunSpizeDurations.animation,
+                          switchInCurve: Curves.easeIn,
+                          switchOutCurve: Curves.easeIn,
+                          child: mealState.imageFile != null
+                              ? Image.file(
+                                  key: ValueKey(mealState.imageFile!),
+                                  mealState.imageFile!,
+                                  height: 160,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: context.colors.delete.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                    ),
+                                    height: 160,
+                                    width: double.infinity,
+                                    child: PhosphorIcon(
+                                      PhosphorIcons.imageBroken(
+                                        PhosphorIconsStyle.duotone,
+                                      ),
+                                      color: context.colors.text,
+                                      size: 56,
+                                      duotoneSecondaryColor: context.colors.delete,
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: !hasMeal ? context.colors.listTileBackground : Colors.transparent,
+                                  ),
+                                  height: 160,
+                                  width: double.infinity,
+                                  child: PhosphorIcon(
+                                    !hasMeal && mealState.imageFile == null
+                                        ? PhosphorIcons.bowlFood(
+                                            PhosphorIconsStyle.duotone,
+                                          )
+                                        : PhosphorIcons.x(
+                                            PhosphorIconsStyle.duotone,
+                                          ),
+                                    color: context.colors.text,
+                                    size: 56,
+                                    duotoneSecondaryColor: context.colors.buttonPrimary,
+                                  ),
+                                ),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
 
-                      ///
-                      /// TEXT
-                      ///
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
-                        child: Text(
-                          'Dodana slika će pomoći u procjeni obroka.',
-                          style: context.textStyles.homeMealNote,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ]
-                  : [],
+                  ///
+                  /// TEXT
+                  ///
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: Text(
+                      imageText,
+                      style: context.textStyles.homeMealNote,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
 
           ///
           /// DATE TITLE & EXPAND BUTTON
           ///
-          Padding(
+          SliverPadding(
             padding: const EdgeInsets.only(left: 28, right: 20),
-            child: Row(
-              children: [
-                ///
-                /// TITLE
-                ///
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      'Datum i vrijeme',
-                      style: context.textStyles.homeTitle,
-                    ),
-                  ),
-                ),
-
-                ///
-                /// EXPAND BUTTON
-                ///
-                const SizedBox(width: 4),
-                Material(
-                  color: context.colors.scaffoldBackground,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      mealController.updateState(
-                        expanded: !mealController.value.expanded,
-                      );
-                    },
-                    highlightColor: context.colors.listTileBackground,
-                    borderRadius: BorderRadius.circular(8),
-                    child: AnimatedContainer(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeIn,
-                      padding: const EdgeInsets.all(8),
-                      child: PhosphorIcon(
-                        mealState.expanded
-                            ? PhosphorIcons.caretUp(
-                                PhosphorIconsStyle.duotone,
-                              )
-                            : PhosphorIcons.caretDown(
-                                PhosphorIconsStyle.duotone,
-                              ),
-                        color: context.colors.text,
-                        duotoneSecondaryColor: context.colors.buttonPrimary,
-                        size: 16,
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  ///
+                  /// TITLE
+                  ///
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'Datum i vrijeme',
+                        style: context.textStyles.homeTitle,
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 4),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 4),
+          ),
 
           ///
           /// DATE & TIME
           ///
-          AnimatedCrossFade(
-            alignment: Alignment.centerLeft,
-            duration: BokunSpizeDurations.animation,
-            firstCurve: Curves.easeIn,
-            secondCurve: Curves.easeIn,
-            sizeCurve: Curves.easeIn,
-            crossFadeState: mealState.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            firstChild: const SizedBox.shrink(),
-            secondChild: Column(
+          SliverToBoxAdapter(
+            child: Column(
               children: [
                 ///
                 /// DATE
@@ -585,63 +646,62 @@ class _MealScreenState extends State<MealScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 8),
+        ],
+      ),
 
-          ///
-          /// ADD BUTTON
-          ///
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.viewInsetsOf(context).bottom,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: mealState.wordsValid
-                    ? () {
-                        HapticFeedback.lightImpact();
+      ///
+      /// ADD BUTTON
+      ///
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: mealState.wordsValid
+                ? () {
+                    HapticFeedback.lightImpact();
 
-                        /// Get `words` from [TextEditingController]
-                        final words = mealController.textEditingController.text.trim();
+                    /// Get `words` from [TextEditingController]
+                    final words = mealController.textEditingController.text.trim();
 
-                        /// Dismiss sheet
-                        Navigator.of(context).pop(
-                          (
-                            words: words,
-                            dateTime: getTransactionDateTime(
-                              transactionDate: mealState.transactionDate,
-                              transactionTime: mealState.transactionTime,
-                            ),
-                            imageFile: mealState.imageFile,
-                            deleteMeal: false,
-                          ),
-                        );
-                      }
-                    : null,
-                style: FilledButton.styleFrom(
-                  padding: EdgeInsets.fromLTRB(
-                    24,
-                    28,
-                    24,
-                    MediaQuery.paddingOf(context).bottom + 12,
-                  ),
-                  backgroundColor: context.colors.buttonPrimary,
-                  foregroundColor: getWhiteOrBlackColor(
-                    backgroundColor: context.colors.buttonPrimary,
-                    whiteColor: BokunSpizeColors.darkThemeText,
-                    blackColor: BokunSpizeColors.lightThemeText,
-                  ),
-                  overlayColor: context.colors.listTileBackground,
-                  disabledBackgroundColor: context.colors.disabledBackground,
-                  disabledForegroundColor: context.colors.disabledText,
-                ),
-                child: Text(
-                  buttonText.toUpperCase(),
-                ),
+                    /// Dismiss sheet
+                    Navigator.of(context).pop(
+                      (
+                        words: words,
+                        dateTime: getTransactionDateTime(
+                          transactionDate: mealState.transactionDate,
+                          transactionTime: mealState.transactionTime,
+                        ),
+                        imageFile: mealState.imageFile,
+                        deleteMeal: false,
+                      ),
+                    );
+                  }
+                : null,
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.fromLTRB(
+                24,
+                28,
+                24,
+                MediaQuery.paddingOf(context).bottom + 12,
               ),
+              backgroundColor: context.colors.buttonPrimary,
+              foregroundColor: getWhiteOrBlackColor(
+                backgroundColor: context.colors.buttonPrimary,
+                whiteColor: BokunSpizeColors.darkThemeText,
+                blackColor: BokunSpizeColors.lightThemeText,
+              ),
+              overlayColor: context.colors.listTileBackground,
+              disabledBackgroundColor: context.colors.disabledBackground,
+              disabledForegroundColor: context.colors.disabledText,
+            ),
+            child: Text(
+              buttonText.toUpperCase(),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

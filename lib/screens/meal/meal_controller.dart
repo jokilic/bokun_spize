@@ -9,10 +9,7 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/null_state.dart';
 
 class MealController
-    extends
-        ValueNotifier<
-          ({bool wordsValid, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, File? imageFile, bool expanded})
-        >
+    extends ValueNotifier<({bool wordsValid, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, File? imageFile})>
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -33,7 +30,6 @@ class MealController
            transactionDate: DateTime.now(),
            transactionTime: DateTime.now(),
            imageFile: null,
-           expanded: false,
          ),
        );
 
@@ -191,7 +187,6 @@ class MealController
     DateTime? transactionDate,
     DateTime? transactionTime,
     Object? imageFile = nullStateNoChange,
-    bool? expanded,
   }) => value = (
     wordsValid: wordsValid ?? value.wordsValid,
     speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
@@ -200,6 +195,5 @@ class MealController
     transactionDate: transactionDate ?? value.transactionDate,
     transactionTime: transactionTime ?? value.transactionTime,
     imageFile: identical(imageFile, nullStateNoChange) ? value.imageFile : imageFile as File?,
-    expanded: expanded ?? value.expanded,
   );
 }

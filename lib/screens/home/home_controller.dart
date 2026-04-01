@@ -1,18 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../constants/durations.dart';
 import '../../models/food.dart';
 import '../../models/meal.dart';
 import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/speech_to_text_service.dart';
-import '../../theme/colors.dart';
-import '../../theme/extensions.dart';
 import '../meal/meal_screen.dart';
 
 class HomeController {
@@ -73,23 +71,23 @@ class HomeController {
     Meal? passedMeal,
   }) async {
     /// Show [MealScreen] for adding meal
-    final result = await showModalBottomSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
+    final result = await showCupertinoSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
       context: context,
-      backgroundColor: context.colors.scaffoldBackground,
-      barrierColor: BokunSpizeColors.lightThemeText.withValues(alpha: 0.7),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.875,
-      ),
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      sheetAnimationStyle: const AnimationStyle(
-        duration: BokunSpizeDurations.animation,
-        reverseDuration: BokunSpizeDurations.animation,
-        curve: Curves.easeIn,
-        reverseCurve: Curves.easeIn,
-      ),
+      // backgroundColor: context.colors.scaffoldBackground,
+      // barrierColor: BokunSpizeColors.lightThemeText.withValues(alpha: 0.7),
+      // constraints: BoxConstraints(
+      //   maxHeight: MediaQuery.of(context).size.height * 0.875,
+      // ),
+      // isScrollControlled: true,
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(8),
+      // ),
+      // sheetAnimationStyle: const AnimationStyle(
+      //   duration: BokunSpizeDurations.animation,
+      //   reverseDuration: BokunSpizeDurations.animation,
+      //   curve: Curves.easeIn,
+      //   reverseCurve: Curves.easeIn,
+      // ),
       builder: (context) => MealScreen(
         passedMeal: passedMeal,
       ),

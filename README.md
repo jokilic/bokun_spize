@@ -1,5 +1,12 @@
 - [ ] Implement [CalorieScreen] with `TDEE`, `BMR`, etc.
 - [ ] Add taking photo of meal
+- [ ] Make [MealScreen] open in a cupertino sheet
+- [ ] AI should trigger when having text or image (make text nullable)
+- [ ] Date & time open when pressing little icon
+- [ ] Make image widget visible and pressing it will open camera
+- [ ] Put little gallery icon next to image title
+- [ ] Randomize food icon in [MealScreen]
+- [ ] Move meal delete to [AppBar]
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
