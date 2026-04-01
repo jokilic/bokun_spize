@@ -1,5 +1,6 @@
 - [ ] Implement [CalorieScreen] with `TDEE`, `BMR`, etc.
 - [ ] Check `https://pub.dev/packages/flutter_gemma`
+- [ ] Add taking photo of meal
 
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 

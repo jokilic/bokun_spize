@@ -10,6 +10,7 @@ import '../../models/nutrition.dart';
 import '../../services/ai_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../theme/colors.dart';
 import '../../theme/extensions.dart';
 import '../meal/meal_screen.dart';
 
@@ -74,7 +75,7 @@ class HomeController {
     final result = await showModalBottomSheet<({String? words, DateTime? dateTime, bool deleteMeal})>(
       context: context,
       backgroundColor: context.colors.scaffoldBackground,
-      barrierColor: context.colors.text.withValues(alpha: 0.5),
+      barrierColor: BokunSpizeColors.lightThemeText.withValues(alpha: 0.7),
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.875,
       ),

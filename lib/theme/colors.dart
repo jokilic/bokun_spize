@@ -13,22 +13,23 @@ abstract class BokunSpizeColors {
   /// DARK THEME
   ///
 
-  static const darkThemeText = Color(0xFF171717);
-  static const darkThemeBackground = Color(0xFFE8E8E8);
-  static const darkThemeScaffold = Color(0xFFDADADA);
+  static const darkThemeText = Color(0xFFFFFFFF);
+  static const darkThemeBackground = Color(0xFF262837);
+  static const darkThemeScaffold = Color(0xFF1F1D2C);
 
   ///
   /// PRIMARY COLORS
   ///
 
   static const primaryLight = green;
-  static const primaryDark = purple;
+  static const primaryDark = darkPurple;
 
   static const green = Color(0xFF499F68);
   static const red = Color(0xFFEE6055);
   static const blue = Color(0xFF3DA5D9);
   static const orange = Color(0xFFDE9151);
   static const purple = Color(0xFFCBBAED);
+  static const darkPurple = Color(0xFF4F5094);
 }
 
 class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension> {
