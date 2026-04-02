@@ -110,35 +110,36 @@ class _MealScreenState extends State<MealScreen> {
               ),
             ),
             actionWidgets: [
-              IconButton(
-                onPressed: () async {
-                  unawaited(
-                    HapticFeedback.lightImpact(),
-                  );
+              if (hasMeal)
+                IconButton(
+                  onPressed: () async {
+                    unawaited(
+                      HapticFeedback.lightImpact(),
+                    );
 
-                  /// Trigger delete & dismiss sheet
-                  Navigator.of(context).pop(
-                    (
-                      words: null,
-                      dateTime: null,
-                      imageFile: null,
-                      deleteMeal: true,
-                    ),
-                  );
-                },
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  highlightColor: context.colors.buttonBackground,
-                ),
-                icon: PhosphorIcon(
-                  PhosphorIcons.trash(
-                    PhosphorIconsStyle.duotone,
+                    /// Trigger delete & dismiss sheet
+                    Navigator.of(context).pop(
+                      (
+                        words: null,
+                        dateTime: null,
+                        imageFile: null,
+                        deleteMeal: true,
+                      ),
+                    );
+                  },
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    highlightColor: context.colors.buttonBackground,
                   ),
-                  color: context.colors.text,
-                  duotoneSecondaryColor: context.colors.delete,
-                  size: 28,
+                  icon: PhosphorIcon(
+                    PhosphorIcons.trash(
+                      PhosphorIconsStyle.duotone,
+                    ),
+                    color: context.colors.text,
+                    duotoneSecondaryColor: context.colors.delete,
+                    size: 28,
+                  ),
                 ),
-              ),
             ],
           ),
           const SliverToBoxAdapter(
