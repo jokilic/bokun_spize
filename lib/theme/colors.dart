@@ -24,7 +24,7 @@ abstract class BokunSpizeColors {
   static const primaryLight = green;
   static const primaryDark = darkPurple;
 
-  static const green = Color(0xFF499F68);
+  static const green = Color(0xFF3B7D5E);
   static const red = Color(0xFFEE6055);
   static const blue = Color(0xFF3DA5D9);
   static const orange = Color(0xFFDE9151);

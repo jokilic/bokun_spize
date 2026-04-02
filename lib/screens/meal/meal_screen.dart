@@ -408,28 +408,31 @@ class _MealScreenState extends State<MealScreen> {
                             switchInCurve: Curves.easeIn,
                             switchOutCurve: Curves.easeIn,
                             child: mealState.imageFile != null
-                                ? Image.file(
-                                    key: ValueKey(mealState.imageFile!),
-                                    mealState.imageFile!,
-                                    height: 160,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: context.colors.delete.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      key: ValueKey(mealState.imageFile!),
+                                      mealState.imageFile!,
                                       height: 160,
                                       width: double.infinity,
-                                      child: PhosphorIcon(
-                                        PhosphorIcons.imageBroken(
-                                          PhosphorIconsStyle.duotone,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          color: context.colors.delete.withValues(
+                                            alpha: 0.2,
+                                          ),
                                         ),
-                                        color: context.colors.text,
-                                        size: 56,
-                                        duotoneSecondaryColor: context.colors.delete,
+                                        height: 160,
+                                        width: double.infinity,
+                                        child: PhosphorIcon(
+                                          PhosphorIcons.imageBroken(
+                                            PhosphorIconsStyle.duotone,
+                                          ),
+                                          color: context.colors.text,
+                                          size: 56,
+                                          duotoneSecondaryColor: context.colors.delete,
+                                        ),
                                       ),
                                     ),
                                   )

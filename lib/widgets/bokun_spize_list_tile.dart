@@ -99,9 +99,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     final isLoading = widget.meal.isLoading;
     final hasError = widget.meal.errors?.isNotEmpty ?? false;
 
-    final titleText = isLoading ? widget.meal.originalText ?? 'Dodana je slika obroka' : widget.meal.name ?? 'Dogodila se greška';
-
-    final originalText = widget.meal.originalText ?? 'Dodana je slika obroka';
+    final titleText = isLoading ? widget.meal.originalText ?? '📷' : widget.meal.name ?? 'Dogodila se greška';
 
     final leadingColor = isLoading
         ? Colors.transparent
@@ -443,7 +441,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                 /// FOODS TITLE
                                                 ///
                                                 Text(
-                                                  'Hrana',
+                                                  'Namirnice',
                                                   style: context.textStyles.homeTitleBold,
                                                 ),
                                                 const SizedBox(height: 2),
@@ -562,22 +560,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                                   separatorBuilder: (_, __) => const SizedBox(height: 4),
                                                 ),
                                               ],
-                                              const SizedBox(height: 8),
                                             ],
-
-                                            ///
-                                            /// ORIGINAL TEXT TITLE
-                                            ///
-                                            Text(
-                                              'Opis',
-                                              style: context.textStyles.homeTitleBold,
-                                            ),
-                                            const SizedBox(height: 4),
-
-                                            Text(
-                                              originalText,
-                                              style: context.textStyles.homeMealNote,
-                                            ),
                                           ],
                                         )
                                       : const SizedBox.shrink(),
