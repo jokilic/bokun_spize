@@ -12,7 +12,6 @@ import '../../../../theme/colors.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/color.dart';
 import '../../constants/durations.dart';
-import '../../constants/icons.dart';
 import '../../models/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
@@ -429,7 +428,9 @@ class _MealScreenState extends State<MealScreen> {
                                   width: double.infinity,
                                   child: PhosphorIcon(
                                     !hasMeal && mealState.imageFile == null
-                                        ? BokunSpizeIcons.getRandomFoodIcon()
+                                        ? PhosphorIcons.bowlFood(
+                                            PhosphorIconsStyle.duotone,
+                                          )
                                         : PhosphorIcons.x(
                                             PhosphorIconsStyle.duotone,
                                           ),
