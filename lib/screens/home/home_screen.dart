@@ -132,15 +132,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (item is Meal) {
                     return BokunSpizeListTile(
                       key: ValueKey(item.id),
-                      onLongPressed: () async {
-                        unawaited(
-                          HapticFeedback.lightImpact(),
-                        );
-                        await homeController.onMealPressed(
-                          context,
-                          passedMeal: item,
-                        );
-                      },
+                      onLongPressed: () => homeController.onMealPressed(
+                        context,
+                        passedMeal: item,
+                      ),
                       onDeletePressed: () async {
                         unawaited(
                           HapticFeedback.lightImpact(),
