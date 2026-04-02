@@ -80,7 +80,6 @@ class BokunSpizeWidget extends WatchingWidget {
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    themeMode: ThemeMode.light,
     theme: BokunSpizeTheme.light(
       primaryColor: BokunSpizeColors.primaryLight,
     ),
