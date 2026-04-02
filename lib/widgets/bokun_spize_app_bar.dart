@@ -51,6 +51,42 @@ class BokunSpizeAppBar extends StatelessWidget {
       centerTitle: false,
       titlePadding: const EdgeInsets.all(16),
       title: FadingFlexibleTitle(
+        bigTitle: bigTitle,
+        bigSubtitle: bigSubtitle,
+      ),
+    ),
+  );
+}
+
+class FadingFlexibleTitle extends StatelessWidget {
+  final String bigTitle;
+  final String bigSubtitle;
+
+  const FadingFlexibleTitle({
+    required this.bigTitle,
+    required this.bigSubtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
+
+    if (settings == null) {
+      return const SizedBox.shrink();
+    }
+
+    final delta = settings.maxExtent - settings.minExtent;
+    final t = ((settings.currentExtent - settings.minExtent) / delta).clamp(0.0, 1.0);
+    final opacity = Curves.easeOut.transform(t);
+
+    final dy = Tween<double>(begin: 8, end: 0).transform(t);
+
+    final showSubtitle = t > 0.25;
+
+    return Opacity(
+      opacity: opacity,
+      child: Transform.translate(
+        offset: Offset(0, dy),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,47 +110,17 @@ class BokunSpizeAppBar extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 2),
-            Text(
-              bigSubtitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.textStyles.appBarSubtitleBig,
-            ),
+            if (showSubtitle) ...[
+              const SizedBox(height: 2),
+              Text(
+                bigSubtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textStyles.appBarSubtitleBig,
+              ),
+            ],
           ],
         ),
-      ),
-    ),
-  );
-}
-
-class FadingFlexibleTitle extends StatelessWidget {
-  final Widget child;
-
-  const FadingFlexibleTitle({
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
-
-    if (settings == null) {
-      return child;
-    }
-
-    final delta = settings.maxExtent - settings.minExtent;
-    final t = ((settings.currentExtent - settings.minExtent) / delta).clamp(0.0, 1.0);
-    final opacity = Curves.easeOut.transform(t);
-
-    /// Slight slide-up as it fades
-    final dy = Tween<double>(begin: 8, end: 0).transform(t);
-
-    return Opacity(
-      opacity: opacity,
-      child: Transform.translate(
-        offset: Offset(0, dy),
-        child: child,
       ),
     );
   }
