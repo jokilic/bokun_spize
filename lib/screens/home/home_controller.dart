@@ -116,17 +116,18 @@ class HomeController {
     required File? imageFile,
     required DateTime dateTime,
   }) async {
-    /// Get `trimmedPrompt` or photo emoji if `textPrompt` is null
-    final trimmedPrompt = textPrompt?.trim() ?? '📷';
+    /// Get `trimmedPrompt`
+    final trimmedPrompt = textPrompt?.trim();
 
     /// Generate `originalText`
-    final originalText = trimmedPrompt.isNotEmpty ? trimmedPrompt : '📷';
+    final originalText = trimmedPrompt?.isNotEmpty ?? false ? trimmedPrompt : null;
 
     /// Create `loadingMeal` with loading state
     final loadingMeal = Meal(
       id: const Uuid().v1(),
       createdAt: dateTime,
       originalText: originalText,
+      imageFilePath: imageFile?.path,
       isLoading: true,
     );
 
@@ -137,7 +138,7 @@ class HomeController {
 
     /// Trigger `AI`
     final result = await ai.triggerAI(
-      textPrompt: trimmedPrompt,
+      textPrompt: originalText,
       imageFile: imageFile,
     );
 
@@ -209,7 +210,7 @@ class HomeController {
     required String aiResult,
     required String id,
     required DateTime createdAt,
-    required String originalText,
+    required String? originalText,
     required File? imageFile,
   }) {
     try {

@@ -99,7 +99,9 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
     final isLoading = widget.meal.isLoading;
     final hasError = widget.meal.errors?.isNotEmpty ?? false;
 
-    final titleText = isLoading ? widget.meal.originalText : widget.meal.name ?? 'Dogodila se greška';
+    final titleText = isLoading ? widget.meal.originalText ?? 'Dodana je slika obroka' : widget.meal.name ?? 'Dogodila se greška';
+
+    final originalText = widget.meal.originalText ?? 'Dodana je slika obroka';
 
     final leadingColor = isLoading
         ? Colors.transparent
@@ -573,7 +575,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                                             const SizedBox(height: 4),
 
                                             Text(
-                                              widget.meal.originalText,
+                                              originalText,
                                               style: context.textStyles.homeMealNote,
                                             ),
                                           ],

@@ -31,7 +31,7 @@ class Meal {
   final List<Food>? foods;
 
   @HiveField(7)
-  final String originalText;
+  final String? originalText;
 
   @HiveField(8)
   final bool isLoading;
@@ -45,8 +45,8 @@ class Meal {
   Meal({
     required this.id,
     required this.createdAt,
-    required this.originalText,
     required this.isLoading,
+    this.originalText,
     this.name,
     this.emoji,
     this.color,
@@ -86,7 +86,7 @@ class Meal {
     Map<String, dynamic> map, {
     required String id,
     required DateTime createdAt,
-    required String originalText,
+    required String? originalText,
     required bool isLoading,
     required List<String>? errors,
     required String? imageFilePath,

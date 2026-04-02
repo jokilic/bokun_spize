@@ -71,13 +71,24 @@ class _MealScreenState extends State<MealScreen> {
 
     final hasMeal = widget.passedMeal != null;
 
+    final shouldShowTextField = !hasMeal || mealController.textEditingController.text.isNotEmpty;
+    final shouldShowImage = !hasMeal || mealState.imageFile != null;
+
     final title = hasMeal ? 'Uredi obrok' : 'Novi obrok';
     final subtitle = hasMeal ? 'Uredi već postojeći obrok' : 'Dodaj novi obrok u svoj dnevnik';
     final buttonText = hasMeal ? 'Uredi obrok' : 'Dodaj obrok';
 
-    final description = hasMeal ? 'Ne možeš uređivati opis obroka, jedino datum i vrijeme.' : 'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.';
+    final description = !shouldShowTextField
+        ? 'Nisi ostavio opis obroka.'
+        : hasMeal
+        ? 'Ne možeš uređivati opis obroka, jedino datum i vrijeme.'
+        : 'Opiši svoj obrok što detaljnije, tako će procjena biti preciznija.';
 
-    final imageText = hasMeal ? 'Ne možeš mijenjati sliku obroka, jedino datum i vrijeme.' : 'Dodaj sliku obroka uz opis, tako će procjena biti preciznija.';
+    final imageText = !shouldShowImage
+        ? 'Nisi ostavio sliku obroka.'
+        : hasMeal
+        ? 'Ne možeš mijenjati sliku obroka, jedino datum i vrijeme.'
+        : 'Dodaj sliku svog obroka, tako će procjena biti preciznija.';
 
     return Scaffold(
       body: CustomScrollView(
@@ -199,53 +210,55 @@ class _MealScreenState extends State<MealScreen> {
           ///
           /// TEXT FIELD
           ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverToBoxAdapter(
-              child: Material(
-                color: context.colors.scaffoldBackground,
-                borderRadius: BorderRadius.circular(8),
-                child: InkWell(
-                  onLongPress: hasMeal
-                      ? () {
-                          HapticFeedback.lightImpact();
-
-                          /// Get text from [TextEditingController]
-                          final text = mealController.textEditingController.text.trim();
-
-                          /// No text, return
-                          if (text.isEmpty) {
-                            return;
-                          }
-
-                          /// Copy text to clipboard
-                          Clipboard.setData(
-                            ClipboardData(
-                              text: text,
-                            ),
-                          );
-                        }
-                      : null,
-                  highlightColor: context.colors.listTileBackground,
+          if (shouldShowTextField) ...[
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: Material(
+                  color: context.colors.scaffoldBackground,
                   borderRadius: BorderRadius.circular(8),
-                  child: BokunSpizeTextField(
-                    enabled: !hasMeal,
-                    controller: mealController.textEditingController,
-                    labelText: 'Što si imao za obrok?',
-                    keyboardType: TextInputType.multiline,
-                    minLines: null,
-                    maxLines: 3,
-                    textAlign: TextAlign.left,
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputAction: TextInputAction.newline,
+                  child: InkWell(
+                    onLongPress: hasMeal
+                        ? () {
+                            HapticFeedback.lightImpact();
+
+                            /// Get text from [TextEditingController]
+                            final text = mealController.textEditingController.text.trim();
+
+                            /// No text, return
+                            if (text.isEmpty) {
+                              return;
+                            }
+
+                            /// Copy text to clipboard
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: text,
+                              ),
+                            );
+                          }
+                        : null,
+                    highlightColor: context.colors.listTileBackground,
+                    borderRadius: BorderRadius.circular(8),
+                    child: BokunSpizeTextField(
+                      enabled: !hasMeal,
+                      controller: mealController.textEditingController,
+                      labelText: 'Što si imao za obrok?',
+                      keyboardType: TextInputType.multiline,
+                      minLines: null,
+                      maxLines: 3,
+                      textAlign: TextAlign.left,
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.newline,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 8),
-          ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 8),
+            ),
+          ],
 
           ///
           /// TEXT
@@ -363,87 +376,89 @@ class _MealScreenState extends State<MealScreen> {
                   ///
                   /// IMAGE
                   ///
-                  Material(
-                    color: context.colors.scaffoldBackground,
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      onTap: !hasMeal && mealState.imageFile == null
-                          ? () async {
-                              unawaited(
-                                HapticFeedback.lightImpact(),
-                              );
-
-                              /// Trigger camera
-                              await mealController.onCameraPressed();
-                            }
-                          : null,
-                      highlightColor: context.colors.listTileBackground,
+                  if (shouldShowImage) ...[
+                    Material(
+                      color: context.colors.scaffoldBackground,
                       borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: context.colors.text,
-                            width: 1.5,
+                      child: InkWell(
+                        onTap: !hasMeal && mealState.imageFile == null
+                            ? () async {
+                                unawaited(
+                                  HapticFeedback.lightImpact(),
+                                );
+
+                                /// Trigger camera
+                                await mealController.onCameraPressed();
+                              }
+                            : null,
+                        highlightColor: context.colors.listTileBackground,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: context.colors.text,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: AnimatedSwitcher(
-                          duration: BokunSpizeDurations.animation,
-                          reverseDuration: BokunSpizeDurations.animation,
-                          switchInCurve: Curves.easeIn,
-                          switchOutCurve: Curves.easeIn,
-                          child: mealState.imageFile != null
-                              ? Image.file(
-                                  key: ValueKey(mealState.imageFile!),
-                                  mealState.imageFile!,
-                                  height: 160,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
+                          child: AnimatedSwitcher(
+                            duration: BokunSpizeDurations.animation,
+                            reverseDuration: BokunSpizeDurations.animation,
+                            switchInCurve: Curves.easeIn,
+                            switchOutCurve: Curves.easeIn,
+                            child: mealState.imageFile != null
+                                ? Image.file(
+                                    key: ValueKey(mealState.imageFile!),
+                                    mealState.imageFile!,
+                                    height: 160,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: context.colors.delete.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                      ),
+                                      height: 160,
+                                      width: double.infinity,
+                                      child: PhosphorIcon(
+                                        PhosphorIcons.imageBroken(
+                                          PhosphorIconsStyle.duotone,
+                                        ),
+                                        color: context.colors.text,
+                                        size: 56,
+                                        duotoneSecondaryColor: context.colors.delete,
+                                      ),
+                                    ),
+                                  )
+                                : Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: context.colors.delete.withValues(
-                                        alpha: 0.2,
-                                      ),
+                                      color: !hasMeal ? context.colors.listTileBackground : Colors.transparent,
                                     ),
                                     height: 160,
                                     width: double.infinity,
                                     child: PhosphorIcon(
-                                      PhosphorIcons.imageBroken(
-                                        PhosphorIconsStyle.duotone,
-                                      ),
-                                      color: context.colors.text,
+                                      !hasMeal && mealState.imageFile == null
+                                          ? PhosphorIcons.bowlFood(
+                                              PhosphorIconsStyle.duotone,
+                                            )
+                                          : PhosphorIcons.x(
+                                              PhosphorIconsStyle.duotone,
+                                            ),
                                       size: 56,
-                                      duotoneSecondaryColor: context.colors.delete,
+                                      color: context.colors.text,
+                                      duotoneSecondaryColor: context.colors.buttonPrimary,
                                     ),
                                   ),
-                                )
-                              : Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: !hasMeal ? context.colors.listTileBackground : Colors.transparent,
-                                  ),
-                                  height: 160,
-                                  width: double.infinity,
-                                  child: PhosphorIcon(
-                                    !hasMeal && mealState.imageFile == null
-                                        ? PhosphorIcons.bowlFood(
-                                            PhosphorIconsStyle.duotone,
-                                          )
-                                        : PhosphorIcons.x(
-                                            PhosphorIconsStyle.duotone,
-                                          ),
-                                    size: 56,
-                                    color: context.colors.text,
-                                    duotoneSecondaryColor: context.colors.buttonPrimary,
-                                  ),
-                                ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
+                    const SizedBox(height: 8),
+                  ],
 
                   ///
                   /// TEXT

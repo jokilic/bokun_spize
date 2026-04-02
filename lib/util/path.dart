@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<Directory?> getHiveDirectory() async {
@@ -28,17 +27,9 @@ Future<File> persistImage({
     return File(imagePath);
   }
 
-  final imagesDirectory = Directory('${appDirectory.path}/meal_images');
-
-  if (!await imagesDirectory.exists()) {
-    await imagesDirectory.create(
-      recursive: true,
-    );
-  }
-
-  final pathSegments = imagePath.split('.');
-  final extension = pathSegments.length > 1 ? pathSegments.last : 'jpg';
-  final persistedImage = File('${imagesDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.$extension');
+  final persistedImage = File(
+    '${appDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.jpg',
+  );
 
   return File(imagePath).copy(persistedImage.path);
 }

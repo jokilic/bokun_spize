@@ -19,8 +19,8 @@ class MealAdapter extends TypeAdapter<Meal> {
     return Meal(
       id: fields[0] as String,
       createdAt: fields[6] as DateTime,
-      originalText: fields[5] as String,
       isLoading: fields[7] as bool,
+      originalText: fields[5] as String?,
       name: fields[1] as String?,
       emoji: fields[9] as String?,
       color: fields[11] as Color?,

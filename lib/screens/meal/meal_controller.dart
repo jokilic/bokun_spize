@@ -56,7 +56,7 @@ class MealController
 
     /// Update `state` with proper values
     updateState(
-      validationPassed: (passedMeal?.originalText.isNotEmpty ?? false) || imageFile != null,
+      validationPassed: (passedMeal?.originalText?.isNotEmpty ?? false) || imageFile != null,
       transactionDate: passedMeal?.createdAt ?? now,
       transactionTime: passedMeal?.createdAt ?? now,
       imageFile: imageFile,
@@ -64,6 +64,8 @@ class MealController
 
     /// Update [TextEditingController] text
     textEditingController.text = passedMeal?.originalText ?? '';
+
+    print('Original text -> ${passedMeal?.originalText}');
 
     /// Add validation listener to [TextEditingController]
     textEditingController.addListener(triggerValidation);
