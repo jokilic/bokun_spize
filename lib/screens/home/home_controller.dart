@@ -119,11 +119,14 @@ class HomeController {
     /// Get `trimmedPrompt` or photo emoji if `textPrompt` is null
     final trimmedPrompt = textPrompt?.trim() ?? '📷';
 
+    /// Generate `originalText`
+    final originalText = trimmedPrompt.isNotEmpty ? trimmedPrompt : '📷';
+
     /// Create `loadingMeal` with loading state
     final loadingMeal = Meal(
       id: const Uuid().v1(),
       createdAt: dateTime,
-      originalText: trimmedPrompt,
+      originalText: originalText,
       isLoading: true,
     );
 
@@ -164,7 +167,7 @@ class HomeController {
         aiResult: result.aiResult!,
         id: loadingMeal.id,
         createdAt: loadingMeal.createdAt,
-        originalText: trimmedPrompt,
+        originalText: originalText,
         imageFile: imageFile,
       );
 

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/null_state.dart';
+import '../../util/path.dart';
 
 class MealController
     extends
@@ -157,8 +158,14 @@ class MealController
 
     /// Image is taken, update `state`
     if (image != null) {
+      /// Copy image into app storage
+      final imageFile = await persistImage(
+        imagePath: image.path,
+      );
+
+      /// Update `state` with new image
       updateState(
-        imageFile: File(image.path),
+        imageFile: imageFile,
       );
 
       /// Trigger validation
@@ -178,8 +185,14 @@ class MealController
 
     /// Image is picked, update `state`
     if (image != null) {
+      /// Copy image into app storage
+      final imageFile = await persistImage(
+        imagePath: image.path,
+      );
+
+      /// Update `state` with new image
       updateState(
-        imageFile: File(image.path),
+        imageFile: imageFile,
       );
 
       /// Trigger validation
