@@ -65,8 +65,6 @@ class MealController
     /// Update [TextEditingController] text
     textEditingController.text = passedMeal?.originalText ?? '';
 
-    print('Original text -> ${passedMeal?.originalText}');
-
     /// Add validation listener to [TextEditingController]
     textEditingController.addListener(triggerValidation);
   }
