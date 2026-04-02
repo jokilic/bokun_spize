@@ -9,7 +9,10 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/null_state.dart';
 
 class MealController
-    extends ValueNotifier<({bool wordsValid, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, File? imageFile})>
+    extends
+        ValueNotifier<
+          ({bool validationPassed, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, File? imageFile})
+        >
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -23,7 +26,7 @@ class MealController
     required this.passedMeal,
   }) : super(
          (
-           wordsValid: false,
+           validationPassed: false,
            speechToTextWords: null,
            dateEditMode: false,
            timeEditMode: false,
@@ -47,19 +50,22 @@ class MealController
   void init() {
     final now = DateTime.now();
 
+    /// Get `imageFile` if `passedMeal` is not `null`
+    final imageFile = passedMeal?.imageFilePath != null ? File(passedMeal!.imageFilePath!) : null;
+
     /// Update `state` with proper values
     updateState(
-      wordsValid: passedMeal?.originalText.isNotEmpty ?? false,
+      validationPassed: (passedMeal?.originalText.isNotEmpty ?? false) || imageFile != null,
       transactionDate: passedMeal?.createdAt ?? now,
       transactionTime: passedMeal?.createdAt ?? now,
-      imageFile: passedMeal?.imageFilePath != null ? File(passedMeal!.imageFilePath!) : null,
+      imageFile: imageFile,
     );
 
     /// Update [TextEditingController] text
     textEditingController.text = passedMeal?.originalText ?? '';
 
     /// Add validation listener to [TextEditingController]
-    textEditingController.addListener(validateTextField);
+    textEditingController.addListener(triggerValidation);
   }
 
   ///
@@ -79,7 +85,7 @@ class MealController
 
     /// Dispose [TextEditingController]
     textEditingController
-      ..removeListener(validateTextField)
+      ..removeListener(triggerValidation)
       ..dispose();
   }
 
@@ -87,15 +93,13 @@ class MealController
   /// METHODS
   ///
 
-  /// Triggered on every [TextField] change
-  /// Updates `Add` button state
-  void validateTextField() {
-    /// Parse values
-    final words = textEditingController.text.trim();
+  /// Checks if validation passed
+  void triggerValidation() {
+    final isTextValidated = textEditingController.text.trim().isNotEmpty;
+    final isImageValidated = value.imageFile != null;
 
-    /// Validate values
     updateState(
-      wordsValid: words.isNotEmpty,
+      validationPassed: isTextValidated || isImageValidated,
     );
   }
 
@@ -156,6 +160,9 @@ class MealController
       updateState(
         imageFile: File(image.path),
       );
+
+      /// Trigger validation
+      triggerValidation();
     }
   }
 
@@ -174,12 +181,15 @@ class MealController
       updateState(
         imageFile: File(image.path),
       );
+
+      /// Trigger validation
+      triggerValidation();
     }
   }
 
   /// Updates `state`
   void updateState({
-    bool? wordsValid,
+    bool? validationPassed,
     Object? speechToTextWords = nullStateNoChange,
     bool? dateEditMode,
     bool? timeEditMode,
@@ -187,7 +197,7 @@ class MealController
     DateTime? transactionTime,
     Object? imageFile = nullStateNoChange,
   }) => value = (
-    wordsValid: wordsValid ?? value.wordsValid,
+    validationPassed: validationPassed ?? value.validationPassed,
     speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
     dateEditMode: dateEditMode ?? value.dateEditMode,
     timeEditMode: timeEditMode ?? value.timeEditMode,

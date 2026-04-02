@@ -12,6 +12,7 @@ import '../../../../theme/colors.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/color.dart';
 import '../../constants/durations.dart';
+import '../../constants/icons.dart';
 import '../../models/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
@@ -342,9 +343,12 @@ class _MealScreenState extends State<MealScreen> {
                                 HapticFeedback.lightImpact(),
                               );
 
-                              mealController.updateState(
-                                imageFile: null,
-                              );
+                              /// Update `state` + trigger validation
+                              mealController
+                                ..updateState(
+                                  imageFile: null,
+                                )
+                                ..triggerValidation();
                             },
                             icon: PhosphorIcons.trash(
                               PhosphorIconsStyle.duotone,
@@ -424,14 +428,12 @@ class _MealScreenState extends State<MealScreen> {
                                   width: double.infinity,
                                   child: PhosphorIcon(
                                     !hasMeal && mealState.imageFile == null
-                                        ? PhosphorIcons.bowlFood(
-                                            PhosphorIconsStyle.duotone,
-                                          )
+                                        ? BokunSpizeIcons.getRandomFoodIcon()
                                         : PhosphorIcons.x(
                                             PhosphorIconsStyle.duotone,
                                           ),
-                                    color: context.colors.text,
                                     size: 56,
+                                    color: context.colors.text,
                                     duotoneSecondaryColor: context.colors.buttonPrimary,
                                   ),
                                 ),
@@ -659,7 +661,7 @@ class _MealScreenState extends State<MealScreen> {
         child: SizedBox(
           width: double.infinity,
           child: FilledButton(
-            onPressed: mealState.wordsValid
+            onPressed: mealState.validationPassed
                 ? () {
                     HapticFeedback.lightImpact();
 

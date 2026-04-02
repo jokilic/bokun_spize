@@ -256,13 +256,13 @@ JSON structure to follow strictly:
     /// Create `errors` list
     final errors = <String>[];
 
-    /// Generate a text prompt
+    /// Generate a `textPrompt`
     TextPart? textPart;
     if (textPrompt != null) {
       textPart = TextPart(textPrompt);
     }
 
-    /// Generate an image prompt
+    /// Generate an `imagePrompt`
     InlineDataPart? imagePart;
     if (imageFile != null) {
       final image = await imageFile.readAsBytes();

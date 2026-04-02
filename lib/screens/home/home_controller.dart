@@ -98,7 +98,7 @@ class HomeController {
     }
     /// User added a new `meal`
     else {
-      /// user entered `words` or `imageFile` and `dateTime` exists
+      /// User entered `words` or `imageFile` + `dateTime` exists
       if (((result?.words?.isNotEmpty ?? false) || result?.imageFile != null) && result?.dateTime != null) {
         /// Trigger AI which generates a new `meal` and stores into [Hive]
         await triggerAI(
