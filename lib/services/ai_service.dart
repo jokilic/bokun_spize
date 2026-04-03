@@ -30,17 +30,18 @@ class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})
   ];
 
   final systemInstruction = '''
-You will receive a text describing what the user ate.
+You will receive a text and / or image describing what the user ate.
 Estimate nutrition and extract foods.
 
 Two values can be returned:
 1. ONLY valid JSON for a single Meal object
 2. ONLY null if the meal cannot be determined
 
-For the name, use the same language as the received text (Croatian or English).
+For the name, use the same language as the received text (most probably Croatian).
+If there is no text, use Croatian.
 
-If quantity is unclear, make a reasonable estimate
-If nutrition is unknown, estimate based on typical values
+If quantity is unclear, make a reasonable estimate.
+If nutrition is unknown, estimate based on typical values.
 
 JSON structure to follow strictly:
 {
@@ -293,7 +294,13 @@ JSON structure to follow strictly:
     for (final model in value.generativeModels) {
       try {
         final response = await model.generateContent(contents);
-        return (aiResult: response.text, errors: null);
+        final result = response.text;
+
+        if (result == null) {
+          errors.add('Model ${model.model.name} nije našao rezultat');
+        }
+
+        return (aiResult: result, errors: errors);
       } catch (e) {
         final error = e.toString().contains('quota') ? 'Kvota modela ${model.model.name} je prekoračena, pokušaj ponovno kasnije' : 'Greška kod modela ${model.model.name}: $e';
         errors.add(error);

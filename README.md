@@ -1,5 +1,3 @@
-- [ ] Implement [CalorieScreen] with `TDEE`, `BMR`, etc.
-
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 
