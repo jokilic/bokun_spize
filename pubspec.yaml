@@ -107,9 +107,9 @@ flutter_launcher_icons:
 # Configuration for 'flutter_native_splash'
 # Run splash screen generation with 'flutter pub run flutter_native_splash:create'
 flutter_native_splash:
-  background_image: 'assets/splash.png'
-  background_image_dark: 'assets/splash_dark.png'
+  background_image: 'assets/icon.png'
+  background_image_dark: 'assets/icon.png'
   android_12:
-    image: 'assets/splash_icon.png'
+    image: 'assets/icon.png'
     color: '#DADADA'
     color_dark: '#1F1D2C'
