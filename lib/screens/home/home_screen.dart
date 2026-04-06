@@ -140,7 +140,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         unawaited(
                           HapticFeedback.lightImpact(),
                         );
+
                         await hiveService.deleteMeal(meal: item);
+                      },
+                      onCopyPressed: () async {
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
+
+                        await homeController.onMealPressed(
+                          context,
+                          passedMeal: item,
+                          isCopyingMeal: true,
+                        );
                       },
                       meal: item,
                     );

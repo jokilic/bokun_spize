@@ -69,6 +69,7 @@ class HomeController {
   Future<void> onMealPressed(
     BuildContext context, {
     Meal? passedMeal,
+    bool isCopyingMeal = false,
   }) async {
     /// Show [MealScreen] for adding meal
     final result = await showCupertinoSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
@@ -77,6 +78,8 @@ class HomeController {
         passedMeal: passedMeal,
       ),
     );
+
+    // TODO: If isCopyingMeal is true, then we need to open sheet with passedMeal data (like when editing), but if the user decides to save, then create a new meal instead of updating that passedMeal
 
     /// User was editing existing `meal`
     if (passedMeal != null) {

@@ -30,15 +30,12 @@ class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})
   ];
 
   final systemInstruction = '''
-You will receive a text and / or image describing what the user ate.
+You will receive a text in Croatian and / or image describing what the user ate.
 Estimate nutrition and extract foods.
 
 Two values can be returned:
 1. ONLY valid JSON for a single Meal object
 2. ONLY null if the meal cannot be determined
-
-For the name, use the same language as the received text (most probably Croatian).
-If there is no text, use Croatian.
 
 If quantity is unclear, make a reasonable estimate.
 If nutrition is unknown, estimate based on typical values.
@@ -80,7 +77,7 @@ JSON structure to follow strictly:
     properties: {
       'name': Schema.string(
         title: 'Meal name',
-        description: 'name best describing meal from user input, use language which is used in user input (English or Croatian)',
+        description: 'name best describing meal from user input, use Croatian language',
         format: 'string',
         nullable: false,
       ),
@@ -159,7 +156,7 @@ JSON structure to follow strictly:
             ),
             'unit': Schema.string(
               title: 'Food unit',
-              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...), use language which is used in user input (English or Croatian)',
+              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...), use Croatian language',
               format: 'string',
               nullable: false,
             ),

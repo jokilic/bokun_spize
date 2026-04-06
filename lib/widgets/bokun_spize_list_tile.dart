@@ -17,11 +17,13 @@ import '../util/formatting.dart';
 class BokunSpizeListTile extends StatefulWidget {
   final Function() onLongPressed;
   final Future<void> Function() onDeletePressed;
+  final Future<void> Function() onCopyPressed;
   final Meal meal;
 
   const BokunSpizeListTile({
     required this.onLongPressed,
     required this.onDeletePressed,
+    required this.onCopyPressed,
     required this.meal,
     required super.key,
   });
@@ -138,6 +140,24 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
               backgroundRadius: 16,
               icon: PhosphorIcon(
                 PhosphorIcons.trash(
+                  PhosphorIconsStyle.duotone,
+                ),
+                color: context.colors.listTileBackground,
+                duotoneSecondaryColor: context.colors.buttonPrimary,
+                size: 28,
+              ),
+            ),
+          ],
+          trailingActions: [
+            SwipeAction(
+              onTap: (handler) async {
+                await handler(true);
+                await widget.onCopyPressed();
+              },
+              color: context.colors.buttonPrimary,
+              backgroundRadius: 16,
+              icon: PhosphorIcon(
+                PhosphorIcons.copy(
                   PhosphorIconsStyle.duotone,
                 ),
                 color: context.colors.listTileBackground,
