@@ -23,9 +23,11 @@ import 'meal_controller.dart';
 
 class MealScreen extends WatchingStatefulWidget {
   final Meal? passedMeal;
+  final bool isCopyingMeal;
 
   const MealScreen({
     required this.passedMeal,
+    required this.isCopyingMeal,
   });
 
   @override
@@ -69,14 +71,14 @@ class _MealScreenState extends State<MealScreen> {
     final available = speechToTextState.available;
     final isListening = speechToTextState.isListening;
 
-    final hasMeal = widget.passedMeal != null;
+    final hasMeal = widget.passedMeal != null || widget.isCopyingMeal;
 
     final shouldShowTextField = !hasMeal || mealController.textEditingController.text.isNotEmpty;
     final shouldShowImage = !hasMeal || mealState.imageFile != null;
 
-    final title = hasMeal ? 'Uredi obrok' : 'Novi obrok';
-    final subtitle = hasMeal ? 'Uredi već postojeći obrok' : 'Dodaj novi obrok u svoj dnevnik';
-    final buttonText = hasMeal ? 'Uredi obrok' : 'Dodaj obrok';
+    final title = !hasMeal || widget.isCopyingMeal ? 'Novi obrok' : 'Uredi obrok';
+    final subtitle = !hasMeal || widget.isCopyingMeal ? 'Dodaj novi obrok u svoj dnevnik' : 'Uredi već postojeći obrok';
+    final buttonText = !hasMeal || widget.isCopyingMeal ? 'Dodaj obrok' : 'Uredi obrok';
 
     final description = !shouldShowTextField
         ? 'Nisi ostavio opis obroka.'

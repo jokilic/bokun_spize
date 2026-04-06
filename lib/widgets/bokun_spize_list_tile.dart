@@ -151,7 +151,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
           trailingActions: [
             SwipeAction(
               onTap: (handler) async {
-                await handler(true);
+                await handler(false);
                 await widget.onCopyPressed();
               },
               color: context.colors.buttonPrimary,

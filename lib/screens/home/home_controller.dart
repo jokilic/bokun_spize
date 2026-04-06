@@ -71,18 +71,20 @@ class HomeController {
     Meal? passedMeal,
     bool isCopyingMeal = false,
   }) async {
-    /// Show [MealScreen] for adding meal
+    /// Determine if user is editing existing `meal`
+    final shouldEditExistingMeal = passedMeal != null && !isCopyingMeal;
+
+    /// Show [MealScreen] for adding or editing `meal`
     final result = await showCupertinoSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
       context: context,
       builder: (context) => MealScreen(
         passedMeal: passedMeal,
+        isCopyingMeal: isCopyingMeal,
       ),
     );
 
-    // TODO: If isCopyingMeal is true, then we need to open sheet with passedMeal data (like when editing), but if the user decides to save, then create a new meal instead of updating that passedMeal
-
     /// User was editing existing `meal`
-    if (passedMeal != null) {
+    if (shouldEditExistingMeal) {
       /// User deleted `meal`
       if (result?.deleteMeal ?? false) {
         await hive.deleteMeal(
@@ -103,6 +105,18 @@ class HomeController {
     else {
       /// User entered `words` or `imageFile` + `dateTime` exists
       if (((result?.words?.isNotEmpty ?? false) || result?.imageFile != null) && result?.dateTime != null) {
+        /// Copying an existing meal will duplicate the `meal` instead of sending it through AI again
+        if (isCopyingMeal && passedMeal != null) {
+          await hive.writeMeal(
+            newMeal: passedMeal.copyWith(
+              id: const Uuid().v1(),
+              createdAt: result!.dateTime,
+            ),
+          );
+
+          return;
+        }
+
         /// Trigger AI which generates a new `meal` and stores into [Hive]
         await triggerAI(
           textPrompt: result?.words,
