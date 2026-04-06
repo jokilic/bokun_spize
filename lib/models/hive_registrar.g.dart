@@ -3,25 +3,24 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
+import 'package:bokun_spize/models/activity_level.dart';
+import 'package:bokun_spize/models/calorie_goal.dart';
 import 'package:bokun_spize/models/food.dart';
 import 'package:bokun_spize/models/hive_adapters.dart';
 import 'package:bokun_spize/models/meal.dart';
 import 'package:bokun_spize/models/nutrition.dart';
+import 'package:bokun_spize/models/sex.dart';
+import 'package:bokun_spize/models/user_metrics.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(ColorAdapter());
-    registerAdapter(MealAdapter());
     registerAdapter(NutritionAdapter());
     registerAdapter(FoodAdapter());
-  }
-}
-
-extension IsolatedHiveRegistrar on IsolatedHiveInterface {
-  void registerAdapters() {
-    registerAdapter(ColorAdapter());
     registerAdapter(MealAdapter());
-    registerAdapter(NutritionAdapter());
-    registerAdapter(FoodAdapter());
+    registerAdapter(ActivityLevelAdapter());
+    registerAdapter(SexAdapter());
+    registerAdapter(CalorieGoalAdapter());
+    registerAdapter(UserMetricsAdapter());
   }
 }
