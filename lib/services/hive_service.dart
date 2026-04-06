@@ -4,21 +4,23 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../models/hive_registrar.g.dart';
 import '../models/meal.dart';
+import '../models/user_metrics.dart';
 import '../util/group_meals.dart';
 import '../util/path.dart';
 
-class HiveService extends ValueNotifier<List<Object>> implements Disposable {
+class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userMetrics})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
 
-  HiveService() : super([]);
+  HiveService() : super((items: [], userMetrics: null));
 
   ///
   /// VARIABLES
   ///
 
   late final Box<Meal> meals;
+  late final Box<UserMetrics> userMetrics;
 
   ///
   /// INIT
@@ -32,6 +34,7 @@ class HiveService extends ValueNotifier<List<Object>> implements Disposable {
       ..registerAdapters();
 
     meals = await Hive.openBox<Meal>('mealsBox');
+    userMetrics = await Hive.openBox<UserMetrics>('userMetricsBox');
 
     await deleteLoadingMeals();
 
@@ -45,6 +48,8 @@ class HiveService extends ValueNotifier<List<Object>> implements Disposable {
   @override
   Future<void> onDispose() async {
     await meals.close();
+    await userMetrics.close();
+
     await Hive.close();
   }
 
@@ -52,18 +57,20 @@ class HiveService extends ValueNotifier<List<Object>> implements Disposable {
   /// METHODS
   ///
 
-  /// Deletes all `meals` with `isLoading` in [Hive]
-  Future<void> deleteLoadingMeals() async {
-    final staleLoadingMealKeys = meals.keys
-        .where(
-          (key) => meals.get(key)?.isLoading ?? false,
-        )
-        .toList();
+  /// Updates grouped `state`
+  void updateState({
+    List<Meal>? newMeals,
+    UserMetrics? newUserMetrics,
+  }) => value = (
+    items: getGroupedMealsByDate(
+      newMeals ?? getMeals(),
+    ),
+    userMetrics: newUserMetrics ?? getUserMetrics(),
+  );
 
-    if (staleLoadingMealKeys.isNotEmpty) {
-      await meals.deleteAll(staleLoadingMealKeys);
-    }
-  }
+  ///
+  /// MEALS
+  ///
 
   /// Called to get `meals` from [Hive]
   List<Meal> getMeals() => meals.values.toList();
@@ -100,8 +107,35 @@ class HiveService extends ValueNotifier<List<Object>> implements Disposable {
     updateState();
   }
 
-  /// Updates grouped `state`
-  void updateState({List<Meal>? newMeals}) => value = getGroupedMealsByDate(
-    newMeals ?? getMeals(),
-  );
+  /// Deletes all `meals` with `isLoading` in [Hive]
+  Future<void> deleteLoadingMeals() async {
+    final staleLoadingMealKeys = meals.keys
+        .where(
+          (key) => meals.get(key)?.isLoading ?? false,
+        )
+        .toList();
+
+    if (staleLoadingMealKeys.isNotEmpty) {
+      await meals.deleteAll(staleLoadingMealKeys);
+    }
+  }
+
+  ///
+  /// USER METRICS
+  ///
+
+  /// Called to get `userMetrics` from [Hive]
+  UserMetrics? getUserMetrics() => userMetrics.get(0);
+
+  /// Stores a new `userMetrics` in [Hive]
+  Future<void> writeUserMetrics({required UserMetrics newUserMetrics}) async {
+    await userMetrics.put(0, newUserMetrics);
+    updateState();
+  }
+
+  /// Deletes `userMetrics` from [Hive]
+  Future<void> deleteUserMetrics() async {
+    await userMetrics.clear();
+    updateState();
+  }
 }

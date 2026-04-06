@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -17,6 +18,7 @@ import '../../util/dependencies.dart';
 import '../../util/formatting.dart';
 import '../../widgets/bokun_spize_app_bar.dart';
 import '../../widgets/bokun_spize_list_tile.dart';
+import '../calorie/calorie_screen.dart';
 import 'home_controller.dart';
 
 class HomeScreen extends WatchingStatefulWidget {
@@ -49,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeController = getIt.get<HomeController>();
     final hiveService = getIt.get<HiveService>();
 
-    final items = watchIt<HiveService>().value;
+    final items = watchIt<HiveService>().value.items;
 
     return Scaffold(
       body: CustomScrollView(
@@ -58,7 +60,33 @@ class _HomeScreenState extends State<HomeScreen> {
           ///
           /// APP BAR
           ///
-          const BokunSpizeAppBar(
+          BokunSpizeAppBar(
+            actionWidgets: [
+              ///
+              /// CALORIE
+              ///
+              IconButton(
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  showCupertinoSheet(
+                    context: context,
+                    builder: (context) => CalorieScreen(),
+                  );
+                },
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  highlightColor: context.colors.buttonBackground,
+                ),
+                icon: PhosphorIcon(
+                  PhosphorIcons.userCircle(
+                    PhosphorIconsStyle.duotone,
+                  ),
+                  color: context.colors.text,
+                  duotoneSecondaryColor: context.colors.buttonPrimary,
+                  size: 28,
+                ),
+              ),
+            ],
             smallTitle: 'Bokun spize',
             bigTitle: 'Bokun spize',
             bigSubtitle: 'Tvoj dnevnik prehrane',
@@ -113,11 +141,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 TextSpan(
                                   text: 'kcal',
-                                  style: context.textStyles.homeMealKcal,
+                                  style: context.textStyles.homeDayKcal.copyWith(
+                                    // color: context.colors.delete,
+                                  ),
                                 ),
                               ],
                             ),
-                            style: context.textStyles.homeTitle,
+                            style: context.textStyles.homeTitle.copyWith(
+                              // color: context.colors.delete,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

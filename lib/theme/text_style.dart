@@ -68,6 +68,12 @@ abstract class BokunSpizeTextStyles {
     fontWeight: FontWeight.w500,
   );
 
+  static const homeDayKcal = TextStyle(
+    fontFamily: 'ProductSans',
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+  );
+
   static const homeMealValue = TextStyle(
     fontFamily: 'ProductSans',
     fontSize: 20,
@@ -87,6 +93,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
   final TextStyle homeMealTime;
   final TextStyle homeMealNote;
   final TextStyle homeMealKcal;
+  final TextStyle homeDayKcal;
   final TextStyle homeMealValue;
 
   const BokunSpizeTextThemesExtension({
@@ -101,6 +108,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
     required this.homeMealTime,
     required this.homeMealNote,
     required this.homeMealKcal,
+    required this.homeDayKcal,
     required this.homeMealValue,
   });
 
@@ -117,6 +125,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
     TextStyle? homeMealTime,
     TextStyle? homeMealNote,
     TextStyle? homeMealKcal,
+    TextStyle? homeDayKcal,
     TextStyle? homeMealValue,
   }) => BokunSpizeTextThemesExtension(
     button: button ?? this.button,
@@ -130,6 +139,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
     homeMealTime: homeMealTime ?? this.homeMealTime,
     homeMealNote: homeMealNote ?? this.homeMealNote,
     homeMealKcal: homeMealKcal ?? this.homeMealKcal,
+    homeDayKcal: homeDayKcal ?? this.homeDayKcal,
     homeMealValue: homeMealValue ?? this.homeMealValue,
   );
 
@@ -154,6 +164,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
       homeMealTime: TextStyle.lerp(homeMealTime, other.homeMealTime, t)!,
       homeMealNote: TextStyle.lerp(homeMealNote, other.homeMealNote, t)!,
       homeMealKcal: TextStyle.lerp(homeMealKcal, other.homeMealKcal, t)!,
+      homeDayKcal: TextStyle.lerp(homeDayKcal, other.homeDayKcal, t)!,
       homeMealValue: TextStyle.lerp(homeMealValue, other.homeMealValue, t)!,
     );
   }

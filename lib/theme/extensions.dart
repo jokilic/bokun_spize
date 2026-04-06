@@ -59,6 +59,9 @@ BokunSpizeTextThemesExtension getTextThemesExtension({
   homeMealKcal: BokunSpizeTextStyles.homeMealKcal.copyWith(
     color: colorsExtension.text,
   ),
+  homeDayKcal: BokunSpizeTextStyles.homeDayKcal.copyWith(
+    color: colorsExtension.text,
+  ),
   homeMealValue: BokunSpizeTextStyles.homeMealValue.copyWith(
     color: colorsExtension.text,
   ),
