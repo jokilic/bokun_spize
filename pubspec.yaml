@@ -81,28 +81,28 @@ flutter:
 # Configuration for 'flutter_launcher_icons'
 # Run icon generation with 'flutter pub run flutter_launcher_icons:main'
 flutter_launcher_icons:
-  image_path_android: 'assets/foreground.png'
-  image_path_ios: 'assets/foreground.png'
+  image_path_android: 'assets/icon.png'
+  image_path_ios: 'assets/icon.png'
   android: true
   ios: true
-  adaptive_icon_background: 'assets/foreground.png'
-  adaptive_icon_foreground: 'assets/foreground.png'
+  adaptive_icon_background: 'assets/background.png'
+  adaptive_icon_foreground: 'assets/splash_icon.png'
   adaptive_icon_foreground_inset: 16
   min_sdk_android: 21
   remove_alpha_ios: true
   background_color_ios: '#DADADA'
   web:
     generate: true
-    image_path: 'assets/foreground.png'
+    image_path: 'assets/icon.png'
     background_color: '#DADADA'
     theme_color: '#DADADA'
   windows:
     generate: true
-    image_path: 'assets/foreground.png'
+    image_path: 'assets/icon.png'
     icon_size: 48
   macos:
     generate: true
-    image_path: 'assets/foreground.png'
+    image_path: 'assets/icon.png'
 
 # Configuration for 'flutter_native_splash'
 # Run splash screen generation with 'flutter pub run flutter_native_splash:create'
