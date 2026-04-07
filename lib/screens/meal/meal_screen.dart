@@ -43,6 +43,7 @@ class _MealScreenState extends State<MealScreen> {
       () => MealController(
         speechToText: getIt.get<SpeechToTextService>(),
         passedMeal: widget.passedMeal,
+        isCopyingMeal: widget.isCopyingMeal,
       ),
       instanceName: widget.passedMeal?.id,
       afterRegister: (controller) => controller.init(),

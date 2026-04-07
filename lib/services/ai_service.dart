@@ -24,9 +24,10 @@ class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})
 
   final modelNames = [
     'gemini-3.1-flash-lite-preview',
+    'gemini-2.5-flash-lite',
     'gemini-3-flash-preview',
     'gemini-2.5-flash',
-    'gemini-2.5-flash-lite',
+    'gemini-2.5-pro',
   ];
 
   final systemInstruction = '''
@@ -289,6 +290,8 @@ JSON structure to follow strictly:
     }
 
     for (final model in value.generativeModels) {
+      print('Model: ${model.model.name}');
+
       try {
         final response = await model.generateContent(contents);
         final result = response.text;

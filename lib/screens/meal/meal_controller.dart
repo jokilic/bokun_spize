@@ -21,10 +21,12 @@ class MealController
 
   final SpeechToTextService speechToText;
   final Meal? passedMeal;
+  final bool isCopyingMeal;
 
   MealController({
     required this.speechToText,
     required this.passedMeal,
+    required this.isCopyingMeal,
   }) : super(
          (
            validationPassed: false,
@@ -57,8 +59,8 @@ class MealController
     /// Update `state` with proper values
     updateState(
       validationPassed: (passedMeal?.originalText?.isNotEmpty ?? false) || imageFile != null,
-      transactionDate: passedMeal?.createdAt ?? now,
-      transactionTime: passedMeal?.createdAt ?? now,
+      transactionDate: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
+      transactionTime: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
       imageFile: imageFile,
     );
 

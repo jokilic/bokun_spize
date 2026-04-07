@@ -142,7 +142,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                 PhosphorIcons.trash(
                   PhosphorIconsStyle.duotone,
                 ),
-                color: context.colors.listTileBackground,
+                color: BokunSpizeColors.lightThemeBackground,
                 duotoneSecondaryColor: context.colors.buttonPrimary,
                 size: 28,
               ),
@@ -160,7 +160,7 @@ class _BokunSpizeListTileState extends State<BokunSpizeListTile> {
                 PhosphorIcons.copy(
                   PhosphorIconsStyle.duotone,
                 ),
-                color: context.colors.listTileBackground,
+                color: BokunSpizeColors.lightThemeBackground,
                 duotoneSecondaryColor: context.colors.buttonPrimary,
                 size: 28,
               ),

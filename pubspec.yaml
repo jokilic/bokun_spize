@@ -1,7 +1,7 @@
 name: bokun_spize
 description: 'Calorie tracking application in Flutter.'
 publish_to: 'none'
-version: 0.2.7+207
+version: 0.3.1+301
 
 #
 # DEPLOYING APP
