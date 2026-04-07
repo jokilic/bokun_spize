@@ -290,8 +290,6 @@ JSON structure to follow strictly:
     }
 
     for (final model in value.generativeModels) {
-      print('Model: ${model.model.name}');
-
       try {
         final response = await model.generateContent(contents);
         final result = response.text;
