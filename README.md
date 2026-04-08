@@ -25,3 +25,8 @@ Add new meal here.\
 You need to write about your meal.\
 Be detailed, so the estimate can be as accurate as possible.\
 You can update date & time if necessary.
+
+**Calories** 📈
+
+Set your calorie goals here.\
+Add data about yourself and the app will calculate your daily calorie needs.
