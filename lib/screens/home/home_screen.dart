@@ -19,6 +19,7 @@ import '../../util/formatting.dart';
 import '../../widgets/bokun_spize_app_bar.dart';
 import '../../widgets/bokun_spize_list_tile.dart';
 import '../calorie/calorie_screen.dart';
+import '../search/search_screen.dart';
 import 'home_controller.dart';
 
 class HomeScreen extends WatchingStatefulWidget {
@@ -89,6 +90,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 28,
                 ),
               ),
+
+              ///
+              /// SEARCH
+              ///
+              IconButton(
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  showCupertinoSheet(
+                    context: context,
+                    builder: (context) => SearchScreen(
+                      onMealPressed: homeController.onMealPressed,
+                    ),
+                  );
+                },
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  highlightColor: context.colors.buttonBackground,
+                ),
+                icon: PhosphorIcon(
+                  PhosphorIcons.magnifyingGlass(
+                    PhosphorIconsStyle.duotone,
+                  ),
+                  color: context.colors.text,
+                  duotoneSecondaryColor: context.colors.buttonPrimary,
+                  size: 28,
+                ),
+              ),
             ],
             smallTitle: 'Bokun spize',
             bigTitle: 'Bokun spize',
@@ -99,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           ///
-          /// ITEMS
+          /// MEALS
           ///
           if (items.isNotEmpty)
             SliverPadding(

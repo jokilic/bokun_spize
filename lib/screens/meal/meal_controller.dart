@@ -10,10 +10,7 @@ import '../../util/null_state.dart';
 import '../../util/path.dart';
 
 class MealController
-    extends
-        ValueNotifier<
-          ({bool validationPassed, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime transactionDate, DateTime transactionTime, File? imageFile})
-        >
+    extends ValueNotifier<({bool validationPassed, String? speechToTextWords, bool dateEditMode, bool timeEditMode, DateTime mealDate, DateTime mealTime, File? imageFile})>
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -33,8 +30,8 @@ class MealController
            speechToTextWords: null,
            dateEditMode: false,
            timeEditMode: false,
-           transactionDate: DateTime.now(),
-           transactionTime: DateTime.now(),
+           mealDate: DateTime.now(),
+           mealTime: DateTime.now(),
            imageFile: null,
          ),
        );
@@ -59,8 +56,8 @@ class MealController
     /// Update `state` with proper values
     updateState(
       validationPassed: (passedMeal?.originalText?.isNotEmpty ?? false) || imageFile != null,
-      transactionDate: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
-      transactionTime: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
+      mealDate: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
+      mealTime: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
       imageFile: imageFile,
     );
 
@@ -211,16 +208,16 @@ class MealController
     Object? speechToTextWords = nullStateNoChange,
     bool? dateEditMode,
     bool? timeEditMode,
-    DateTime? transactionDate,
-    DateTime? transactionTime,
+    DateTime? mealDate,
+    DateTime? mealTime,
     Object? imageFile = nullStateNoChange,
   }) => value = (
     validationPassed: validationPassed ?? value.validationPassed,
     speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
     dateEditMode: dateEditMode ?? value.dateEditMode,
     timeEditMode: timeEditMode ?? value.timeEditMode,
-    transactionDate: transactionDate ?? value.transactionDate,
-    transactionTime: transactionTime ?? value.transactionTime,
+    mealDate: mealDate ?? value.mealDate,
+    mealTime: mealTime ?? value.mealTime,
     imageFile: identical(imageFile, nullStateNoChange) ? value.imageFile : imageFile as File?,
   );
 }

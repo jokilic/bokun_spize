@@ -585,9 +585,9 @@ class _MealScreenState extends State<MealScreen> {
                             weekdayLabelTextStyle: context.textStyles.homeMealNote,
                             yearTextStyle: context.textStyles.homeMealKcal,
                           ),
-                          value: [mealState.transactionDate],
+                          value: [mealState.mealDate],
                           onValueChanged: (dates) => mealController.updateState(
-                            transactionDate: dates.first,
+                            mealDate: dates.first,
                           ),
                         ),
                       ),
@@ -626,7 +626,7 @@ class _MealScreenState extends State<MealScreen> {
                         ignoring: !mealState.timeEditMode,
                         child: ScrollDateTimePicker(
                           onChange: (newTime) => mealController.updateState(
-                            transactionTime: newTime,
+                            mealTime: newTime,
                           ),
                           itemExtent: 64,
                           style: DateTimePickerStyle(
@@ -646,7 +646,7 @@ class _MealScreenState extends State<MealScreen> {
                             ),
                             minDate: DateTime(2010),
                             maxDate: DateTime(2040),
-                            initialDate: mealState.transactionTime,
+                            initialDate: mealState.mealTime,
                           ),
                           centerWidget: DateTimePickerCenterWidget(
                             builder: (context, constraints, child) => Container(
@@ -695,9 +695,9 @@ class _MealScreenState extends State<MealScreen> {
                     Navigator.of(context).pop(
                       (
                         words: words,
-                        dateTime: getTransactionDateTime(
-                          transactionDate: mealState.transactionDate,
-                          transactionTime: mealState.transactionTime,
+                        dateTime: getMealDateTime(
+                          mealDate: mealState.mealDate,
+                          mealTime: mealState.mealTime,
                         ),
                         imageFile: mealState.imageFile,
                         deleteMeal: false,

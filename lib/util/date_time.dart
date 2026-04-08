@@ -10,16 +10,16 @@ bool isSameYmd(DateTime a, DateTime b) {
   return left.year == right.year && left.month == right.month && left.day == right.day;
 }
 
-/// Returns proper [DateTime] from passed `transactionDate` and `transactionTime`
-DateTime? getTransactionDateTime({
-  required DateTime? transactionDate,
-  required DateTime? transactionTime,
+/// Returns proper [DateTime] from passed `mealDate` and `mealTime`
+DateTime? getMealDateTime({
+  required DateTime? mealDate,
+  required DateTime? mealTime,
 }) {
-  final day = transactionDate?.day;
-  final month = transactionDate?.month;
-  final year = transactionDate?.year;
-  final hour = transactionTime?.hour;
-  final minute = transactionTime?.minute;
+  final day = mealDate?.day;
+  final month = mealDate?.month;
+  final year = mealDate?.year;
+  final hour = mealTime?.hour;
+  final minute = mealTime?.minute;
 
   if (day != null && month != null && year != null && hour != null && minute != null) {
     return DateTime(year, month, day, hour, minute);

@@ -31,11 +31,13 @@ dependencies:
     sdk: flutter
 
   calendar_date_picker2: 2.0.1
+  diacritic: 0.1.6
   firebase_ai: 3.10.0
   firebase_core: 4.6.0
   flutter_animate: 4.5.2
   flutter_displaymode: 0.7.0
   flutter_swipe_action_cell: 3.1.6
+  fuzzywuzzy: 1.2.0
   get_it: 9.2.1
   hive_ce: 2.19.3
   hive_ce_flutter: 2.3.4
@@ -44,6 +46,7 @@ dependencies:
   phosphor_flutter: 2.1.0
   scroll_datetime_picker: 0.2.2
   speech_to_text: 7.3.0
+  string_similarity: 2.1.1
   uuid: 4.5.3
   watch_it: 2.4.2
 
