@@ -14,7 +14,7 @@ You can see data by day and keep everything organized. 🗂️
 
 ![Multi](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/multi.png)
 
-**Meals** 💶
+**Meals** 🥙
 
 Shows a list of your meals.\
 It's grouped by day, so you can see everything properly structured.
