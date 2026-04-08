@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -13,6 +15,7 @@ import '../../theme/colors.dart';
 import '../../util/color.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/bokun_spize_app_bar.dart';
+import '../../widgets/bokun_spize_little_button.dart';
 import '../../widgets/bokun_spize_text_field.dart';
 import 'calorie_controller.dart';
 
@@ -92,12 +95,43 @@ class _CalorieScreenState extends State<CalorieScreen> {
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(28, 2, 20, 0),
               sliver: SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 4),
-                  child: Text(
-                    'Dnevni unos kalorija',
-                    style: context.textStyles.homeTitle,
-                  ),
+                child: Row(
+                  children: [
+                    ///
+                    /// TITLE
+                    ///
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          'Dnevni unos kalorija',
+                          style: context.textStyles.homeTitle,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+
+                    ///
+                    /// DELETE BUTTON
+                    ///
+                    BokunSpizeLittleButton(
+                      onPressed: () async {
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
+
+                        /// Trigger delete
+                        await calorieController.onDeletePressed(context);
+
+                        /// Dismiss screen
+                        Navigator.of(context).pop();
+                      },
+                      icon: PhosphorIcons.trash(
+                        PhosphorIconsStyle.duotone,
+                      ),
+                      duotoneSecondaryColor: context.colors.delete,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -725,11 +759,13 @@ class _CalorieScreenState extends State<CalorieScreen> {
           width: double.infinity,
           child: FilledButton(
             onPressed: calorieState.validationPassed
-                ? () {
-                    HapticFeedback.lightImpact();
+                ? () async {
+                    unawaited(
+                      HapticFeedback.lightImpact(),
+                    );
 
                     /// Save new `userMetrics` in [Hive]
-                    calorieController.onSavePressed(context);
+                    await calorieController.onSavePressed(context);
                   }
                 : null,
             style: FilledButton.styleFrom(

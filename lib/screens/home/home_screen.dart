@@ -51,7 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeController = getIt.get<HomeController>();
     final hiveService = getIt.get<HiveService>();
 
-    final items = watchIt<HiveService>().value.items;
+    final hiveState = watchIt<HiveService>().value;
+
+    final items = hiveState.items;
+    final dailyCalorieGoal = hiveState.userMetrics?.dailyCalorieGoal;
 
     return Scaffold(
       body: CustomScrollView(
@@ -142,13 +145,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 TextSpan(
                                   text: 'kcal',
                                   style: context.textStyles.homeDayKcal.copyWith(
-                                    // color: context.colors.delete,
+                                    color: (dailyCalorieGoal != null && item.amountCalories > dailyCalorieGoal) ? context.colors.delete : null,
                                   ),
                                 ),
                               ],
                             ),
                             style: context.textStyles.homeTitle.copyWith(
-                              // color: context.colors.delete,
+                              color: (dailyCalorieGoal != null && item.amountCalories > dailyCalorieGoal) ? context.colors.delete : null,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

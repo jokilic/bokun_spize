@@ -7,6 +7,7 @@ import '../../models/calorie_goal.dart';
 import '../../models/sex.dart';
 import '../../models/user_metrics.dart';
 import '../../services/hive_service.dart';
+import '../../util/null_state.dart';
 
 class CalorieController extends ValueNotifier<({bool validationPassed, ActivityLevel? activityLevel, Sex? sex, CalorieGoal? calorieGoal})> implements Disposable {
   ///
@@ -107,6 +108,28 @@ class CalorieController extends ValueNotifier<({bool validationPassed, ActivityL
     );
   }
 
+  /// Triggered when the user presses `Delete` button
+  Future<void> onDeletePressed(BuildContext context) async {
+    ageTextEditingController.clear();
+    heightTextEditingController.clear();
+    weightTextEditingController.clear();
+
+    updateState(
+      activityLevel: null,
+      sex: null,
+      calorieGoal: null,
+    );
+
+    /// Trigger validation
+    triggerValidation();
+
+    /// Delete `userMetrics` from [Hive]
+    await hive.deleteUserMetrics();
+
+    /// Dismiss keyboard
+    FocusScope.of(context).unfocus();
+  }
+
   /// Triggered when the user presses `Save` button
   Future<void> onSavePressed(BuildContext context) async {
     final age = int.parse(ageTextEditingController.text.trim());
@@ -142,13 +165,13 @@ class CalorieController extends ValueNotifier<({bool validationPassed, ActivityL
   /// Updates `state`
   void updateState({
     bool? validationPassed,
-    ActivityLevel? activityLevel,
-    Sex? sex,
-    CalorieGoal? calorieGoal,
+    Object? activityLevel = nullStateNoChange,
+    Object? sex = nullStateNoChange,
+    Object? calorieGoal = nullStateNoChange,
   }) => value = (
     validationPassed: validationPassed ?? value.validationPassed,
-    activityLevel: activityLevel ?? value.activityLevel,
-    sex: sex ?? value.sex,
-    calorieGoal: calorieGoal ?? value.calorieGoal,
+    activityLevel: identical(activityLevel, nullStateNoChange) ? value.activityLevel : activityLevel as ActivityLevel?,
+    sex: identical(sex, nullStateNoChange) ? value.sex : sex as Sex?,
+    calorieGoal: identical(calorieGoal, nullStateNoChange) ? value.calorieGoal : calorieGoal as CalorieGoal?,
   );
 }
