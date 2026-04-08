@@ -65,4 +65,16 @@ BokunSpizeTextThemesExtension getTextThemesExtension({
   homeMealValue: BokunSpizeTextStyles.homeMealValue.copyWith(
     color: colorsExtension.text,
   ),
+  maintenanceCaloriesValue: BokunSpizeTextStyles.maintenanceCaloriesValue.copyWith(
+    color: colorsExtension.text,
+  ),
+  maintenanceCaloriesKcal: BokunSpizeTextStyles.maintenanceCaloriesKcal.copyWith(
+    color: colorsExtension.text,
+  ),
+  maintenanceCaloriesValueSmall: BokunSpizeTextStyles.maintenanceCaloriesValueSmall.copyWith(
+    color: colorsExtension.text,
+  ),
+  maintenanceCaloriesKcalSmall: BokunSpizeTextStyles.maintenanceCaloriesKcalSmall.copyWith(
+    color: colorsExtension.text,
+  ),
 );

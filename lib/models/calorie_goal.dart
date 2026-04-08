@@ -34,4 +34,24 @@ extension CalorieGoalX on CalorieGoal {
     CalorieGoal.normalSurplus => 1.15,
     CalorieGoal.heavySurplus => 1.25,
   };
+
+  String get name => switch (this) {
+    CalorieGoal.heavyDeficit => 'Intenzivni deficit',
+    CalorieGoal.normalDeficit => 'Normalni deficit',
+    CalorieGoal.lightDeficit => 'Lagani deficit',
+    CalorieGoal.maintain => 'Održavanje',
+    CalorieGoal.lightSurplus => 'Lagani suficit',
+    CalorieGoal.normalSurplus => 'Normalni suficit',
+    CalorieGoal.heavySurplus => 'Intenzivni suficit',
+  };
+
+  String get description => switch (this) {
+    CalorieGoal.heavyDeficit => 'Brzi gubitak težine.',
+    CalorieGoal.normalDeficit => 'Uravnotežen gubitak težine.',
+    CalorieGoal.lightDeficit => 'Lagani gubitak težine.',
+    CalorieGoal.maintain => 'Održavanje težine.',
+    CalorieGoal.lightSurplus => 'Lagani dobitak težine.',
+    CalorieGoal.normalSurplus => 'Uravnotežen dobitak težine.',
+    CalorieGoal.heavySurplus => 'Brzi dobitak težine.',
+  };
 }

@@ -77,7 +77,7 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final delta = settings.maxExtent - settings.minExtent;
     final t = ((settings.currentExtent - settings.minExtent) / delta).clamp(0.0, 1.0);
-    final opacity = Curves.easeOut.transform(t);
+    final opacity = Curves.easeIn.transform(t);
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
 

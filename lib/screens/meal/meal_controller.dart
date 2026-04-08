@@ -69,6 +69,9 @@ class MealController
 
     /// Add validation listener to [TextEditingController]
     textEditingController.addListener(triggerValidation);
+
+    /// Trigger validation
+    triggerValidation();
   }
 
   ///

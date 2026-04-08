@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
-import '../models/activity_level.dart';
-import '../models/calorie_goal.dart';
 import '../models/hive_registrar.g.dart';
 import '../models/meal.dart';
-import '../models/sex.dart';
 import '../models/user_metrics.dart';
 import '../util/group_meals.dart';
 import '../util/path.dart';
@@ -134,33 +131,6 @@ class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userM
   Future<void> writeUserMetrics({required UserMetrics newUserMetrics}) async {
     await userMetrics.put(0, newUserMetrics);
     updateState();
-  }
-
-  /// Updates `userMetrics` value in [Hive]
-  Future<void> updateUserMetrics({
-    int? newAge,
-    double? newHeight,
-    double? newWeight,
-    ActivityLevel? newActivity,
-    Sex? newSex,
-    CalorieGoal? newCalorieGoal,
-  }) async {
-    final newUserMetrics = getUserMetrics()?.copyWith(
-      age: newAge,
-      height: newHeight,
-      weight: newWeight,
-      activity: newActivity,
-      sex: newSex,
-      calorieGoal: newCalorieGoal,
-    );
-
-    if (newUserMetrics == null) {
-      return;
-    }
-
-    await writeUserMetrics(
-      newUserMetrics: newUserMetrics,
-    );
   }
 
   /// Deletes `userMetrics` from [Hive]

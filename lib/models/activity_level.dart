@@ -36,10 +36,10 @@ extension ActivityLevelX on ActivityLevel {
   };
 
   String get description => switch (this) {
-    ActivityLevel.sedentary => 'Nikakva ili minimalna tjelovježba',
-    ActivityLevel.lightExercise => 'Lagana tjelovježba 1-2 dana u tjednu',
-    ActivityLevel.moderateExercise => 'Umjerena tjelovježba 3-5 dana u tjednu',
-    ActivityLevel.heavyExercise => 'Intenzivna tjelovježba 6-7 dana u tjednu',
-    ActivityLevel.athlete => 'Intenzivna tjelovježba dvaput dnevno',
+    ActivityLevel.sedentary => 'Nikakva ili minimalna tjelovježba.',
+    ActivityLevel.lightExercise => 'Lagana tjelovježba 1-2 dana u tjednu.',
+    ActivityLevel.moderateExercise => 'Umjerena tjelovježba 3-5 dana u tjednu.',
+    ActivityLevel.heavyExercise => 'Intenzivna tjelovježba 6-7 dana u tjednu.',
+    ActivityLevel.athlete => 'Intenzivna tjelovježba dvaput dnevno.',
   };
 }

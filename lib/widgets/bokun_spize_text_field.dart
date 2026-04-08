@@ -18,6 +18,7 @@ class BokunSpizeTextField extends StatelessWidget {
   final bool enabled;
   final Function(String value)? onSubmitted;
   final Iterable<String>? autofillHints;
+  final String? suffixText;
 
   const BokunSpizeTextField({
     required this.controller,
@@ -35,6 +36,7 @@ class BokunSpizeTextField extends StatelessWidget {
     this.enabled = true,
     this.onSubmitted,
     this.autofillHints,
+    this.suffixText,
   });
 
   @override
@@ -61,6 +63,12 @@ class BokunSpizeTextField extends StatelessWidget {
       cursorWidth: 1.5,
       cursorColor: context.colors.text,
       decoration: InputDecoration(
+        suffix: suffixText != null
+            ? Text(
+                suffixText!,
+                style: context.textStyles.homeMealNote,
+              )
+            : null,
         filled: true,
         fillColor: enabled ? context.colors.listTileBackground : null,
         alignLabelWithHint: true,

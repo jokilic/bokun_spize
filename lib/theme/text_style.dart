@@ -79,6 +79,30 @@ abstract class BokunSpizeTextStyles {
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
+
+  static const maintenanceCaloriesValue = TextStyle(
+    fontFamily: 'ProductSans',
+    fontSize: 48,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const maintenanceCaloriesKcal = TextStyle(
+    fontFamily: 'ProductSans',
+    fontSize: 22,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const maintenanceCaloriesValueSmall = TextStyle(
+    fontFamily: 'ProductSans',
+    fontSize: 26,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const maintenanceCaloriesKcalSmall = TextStyle(
+    fontFamily: 'ProductSans',
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
 }
 
 class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesExtension> {
@@ -95,6 +119,10 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
   final TextStyle homeMealKcal;
   final TextStyle homeDayKcal;
   final TextStyle homeMealValue;
+  final TextStyle maintenanceCaloriesValue;
+  final TextStyle maintenanceCaloriesKcal;
+  final TextStyle maintenanceCaloriesValueSmall;
+  final TextStyle maintenanceCaloriesKcalSmall;
 
   const BokunSpizeTextThemesExtension({
     required this.button,
@@ -110,6 +138,10 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
     required this.homeMealKcal,
     required this.homeDayKcal,
     required this.homeMealValue,
+    required this.maintenanceCaloriesValue,
+    required this.maintenanceCaloriesKcal,
+    required this.maintenanceCaloriesValueSmall,
+    required this.maintenanceCaloriesKcalSmall,
   });
 
   @override
@@ -127,6 +159,10 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
     TextStyle? homeMealKcal,
     TextStyle? homeDayKcal,
     TextStyle? homeMealValue,
+    TextStyle? maintenanceCaloriesValue,
+    TextStyle? maintenanceCaloriesKcal,
+    TextStyle? maintenanceCaloriesValueSmall,
+    TextStyle? maintenanceCaloriesKcalSmall,
   }) => BokunSpizeTextThemesExtension(
     button: button ?? this.button,
     textField: textField ?? this.textField,
@@ -141,6 +177,10 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
     homeMealKcal: homeMealKcal ?? this.homeMealKcal,
     homeDayKcal: homeDayKcal ?? this.homeDayKcal,
     homeMealValue: homeMealValue ?? this.homeMealValue,
+    maintenanceCaloriesValue: maintenanceCaloriesValue ?? this.maintenanceCaloriesValue,
+    maintenanceCaloriesKcal: maintenanceCaloriesKcal ?? this.maintenanceCaloriesKcal,
+    maintenanceCaloriesValueSmall: maintenanceCaloriesValueSmall ?? this.maintenanceCaloriesValueSmall,
+    maintenanceCaloriesKcalSmall: maintenanceCaloriesKcalSmall ?? this.maintenanceCaloriesKcalSmall,
   );
 
   @override
@@ -166,6 +206,10 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
       homeMealKcal: TextStyle.lerp(homeMealKcal, other.homeMealKcal, t)!,
       homeDayKcal: TextStyle.lerp(homeDayKcal, other.homeDayKcal, t)!,
       homeMealValue: TextStyle.lerp(homeMealValue, other.homeMealValue, t)!,
+      maintenanceCaloriesValue: TextStyle.lerp(maintenanceCaloriesValue, other.maintenanceCaloriesValue, t)!,
+      maintenanceCaloriesKcal: TextStyle.lerp(maintenanceCaloriesKcal, other.maintenanceCaloriesKcal, t)!,
+      maintenanceCaloriesValueSmall: TextStyle.lerp(maintenanceCaloriesValueSmall, other.maintenanceCaloriesValueSmall, t)!,
+      maintenanceCaloriesKcalSmall: TextStyle.lerp(maintenanceCaloriesKcalSmall, other.maintenanceCaloriesKcalSmall, t)!,
     );
   }
 }
