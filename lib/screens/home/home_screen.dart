@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   HapticFeedback.lightImpact();
                   showCupertinoSheet(
                     context: context,
-                    builder: (context) => CalorieScreen(),
+                    scrollableBuilder: (context, scrollController) => CalorieScreen(),
                   );
                 },
                 style: IconButton.styleFrom(
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   HapticFeedback.lightImpact();
                   showCupertinoSheet(
                     context: context,
-                    builder: (context) => SearchScreen(
+                    scrollableBuilder: (context, scrollController) => SearchScreen(
                       onMealPressed: homeController.onMealPressed,
                     ),
                   );

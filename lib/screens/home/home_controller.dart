@@ -77,7 +77,7 @@ class HomeController {
     /// Show [MealScreen] for adding or editing `meal`
     final result = await showCupertinoSheet<({String? words, DateTime? dateTime, File? imageFile, bool deleteMeal})>(
       context: context,
-      builder: (context) => MealScreen(
+      scrollableBuilder: (context, scrollController) => MealScreen(
         passedMeal: passedMeal,
         isCopyingMeal: isCopyingMeal,
       ),

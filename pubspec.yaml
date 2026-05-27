@@ -1,7 +1,7 @@
 name: bokun_spize
 description: 'Calorie tracking application in Flutter.'
 publish_to: 'none'
-version: 1.0.0+100
+version: 0.3.3+303
 
 #
 # DEPLOYING APP
@@ -22,7 +22,7 @@ version: 1.0.0+100
 #
 
 environment:
-  sdk: 3.11.4
+  sdk: 3.12.0
 
 dependencies:
   flutter:
@@ -46,7 +46,7 @@ dependencies:
   phosphor_flutter: 2.1.0
   scroll_datetime_picker: 0.2.2
   speech_to_text: 7.3.0
-  string_similarity: 2.1.1
+  string_similarity: 2.2.0
   uuid: 4.5.3
   watch_it: 2.4.2
 
