@@ -9,7 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'constants/durations.dart';
 import 'firebase_options.dart';
-import 'screens/home/home_screen.dart';
+import 'screens/entrance/entrance_screen.dart';
 import 'theme/colors.dart';
 import 'theme/extensions.dart';
 import 'theme/theme.dart';
@@ -67,7 +67,9 @@ class BokunSpizeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: HomeScreen(),
+    home: const EntranceScreen(
+      key: ValueKey('entrance'),
+    ),
     locale: const Locale('hr'),
     supportedLocales: const [
       Locale('hr'),
