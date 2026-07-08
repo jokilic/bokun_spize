@@ -67,10 +67,10 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
         onResult: (result) => onResult(
           result.recognizedWords,
         ),
-        localeId: locale,
-        listenFor: const Duration(minutes: 5),
-        pauseFor: const Duration(seconds: 30),
         listenOptions: SpeechListenOptions(
+          listenFor: const Duration(minutes: 5),
+          pauseFor: const Duration(seconds: 30),
+          localeId: locale,
           listenMode: ListenMode.dictation,
         ),
       );

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:watch_it/watch_it.dart';
 
 import 'constants/durations.dart';
 import 'firebase_options.dart';
@@ -65,11 +64,6 @@ Future<void> initializeBeforeAppStart() async {
 }
 
 class BokunSpizeApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => BokunSpizeWidget();
-}
-
-class BokunSpizeWidget extends WatchingWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,

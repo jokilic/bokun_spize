@@ -246,10 +246,12 @@ class _MealScreenState extends State<MealScreen> {
                     child: BokunSpizeTextField(
                       enabled: !hasMeal,
                       controller: mealController.textEditingController,
+                      focusNode: mealController.textFocusNode,
                       labelText: 'Što si imao za obrok?',
                       keyboardType: TextInputType.multiline,
                       minLines: null,
                       maxLines: 3,
+                      onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                       textAlign: TextAlign.left,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.newline,

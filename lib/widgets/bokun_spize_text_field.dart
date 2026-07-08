@@ -16,6 +16,7 @@ class BokunSpizeTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final bool obscureText;
   final bool enabled;
+  final ValueChanged<String>? onChanged;
   final Function(String value)? onSubmitted;
   final Iterable<String>? autofillHints;
   final String? suffixText;
@@ -34,6 +35,7 @@ class BokunSpizeTextField extends StatelessWidget {
     this.maxLines = 1,
     this.obscureText = false,
     this.enabled = true,
+    this.onChanged,
     this.onSubmitted,
     this.autofillHints,
     this.suffixText,
@@ -52,6 +54,7 @@ class BokunSpizeTextField extends StatelessWidget {
     return TextField(
       autofillHints: autofillHints,
       enabled: enabled,
+      onChanged: onChanged,
       onSubmitted: onSubmitted,
       obscureText: obscureText,
       autocorrect: autocorrect,

@@ -41,6 +41,7 @@ class MealController
   ///
 
   late final textEditingController = TextEditingController();
+  late final textFocusNode = FocusNode();
   late final imagePicker = ImagePicker();
 
   ///
@@ -66,6 +67,7 @@ class MealController
 
     /// Add validation listener to [TextEditingController]
     textEditingController.addListener(triggerValidation);
+    textFocusNode.addListener(stopSpeechToTextIfTextFieldFocused);
 
     /// Trigger validation
     triggerValidation();
@@ -90,6 +92,11 @@ class MealController
     textEditingController
       ..removeListener(triggerValidation)
       ..dispose();
+
+    /// Dispose [FocusNode]
+    textFocusNode
+      ..removeListener(stopSpeechToTextIfTextFieldFocused)
+      ..dispose();
   }
 
   ///
@@ -104,6 +111,24 @@ class MealController
     updateState(
       validationPassed: isTextValidated || isImageValidated,
     );
+  }
+
+  /// Stop speech recognition if [TextField] becomes active
+  Future<void> stopSpeechToTextIfTextFieldFocused() async {
+    if (!textFocusNode.hasFocus) {
+      return;
+    }
+
+    await stopSpeechToTextIfListening();
+  }
+
+  /// Stop speech recognition when the user starts editing text manually
+  Future<void> stopSpeechToTextIfListening() async {
+    if (!speechToText.value.isListening) {
+      return;
+    }
+
+    await speechToText.stopListening();
   }
 
   /// Triggered when the user presses [SpeechToText] button
