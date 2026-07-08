@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/extensions.dart';
-
 class EntranceScreen extends StatefulWidget {
   const EntranceScreen({
     required super.key,
