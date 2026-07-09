@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../services/ai_service.dart';
+import '../services/firebase_service.dart';
 import '../services/hive_service.dart';
 import '../services/speech_to_text_service.dart';
 
@@ -47,6 +51,16 @@ Future<void> initializeServices() async {
         await hive.init();
         return hive;
       },
+    );
+  }
+
+  if (!getIt.isRegistered<FirebaseService>()) {
+    getIt.registerSingletonAsync(
+      () async => FirebaseService(
+        auth: FirebaseAuth.instance,
+        firestore: FirebaseFirestore.instance,
+        googleSignIn: GoogleSignIn.instance,
+      ),
     );
   }
 

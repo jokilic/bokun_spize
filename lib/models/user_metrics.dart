@@ -1,7 +1,6 @@
 import 'package:hive_ce/hive_ce.dart';
 
 import 'activity_level.dart';
-import 'calorie_goal.dart';
 import 'sex.dart';
 
 @HiveType(typeId: 4)
@@ -21,16 +20,12 @@ class UserMetrics {
   @HiveField(4)
   final Sex sex;
 
-  @HiveField(5)
-  final CalorieGoal calorieGoal;
-
   UserMetrics({
     required this.age,
     required this.height,
     required this.weight,
     required this.activity,
     required this.sex,
-    required this.calorieGoal,
   });
 
   UserMetrics copyWith({
@@ -39,14 +34,12 @@ class UserMetrics {
     double? weight,
     ActivityLevel? activity,
     Sex? sex,
-    CalorieGoal? calorieGoal,
   }) => UserMetrics(
     age: age ?? this.age,
     height: height ?? this.height,
     weight: weight ?? this.weight,
     activity: activity ?? this.activity,
     sex: sex ?? this.sex,
-    calorieGoal: calorieGoal ?? this.calorieGoal,
   );
 
   double get bmr {
@@ -58,6 +51,4 @@ class UserMetrics {
   }
 
   double get tdee => bmr * activity.multiplier;
-
-  double get dailyCalorieGoal => tdee * calorieGoal.multiplier;
 }

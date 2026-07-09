@@ -14,11 +14,15 @@ class Nutrition {
   @HiveField(3)
   final double fat;
 
+  @HiveField(4)
+  final double sugar;
+
   Nutrition({
     required this.calories,
     required this.protein,
     required this.carbs,
     required this.fat,
+    required this.sugar,
   });
 
   Nutrition copyWith({
@@ -26,11 +30,13 @@ class Nutrition {
     double? protein,
     double? carbs,
     double? fat,
+    double? sugar,
   }) => Nutrition(
     calories: calories ?? this.calories,
     protein: protein ?? this.protein,
     carbs: carbs ?? this.carbs,
     fat: fat ?? this.fat,
+    sugar: sugar ?? this.sugar,
   );
 
   factory Nutrition.fromMap(Map<String, dynamic> map) => Nutrition(
@@ -38,6 +44,7 @@ class Nutrition {
     protein: (map['protein'] as num).toDouble(),
     carbs: (map['carbs'] as num).toDouble(),
     fat: (map['fat'] as num).toDouble(),
+    sugar: (map['sugar'] as num).toDouble(),
   );
 
   Map<String, dynamic> toMap() => {
@@ -45,16 +52,23 @@ class Nutrition {
     'protein': protein,
     'carbs': carbs,
     'fat': fat,
+    'sugar': sugar,
   };
 
   @override
-  String toString() => 'Nutrition(calories: $calories, protein: $protein, carbs: $carbs, fat: $fat)';
+  String toString() => 'Nutrition(calories: $calories, protein: $protein, carbs: $carbs, fat: $fat, sugar: $sugar)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Nutrition && runtimeType == other.runtimeType && calories == other.calories && protein == other.protein && carbs == other.carbs && fat == other.fat;
+      other is Nutrition &&
+          runtimeType == other.runtimeType &&
+          calories == other.calories &&
+          protein == other.protein &&
+          carbs == other.carbs &&
+          fat == other.fat &&
+          sugar == other.sugar;
 
   @override
-  int get hashCode => calories.hashCode ^ protein.hashCode ^ carbs.hashCode ^ fat.hashCode;
+  int get hashCode => calories.hashCode ^ protein.hashCode ^ carbs.hashCode ^ fat.hashCode ^ sugar.hashCode;
 }

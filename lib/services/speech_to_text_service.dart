@@ -6,7 +6,12 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
   /// CONSTRUCTOR
   ///
 
-  SpeechToTextService() : super((speechToText: null, available: false, isListening: false));
+  SpeechToTextService()
+    : super((
+        speechToText: null,
+        available: false,
+        isListening: false,
+      ));
 
   ///
   /// METHODS

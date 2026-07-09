@@ -5,7 +5,6 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import '../models/hive_registrar.g.dart';
 import '../models/meal.dart';
 import '../models/user_metrics.dart';
-import '../util/group_meals.dart';
 import '../util/path.dart';
 
 class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userMetrics})> implements Disposable {
@@ -13,7 +12,11 @@ class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userM
   /// CONSTRUCTOR
   ///
 
-  HiveService() : super((items: [], userMetrics: null));
+  HiveService()
+    : super((
+        items: [],
+        userMetrics: null,
+      ));
 
   ///
   /// VARIABLES
@@ -62,9 +65,10 @@ class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userM
     List<Meal>? newMeals,
     UserMetrics? newUserMetrics,
   }) => value = (
-    items: getGroupedMealsByDate(
-      newMeals ?? getMeals(),
-    ),
+    // items: getGroupedMealsByDate(
+    //   newMeals ?? getMeals(),
+    // ),
+    items: [],
     userMetrics: newUserMetrics ?? getUserMetrics(),
   );
 

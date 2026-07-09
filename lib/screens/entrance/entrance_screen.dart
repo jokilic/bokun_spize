@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants/colors.dart';
+
 class EntranceScreen extends StatefulWidget {
   const EntranceScreen({
     required super.key,
@@ -11,29 +13,29 @@ class EntranceScreen extends StatefulWidget {
 
 class _EntranceScreenState extends State<EntranceScreen> {
   @override
-  Widget build(BuildContext context) => const Scaffold(
+  Widget build(BuildContext context) => Scaffold(
     body: AutofillGroup(
       child: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         slivers: [
           ///
           /// ILLUSTRATION
           ///
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Placeholder(
               color: Colors.green,
               strokeWidth: 4,
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 16),
           ),
 
           ///
           /// TITLE
           ///
-          SliverPadding(
+          const SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
               child: Text(
@@ -48,7 +50,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               ),
             ),
           ),
-          SliverPadding(
+          const SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
               child: Text(
@@ -63,14 +65,14 @@ class _EntranceScreenState extends State<EntranceScreen> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 24),
           ),
 
           ///
           /// USE ACCOUNT TEXT
           ///
-          SliverPadding(
+          const SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
               child: Center(
@@ -88,42 +90,80 @@ class _EntranceScreenState extends State<EntranceScreen> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 16),
           ),
 
           ///
           /// GOOGLE
           ///
-          SliverToBoxAdapter(
-            child: Placeholder(
-              strokeWidth: 4,
-              fallbackHeight: 40,
-              color: Colors.red,
+          ///
+          /// GOOGLE SIGN IN
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverToBoxAdapter(
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  // onPressed: googleIsLoading
+                  //     ? null
+                  //     : () => handleLogin(
+                  //         context: context,
+                  //         onLoginPressed: entranceController.googleSignInPressed,
+                  //         useColorfulIcons: useColorfulIcons,
+                  //       ),
+                  icon: const Icon(
+                    Icons.login_rounded,
+                    color: BokunSpizeColors.white,
+                    size: 28,
+                  ),
+                  label: const Text('Google'),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    textStyle: const TextStyle(
+                      fontFamily: 'ProductSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    backgroundColor: BokunSpizeColors.green,
+                    foregroundColor: BokunSpizeColors.white,
+                    disabledBackgroundColor: BokunSpizeColors.grey,
+                    disabledForegroundColor: BokunSpizeColors.black,
+                  ),
+                ),
+              ),
             ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
           ),
 
           ///
           /// APPLE
           ///
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 16),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Placeholder(
               strokeWidth: 4,
               fallbackHeight: 40,
               color: Colors.blue,
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 24),
           ),
 
           ///
           /// USE ANONYMOUSLY TEXT
           ///
-          SliverPadding(
+          const SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
               child: Center(
@@ -141,14 +181,14 @@ class _EntranceScreenState extends State<EntranceScreen> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 16),
           ),
 
           ///
           /// ANONYMOUS
           ///
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Placeholder(
               strokeWidth: 4,
               fallbackHeight: 40,

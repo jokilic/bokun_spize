@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce/hive_ce.dart';
 
 import 'activity_level.dart';
-import 'calorie_goal.dart';
 import 'food.dart';
 import 'meal.dart';
 import 'nutrition.dart';
@@ -16,7 +15,6 @@ import 'user_metrics.dart';
   AdapterSpec<Food>(),
   AdapterSpec<ActivityLevel>(),
   AdapterSpec<Sex>(),
-  AdapterSpec<CalorieGoal>(),
   AdapterSpec<UserMetrics>(),
 ])
 part 'hive_adapters.g.dart';

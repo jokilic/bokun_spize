@@ -1,5 +1,7 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
+- [ ] Replace all `Colors.xxx`
+- [ ] Replace all `TextStyle()`
 
 # Bokun spize 🥗
 

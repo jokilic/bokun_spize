@@ -16,7 +16,9 @@ class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})
   AIService({
     required this.hive,
     required this.ai,
-  }) : super((generativeModels: []));
+  }) : super((
+         generativeModels: [],
+       ));
 
   ///
   /// VARIABLES

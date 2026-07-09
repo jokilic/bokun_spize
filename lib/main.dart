@@ -7,12 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'constants/durations.dart';
 import 'firebase_options.dart';
 import 'screens/entrance/entrance_screen.dart';
-import 'theme/colors.dart';
-import 'theme/extensions.dart';
-import 'theme/theme.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
@@ -23,7 +19,7 @@ Future<void> main() async {
   /// Initialize everything before starting app
   await initializeBeforeAppStart();
 
-  /// Run `Troško`
+  /// Run `Bokun spize`
   runApp(
     AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -76,14 +72,6 @@ class BokunSpizeApp extends StatelessWidget {
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    theme: BokunSpizeTheme.light(
-      primaryColor: BokunSpizeColors.primaryLight,
-    ),
-    darkTheme: BokunSpizeTheme.dark(
-      primaryColor: BokunSpizeColors.primaryDark,
-    ),
-    themeAnimationCurve: Curves.easeIn,
-    themeAnimationDuration: BokunSpizeDurations.animation,
     builder: (_, child) {
       final appWidget =
           child ??
@@ -94,7 +82,7 @@ class BokunSpizeApp extends StatelessWidget {
       return kDebugMode
           ? Banner(
               message: '',
-              color: context.colors.buttonPrimary,
+              color: Colors.red,
               location: BannerLocation.topEnd,
               layoutDirection: TextDirection.ltr,
               child: appWidget,
