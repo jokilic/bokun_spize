@@ -7,14 +7,14 @@ import '../models/meal.dart';
 import '../models/user_metrics.dart';
 import '../util/path.dart';
 
-class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userMetrics})> implements Disposable {
+class HiveService extends ValueNotifier<({List<Meal> meals, UserMetrics? userMetrics})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
 
   HiveService()
     : super((
-        items: [],
+        meals: [],
         userMetrics: null,
       ));
 
@@ -65,10 +65,7 @@ class HiveService extends ValueNotifier<({List<Object> items, UserMetrics? userM
     List<Meal>? newMeals,
     UserMetrics? newUserMetrics,
   }) => value = (
-    // items: getGroupedMealsByDate(
-    //   newMeals ?? getMeals(),
-    // ),
-    items: [],
+    meals: newMeals ?? getMeals(),
     userMetrics: newUserMetrics ?? getUserMetrics(),
   );
 

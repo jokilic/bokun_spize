@@ -46,14 +46,14 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
       /// Successful login
       if (loginResult.user != null && loginResult.error == null) {
         /// Store `isLoggedIn` into [Hive]
-        await hive.writeSettings(
-          hive.getSettings().copyWith(
-            isLoggedIn: true,
-          ),
-        );
+        // await hive.writeSettings(
+        //   hive.getSettings().copyWith(
+        //     isLoggedIn: true,
+        //   ),
+        // );
 
         /// Fetch all data from [Firebase] & store into [Hive]
-        await getFirebaseDataIntoHive();
+        // await getFirebaseDataIntoHive();
 
         updateState(
           googleIsLoading: false,
@@ -82,7 +82,7 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
     if (value.googleIsLoading) {
       return (
         user: null,
-        error: 'entranceWaitGoogleToFinish'.tr(),
+        error: 'entranceWaitGoogleToFinish',
       );
     }
 
@@ -96,14 +96,14 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
       /// Successful login
       if (loginResult.user != null && loginResult.error == null) {
         /// Store `isLoggedIn` into [Hive]
-        await hive.writeSettings(
-          hive.getSettings().copyWith(
-            isLoggedIn: true,
-          ),
-        );
+        // await hive.writeSettings(
+        //   hive.getSettings().copyWith(
+        //     isLoggedIn: true,
+        //   ),
+        // );
 
         /// Fetch all data from [Firebase] & store into [Hive]
-        await getFirebaseDataIntoHive();
+        // await getFirebaseDataIntoHive();
 
         updateState(
           appleIsLoading: false,
