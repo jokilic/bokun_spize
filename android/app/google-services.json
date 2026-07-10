@@ -12,7 +12,20 @@
           "package_name": "com.josipkilic.bokun_spize"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "178689254446-mgl57hb5bmeetol86ao2so03tdf2s930.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.josipkilic.bokun_spize",
+            "certificate_hash": "213d66cec54c510a07a6fae38d8d0fb5147f2950"
+          }
+        },
+        {
+          "client_id": "178689254446-ldt0dp1n519r9bnu8np0nher52empb4i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBzpStf8NHt8B1rOp9UI0SiKMLZfktlZFw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178689254446-ldt0dp1n519r9bnu8np0nher52empb4i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "178689254446-rqml3i7egb20nt7697ae61nipea77738.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.josipkilic.bokunSpize"
+              }
+            }
+          ]
         }
       }
     }

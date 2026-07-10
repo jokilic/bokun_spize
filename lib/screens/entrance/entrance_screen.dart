@@ -12,7 +12,7 @@ import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import 'entrance_controller.dart';
 
-class EntranceScreen extends StatefulWidget {
+class EntranceScreen extends WatchingStatefulWidget {
   const EntranceScreen({
     required super.key,
   });

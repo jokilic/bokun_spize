@@ -85,13 +85,14 @@ class NutritionAdapter extends TypeAdapter<Nutrition> {
       protein: (fields[1] as num).toDouble(),
       carbs: (fields[2] as num).toDouble(),
       fat: (fields[3] as num).toDouble(),
+      sugar: (fields[4] as num).toDouble(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Nutrition obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.calories)
       ..writeByte(1)
@@ -99,7 +100,9 @@ class NutritionAdapter extends TypeAdapter<Nutrition> {
       ..writeByte(2)
       ..write(obj.carbs)
       ..writeByte(3)
-      ..write(obj.fat);
+      ..write(obj.fat)
+      ..writeByte(4)
+      ..write(obj.sugar);
   }
 
   @override
@@ -274,63 +277,6 @@ class SexAdapter extends TypeAdapter<Sex> {
           typeId == other.typeId;
 }
 
-class CalorieGoalAdapter extends TypeAdapter<CalorieGoal> {
-  @override
-  final typeId = 6;
-
-  @override
-  CalorieGoal read(BinaryReader reader) {
-    switch (reader.readByte()) {
-      case 0:
-        return CalorieGoal.heavyDeficit;
-      case 1:
-        return CalorieGoal.normalDeficit;
-      case 2:
-        return CalorieGoal.lightDeficit;
-      case 3:
-        return CalorieGoal.maintain;
-      case 4:
-        return CalorieGoal.lightSurplus;
-      case 5:
-        return CalorieGoal.normalSurplus;
-      case 6:
-        return CalorieGoal.heavySurplus;
-      default:
-        return CalorieGoal.heavyDeficit;
-    }
-  }
-
-  @override
-  void write(BinaryWriter writer, CalorieGoal obj) {
-    switch (obj) {
-      case CalorieGoal.heavyDeficit:
-        writer.writeByte(0);
-      case CalorieGoal.normalDeficit:
-        writer.writeByte(1);
-      case CalorieGoal.lightDeficit:
-        writer.writeByte(2);
-      case CalorieGoal.maintain:
-        writer.writeByte(3);
-      case CalorieGoal.lightSurplus:
-        writer.writeByte(4);
-      case CalorieGoal.normalSurplus:
-        writer.writeByte(5);
-      case CalorieGoal.heavySurplus:
-        writer.writeByte(6);
-    }
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CalorieGoalAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
 class UserMetricsAdapter extends TypeAdapter<UserMetrics> {
   @override
   final typeId = 7;
@@ -347,14 +293,13 @@ class UserMetricsAdapter extends TypeAdapter<UserMetrics> {
       weight: (fields[2] as num).toDouble(),
       activity: fields[3] as ActivityLevel,
       sex: fields[4] as Sex,
-      calorieGoal: fields[5] as CalorieGoal,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserMetrics obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.age)
       ..writeByte(1)
@@ -364,9 +309,7 @@ class UserMetricsAdapter extends TypeAdapter<UserMetrics> {
       ..writeByte(3)
       ..write(obj.activity)
       ..writeByte(4)
-      ..write(obj.sex)
-      ..writeByte(5)
-      ..write(obj.calorieGoal);
+      ..write(obj.sex);
   }
 
   @override

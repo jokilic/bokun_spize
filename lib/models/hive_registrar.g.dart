@@ -4,7 +4,6 @@
 
 import 'package:hive_ce/hive_ce.dart';
 import 'package:bokun_spize/models/activity_level.dart';
-import 'package:bokun_spize/models/calorie_goal.dart';
 import 'package:bokun_spize/models/food.dart';
 import 'package:bokun_spize/models/hive_adapters.dart';
 import 'package:bokun_spize/models/meal.dart';
@@ -15,12 +14,11 @@ import 'package:bokun_spize/models/user_metrics.dart';
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(ColorAdapter());
+    registerAdapter(SexAdapter());
+    registerAdapter(ActivityLevelAdapter());
+    registerAdapter(UserMetricsAdapter());
     registerAdapter(NutritionAdapter());
     registerAdapter(FoodAdapter());
     registerAdapter(MealAdapter());
-    registerAdapter(ActivityLevelAdapter());
-    registerAdapter(SexAdapter());
-    registerAdapter(CalorieGoalAdapter());
-    registerAdapter(UserMetricsAdapter());
   }
 }
