@@ -6,9 +6,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 enum AuthProvider {
-  email,
   google,
   apple,
+  anonymous,
 }
 
 class FirebaseService {
@@ -50,7 +50,11 @@ class FirebaseService {
       }
     }
 
-    return AuthProvider.email;
+    if (user.isAnonymous) {
+      return AuthProvider.anonymous;
+    }
+
+    return AuthProvider.anonymous;
   }
 
   ///
@@ -200,6 +204,28 @@ class FirebaseService {
       return (user: null, error: error);
     } catch (e) {
       final error = 'Apple sign-in error $e';
+      log(error);
+      return (user: null, error: error);
+    }
+  }
+
+  /// Signs user in anonymously with [Firebase]
+  Future<({User? user, String? error})> signInAnonymously() async {
+    try {
+      final userCredential = await auth.signInAnonymously();
+
+      return (user: userCredential.user, error: null);
+    } on FirebaseAuthException catch (e) {
+      final error = switch (e.code) {
+        'operation-not-allowed' => 'errorOperationNotAllowed',
+        'too-many-requests' => 'errorTooManyRequests',
+        _ => e.code,
+      };
+
+      log(error);
+      return (user: null, error: error);
+    } catch (e) {
+      final error = 'Anonymous sign-in error $e';
       log(error);
       return (user: null, error: error);
     }

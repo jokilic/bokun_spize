@@ -74,6 +74,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
     final googleIsLoading = state.googleIsLoading;
     final appleIsLoading = state.appleIsLoading;
+    final anonymousIsLoading = state.anonymousIsLoading;
 
     return Scaffold(
       body: AutofillGroup(
@@ -272,11 +273,41 @@ class _EntranceScreenState extends State<EntranceScreen> {
             ///
             /// ANONYMOUS
             ///
-            const SliverToBoxAdapter(
-              child: Placeholder(
-                strokeWidth: 4,
-                fallbackHeight: 40,
-                color: Colors.yellow,
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: anonymousIsLoading
+                        ? null
+                        : () => handleLogin(
+                            context: context,
+                            onLoginPressed: entranceController.anonymousSignInPressed,
+                          ),
+                    icon: const Icon(
+                      Icons.verified_user_rounded,
+                      color: BokunSpizeColors.green,
+                      size: 28,
+                    ),
+                    label: const Text('Anonymous'),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      textStyle: const TextStyle(
+                        fontFamily: 'ProductSans',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: BokunSpizeColors.white,
+                      foregroundColor: BokunSpizeColors.green,
+                      disabledBackgroundColor: BokunSpizeColors.grey,
+                      disabledForegroundColor: BokunSpizeColors.black,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

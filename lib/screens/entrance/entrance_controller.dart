@@ -127,6 +127,56 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
     }
   }
 
+  /// Triggered when the user presses anonymous login button
+  Future<({User? user, String? error})> anonymousSignInPressed() async {
+    if (value.anonymousIsLoading) {
+      return (
+        user: null,
+        error: 'entranceWaitAnonymousToFinish',
+      );
+    }
+
+    updateState(
+      anonymousIsLoading: true,
+    );
+
+    try {
+      final loginResult = await firebase.signInAnonymously();
+
+      /// Successful login
+      if (loginResult.user != null && loginResult.error == null) {
+        /// Store `isLoggedIn` into [Hive]
+        // await hive.writeSettings(
+        //   hive.getSettings().copyWith(
+        //     isLoggedIn: true,
+        //   ),
+        // );
+
+        /// Fetch all data from [Firebase] & store into [Hive]
+        // await getFirebaseDataIntoHive();
+
+        updateState(
+          anonymousIsLoading: false,
+        );
+      }
+      /// Not successful login
+      else {
+        log('EntranceController -> anonymousSignInPressed() -> user == null');
+        updateState(
+          anonymousIsLoading: false,
+        );
+      }
+
+      return loginResult;
+    } catch (e) {
+      log('EntranceController -> anonymousSignInPressed() -> $e');
+      updateState(
+        anonymousIsLoading: false,
+      );
+      return (user: null, error: '$e');
+    }
+  }
+
   /// Updates `state`
   void updateState({
     bool? googleIsLoading,
