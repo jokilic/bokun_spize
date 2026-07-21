@@ -29,10 +29,12 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
 
   /// Triggered when the user presses Google login button
   Future<({User? user, String? error})> googleSignInPressed() async {
-    if (value.appleIsLoading) {
+    final isLoading = value.googleIsLoading || value.appleIsLoading || value.anonymousIsLoading;
+
+    if (isLoading) {
       return (
         user: null,
-        error: 'Apple is loading',
+        error: 'Already loading',
       );
     }
 
@@ -79,10 +81,12 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
 
   /// Triggered when the user presses Apple login button
   Future<({User? user, String? error})> appleSignInPressed() async {
-    if (value.googleIsLoading) {
+    final isLoading = value.googleIsLoading || value.appleIsLoading || value.anonymousIsLoading;
+
+    if (isLoading) {
       return (
         user: null,
-        error: 'entranceWaitGoogleToFinish',
+        error: 'Already loading',
       );
     }
 
@@ -129,10 +133,12 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
 
   /// Triggered when the user presses anonymous login button
   Future<({User? user, String? error})> anonymousSignInPressed() async {
-    if (value.anonymousIsLoading) {
+    final isLoading = value.googleIsLoading || value.appleIsLoading || value.anonymousIsLoading;
+
+    if (isLoading) {
       return (
         user: null,
-        error: 'entranceWaitAnonymousToFinish',
+        error: 'Already loading',
       );
     }
 

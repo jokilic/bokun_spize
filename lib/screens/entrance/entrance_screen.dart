@@ -13,10 +13,6 @@ import '../../util/snackbars.dart';
 import 'entrance_controller.dart';
 
 class EntranceScreen extends WatchingStatefulWidget {
-  const EntranceScreen({
-    required super.key,
-  });
-
   @override
   State<EntranceScreen> createState() => _EntranceScreenState();
 }
@@ -77,240 +73,287 @@ class _EntranceScreenState extends State<EntranceScreen> {
     final anonymousIsLoading = state.anonymousIsLoading;
 
     return Scaffold(
-      body: AutofillGroup(
-        child: CustomScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            ///
-            /// ILLUSTRATION
-            ///
-            const SliverToBoxAdapter(
-              child: Placeholder(
-                color: Colors.green,
-                strokeWidth: 4,
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
-
-            ///
-            /// TITLE
-            ///
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Welcome to',
-                  style: TextStyle(
-                    fontFamily: 'ProductSans',
-                    fontSize: 26,
-                    fontWeight: FontWeight.w500,
-                    height: 1.2,
-                    letterSpacing: 1,
-                  ),
+      body: SafeArea(
+        top: false,
+        child: AutofillGroup(
+          child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              ///
+              /// ILLUSTRATION
+              ///
+              SliverToBoxAdapter(
+                child: Image.network(
+                  'https://picsum.photos/400',
+                  fit: BoxFit.cover,
+                  height: 400,
                 ),
               ),
-            ),
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Bokun spize',
-                  style: TextStyle(
-                    fontFamily: 'ProductSans',
-                    fontSize: 40,
-                    fontWeight: FontWeight.w900,
-                    height: 1.2,
-                    letterSpacing: 1,
-                  ),
-                ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
               ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
-            ),
 
-            ///
-            /// USE ACCOUNT TEXT
-            ///
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverToBoxAdapter(
-                child: Center(
+              ///
+              /// TITLE
+              ///
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Use your account',
+                    'Welcome to',
                     style: TextStyle(
                       fontFamily: 'ProductSans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                       height: 1.2,
                       letterSpacing: 1,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
-
-            ///
-            /// GOOGLE
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: googleIsLoading
-                        ? null
-                        : () => handleLogin(
-                            context: context,
-                            onLoginPressed: entranceController.googleSignInPressed,
-                          ),
-                    icon: const Icon(
-                      Icons.login_rounded,
-                      color: BokunSpizeColors.white,
-                      size: 28,
-                    ),
-                    label: const Text('Google'),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      textStyle: const TextStyle(
-                        fontFamily: 'ProductSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      backgroundColor: BokunSpizeColors.green,
-                      foregroundColor: BokunSpizeColors.white,
-                      disabledBackgroundColor: BokunSpizeColors.grey,
-                      disabledForegroundColor: BokunSpizeColors.black,
+                      color: BokunSpizeColors.neutralDark,
                     ),
                   ),
                 ),
               ),
-            ),
-
-            ///
-            /// APPLE
-            ///
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: appleIsLoading
-                        ? null
-                        : () => handleLogin(
-                            context: context,
-                            onLoginPressed: entranceController.appleSignInPressed,
-                          ),
-                    icon: const Icon(
-                      Icons.apple_rounded,
-                      color: BokunSpizeColors.white,
-                      size: 28,
-                    ),
-                    label: const Text('Apple'),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      textStyle: const TextStyle(
-                        fontFamily: 'ProductSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      backgroundColor: BokunSpizeColors.green,
-                      foregroundColor: BokunSpizeColors.white,
-                      disabledBackgroundColor: BokunSpizeColors.grey,
-                      disabledForegroundColor: BokunSpizeColors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
-            ),
-
-            ///
-            /// USE ANONYMOUSLY TEXT
-            ///
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverToBoxAdapter(
-                child: Center(
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Use anonymously',
+                    'Bokun spize',
                     style: TextStyle(
                       fontFamily: 'ProductSans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w900,
                       height: 1.2,
                       letterSpacing: 1,
+                      color: BokunSpizeColors.neutralDark,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 28),
+              ),
 
-            ///
-            /// ANONYMOUS
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: anonymousIsLoading
-                        ? null
-                        : () => handleLogin(
-                            context: context,
-                            onLoginPressed: entranceController.anonymousSignInPressed,
+              ///
+              /// USE ACCOUNT TEXT
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Use your account'.toUpperCase(),
+                          style: const TextStyle(
+                            fontFamily: 'ProductSans',
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            height: 1.2,
+                            letterSpacing: 1,
+                            color: BokunSpizeColors.neutralDark,
                           ),
-                    icon: const Icon(
-                      Icons.verified_user_rounded,
-                      color: BokunSpizeColors.green,
-                      size: 28,
-                    ),
-                    label: const Text('Anonymous'),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textStyle: const TextStyle(
-                        fontFamily: 'ProductSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
                       ),
-                      padding: const EdgeInsets.all(16),
-                      backgroundColor: BokunSpizeColors.white,
-                      foregroundColor: BokunSpizeColors.green,
-                      disabledBackgroundColor: BokunSpizeColors.grey,
-                      disabledForegroundColor: BokunSpizeColors.black,
+                    ],
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+
+              ///
+              /// GOOGLE
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: googleIsLoading
+                          ? null
+                          : () => handleLogin(
+                              context: context,
+                              onLoginPressed: entranceController.googleSignInPressed,
+                            ),
+                      icon: const Icon(
+                        Icons.login_rounded,
+                        color: BokunSpizeColors.neutralLight,
+                        size: 24,
+                      ),
+                      label: const Text('Google'),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'ProductSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: BokunSpizeColors.neutralLight,
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        backgroundColor: BokunSpizeColors.primary,
+                        foregroundColor: BokunSpizeColors.neutralLight,
+                        disabledBackgroundColor: BokunSpizeColors.neutralLight,
+                        disabledForegroundColor: BokunSpizeColors.neutralDark,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+
+              ///
+              /// APPLE
+              ///
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: appleIsLoading
+                          ? null
+                          : () => handleLogin(
+                              context: context,
+                              onLoginPressed: entranceController.appleSignInPressed,
+                            ),
+                      icon: const Icon(
+                        Icons.apple_rounded,
+                        color: BokunSpizeColors.neutralLight,
+                        size: 24,
+                      ),
+                      label: const Text('Apple'),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'ProductSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: BokunSpizeColors.neutralLight,
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        backgroundColor: BokunSpizeColors.tertiary,
+                        foregroundColor: BokunSpizeColors.neutralLight,
+                        disabledBackgroundColor: BokunSpizeColors.neutralLight,
+                        disabledForegroundColor: BokunSpizeColors.neutralDark,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 28),
+              ),
+
+              ///
+              /// USE ANONYMOUSLY TEXT
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Use anonymously'.toUpperCase(),
+                          style: const TextStyle(
+                            fontFamily: 'ProductSans',
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            height: 1.2,
+                            letterSpacing: 1,
+                            color: BokunSpizeColors.neutralDark,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+
+              ///
+              /// ANONYMOUS
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: anonymousIsLoading
+                          ? null
+                          : () => handleLogin(
+                              context: context,
+                              onLoginPressed: entranceController.anonymousSignInPressed,
+                            ),
+                      icon: const Icon(
+                        Icons.verified_user_rounded,
+                        color: BokunSpizeColors.primary,
+                        size: 24,
+                      ),
+                      label: const Text('Anonymous'),
+                      style: OutlinedButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'ProductSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        backgroundColor: BokunSpizeColors.neutralLight,
+                        foregroundColor: BokunSpizeColors.primary,
+                        disabledBackgroundColor: BokunSpizeColors.secondary,
+                        disabledForegroundColor: BokunSpizeColors.neutralDark,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

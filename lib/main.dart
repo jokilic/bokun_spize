@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'constants/colors.dart';
 import 'firebase_options.dart';
 import 'screens/entrance/entrance_screen.dart';
 import 'util/dependencies.dart';
@@ -63,15 +64,16 @@ class BokunSpizeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: const EntranceScreen(
-      key: ValueKey('entrance'),
-    ),
+    home: EntranceScreen(),
     locale: const Locale('hr'),
     supportedLocales: const [
       Locale('hr'),
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    theme: ThemeData.light().copyWith(
+      scaffoldBackgroundColor: BokunSpizeColors.neutralLight,
+    ),
     builder: (_, child) {
       final appWidget =
           child ??
