@@ -348,6 +348,45 @@ class _EntranceScreenState extends State<EntranceScreen> {
                   ),
                 ),
               ),
+
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: anonymousIsLoading
+                          ? null
+                          : () => getIt.get<FirebaseService>().registerUser(
+                              email: 'neksuses@gmail.com',
+                              password: 'pass1234',
+                            ),
+                      icon: const Icon(
+                        Icons.verified_user_rounded,
+                        color: BokunSpizeColors.primary,
+                        size: 24,
+                      ),
+                      label: const Text('Register'),
+                      style: OutlinedButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'ProductSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        backgroundColor: BokunSpizeColors.neutralLight,
+                        foregroundColor: BokunSpizeColors.primary,
+                        disabledBackgroundColor: BokunSpizeColors.secondary,
+                        disabledForegroundColor: BokunSpizeColors.neutralDark,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
