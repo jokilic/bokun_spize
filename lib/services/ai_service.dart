@@ -273,7 +273,8 @@ JSON structure to follow strictly:
 
     /// Generate an `imagePrompt`
     InlineDataPart? imagePart;
-    Future<({String? storagePath, String? error})>? imageUpload;
+    Future<String?>? imageUpload;
+
     if (imageFile != null) {
       final image = await imageFile.readAsBytes();
       final ext = mealImageExtension(imageFile);
@@ -308,13 +309,13 @@ JSON structure to follow strictly:
     if (value.generativeModels.isEmpty) {
       errors.add('Nema dostupnih modela');
       final uploadResult = await imageUpload;
-      if (uploadResult?.error != null) {
-        errors.add('Slika nije spremljena: ${uploadResult!.error}');
+      if (uploadResult == null) {
+        errors.add('Slika nije spremljena');
       }
 
       return (
         aiResult: null,
-        imageStoragePath: uploadResult?.storagePath,
+        imageStoragePath: uploadResult,
         errors: errors,
       );
     }
@@ -339,13 +340,13 @@ JSON structure to follow strictly:
     }
 
     final uploadResult = await imageUpload;
-    if (uploadResult?.error != null) {
-      errors.add('Slika nije spremljena: ${uploadResult!.error}');
+    if (uploadResult == null) {
+      errors.add('Slika nije spremljena');
     }
 
     return (
       aiResult: aiResult,
-      imageStoragePath: uploadResult?.storagePath,
+      imageStoragePath: uploadResult,
       errors: errors,
     );
   }

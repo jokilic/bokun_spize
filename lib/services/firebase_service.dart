@@ -625,71 +625,6 @@ class FirebaseService {
     }
   }
 
-  /// Uploads the image used to create a meal and returns its Storage path
-  Future<({String? storagePath, String? error})> uploadMealImage({
-    required String mealId,
-    required File imageFile,
-  }) async {
-    try {
-      final user = auth.currentUser;
-
-      if (user == null) {
-        return (storagePath: null, error: 'Korisnik nije prijavljen');
-      }
-
-      final extension = mealImageExtension(imageFile);
-      final storagePath = 'users/${user.uid}/meals/$mealId/image.$extension';
-      final imageReference = storage.ref(storagePath);
-
-      await imageReference.putFile(
-        imageFile,
-        SettableMetadata(
-          contentType: mealImageContentType(extension),
-          customMetadata: {
-            'mealId': mealId,
-            'userId': user.uid,
-          },
-        ),
-      );
-
-      return (storagePath: storagePath, error: null);
-    } on FirebaseException catch (e) {
-      log('FirebaseService -> uploadMealImage() -> ${e.code}: ${e.message}');
-      return (storagePath: null, error: e.code);
-    } catch (e) {
-      log('FirebaseService -> uploadMealImage() -> $e');
-      return (storagePath: null, error: e.toString());
-    }
-  }
-
-  /// Returns image URL
-  Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
-    try {
-      return await storage.ref(imageStoragePath).getDownloadURL();
-    } catch (e) {
-      log('FirebaseService -> getMealImageDownloadUrl() -> $e');
-      return null;
-    }
-  }
-
-  /// Deletes an uploaded meal image when it is no longer needed
-  Future<bool> deleteMealImage({required String imageStoragePath}) async {
-    try {
-      await storage.ref(imageStoragePath).delete();
-      return true;
-    } on FirebaseException catch (e) {
-      if (e.code == 'object-not-found') {
-        return true;
-      }
-
-      log('FirebaseService -> deleteMealImage() -> ${e.code}: ${e.message}');
-      return false;
-    } catch (e) {
-      log('FirebaseService -> deleteMealImage() -> $e');
-      return false;
-    }
-  }
-
   /// Updates a `meal` in [Firebase]
   Future<bool> updateMeal({required Meal newMeal}) async {
     try {
@@ -732,6 +667,75 @@ class FirebaseService {
       return true;
     } catch (e) {
       log('FirebaseService -> deleteMeal() -> $e');
+      return false;
+    }
+  }
+
+  ///
+  /// MEAL IMAGE
+  ///
+
+  /// Uploads the image used to create a meal and returns its Storage path
+  Future<String?> uploadMealImage({
+    required String mealId,
+    required File imageFile,
+  }) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return null;
+      }
+
+      final ext = mealImageExtension(imageFile);
+      final storagePath = 'users/${user.uid}/meals/$mealId/image.$ext';
+      final imageReference = storage.ref(storagePath);
+
+      await imageReference.putFile(
+        imageFile,
+        SettableMetadata(
+          contentType: mealImageContentType(ext),
+          customMetadata: {
+            'mealId': mealId,
+            'userId': user.uid,
+          },
+        ),
+      );
+
+      return storagePath;
+    } on FirebaseException catch (e) {
+      log('FirebaseService -> uploadMealImage() -> ${e.code}: ${e.message}');
+      return null;
+    } catch (e) {
+      log('FirebaseService -> uploadMealImage() -> $e');
+      return null;
+    }
+  }
+
+  /// Returns image URL
+  Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
+    try {
+      return await storage.ref(imageStoragePath).getDownloadURL();
+    } catch (e) {
+      log('FirebaseService -> getMealImageDownloadUrl() -> $e');
+      return null;
+    }
+  }
+
+  /// Deletes an uploaded meal image when it is no longer needed
+  Future<bool> deleteMealImage({required String imageStoragePath}) async {
+    try {
+      await storage.ref(imageStoragePath).delete();
+      return true;
+    } on FirebaseException catch (e) {
+      if (e.code == 'object-not-found') {
+        return true;
+      }
+
+      log('FirebaseService -> deleteMealImage() -> ${e.code}: ${e.message}');
+      return false;
+    } catch (e) {
+      log('FirebaseService -> deleteMealImage() -> $e');
       return false;
     }
   }
