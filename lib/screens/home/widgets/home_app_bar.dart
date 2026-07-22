@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../constants/colors.dart';
+import '../../../models/weight_track/weight_track.dart';
+import '../../../services/firebase_service.dart';
+import '../../../util/dependencies.dart';
 
 class HomeAppBar extends StatelessWidget {
   final Widget? leadingWidget;
@@ -52,7 +56,13 @@ class HomeAppBar extends StatelessWidget {
     leading: leadingWidget,
     actions: [
       IconButton(
-        onPressed: () {},
+        onPressed: () => getIt.get<FirebaseService>().writeWeightTrack(
+          newWeightTrack: WeightTrack(
+            id: const Uuid().v1(),
+            dateTime: DateTime.now(),
+            weight: 85,
+          ),
+        ),
         icon: const Icon(
           Icons.calendar_month_rounded,
           size: 24,

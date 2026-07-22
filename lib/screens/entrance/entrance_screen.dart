@@ -357,7 +357,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     child: ElevatedButton.icon(
                       onPressed: anonymousIsLoading
                           ? null
-                          : () => getIt.get<FirebaseService>().registerUser(
+                          : () => getIt.get<FirebaseService>().loginUser(
                               email: 'neksuses@gmail.com',
                               password: 'pass1234',
                             ),

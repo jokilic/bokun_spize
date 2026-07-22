@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../models/meal.dart';
+import '../models/meal/meal.dart';
+import '../models/weight_track/weight_track.dart';
 
 enum AuthProvider {
   google,
@@ -306,7 +307,11 @@ class FirebaseService {
       await deleteCollectionPaged(
         userDocument.collection('meals'),
       );
+      await deleteCollectionPaged(
+        userDocument.collection('weightTracks'),
+      );
       await userDocument.delete();
+
       await user.delete();
 
       return true;
@@ -533,6 +538,129 @@ class FirebaseService {
       return true;
     } catch (e) {
       log('FirebaseService -> deleteMeal() -> $e');
+      return false;
+    }
+  }
+
+  ///
+  /// WEIGHT TRACKS
+  ///
+
+  /// Fetches `weightTracks` from [Firebase]
+  Future<List<WeightTrack>?> getWeightTracks() async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return null;
+      }
+
+      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('weightTracks');
+
+      query = query.orderBy('dateTime', descending: true);
+
+      final snapshot = await query.get();
+
+      return snapshot.docs
+          .map(
+            (document) => WeightTrack.fromMap(
+              document.data(),
+              id: document.id,
+            ),
+          )
+          .toList();
+    } catch (e) {
+      log('FirebaseService -> getWeightTracks() -> $e');
+      return null;
+    }
+  }
+
+  /// Listens for real-time changes to `weightTracks` in [Firebase]
+  Stream<List<WeightTrack>?> listenToWeightTracks() async* {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        yield null;
+        return;
+      }
+
+      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('weightTracks');
+
+      query = query.orderBy('dateTime', descending: true);
+
+      await for (final snapshot in query.snapshots()) {
+        yield snapshot.docs
+            .map(
+              (document) => WeightTrack.fromMap(
+                document.data(),
+                id: document.id,
+              ),
+            )
+            .toList();
+      }
+    } catch (e) {
+      log('FirebaseService -> listenToWeightTracks() -> $e');
+      yield null;
+    }
+  }
+
+  /// Adds a new `weightTrack` into [Firebase]
+  Future<bool> writeWeightTrack({required WeightTrack newWeightTrack}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final collection = firestore.collection('users').doc(user.uid).collection('weightTracks');
+
+      await collection.doc(newWeightTrack.id).set(newWeightTrack.toMap());
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> writeWeightTrack() -> $e');
+      return false;
+    }
+  }
+
+  /// Updates a `weightTrack` in [Firebase]
+  Future<bool> updateWeightTrack({required WeightTrack newWeightTrack}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final collection = firestore.collection('users').doc(user.uid).collection('weightTracks');
+
+      await collection.doc(newWeightTrack.id).set(newWeightTrack.toMap());
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> updateWeightTrack() -> $e');
+      return false;
+    }
+  }
+
+  /// Deletes a `weightTrack` from [Firebase]
+  Future<bool> deleteWeightTrack({required WeightTrack weightTrack}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final collection = firestore.collection('users').doc(user.uid).collection('weightTracks');
+
+      await collection.doc(weightTrack.id).delete();
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> deleteWeightTrack() -> $e');
       return false;
     }
   }

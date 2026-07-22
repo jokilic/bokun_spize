@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../util/color.dart';
+import '../../util/color.dart';
 import 'food.dart';
 import 'nutrition.dart';
 
