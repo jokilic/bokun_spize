@@ -36,6 +36,8 @@ class FirebaseService {
   ///
 
   String? get userEmail => auth.currentUser?.email;
+  String? get userName => auth.currentUser?.displayName;
+  String? get userPhoto => auth.currentUser?.photoURL;
 
   /// Returns the sign-in provider for the current user
   /// Possible values: 'google.com', 'apple.com', 'password', or null

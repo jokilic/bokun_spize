@@ -6,7 +6,7 @@ enum Sex {
 }
 
 extension SexExtension on Sex {
-  String get name => switch (this) {
+  String get localName => switch (this) {
     Sex.male => 'Muško',
     Sex.female => 'Žensko',
   };

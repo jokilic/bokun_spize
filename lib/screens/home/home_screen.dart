@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:watch_it/watch_it.dart';
 
+import '../../models/user_metrics/user_metrics.dart';
+import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
 import 'home_controller.dart';
 import 'widgets/home_app_bar.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends WatchingStatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -29,6 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final homeController = getIt.get<HomeController>();
 
+    /// Listens to any changes in `userMetrics` from [Firebase]
+    final userMetrics = watchStream<FirebaseService, UserMetrics?>(
+      (firebaseService) => firebaseService.listenToUserMetrics(),
+    ).data;
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -39,9 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
             /// APP BAR
             ///
             HomeAppBar(
-              smallTitle: 'yo',
-              bigTitle: 'aaa',
-              bigSubtitle: 'ooo',
+              userName: 'bla',
+              userPhoto: 'aaa',
+              currentCalories: 1200,
+              dailyCalories: userMetrics?.dailyCalories.toInt() ?? 12,
             ),
 
             SliverToBoxAdapter(

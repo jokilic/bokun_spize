@@ -1,6 +1,8 @@
 import 'activity_level.dart';
 import 'sex.dart';
 
+// TODO: Think about what values to remove from database and calculate in-app
+
 class UserMetrics {
   final int age;
   final double height;
@@ -58,8 +60,8 @@ class UserMetrics {
     age: (map['age'] as num).toInt(),
     height: (map['height'] as num).toDouble(),
     weight: (map['weight'] as num).toDouble(),
-    activity: ActivityLevel.values.byName(map['activity'] as String),
-    sex: Sex.values.byName(map['sex'] as String),
+    activity: ActivityLevel.values[map['activity'] as int],
+    sex: Sex.values[map['sex'] as int],
     tdeeCalories: (map['tdeeCalories'] as num).toDouble(),
     bmrCalories: (map['bmrCalories'] as num).toDouble(),
     dailyCalories: (map['dailyCalories'] as num).toDouble(),
@@ -72,8 +74,8 @@ class UserMetrics {
     'age': age,
     'height': height,
     'weight': weight,
-    'activity': activity.name,
-    'sex': sex.name,
+    'activity': activity.index,
+    'sex': sex.index,
     'tdeeCalories': tdeeCalories,
     'bmrCalories': bmrCalories,
     'dailyCalories': dailyCalories,

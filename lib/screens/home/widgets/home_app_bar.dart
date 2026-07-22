@@ -8,53 +8,29 @@ import '../../../services/firebase_service.dart';
 import '../../../util/dependencies.dart';
 
 class HomeAppBar extends StatelessWidget {
-  final Widget? leadingWidget;
-  final String smallTitle;
-  final String bigTitle;
-  final String bigSubtitle;
+  final String userName;
+  final String userPhoto;
+  final int currentCalories;
+  final int dailyCalories;
 
   const HomeAppBar({
-    required this.smallTitle,
-    required this.bigTitle,
-    required this.bigSubtitle,
-    this.leadingWidget,
+    required this.userName,
+    required this.userPhoto,
+    required this.currentCalories,
+    required this.dailyCalories,
   });
 
   @override
   Widget build(BuildContext context) => SliverAppBar.large(
-    centerTitle: false,
-    title: const Text.rich(
-      TextSpan(
-        text: '1,600',
-        style: TextStyle(
-          fontFamily: 'ProductSans',
-          fontSize: 40,
-          fontWeight: FontWeight.w900,
-          height: 1.2,
-          letterSpacing: 1,
-          color: BokunSpizeColors.primary,
-        ),
-        children: [
-          TextSpan(
-            text: ' / 2,200 kcal',
-            style: TextStyle(
-              fontFamily: 'ProductSans',
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              height: 1.2,
-              letterSpacing: 1,
-              color: BokunSpizeColors.neutralDark,
-            ),
-          ),
-        ],
-      ),
-    ),
     backgroundColor: BokunSpizeColors.neutralLight,
-    titleSpacing: leadingWidget != null ? 4 : 16,
     elevation: 0,
     scrolledUnderElevation: 0,
     expandedHeight: 160,
-    leading: leadingWidget,
+    leading: Container(
+      height: 40,
+      width: 100,
+      color: Colors.indigo,
+    ),
     actions: [
       IconButton(
         onPressed: () => getIt.get<FirebaseService>().writeUserMetrics(
@@ -92,20 +68,26 @@ class HomeAppBar extends StatelessWidget {
       centerTitle: false,
       titlePadding: const EdgeInsets.all(16),
       title: FadingFlexibleTitle(
-        bigTitle: bigTitle,
-        bigSubtitle: bigSubtitle,
+        userName: userName,
+        userPhoto: userPhoto,
+        currentCalories: currentCalories,
+        dailyCalories: dailyCalories,
       ),
     ),
   );
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
-  final String bigTitle;
-  final String bigSubtitle;
+  final String userName;
+  final String userPhoto;
+  final int currentCalories;
+  final int dailyCalories;
 
   const FadingFlexibleTitle({
-    required this.bigTitle,
-    required this.bigSubtitle,
+    required this.userName,
+    required this.userPhoto,
+    required this.currentCalories,
+    required this.dailyCalories,
   });
 
   @override
@@ -128,19 +110,34 @@ class FadingFlexibleTitle extends StatelessWidget {
       opacity: opacity,
       child: Transform.translate(
         offset: Offset(0, dy),
-        child: const Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Yoyoo',
-              style: TextStyle(
-                fontFamily: 'ProductSans',
-                fontSize: 36,
-                fontWeight: FontWeight.w900,
-                height: 1.2,
-                letterSpacing: 1,
-                color: BokunSpizeColors.primary,
+            Text.rich(
+              TextSpan(
+                text: currentCalories.toStringAsFixed(0),
+                style: const TextStyle(
+                  fontFamily: 'ProductSans',
+                  fontSize: 40,
+                  fontWeight: FontWeight.w900,
+                  height: 1.2,
+                  letterSpacing: 1,
+                  color: BokunSpizeColors.primary,
+                ),
+                children: [
+                  TextSpan(
+                    text: ' / ${dailyCalories.toStringAsFixed(0)} kcal',
+                    style: const TextStyle(
+                      fontFamily: 'ProductSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                      letterSpacing: 1,
+                      color: BokunSpizeColors.neutralDark,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
