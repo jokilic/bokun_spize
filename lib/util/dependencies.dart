@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -48,6 +49,7 @@ Future<void> initializeServices() async {
       () async => FirebaseService(
         auth: FirebaseAuth.instance,
         firestore: FirebaseFirestore.instance,
+        storage: FirebaseStorage.instance,
         googleSignIn: GoogleSignIn.instance,
       ),
     );
@@ -63,7 +65,9 @@ Future<void> initializeServices() async {
     getIt.registerSingletonAsync(
       () async => AIService(
         ai: FirebaseAI.googleAI(),
+        firebaseService: getIt.get<FirebaseService>(),
       )..init(),
+      dependsOn: [FirebaseService],
     );
   }
 

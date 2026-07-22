@@ -4,15 +4,20 @@ import 'dart:io';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 
+import '../util/meal_image.dart';
+import 'firebase_service.dart';
+
 class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})> {
   ///
   /// CONSTRUCTOR
   ///
 
   final FirebaseAI ai;
+  final FirebaseService firebaseService;
 
   AIService({
     required this.ai,
+    required this.firebaseService,
   }) : super((
          generativeModels: [],
        ));
@@ -252,7 +257,8 @@ JSON structure to follow strictly:
   );
 
   /// Triggers `AI` with `prompt` and all necessary data
-  Future<({String? aiResult, List<String>? errors})> triggerAI({
+  Future<({String? aiResult, String? imageStoragePath, List<String>? errors})> triggerAI({
+    required String mealId,
     required String? textPrompt,
     required File? imageFile,
   }) async {
@@ -267,15 +273,26 @@ JSON structure to follow strictly:
 
     /// Generate an `imagePrompt`
     InlineDataPart? imagePart;
+    Future<({String? storagePath, String? error})>? imageUpload;
     if (imageFile != null) {
       final image = await imageFile.readAsBytes();
-      imagePart = InlineDataPart('image/jpeg', image);
+      final ext = mealImageExtension(imageFile);
+      imagePart = InlineDataPart(
+        mealImageContentType(ext),
+        image,
+      );
+
+      // Upload while Gemini processes the same image.
+      imageUpload = firebaseService.uploadMealImage(
+        mealId: mealId,
+        imageFile: imageFile,
+      );
     }
 
     /// Text and image don't exist, return
     if (textPart == null && imagePart == null) {
       errors.add('Nema teksta ni slike');
-      return (aiResult: null, errors: errors);
+      return (aiResult: null, imageStoragePath: null, errors: errors);
     }
 
     /// Generate `contents` to pass into `AI`
@@ -290,9 +307,19 @@ JSON structure to follow strictly:
 
     if (value.generativeModels.isEmpty) {
       errors.add('Nema dostupnih modela');
-      return (aiResult: null, errors: errors);
+      final uploadResult = await imageUpload;
+      if (uploadResult?.error != null) {
+        errors.add('Slika nije spremljena: ${uploadResult!.error}');
+      }
+
+      return (
+        aiResult: null,
+        imageStoragePath: uploadResult?.storagePath,
+        errors: errors,
+      );
     }
 
+    String? aiResult;
     for (final model in value.generativeModels) {
       try {
         final response = await model.generateContent(contents);
@@ -300,16 +327,27 @@ JSON structure to follow strictly:
 
         if (result == null) {
           errors.add('Model ${model.model.name} nije našao rezultat');
+          continue;
         }
 
-        return (aiResult: result, errors: errors);
+        aiResult = result;
+        break;
       } catch (e) {
         final error = e.toString().contains('quota') ? 'Kvota modela ${model.model.name} je prekoračena, pokušaj ponovno kasnije' : 'Greška kod modela ${model.model.name}: $e';
         errors.add(error);
       }
     }
 
-    return (aiResult: null, errors: errors);
+    final uploadResult = await imageUpload;
+    if (uploadResult?.error != null) {
+      errors.add('Slika nije spremljena: ${uploadResult!.error}');
+    }
+
+    return (
+      aiResult: aiResult,
+      imageStoragePath: uploadResult?.storagePath,
+      errors: errors,
+    );
   }
 
   /// Updates state

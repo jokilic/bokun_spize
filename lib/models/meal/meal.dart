@@ -17,7 +17,7 @@ class Meal {
   final String? originalText;
   final bool isLoading;
   final List<String>? errors;
-  final String? imageFilePath;
+  final String? imageStoragePath;
 
   Meal({
     required this.id,
@@ -30,7 +30,7 @@ class Meal {
     this.nutrition,
     this.foods,
     this.errors,
-    this.imageFilePath,
+    this.imageStoragePath,
   });
 
   Meal copyWith({
@@ -44,7 +44,7 @@ class Meal {
     String? originalText,
     bool? isLoading,
     List<String>? errors,
-    String? imageFilePath,
+    String? imageStoragePath,
   }) => Meal(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -56,7 +56,7 @@ class Meal {
     originalText: originalText ?? this.originalText,
     isLoading: isLoading ?? this.isLoading,
     errors: errors ?? this.errors,
-    imageFilePath: imageFilePath ?? this.imageFilePath,
+    imageStoragePath: imageStoragePath ?? this.imageStoragePath,
   );
 
   factory Meal.fromMap(
@@ -66,7 +66,7 @@ class Meal {
     required String? originalText,
     required bool isLoading,
     required List<String>? errors,
-    required String? imageFilePath,
+    required String? imageStoragePath,
   }) => Meal(
     id: id,
     name: map['name'],
@@ -78,7 +78,7 @@ class Meal {
     originalText: originalText,
     isLoading: isLoading,
     errors: errors,
-    imageFilePath: imageFilePath,
+    imageStoragePath: imageStoragePath,
   );
 
   String toJson() => json.encode(toMap());
@@ -94,12 +94,12 @@ class Meal {
     'originalText': originalText,
     'isLoading': isLoading,
     'errors': errors,
-    'imageFilePath': imageFilePath,
+    'imageStoragePath': imageStoragePath,
   };
 
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageFilePath: $imageFilePath)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath)';
 
   @override
   bool operator ==(Object other) =>
@@ -115,7 +115,7 @@ class Meal {
           originalText == other.originalText &&
           isLoading == other.isLoading &&
           errors == other.errors &&
-          imageFilePath == other.imageFilePath;
+          imageStoragePath == other.imageStoragePath;
 
   @override
   int get hashCode =>
@@ -128,5 +128,5 @@ class Meal {
       originalText.hashCode ^
       isLoading.hashCode ^
       errors.hashCode ^
-      imageFilePath.hashCode;
+      imageStoragePath.hashCode;
 }

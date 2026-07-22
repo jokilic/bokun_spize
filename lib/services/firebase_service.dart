@@ -1,13 +1,16 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
+import '../util/meal_image.dart';
 
 enum AuthProvider {
   google,
@@ -23,11 +26,13 @@ class FirebaseService {
 
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
+  final FirebaseStorage storage;
   final GoogleSignIn googleSignIn;
 
   FirebaseService({
     required this.auth,
     required this.firestore,
+    required this.storage,
     required this.googleSignIn,
   });
 
@@ -555,7 +560,7 @@ class FirebaseService {
           originalText: data['originalText'] as String?,
           isLoading: data['isLoading'] as bool? ?? false,
           errors: (data['errors'] as List?)?.cast<String>(),
-          imageFilePath: data['imageFilePath'] as String?,
+          imageStoragePath: data['imageStoragePath'] as String?,
         );
       }).toList();
     } catch (e) {
@@ -590,7 +595,7 @@ class FirebaseService {
             originalText: data['originalText'] as String?,
             isLoading: data['isLoading'] as bool? ?? false,
             errors: (data['errors'] as List?)?.cast<String>(),
-            imageFilePath: data['imageFilePath'] as String?,
+            imageStoragePath: data['imageStoragePath'] as String?,
           );
         }).toList();
       }
@@ -616,6 +621,71 @@ class FirebaseService {
       return true;
     } catch (e) {
       log('FirebaseService -> writeMeal() -> $e');
+      return false;
+    }
+  }
+
+  /// Uploads the image used to create a meal and returns its Storage path
+  Future<({String? storagePath, String? error})> uploadMealImage({
+    required String mealId,
+    required File imageFile,
+  }) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return (storagePath: null, error: 'Korisnik nije prijavljen');
+      }
+
+      final extension = mealImageExtension(imageFile);
+      final storagePath = 'users/${user.uid}/meals/$mealId/image.$extension';
+      final imageReference = storage.ref(storagePath);
+
+      await imageReference.putFile(
+        imageFile,
+        SettableMetadata(
+          contentType: mealImageContentType(extension),
+          customMetadata: {
+            'mealId': mealId,
+            'userId': user.uid,
+          },
+        ),
+      );
+
+      return (storagePath: storagePath, error: null);
+    } on FirebaseException catch (e) {
+      log('FirebaseService -> uploadMealImage() -> ${e.code}: ${e.message}');
+      return (storagePath: null, error: e.code);
+    } catch (e) {
+      log('FirebaseService -> uploadMealImage() -> $e');
+      return (storagePath: null, error: e.toString());
+    }
+  }
+
+  /// Returns image URL
+  Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
+    try {
+      return await storage.ref(imageStoragePath).getDownloadURL();
+    } catch (e) {
+      log('FirebaseService -> getMealImageDownloadUrl() -> $e');
+      return null;
+    }
+  }
+
+  /// Deletes an uploaded meal image when it is no longer needed
+  Future<bool> deleteMealImage({required String imageStoragePath}) async {
+    try {
+      await storage.ref(imageStoragePath).delete();
+      return true;
+    } on FirebaseException catch (e) {
+      if (e.code == 'object-not-found') {
+        return true;
+      }
+
+      log('FirebaseService -> deleteMealImage() -> ${e.code}: ${e.message}');
+      return false;
+    } catch (e) {
+      log('FirebaseService -> deleteMealImage() -> $e');
       return false;
     }
   }
@@ -652,6 +722,12 @@ class FirebaseService {
       final collection = firestore.collection('users').doc(user.uid).collection('meals');
 
       await collection.doc(meal.id).delete();
+
+      if (meal.imageStoragePath != null) {
+        await deleteMealImage(
+          imageStoragePath: meal.imageStoragePath!,
+        );
+      }
 
       return true;
     } catch (e) {
