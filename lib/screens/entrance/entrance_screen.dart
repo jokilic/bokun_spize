@@ -194,7 +194,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             ),
                       icon: const Icon(
                         Icons.login_rounded,
-                        color: BokunSpizeColors.neutralLight,
                         size: 24,
                       ),
                       label: const Text('Google'),
@@ -239,7 +238,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             ),
                       icon: const Icon(
                         Icons.apple_rounded,
-                        color: BokunSpizeColors.neutralLight,
                         size: 24,
                       ),
                       label: const Text('Apple'),

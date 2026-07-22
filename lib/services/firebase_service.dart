@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../models/meal.dart';
+
 enum AuthProvider {
   google,
   apple,
@@ -228,6 +230,141 @@ class FirebaseService {
       final error = 'Anonymous sign-in error $e';
       log(error);
       return (user: null, error: error);
+    }
+  }
+
+  ///
+  /// MEALS
+  ///
+
+  /// Fetches `meals` from [Firebase]
+  Future<List<Meal>?> getMeals() async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return null;
+      }
+
+      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('meals');
+
+      query = query.orderBy('createdAt', descending: true);
+
+      final snapshot = await query.get();
+
+      return snapshot.docs.map((document) {
+        final data = document.data();
+        final createdAt = data['createdAt'];
+
+        return Meal.fromMap(
+          data,
+          id: document.id,
+          createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
+          originalText: data['originalText'] as String?,
+          isLoading: data['isLoading'] as bool? ?? false,
+          errors: (data['errors'] as List?)?.cast<String>(),
+          imageFilePath: data['imageFilePath'] as String?,
+        );
+      }).toList();
+    } catch (e) {
+      log('FirebaseService -> getMeals() -> $e');
+      return null;
+    }
+  }
+
+  /// Listens for real-time changes to `meals` in [Firebase]
+  Stream<List<Meal>?> listenToMeals() async* {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        yield null;
+        return;
+      }
+
+      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('meals');
+
+      query = query.orderBy('createdAt', descending: true);
+
+      await for (final snapshot in query.snapshots()) {
+        yield snapshot.docs.map((document) {
+          final data = document.data();
+          final createdAt = data['createdAt'];
+
+          return Meal.fromMap(
+            data,
+            id: document.id,
+            createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
+            originalText: data['originalText'] as String?,
+            isLoading: data['isLoading'] as bool? ?? false,
+            errors: (data['errors'] as List?)?.cast<String>(),
+            imageFilePath: data['imageFilePath'] as String?,
+          );
+        }).toList();
+      }
+    } catch (e) {
+      log('FirebaseService -> listenToMeals() -> $e');
+      yield null;
+    }
+  }
+
+  /// Adds a new `meal` into [Firebase]
+  Future<bool> writeMeal({required Meal newMeal}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final collection = firestore.collection('users').doc(user.uid).collection('meals');
+
+      await collection.doc(newMeal.id).set(newMeal.toMap());
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> writeMeal() -> $e');
+      return false;
+    }
+  }
+
+  /// Updates a `meal` in [Firebase]
+  Future<bool> updateMeal({required Meal newMeal}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final collection = firestore.collection('users').doc(user.uid).collection('meals');
+
+      await collection.doc(newMeal.id).set(newMeal.toMap());
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> updateMeal() -> $e');
+      return false;
+    }
+  }
+
+  /// Deletes a `meal` from [Firebase]
+  Future<bool> deleteMeal({required Meal meal}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final collection = firestore.collection('users').doc(user.uid).collection('meals');
+
+      await collection.doc(meal.id).delete();
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> deleteMeal() -> $e');
+      return false;
     }
   }
 }

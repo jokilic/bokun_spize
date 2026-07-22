@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'constants/colors.dart';
 import 'firebase_options.dart';
 import 'screens/entrance/entrance_screen.dart';
+import 'screens/home/home_screen.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
@@ -64,7 +66,13 @@ class BokunSpizeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: EntranceScreen(),
+    home: StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      initialData: FirebaseAuth.instance.currentUser,
+      builder: (context, authSnapshot) => authSnapshot.data == null
+          ? EntranceScreen()
+          : HomeScreen(),
+    ),
     locale: const Locale('hr'),
     supportedLocales: const [
       Locale('hr'),
