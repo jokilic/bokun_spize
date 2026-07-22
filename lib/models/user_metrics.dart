@@ -1,41 +1,17 @@
-import 'package:hive_ce/hive_ce.dart';
-
 import 'activity_level.dart';
 import 'sex.dart';
 
-@HiveType(typeId: 4)
 class UserMetrics {
-  @HiveField(0)
   final int age;
-
-  @HiveField(1)
   final double height;
-
-  @HiveField(2)
   final double weight;
-
-  @HiveField(3)
   final ActivityLevel activity;
-
-  @HiveField(4)
   final Sex sex;
-
-  @HiveField(5)
   final double tdeeCalories;
-
-  @HiveField(6)
   final double bmrCalories;
-
-  @HiveField(7)
   final double dailyCalories;
-
-  @HiveField(8)
   final double dailyProtein;
-
-  @HiveField(9)
   final double dailyCarbs;
-
-  @HiveField(10)
   final double dailyFat;
 
   UserMetrics({

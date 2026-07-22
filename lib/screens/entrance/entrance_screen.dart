@@ -7,7 +7,6 @@ import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
 import '../../services/firebase_service.dart';
-import '../../services/hive_service.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import 'entrance_controller.dart';
@@ -25,7 +24,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
     registerIfNotInitialized<EntranceController>(
       () => EntranceController(
         firebase: getIt.get<FirebaseService>(),
-        hive: getIt.get<HiveService>(),
       ),
     );
   }

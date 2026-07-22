@@ -3,18 +3,15 @@ import 'dart:io';
 
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
-import 'hive_service.dart';
 
 class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})> {
   ///
   /// CONSTRUCTOR
   ///
 
-  final HiveService hive;
   final FirebaseAI ai;
 
   AIService({
-    required this.hive,
     required this.ai,
   }) : super((
          generativeModels: [],

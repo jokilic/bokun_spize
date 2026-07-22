@@ -3,6 +3,7 @@
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Remove [Hive] altogether, rely only on [Firebase]
+- [ ] Check latest AI models
 
 # Bokun spize 🥗
 

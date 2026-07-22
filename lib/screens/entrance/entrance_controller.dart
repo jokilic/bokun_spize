@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/firebase_service.dart';
-import '../../services/hive_service.dart';
 
 class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appleIsLoading, bool anonymousIsLoading})> {
   ///
@@ -12,11 +11,9 @@ class EntranceController extends ValueNotifier<({bool googleIsLoading, bool appl
   ///
 
   final FirebaseService firebase;
-  final HiveService hive;
 
   EntranceController({
     required this.firebase,
-    required this.hive,
   }) : super((
          googleIsLoading: false,
          appleIsLoading: false,

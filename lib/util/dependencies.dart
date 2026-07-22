@@ -6,7 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../services/ai_service.dart';
 import '../services/firebase_service.dart';
-import '../services/hive_service.dart';
 import '../services/speech_to_text_service.dart';
 
 final getIt = GetIt.instance;
@@ -44,16 +43,6 @@ void unRegisterIfNotDisposed<T extends Object>({
 }
 
 Future<void> initializeServices() async {
-  if (!getIt.isRegistered<HiveService>()) {
-    getIt.registerSingletonAsync(
-      () async {
-        final hive = HiveService();
-        await hive.init();
-        return hive;
-      },
-    );
-  }
-
   if (!getIt.isRegistered<FirebaseService>()) {
     getIt.registerSingletonAsync(
       () async => FirebaseService(
@@ -67,17 +56,14 @@ Future<void> initializeServices() async {
   if (!getIt.isRegistered<SpeechToTextService>()) {
     getIt.registerSingletonAsync(
       () async => SpeechToTextService(),
-      dependsOn: [HiveService],
     );
   }
 
   if (!getIt.isRegistered<AIService>()) {
     getIt.registerSingletonAsync(
       () async => AIService(
-        hive: getIt.get<HiveService>(),
         ai: FirebaseAI.googleAI(),
       )..init(),
-      dependsOn: [HiveService],
     );
   }
 
