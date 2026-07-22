@@ -2,6 +2,7 @@
 
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
+- [ ] Remove [Hive] altogether, rely only on [Firebase]
 
 # Bokun spize 🥗
 

@@ -20,12 +20,36 @@ class UserMetrics {
   @HiveField(4)
   final Sex sex;
 
+  @HiveField(5)
+  final double tdeeCalories;
+
+  @HiveField(6)
+  final double bmrCalories;
+
+  @HiveField(7)
+  final double dailyCalories;
+
+  @HiveField(8)
+  final double dailyProtein;
+
+  @HiveField(9)
+  final double dailyCarbs;
+
+  @HiveField(10)
+  final double dailyFat;
+
   UserMetrics({
     required this.age,
     required this.height,
     required this.weight,
     required this.activity,
     required this.sex,
+    required this.tdeeCalories,
+    required this.bmrCalories,
+    required this.dailyCalories,
+    required this.dailyProtein,
+    required this.dailyCarbs,
+    required this.dailyFat,
   });
 
   UserMetrics copyWith({
@@ -34,13 +58,88 @@ class UserMetrics {
     double? weight,
     ActivityLevel? activity,
     Sex? sex,
+    double? tdeeCalories,
+    double? bmrCalories,
+    double? dailyCalories,
+    double? dailyProtein,
+    double? dailyCarbs,
+    double? dailyFat,
   }) => UserMetrics(
     age: age ?? this.age,
     height: height ?? this.height,
     weight: weight ?? this.weight,
     activity: activity ?? this.activity,
     sex: sex ?? this.sex,
+    tdeeCalories: tdeeCalories ?? this.tdeeCalories,
+    bmrCalories: bmrCalories ?? this.bmrCalories,
+    dailyCalories: dailyCalories ?? this.dailyCalories,
+    dailyProtein: dailyProtein ?? this.dailyProtein,
+    dailyCarbs: dailyCarbs ?? this.dailyCarbs,
+    dailyFat: dailyFat ?? this.dailyFat,
   );
+
+  factory UserMetrics.fromMap(Map<String, dynamic> map) => UserMetrics(
+    age: (map['age'] as num).toInt(),
+    height: (map['height'] as num).toDouble(),
+    weight: (map['weight'] as num).toDouble(),
+    activity: ActivityLevel.values.byName(map['activity'] as String),
+    sex: Sex.values.byName(map['sex'] as String),
+    tdeeCalories: (map['tdeeCalories'] as num).toDouble(),
+    bmrCalories: (map['bmrCalories'] as num).toDouble(),
+    dailyCalories: (map['dailyCalories'] as num).toDouble(),
+    dailyProtein: (map['dailyProtein'] as num).toDouble(),
+    dailyCarbs: (map['dailyCarbs'] as num).toDouble(),
+    dailyFat: (map['dailyFat'] as num).toDouble(),
+  );
+
+  Map<String, dynamic> toMap() => {
+    'age': age,
+    'height': height,
+    'weight': weight,
+    'activity': activity.name,
+    'sex': sex.name,
+    'tdeeCalories': tdeeCalories,
+    'bmrCalories': bmrCalories,
+    'dailyCalories': dailyCalories,
+    'dailyProtein': dailyProtein,
+    'dailyCarbs': dailyCarbs,
+    'dailyFat': dailyFat,
+  };
+
+  @override
+  String toString() =>
+      'UserMetrics(age: $age, height: $height, weight: $weight, activity: $activity, sex: $sex, tdeeCalories: $tdeeCalories, bmrCalories: $bmrCalories, dailyCalories: $dailyCalories, dailyProtein: $dailyProtein, dailyCarbs: $dailyCarbs, dailyFat: $dailyFat)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserMetrics &&
+          runtimeType == other.runtimeType &&
+          age == other.age &&
+          height == other.height &&
+          weight == other.weight &&
+          activity == other.activity &&
+          sex == other.sex &&
+          tdeeCalories == other.tdeeCalories &&
+          bmrCalories == other.bmrCalories &&
+          dailyCalories == other.dailyCalories &&
+          dailyProtein == other.dailyProtein &&
+          dailyCarbs == other.dailyCarbs &&
+          dailyFat == other.dailyFat;
+
+  @override
+  int get hashCode =>
+      age.hashCode ^
+      height.hashCode ^
+      weight.hashCode ^
+      activity.hashCode ^
+      sex.hashCode ^
+      tdeeCalories.hashCode ^
+      bmrCalories.hashCode ^
+      dailyCalories.hashCode ^
+      dailyProtein.hashCode ^
+      dailyCarbs.hashCode ^
+      dailyFat.hashCode;
 
   double get bmr {
     if (sex == Sex.male) {
