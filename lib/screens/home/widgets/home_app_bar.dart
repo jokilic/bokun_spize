@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../constants/colors.dart';
-import '../../../models/weight_track/weight_track.dart';
+import '../../../models/user_metrics/activity_level.dart';
+import '../../../models/user_metrics/sex.dart';
+import '../../../models/user_metrics/user_metrics.dart';
 import '../../../services/firebase_service.dart';
 import '../../../util/dependencies.dart';
 
@@ -56,11 +57,19 @@ class HomeAppBar extends StatelessWidget {
     leading: leadingWidget,
     actions: [
       IconButton(
-        onPressed: () => getIt.get<FirebaseService>().writeWeightTrack(
-          newWeightTrack: WeightTrack(
-            id: const Uuid().v1(),
-            dateTime: DateTime.now(),
-            weight: 85,
+        onPressed: () => getIt.get<FirebaseService>().writeUserMetrics(
+          newUserMetrics: UserMetrics(
+            age: 25,
+            height: 183,
+            weight: 73,
+            activity: ActivityLevel.sedentary,
+            sex: Sex.female,
+            tdeeCalories: 2600,
+            bmrCalories: 1800,
+            dailyCalories: 1400,
+            dailyProtein: 100,
+            dailyCarbs: 50,
+            dailyFat: 50,
           ),
         ),
         icon: const Icon(

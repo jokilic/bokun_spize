@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../models/meal/meal.dart';
+import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
 
 enum AuthProvider {
@@ -404,6 +405,121 @@ class FirebaseService {
       }
 
       await batch.commit();
+    }
+  }
+
+  ///
+  /// USER METRICS
+  ///
+
+  /// Fetches `userMetrics` from the current user's document in [Firebase]
+  Future<UserMetrics?> getUserMetrics() async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return null;
+      }
+
+      final snapshot = await firestore.collection('users').doc(user.uid).get();
+      final data = snapshot.data();
+
+      if (data == null || !data.containsKey('age')) {
+        return null;
+      }
+
+      return UserMetrics.fromMap(data);
+    } catch (e) {
+      log('FirebaseService -> getUserMetrics() -> $e');
+      return null;
+    }
+  }
+
+  /// Listens for real-time changes to `userMetrics` in the current user's document in [Firebase]
+  Stream<UserMetrics?> listenToUserMetrics() async* {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        yield null;
+        return;
+      }
+
+      final document = firestore.collection('users').doc(user.uid);
+
+      await for (final snapshot in document.snapshots()) {
+        final data = snapshot.data();
+
+        if (data == null || !data.containsKey('age')) {
+          yield null;
+          continue;
+        }
+
+        yield UserMetrics.fromMap(data);
+      }
+    } catch (e) {
+      log('FirebaseService -> listenToUserMetrics() -> $e');
+      yield null;
+    }
+  }
+
+  /// Writes `userMetrics` to the current user's document in [Firebase]
+  Future<bool> writeUserMetrics({required UserMetrics newUserMetrics}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final document = firestore.collection('users').doc(user.uid);
+
+      await document.set(newUserMetrics.toMap());
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> writeUserMetrics() -> $e');
+      return false;
+    }
+  }
+
+  /// Updates `userMetrics` in the current user's document in [Firebase]
+  Future<bool> updateUserMetrics({required UserMetrics newUserMetrics}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final document = firestore.collection('users').doc(user.uid);
+
+      await document.set(newUserMetrics.toMap());
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> updateUserMetrics() -> $e');
+      return false;
+    }
+  }
+
+  /// Deletes `userMetrics` from the current user's document in [Firebase]
+  Future<bool> deleteUserMetrics() async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final document = firestore.collection('users').doc(user.uid);
+
+      await document.delete();
+
+      return true;
+    } catch (e) {
+      log('FirebaseService -> deleteUserMetrics() -> $e');
+      return false;
     }
   }
 
