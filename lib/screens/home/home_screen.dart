@@ -37,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
 
+    final activeDate = watchIt<HomeController>().value;
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -47,10 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
             /// APP BAR
             ///
             HomeAppBar(
-              userName: 'bla',
+              userName: activeDate.toIso8601String(),
               userPhoto: 'aaa',
               currentCalories: 1200,
               dailyCalories: userMetrics?.dailyCalories.toInt() ?? 12,
+              onCalendarPressed: () => homeController.updateDateViaPicker(context),
             ),
 
             SliverToBoxAdapter(

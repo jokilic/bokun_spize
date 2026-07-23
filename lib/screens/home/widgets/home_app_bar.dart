@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
-import '../../../models/user_metrics/activity_level.dart';
-import '../../../models/user_metrics/sex.dart';
-import '../../../models/user_metrics/user_metrics.dart';
-import '../../../services/firebase_service.dart';
-import '../../../util/dependencies.dart';
 
 class HomeAppBar extends StatelessWidget {
   final String userName;
   final String userPhoto;
   final int currentCalories;
   final int dailyCalories;
+  final Function() onCalendarPressed;
 
   const HomeAppBar({
     required this.userName,
     required this.userPhoto,
     required this.currentCalories,
     required this.dailyCalories,
+    required this.onCalendarPressed,
   });
 
   @override
@@ -26,28 +23,11 @@ class HomeAppBar extends StatelessWidget {
     elevation: 0,
     scrolledUnderElevation: 0,
     expandedHeight: 160,
-    leading: Container(
-      height: 40,
-      width: 100,
-      color: Colors.indigo,
-    ),
+    leadingWidth: double.infinity,
+    leading: Text(userName),
     actions: [
       IconButton(
-        onPressed: () => getIt.get<FirebaseService>().writeUserMetrics(
-          newUserMetrics: UserMetrics(
-            age: 25,
-            height: 183,
-            weight: 73,
-            activity: ActivityLevel.sedentary,
-            sex: Sex.female,
-            tdeeCalories: 2600,
-            bmrCalories: 1800,
-            dailyCalories: 1400,
-            dailyProtein: 100,
-            dailyCarbs: 50,
-            dailyFat: 50,
-          ),
-        ),
+        onPressed: onCalendarPressed,
         icon: const Icon(
           Icons.calendar_month_rounded,
           size: 24,
