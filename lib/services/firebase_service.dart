@@ -569,8 +569,8 @@ class FirebaseService {
     }
   }
 
-  /// Listens for real-time changes to `meals` in [Firebase]
-  Stream<List<Meal>?> listenToMeals() async* {
+  /// Listens for real-time changes to `meals` created on [date] in [Firebase]
+  Stream<List<Meal>?> listenToMeals({required DateTime date}) async* {
     try {
       final user = auth.currentUser;
 
@@ -579,9 +579,21 @@ class FirebaseService {
         return;
       }
 
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final startOfNextDay = DateTime(date.year, date.month, date.day + 1);
+
       Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('meals');
 
-      query = query.orderBy('createdAt', descending: true);
+      query = query
+          .where(
+            'createdAt',
+            isGreaterThanOrEqualTo: startOfDay.toIso8601String(),
+          )
+          .where(
+            'createdAt',
+            isLessThan: startOfNextDay.toIso8601String(),
+          )
+          .orderBy('createdAt', descending: true);
 
       await for (final snapshot in query.snapshots()) {
         yield snapshot.docs.map((document) {

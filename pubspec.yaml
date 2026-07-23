@@ -30,7 +30,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  calendar_date_picker2: 3.0.0
   cloud_firestore: 6.7.1
   diacritic: 0.1.6
   firebase_ai: 3.14.1
@@ -51,6 +50,11 @@ dependencies:
   string_similarity: 2.2.0
   uuid: 4.6.0
   watch_it: 2.4.2
+
+  calendar_date_picker2:
+    git:
+      url: https://github.com/jokilic/calendar_date_picker2.git
+      ref: feature/on-value-changed-dialog
 
   phosphor_flutter:
     git:
