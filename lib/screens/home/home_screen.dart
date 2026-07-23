@@ -4,6 +4,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
+import '../../util/day.dart';
 import '../../util/dependencies.dart';
 import 'home_controller.dart';
 import 'widgets/home_app_bar.dart';
@@ -34,7 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /// References to services & controllers
+    final firebaseService = getIt.get<FirebaseService>();
     final homeController = getIt.get<HomeController>();
+
+    /// User name
+    final userName = firebaseService.userName;
 
     /// Currently selected day
     final activeDate = watchIt<HomeController>().value;
@@ -44,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
 
-    /// Listens to meals from the currently selected day
+    /// Listens to `meals` from the currently selected day
     final meals =
         watchStream<HomeController, List<Meal>?>(
           (homeController) => homeController.mealsStream,
@@ -69,18 +75,21 @@ class _HomeScreenState extends State<HomeScreen> {
             /// APP BAR
             ///
             HomeAppBar(
-              userName: activeDate.toIso8601String(),
+              userName: userName ?? 'xx',
               userPhoto: 'aaa',
-              currentCalories: currentCalories.round(),
-              dailyCalories: userMetrics?.dailyCalories.toInt() ?? 12,
               onCalendarPressed: () => homeController.updateDateViaPicker(context),
+              dayString: getDateString(
+                date: activeDate,
+              ),
+              currentCalories: currentCalories.round(),
+              dailyCalories: userMetrics?.dailyCalories.toInt(),
             ),
 
             SliverToBoxAdapter(
               child: Container(
                 height: 300,
                 width: 200,
-                color: Colors.green,
+                color: Colors.indigo,
               ),
             ),
             SliverToBoxAdapter(

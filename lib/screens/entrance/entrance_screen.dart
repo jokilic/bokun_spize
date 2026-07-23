@@ -96,7 +96,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// TITLE
               ///
               const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     'Welcome to',
@@ -112,7 +112,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 ),
               ),
               const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     'Bokun spize',
@@ -135,7 +135,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// USE ACCOUNT TEXT
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
                   child: Row(
                     children: [
@@ -267,7 +267,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// USE ANONYMOUSLY TEXT
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
                   child: Row(
                     children: [

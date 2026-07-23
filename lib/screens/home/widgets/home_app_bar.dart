@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import '../../../constants/colors.dart';
 
 class HomeAppBar extends StatelessWidget {
-  final String userName;
-  final String userPhoto;
-  final int currentCalories;
-  final int dailyCalories;
+  final String? userName;
+  final String? userPhoto;
   final Function() onCalendarPressed;
+  final String dayString;
+  final int currentCalories;
+  final int? dailyCalories;
 
   const HomeAppBar({
     required this.userName,
     required this.userPhoto,
+    required this.onCalendarPressed,
+    required this.dayString,
     required this.currentCalories,
     required this.dailyCalories,
-    required this.onCalendarPressed,
   });
 
   @override
@@ -22,9 +24,41 @@ class HomeAppBar extends StatelessWidget {
     backgroundColor: BokunSpizeColors.neutralLight,
     elevation: 0,
     scrolledUnderElevation: 0,
-    expandedHeight: 160,
+    expandedHeight: 192,
     leadingWidth: double.infinity,
-    leading: Text(userName),
+    leading: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          ///
+          /// AVATAR
+          ///
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Image.network(
+              'https://upload.wikimedia.org/wikipedia/commons/2/21/Danny_DeVito_by_Gage_Skidmore.jpg',
+              fit: BoxFit.cover,
+              height: 52,
+              width: 52,
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          ///
+          /// NAME
+          ///
+          Text(
+            userName ?? 'Bokun spize',
+            style: const TextStyle(
+              fontFamily: 'ProductSans',
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: BokunSpizeColors.neutralDark,
+            ),
+          ),
+        ],
+      ),
+    ),
     actions: [
       IconButton(
         onPressed: onCalendarPressed,
@@ -46,10 +80,9 @@ class HomeAppBar extends StatelessWidget {
     ],
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
-      titlePadding: const EdgeInsets.all(16),
+      titlePadding: const EdgeInsets.symmetric(horizontal: 16),
       title: FadingFlexibleTitle(
-        userName: userName,
-        userPhoto: userPhoto,
+        dayString: dayString,
         currentCalories: currentCalories,
         dailyCalories: dailyCalories,
       ),
@@ -58,14 +91,12 @@ class HomeAppBar extends StatelessWidget {
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
-  final String userName;
-  final String userPhoto;
+  final String dayString;
   final int currentCalories;
-  final int dailyCalories;
+  final int? dailyCalories;
 
   const FadingFlexibleTitle({
-    required this.userName,
-    required this.userPhoto,
+    required this.dayString,
     required this.currentCalories,
     required this.dailyCalories,
   });
@@ -84,8 +115,6 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
 
-    final showSubtitle = t > 0.25;
-
     return Opacity(
       opacity: opacity,
       child: Transform.translate(
@@ -94,6 +123,16 @@ class FadingFlexibleTitle extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              dayString.toUpperCase(),
+              style: const TextStyle(
+                fontFamily: 'ProductSans',
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.6,
+                color: BokunSpizeColors.neutralDark,
+              ),
+            ),
             Text.rich(
               TextSpan(
                 text: currentCalories.toStringAsFixed(0),
@@ -106,11 +145,14 @@ class FadingFlexibleTitle extends StatelessWidget {
                   color: BokunSpizeColors.primary,
                 ),
                 children: [
+                  const WidgetSpan(
+                    child: SizedBox(width: 4),
+                  ),
                   TextSpan(
-                    text: ' / ${dailyCalories.toStringAsFixed(0)} kcal',
+                    text: dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
                     style: const TextStyle(
                       fontFamily: 'ProductSans',
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       height: 1.2,
                       letterSpacing: 1,
