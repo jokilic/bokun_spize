@@ -101,7 +101,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                   child: Text(
                     'Welcome to',
                     style: TextStyle(
-                      fontFamily: 'ProductSans',
+                      fontFamily: 'PlusJakartaSans',
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                       height: 1.2,
@@ -117,7 +117,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                   child: Text(
                     'Bokun spize',
                     style: TextStyle(
-                      fontFamily: 'ProductSans',
+                      fontFamily: 'PlusJakartaSans',
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
                       height: 1.2,
@@ -150,7 +150,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         child: Text(
                           'Use your account'.toUpperCase(),
                           style: const TextStyle(
-                            fontFamily: 'ProductSans',
+                            fontFamily: 'PlusJakartaSans',
                             fontSize: 10,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
@@ -200,7 +200,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         textStyle: const TextStyle(
-                          fontFamily: 'ProductSans',
+                          fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: BokunSpizeColors.neutralLight,
@@ -244,7 +244,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         textStyle: const TextStyle(
-                          fontFamily: 'ProductSans',
+                          fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: BokunSpizeColors.neutralLight,
@@ -282,7 +282,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         child: Text(
                           'Use anonymously'.toUpperCase(),
                           style: const TextStyle(
-                            fontFamily: 'ProductSans',
+                            fontFamily: 'PlusJakartaSans',
                             fontSize: 10,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
@@ -334,7 +334,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         textStyle: const TextStyle(
-                          fontFamily: 'ProductSans',
+                          fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -373,7 +373,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         textStyle: const TextStyle(
-                          fontFamily: 'ProductSans',
+                          fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),

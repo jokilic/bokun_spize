@@ -76,21 +76,22 @@ flutter:
     - assets/
 
   fonts:
-    - family: ProductSans
+    - family: PlusJakartaSans
       fonts:
-        - asset: assets/ProductSans/ProductSans-Thin.ttf
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-ExtraLight.ttf
           weight: 100
-        - asset: assets/ProductSans/ProductSans-Light.ttf
-          weight: 300
-        - asset: assets/ProductSans/ProductSans-Regular.ttf
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-Light.ttf
+          weight: 200
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-Medium.ttf
           weight: 500
-        - asset: assets/ProductSans/ProductSans-Medium.ttf
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-SemiBold.ttf
           weight: 600
-        - asset: assets/ProductSans/ProductSans-Bold.ttf
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-Bold.ttf
           weight: 700
-        - asset: assets/ProductSans/ProductSans-Black.ttf
+        - asset: assets/PlusJakartaSans/PlusJakartaSans-ExtraBold.ttf
           weight: 900
-
 
 # Run code generation - `flutter pub run build_runner build -d`
 

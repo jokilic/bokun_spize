@@ -67,43 +67,43 @@ class HomeController extends ValueNotifier<DateTime> {
     config: CalendarDatePicker2WithActionButtonsConfig(
       calendarType: CalendarDatePicker2Type.single,
       weekdayLabelTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 14,
         fontWeight: FontWeight.w700,
         color: BokunSpizeColors.neutralDark,
       ),
       controlsTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: BokunSpizeColors.neutralDark,
       ),
       dayTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: BokunSpizeColors.neutralDark,
       ),
       todayTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: BokunSpizeColors.neutralDark,
       ),
       selectedDayTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: BokunSpizeColors.neutralLight,
       ),
       selectedMonthTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: BokunSpizeColors.neutralLight,
       ),
       selectedYearTextStyle: const TextStyle(
-        fontFamily: 'ProductSans',
+        fontFamily: 'PlusJakartaSans',
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: BokunSpizeColors.neutralLight,
@@ -145,7 +145,7 @@ class HomeController extends ValueNotifier<DateTime> {
       cancelButton: const Text(
         'CANCEL',
         style: TextStyle(
-          fontFamily: 'ProductSans',
+          fontFamily: 'PlusJakartaSans',
           fontSize: 14,
           fontWeight: FontWeight.w500,
           color: BokunSpizeColors.neutralDark,
@@ -154,7 +154,7 @@ class HomeController extends ValueNotifier<DateTime> {
       okButton: const Text(
         'GO',
         style: TextStyle(
-          fontFamily: 'ProductSans',
+          fontFamily: 'PlusJakartaSans',
           fontSize: 14,
           fontWeight: FontWeight.w700,
           color: BokunSpizeColors.neutralDark,

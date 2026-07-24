@@ -8,6 +8,7 @@ import '../../util/day.dart';
 import '../../util/dependencies.dart';
 import 'home_controller.dart';
 import 'widgets/home_app_bar.dart';
+import 'widgets/home_meal_list_tile.dart';
 
 class HomeScreen extends WatchingStatefulWidget {
   @override
@@ -84,6 +85,27 @@ class _HomeScreenState extends State<HomeScreen> {
               currentCalories: currentCalories.round(),
               dailyCalories: userMetrics?.dailyCalories.toInt(),
             ),
+
+            ///
+            /// MEALS
+            ///
+            if (meals.isNotEmpty)
+              SliverPadding(
+                padding: EdgeInsets.only(
+                  top: 16,
+                  bottom: MediaQuery.paddingOf(context).bottom,
+                ),
+                sliver: SliverList.builder(
+                  itemCount: meals.length,
+                  itemBuilder: (context, index) {
+                    final meal = meals[index];
+
+                    return HomeMealListTile(
+                      meal: meal,
+                    );
+                  },
+                ),
+              ),
 
             SliverToBoxAdapter(
               child: Container(

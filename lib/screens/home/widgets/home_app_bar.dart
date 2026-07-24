@@ -50,7 +50,7 @@ class HomeAppBar extends StatelessWidget {
           Text(
             userName ?? 'Bokun spize',
             style: const TextStyle(
-              fontFamily: 'ProductSans',
+              fontFamily: 'PlusJakartaSans',
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: BokunSpizeColors.neutralDark,
@@ -126,7 +126,7 @@ class FadingFlexibleTitle extends StatelessWidget {
             Text(
               dayString.toUpperCase(),
               style: const TextStyle(
-                fontFamily: 'ProductSans',
+                fontFamily: 'PlusJakartaSans',
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.6,
@@ -137,7 +137,7 @@ class FadingFlexibleTitle extends StatelessWidget {
               TextSpan(
                 text: currentCalories.toStringAsFixed(0),
                 style: const TextStyle(
-                  fontFamily: 'ProductSans',
+                  fontFamily: 'PlusJakartaSans',
                   fontSize: 40,
                   fontWeight: FontWeight.w900,
                   height: 1.2,
@@ -151,7 +151,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   TextSpan(
                     text: dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
                     style: const TextStyle(
-                      fontFamily: 'ProductSans',
+                      fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       height: 1.2,

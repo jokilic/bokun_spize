@@ -25,7 +25,7 @@ void showSnackbar(
             child: Text(
               text,
               style: const TextStyle(
-                fontFamily: 'ProductSans',
+                fontFamily: 'PlusJakartaSans',
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
