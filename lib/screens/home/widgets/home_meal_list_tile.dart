@@ -13,33 +13,34 @@ class HomeMealListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Card(
     elevation: 0.05,
-    margin: const EdgeInsets.all(16),
+    margin: const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 8,
+    ),
     color: BokunSpizeColors.white,
-    shadowColor: Colors.pink,
-    surfaceTintColor: Colors.green,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             ///
             /// IMAGE
             ///
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               child: Image.network(
                 'https://upload.wikimedia.org/wikipedia/commons/2/21/Danny_DeVito_by_Gage_Skidmore.jpg',
-                height: 104,
-                width: 104,
+                height: 92,
+                width: 92,
                 fit: BoxFit.cover,
               ),
             ),
 
-            const SizedBox(width: 20),
+            const SizedBox(width: 16),
 
             ///
             /// TEXT
@@ -51,7 +52,7 @@ class HomeMealListTile extends StatelessWidget {
                   ///
                   /// TITLE & TIME
                   ///
-                  const Row(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ///
@@ -59,7 +60,7 @@ class HomeMealListTile extends StatelessWidget {
                       ///
                       Expanded(
                         child: Text(
-                          'Čokolada sa sirom',
+                          meal.name!,
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 20,
@@ -86,7 +87,7 @@ class HomeMealListTile extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           height: 1.2,
                           letterSpacing: 1,
-                          color: BokunSpizeColors.neutralDark,
+                          color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

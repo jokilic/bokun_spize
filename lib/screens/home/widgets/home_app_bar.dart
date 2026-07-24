@@ -27,57 +27,79 @@ class HomeAppBar extends StatelessWidget {
     expandedHeight: 192,
     leadingWidth: double.infinity,
     leading: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.only(left: 20, right: 8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ///
           /// AVATAR
           ///
-          ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Image.network(
-              'https://upload.wikimedia.org/wikipedia/commons/2/21/Danny_DeVito_by_Gage_Skidmore.jpg',
-              fit: BoxFit.cover,
-              height: 52,
-              width: 52,
+          if (userPhoto != null) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.network(
+                userPhoto!,
+                fit: BoxFit.cover,
+                height: 52,
+                width: 52,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
+          ],
 
           ///
           /// NAME
           ///
-          Text(
-            userName ?? 'Bokun spize',
-            style: const TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: BokunSpizeColors.neutralDark,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Dobro jutro',
+                style: TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: BokunSpizeColors.neutralDark,
+                ),
+              ),
+              Text(
+                userName!.toUpperCase(),
+                style: const TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 20,
+                  height: 1.2,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w700,
+                  color: BokunSpizeColors.primary,
+                ),
+              ),
+            ],
+          ),
+
+          const Spacer(),
+
+          ///
+          /// CALENDAR BUTTON
+          ///
+          IconButton(
+            onPressed: onCalendarPressed,
+            icon: const Icon(
+              Icons.calendar_month_rounded,
+              size: 24,
+            ),
+            style: IconButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              backgroundColor: BokunSpizeColors.neutralLight,
+              foregroundColor: BokunSpizeColors.neutralDark,
+              disabledBackgroundColor: BokunSpizeColors.neutralLight,
+              disabledForegroundColor: BokunSpizeColors.neutralDark,
             ),
           ),
         ],
       ),
     ),
-    actions: [
-      IconButton(
-        onPressed: onCalendarPressed,
-        icon: const Icon(
-          Icons.calendar_month_rounded,
-          size: 24,
-        ),
-        style: IconButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          ),
-          padding: const EdgeInsets.all(14),
-          backgroundColor: BokunSpizeColors.neutralLight,
-          foregroundColor: BokunSpizeColors.neutralDark,
-          disabledBackgroundColor: BokunSpizeColors.neutralLight,
-          disabledForegroundColor: BokunSpizeColors.neutralDark,
-        ),
-      ),
-    ],
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -162,6 +184,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 4),
           ],
         ),
       ),

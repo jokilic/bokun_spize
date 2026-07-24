@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
+import '../../models/meal/food.dart';
 import '../../models/meal/meal.dart';
+import '../../models/meal/nutrition.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
 import '../../util/day.dart';
 import '../../util/dependencies.dart';
 import 'home_controller.dart';
+import 'widgets/home_add_meal.dart';
 import 'widgets/home_app_bar.dart';
 import 'widgets/home_meal_list_tile.dart';
 
@@ -76,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
             /// APP BAR
             ///
             HomeAppBar(
-              userName: userName ?? 'xx',
-              userPhoto: 'aaa',
+              userName: userName ?? 'Đurđa',
+              userPhoto: 'https://upload.wikimedia.org/wikipedia/commons/2/21/Danny_DeVito_by_Gage_Skidmore.jpg',
               onCalendarPressed: () => homeController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,
@@ -90,42 +94,63 @@ class _HomeScreenState extends State<HomeScreen> {
             /// MEALS
             ///
             if (meals.isNotEmpty)
-              SliverPadding(
-                padding: EdgeInsets.only(
-                  top: 16,
-                  bottom: MediaQuery.paddingOf(context).bottom,
-                ),
-                sliver: SliverList.builder(
-                  itemCount: meals.length,
-                  itemBuilder: (context, index) {
-                    final meal = meals[index];
+              SliverList.builder(
+                itemCount: meals.length,
+                itemBuilder: (context, index) {
+                  final meal = meals[index];
 
-                    return HomeMealListTile(
-                      meal: meal,
-                    );
-                  },
-                ),
+                  return HomeMealListTile(
+                    meal: meal,
+                  );
+                },
               ),
 
-            SliverToBoxAdapter(
-              child: Container(
-                height: 300,
-                width: 200,
-                color: Colors.indigo,
-              ),
+            ///
+            /// ADD MEAL
+            ///
+            HomeAddMeal(
+              onPressed: () {
+                final newMeal = Meal(
+                  id: const Uuid().v1(),
+                  createdAt: DateTime.now(),
+                  isLoading: false,
+                  name: 'hello there',
+                  foods: [
+                    Food(
+                      name: 'banana',
+                      quantity: 3,
+                      unit: 'kg ',
+                      nutrition: Nutrition(
+                        calories: 100,
+                        protein: 20,
+                        carbs: 10,
+                        fat: 5,
+                      ),
+                    ),
+                  ],
+                  color: Colors.yellow,
+                  emoji: '🍌',
+                  nutrition: Nutrition(
+                    calories: 400,
+                    protein: 100,
+                    carbs: 50,
+                    fat: 10,
+                  ),
+                  originalText: 'Hello there some text',
+                );
+
+                getIt.get<FirebaseService>().writeMeal(
+                  newMeal: newMeal,
+                );
+              },
             ),
+
+            ///
+            /// BOTTOM SPACING
+            ///
             SliverToBoxAdapter(
-              child: Container(
-                height: 300,
-                width: 200,
-                color: Colors.red,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 300,
-                width: 200,
-                color: Colors.purple,
+              child: SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
               ),
             ),
           ],
