@@ -128,7 +128,7 @@ class FadingFlexibleTitle extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 12,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w900,
                 letterSpacing: 0.6,
                 color: BokunSpizeColors.neutralDark,
               ),
@@ -141,7 +141,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.w900,
                   height: 1.2,
-                  letterSpacing: 1,
+                  letterSpacing: 0.6,
                   color: BokunSpizeColors.primary,
                 ),
                 children: [
@@ -155,7 +155,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       height: 1.2,
-                      letterSpacing: 1,
+                      letterSpacing: 0.6,
                       color: BokunSpizeColors.neutralDark,
                     ),
                   ),

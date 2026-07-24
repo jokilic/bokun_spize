@@ -62,7 +62,7 @@ class HomeMealListTile extends StatelessWidget {
                           'Čokolada sa sirom',
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.w700,
                             height: 1.2,
                             letterSpacing: 0.6,
@@ -83,7 +83,7 @@ class HomeMealListTile extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 12,
-                          fontWeight: FontWeight.w300,
+                          fontWeight: FontWeight.w400,
                           height: 1.2,
                           letterSpacing: 1,
                           color: BokunSpizeColors.neutralDark,
