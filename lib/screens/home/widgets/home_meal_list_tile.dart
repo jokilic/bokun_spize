@@ -87,7 +87,7 @@ class HomeMealListTile extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           height: 1.2,
                           letterSpacing: 1,
-                          color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
+                          color: BokunSpizeColors.neutralDark.withValues(alpha: 0.75),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

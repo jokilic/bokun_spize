@@ -24,12 +24,11 @@ class HomeAppBar extends StatelessWidget {
     backgroundColor: BokunSpizeColors.neutralLight,
     elevation: 0,
     scrolledUnderElevation: 0,
-    expandedHeight: 192,
+    expandedHeight: 240,
     leadingWidth: double.infinity,
     leading: Padding(
       padding: const EdgeInsets.only(left: 20, right: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ///
           /// AVATAR
@@ -40,40 +39,26 @@ class HomeAppBar extends StatelessWidget {
               child: Image.network(
                 userPhoto!,
                 fit: BoxFit.cover,
-                height: 52,
-                width: 52,
+                height: 48,
+                width: 48,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
           ],
 
           ///
-          /// NAME
+          /// APP TITLE
           ///
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Dobro jutro',
-                style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.neutralDark,
-                ),
-              ),
-              Text(
-                userName!.toUpperCase(),
-                style: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 20,
-                  height: 1.2,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w700,
-                  color: BokunSpizeColors.primary,
-                ),
-              ),
-            ],
+          const Text(
+            'Bokun spize',
+            style: TextStyle(
+              fontFamily: 'Epilogue',
+              fontSize: 24,
+              height: 1.2,
+              letterSpacing: 0,
+              fontWeight: FontWeight.w800,
+              color: BokunSpizeColors.primary,
+            ),
           ),
 
           const Spacer(),
@@ -145,25 +130,33 @@ class FadingFlexibleTitle extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ///
+            /// DAY
+            ///
             Text(
               dayString.toUpperCase(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 12,
+                fontSize: 10,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.6,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
               ),
             ),
+            const SizedBox(height: 2),
+
+            ///
+            /// CALORIES
+            ///
             Text.rich(
               TextSpan(
                 text: currentCalories.toStringAsFixed(0),
                 style: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
+                  fontFamily: 'Epilogue',
                   fontSize: 40,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w800,
                   height: 1.2,
-                  letterSpacing: 0.6,
+                  letterSpacing: 1.5,
                   color: BokunSpizeColors.primary,
                 ),
                 children: [
@@ -172,19 +165,161 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ),
                   TextSpan(
                     text: dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
                       height: 1.2,
-                      letterSpacing: 0.6,
-                      color: BokunSpizeColors.neutralDark,
+                      letterSpacing: 1.5,
+                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
+
+            ///
+            /// NUTRITION
+            ///
+            Row(
+              children: [
+                ///
+                /// PROTEIN
+                ///
+                Expanded(
+                  child: Container(
+                    height: 7,
+                    decoration: const BoxDecoration(
+                      color: BokunSpizeColors.primary,
+                    ),
+                  ),
+                ),
+
+                ///
+                /// CARBS
+                ///
+                Expanded(
+                  child: Container(
+                    height: 7,
+                    decoration: const BoxDecoration(
+                      color: BokunSpizeColors.secondary,
+                    ),
+                  ),
+                ),
+
+                ///
+                /// FATS
+                ///
+                Expanded(
+                  child: Container(
+                    height: 7,
+                    decoration: const BoxDecoration(
+                      color: BokunSpizeColors.tertiary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                ///
+                /// PROTEIN
+                ///
+                Expanded(
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 7,
+                        width: 7,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: BokunSpizeColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Protein'.toUpperCase(),
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 8,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                          letterSpacing: 0.4,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                ///
+                /// CARBS
+                ///
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 7,
+                        width: 7,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: BokunSpizeColors.secondary,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Carbs'.toUpperCase(),
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 8,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                          letterSpacing: 0.4,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                ///
+                /// FATS
+                ///
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: 7,
+                        width: 7,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: BokunSpizeColors.tertiary,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Fats'.toUpperCase(),
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 8,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                          letterSpacing: 0.4,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),

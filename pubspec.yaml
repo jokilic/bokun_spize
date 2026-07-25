@@ -76,6 +76,27 @@ flutter:
     - assets/
 
   fonts:
+    - family: Epilogue
+      fonts:
+        - asset: assets/Epilogue/Epilogue-Thin.ttf
+          weight: 100
+        - asset: assets/Epilogue/Epilogue-ExtraLight.ttf
+          weight: 200
+        - asset: assets/Epilogue/Epilogue-Light.ttf
+          weight: 300
+        - asset: assets/Epilogue/Epilogue-Regular.ttf
+          weight: 400
+        - asset: assets/Epilogue/Epilogue-Medium.ttf
+          weight: 500
+        - asset: assets/Epilogue/Epilogue-SemiBold.ttf
+          weight: 600
+        - asset: assets/Epilogue/Epilogue-Bold.ttf
+          weight: 700
+        - asset: assets/Epilogue/Epilogue-ExtraBold.ttf
+          weight: 800
+        - asset: assets/Epilogue/Epilogue-Black.ttf
+          weight: 900
+
     - family: PlusJakartaSans
       fonts:
         - asset: assets/PlusJakartaSans/PlusJakartaSans-ExtraLight.ttf
