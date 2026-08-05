@@ -348,6 +348,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
                   ),
                 ),
               ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 8),
+              ),
 
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -366,7 +369,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         color: BokunSpizeColors.primary,
                         size: 24,
                       ),
-                      label: const Text('Register'),
+                      label: const Text('Login'),
                       style: OutlinedButton.styleFrom(
                         elevation: 0,
                         shape: RoundedRectangleBorder(

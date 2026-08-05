@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
+import '../../../services/firebase_service.dart';
+import '../../../util/dependencies.dart';
 
 class HomeAppBar extends StatelessWidget {
   final String? userName;
@@ -70,6 +72,26 @@ class HomeAppBar extends StatelessWidget {
             onPressed: onCalendarPressed,
             icon: const Icon(
               Icons.calendar_month_rounded,
+              size: 24,
+            ),
+            style: IconButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              backgroundColor: BokunSpizeColors.neutralLight,
+              foregroundColor: BokunSpizeColors.neutralDark,
+              disabledBackgroundColor: BokunSpizeColors.neutralLight,
+              disabledForegroundColor: BokunSpizeColors.neutralDark,
+            ),
+          ),
+
+          ///
+          /// LOGOUT BUTTON
+          ///
+          IconButton(
+            onPressed: getIt.get<FirebaseService>().logOut,
+            icon: const Icon(
+              Icons.logout_rounded,
               size: 24,
             ),
             style: IconButton.styleFrom(
