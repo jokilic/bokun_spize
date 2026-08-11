@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../models/meal/food.dart';
 import '../../models/meal/meal.dart';
-import '../../models/meal/nutrition.dart';
 import '../../models/user_metrics/user_metrics.dart';
+import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/day.dart';
 import '../../util/dependencies.dart';
@@ -30,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     registerIfNotInitialized<HomeController>(
       () => HomeController(
         firebase: getIt.get<FirebaseService>(),
+        ai: getIt.get<AIService>(),
       ),
       afterRegister: (controller) => controller.init(),
     );
@@ -114,7 +113,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     },
-                    onCopyPressed: () async {},
+                    onCopyPressed: () async {
+                      unawaited(
+                        HapticFeedback.lightImpact(),
+                      );
+                      unawaited(
+                        homeController.onMealPressed(
+                          context,
+                          passedMeal: meal,
+                          isCopyingMeal: true,
+                        ),
+                      );
+                    },
                     meal: meal,
                   );
                 },
@@ -124,42 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
             /// ADD MEAL
             ///
             HomeAddMeal(
-              onPressed: () {
-                // TODO: Open [MealScreen] instead of current logic
-
-                final newMeal = Meal(
-                  id: const Uuid().v1(),
-                  createdAt: DateTime.now(),
-                  isLoading: false,
-                  name: 'hello there',
-                  foods: [
-                    Food(
-                      name: 'banana',
-                      quantity: 3,
-                      unit: 'kg ',
-                      nutrition: Nutrition(
-                        calories: 100,
-                        protein: 20,
-                        carbs: 10,
-                        fat: 5,
-                      ),
-                    ),
-                  ],
-                  color: Colors.yellow,
-                  emoji: '🍌',
-                  nutrition: Nutrition(
-                    calories: 400,
-                    protein: 100,
-                    carbs: 50,
-                    fat: 10,
-                  ),
-                  originalText: 'Hello there some text',
-                );
-
-                getIt.get<FirebaseService>().writeMeal(
-                  newMeal: newMeal,
-                );
-              },
+              onPressed: () => homeController.onMealPressed(context),
             ),
 
             ///
