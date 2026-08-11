@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -11,7 +10,6 @@ import '../../constants/colors.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
-import '../../util/typedefs.dart';
 
 class HomeController extends ValueNotifier<DateTime> {
   ///
@@ -200,7 +198,7 @@ class HomeController extends ValueNotifier<DateTime> {
       dateTime: DateTime.now(),
       deleteMeal: false,
       imageFile: null,
-      words: 'two bananas',
+      words: 'piletina i mlinci',
     );
 
     /// User was editing existing `meal`

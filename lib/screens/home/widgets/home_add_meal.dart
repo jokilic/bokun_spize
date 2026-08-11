@@ -9,38 +9,37 @@ class HomeAddMeal extends StatelessWidget {
     required this.onPressed,
   });
 
+  final listTileRadius = 32.0;
+
   @override
-  Widget build(BuildContext context) => SliverToBoxAdapter(
-    child: Card(
-      elevation: 0,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
-      color: BokunSpizeColors.neutralLight,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: BokunSpizeColors.neutralDark.withValues(alpha: 0.25),
-        ),
-      ),
+  Widget build(BuildContext context) => SliverPadding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 8,
+    ),
+    sliver: SliverToBoxAdapter(
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(16),
-          highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-          splashColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 32,
+        borderRadius: BorderRadius.circular(listTileRadius),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(listTileRadius),
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(listTileRadius),
+            highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(listTileRadius),
+                border: Border.all(
+                  color: BokunSpizeColors.primary,
+                  width: 0.5,
+                ),
               ),
-              child: Column(
+              padding: const EdgeInsets.all(32),
+              child: const Column(
                 children: [
                   ///
                   /// ICON
