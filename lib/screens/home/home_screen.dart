@@ -15,7 +15,7 @@ import '../../util/dependencies.dart';
 import 'home_controller.dart';
 import 'widgets/home_add_meal.dart';
 import 'widgets/home_app_bar.dart';
-import 'widgets/home_meal_list_tile.dart';
+import 'widgets/home_meal_list_tile/home_meal_list_tile.dart';
 
 class HomeScreen extends WatchingStatefulWidget {
   @override

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 
-import '../../../constants/colors.dart';
-import '../../../constants/durations.dart';
-import '../../../models/meal/meal.dart';
+import '../../../../constants/colors.dart';
+import '../../../../constants/durations.dart';
+import '../../../../models/meal/meal.dart';
+import 'home_meal_list_tile_food.dart';
+import 'home_meal_list_tile_nutrition.dart';
 
 class HomeMealListTile extends StatefulWidget {
   final Future<void> Function() onDeletePressed;
@@ -22,6 +24,8 @@ class HomeMealListTile extends StatefulWidget {
 }
 
 class _HomeMealListTileState extends State<HomeMealListTile> {
+  final listTileRadius = 32.0;
+
   var expanded = false;
 
   void toggleExpanded() {
@@ -38,7 +42,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
       vertical: 8,
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(listTileRadius),
       child: SwipeActionCell(
         key: ValueKey(widget.meal.id),
         backgroundColor: BokunSpizeColors.white,
@@ -54,7 +58,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
               await widget.onDeletePressed();
             },
             color: BokunSpizeColors.tertiary,
-            backgroundRadius: 16,
+            backgroundRadius: listTileRadius,
             icon: const Icon(
               Icons.tram_rounded,
               color: BokunSpizeColors.white,
@@ -69,7 +73,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
               await widget.onCopyPressed();
             },
             color: BokunSpizeColors.alternative,
-            backgroundRadius: 16,
+            backgroundRadius: listTileRadius,
             icon: const Icon(
               Icons.copy_rounded,
               color: BokunSpizeColors.white,
@@ -79,19 +83,23 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
         ],
         child: Material(
           color: BokunSpizeColors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(listTileRadius),
           child: InkWell(
             onTap: toggleExpanded,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(listTileRadius),
             highlightColor: BokunSpizeColors.neutralLight.withValues(alpha: 0.5),
             splashColor: Colors.transparent,
             hoverColor: Colors.transparent,
             focusColor: Colors.transparent,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(listTileRadius),
+                border: Border.all(
+                  color: expanded ? BokunSpizeColors.primary : Colors.transparent,
+                  width: 0.25,
+                ),
               ),
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(22),
               child: Column(
                 children: [
                   ///
@@ -103,7 +111,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                       /// IMAGE
                       ///
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(24),
                         child: Image.network(
                           'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
                           height: 92,
@@ -235,10 +243,54 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                       sizeCurve: Curves.easeIn,
                       crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                       firstChild: const SizedBox.shrink(),
-                      secondChild: Container(
-                        height: 300,
-                        width: 50,
-                        color: BokunSpizeColors.primary,
+                      secondChild: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 24),
+
+                          ///
+                          /// NUTRITION
+                          ///
+                          HomeMealListTileNutrition(),
+
+                          const SizedBox(height: 24),
+
+                          ///
+                          /// FOODS
+                          ///
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Text(
+                              'Included foods'.toUpperCase(),
+                              style: const TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1,
+                                color: BokunSpizeColors.neutralDark,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          ListView.separated(
+                            padding: EdgeInsets.zero,
+                            itemCount: 3,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (_, index) => HomeMealListTileFood(),
+                            separatorBuilder: (_, __) => Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                Container(
+                                  height: 1,
+                                  color: BokunSpizeColors.neutralLight,
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
