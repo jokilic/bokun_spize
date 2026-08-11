@@ -17,12 +17,12 @@ class HomeMealListTile extends StatelessWidget {
       horizontal: 16,
       vertical: 8,
     ),
-    color: BokunSpizeColors.white,
+    color: BokunSpizeColors.secondary,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
@@ -31,7 +31,7 @@ class HomeMealListTile extends StatelessWidget {
             /// IMAGE
             ///
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(8),
               child: Image.network(
                 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
                 height: 92,
@@ -133,7 +133,7 @@ class HomeMealListTile extends StatelessWidget {
                       '580 kcal',
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.4,
                         color: BokunSpizeColors.tertiary,
