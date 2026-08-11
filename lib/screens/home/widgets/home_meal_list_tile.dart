@@ -12,35 +12,35 @@ class HomeMealListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    elevation: 0.05,
+    elevation: 0,
     margin: const EdgeInsets.symmetric(
       horizontal: 16,
       vertical: 8,
     ),
     color: BokunSpizeColors.white,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(20),
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(20),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             ///
             /// IMAGE
             ///
             ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
               child: Image.network(
-                'https://upload.wikimedia.org/wikipedia/commons/2/21/Danny_DeVito_by_Gage_Skidmore.jpg',
+                'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
                 height: 92,
                 width: 92,
                 fit: BoxFit.cover,
               ),
             ),
 
-            const SizedBox(width: 16),
+            const SizedBox(width: 20),
 
             ///
             /// TEXT
@@ -58,15 +58,16 @@ class HomeMealListTile extends StatelessWidget {
                       ///
                       /// TITLE
                       ///
-                      Expanded(
+                      const Expanded(
                         child: Text(
-                          meal.name!,
+                          // meal.name!,
+                          // 'Mediterranean Power Bowl',
+                          'Raw nut mix',
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                            letterSpacing: 0.6,
+                            fontWeight: FontWeight.w900,
+                            height: 1.4,
                             color: BokunSpizeColors.neutralDark,
                           ),
                           maxLines: 2,
@@ -74,7 +75,7 @@ class HomeMealListTile extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
 
                       ///
                       /// TIME
@@ -85,7 +86,7 @@ class HomeMealListTile extends StatelessWidget {
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          height: 1.2,
+                          height: 1,
                           letterSpacing: 1,
                           color: BokunSpizeColors.neutralDark.withValues(alpha: 0.75),
                         ),
@@ -95,19 +96,19 @@ class HomeMealListTile extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 2),
 
                   ///
                   /// FOOD
                   ///
                   const Text(
-                    'Čokolada, sir, kruh',
+                    'Quinoa, chickpeas, tahini',
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w400,
-                      height: 1.2,
-                      letterSpacing: 1,
+                      height: 1.4,
+                      letterSpacing: 1.4,
                       color: BokunSpizeColors.neutralDark,
                     ),
                     maxLines: 2,
@@ -126,17 +127,16 @@ class HomeMealListTile extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      color: BokunSpizeColors.tertiary,
+                      color: BokunSpizeColors.tertiary.withValues(alpha: 0.25),
                     ),
                     child: const Text(
                       '580 kcal',
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        height: 1.2,
-                        letterSpacing: 1,
-                        color: BokunSpizeColors.neutralLight,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.4,
+                        color: BokunSpizeColors.tertiary,
                       ),
                     ),
                   ),
