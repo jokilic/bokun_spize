@@ -29,7 +29,7 @@ class HomeAddMeal extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(16),
-          highlightColor: BokunSpizeColors.primary.withValues(alpha: 0.05),
+          highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           focusColor: Colors.transparent,
@@ -38,7 +38,7 @@ class HomeAddMeal extends StatelessWidget {
             child: const Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 20,
-                vertical: 28,
+                vertical: 32,
               ),
               child: Column(
                 children: [

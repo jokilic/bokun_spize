@@ -25,9 +25,7 @@ class HomeController extends ValueNotifier<DateTime> {
   /// INIT
   ///
 
-  void init() {
-    mealsStream = firebase.listenToMeals(date: value);
-  }
+  void init() => mealsStream = firebase.listenToMeals(date: value);
 
   ///
   /// VARIABLES
@@ -39,7 +37,7 @@ class HomeController extends ValueNotifier<DateTime> {
   /// METHODS
   ///
 
-  /// Updates the active date and switches the meal listener to that day
+  /// Updates the active `date` and switches the meal listener to that day
   @override
   set value(DateTime newValue) {
     final selectedDate = DateUtils.dateOnly(newValue);
@@ -50,6 +48,11 @@ class HomeController extends ValueNotifier<DateTime> {
 
     mealsStream = firebase.listenToMeals(date: selectedDate);
     super.value = selectedDate;
+  }
+
+  /// Deletes `meal` with a passed `mealId`
+  Future<void> deleteMeal({required String mealId}) async {
+    // TODO: Implement deleting from Firebase & state (probably not required since we listen to Firebase directly)
   }
 
   /// Opens the calendar and updates the selected date when confirmed
@@ -110,36 +113,28 @@ class HomeController extends ValueNotifier<DateTime> {
       ),
       selectedDayHighlightColor: BokunSpizeColors.primary,
       daySplashColor: BokunSpizeColors.secondary,
-      dayBuilder:
-          ({
-            required date,
-            textStyle,
-            decoration,
-            isSelected,
-            isDisabled,
-            isToday,
-          }) {
-            var currentDecoration = decoration;
+      dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
+        var currentDecoration = decoration;
 
-            if ((isToday ?? false) && !(isSelected ?? false)) {
-              currentDecoration = BoxDecoration(
-                border: Border.all(
-                  color: BokunSpizeColors.neutralDark,
-                  width: 1.5,
-                ),
-                shape: BoxShape.circle,
-              );
-            }
+        if ((isToday ?? false) && !(isSelected ?? false)) {
+          currentDecoration = BoxDecoration(
+            border: Border.all(
+              color: BokunSpizeColors.neutralDark,
+              width: 1.5,
+            ),
+            shape: BoxShape.circle,
+          );
+        }
 
-            return Container(
-              alignment: Alignment.center,
-              decoration: currentDecoration,
-              child: Text(
-                DateFormat.d().format(date),
-                style: textStyle,
-              ),
-            );
-          },
+        return Container(
+          alignment: Alignment.center,
+          decoration: currentDecoration,
+          child: Text(
+            DateFormat.d().format(date),
+            style: textStyle,
+          ),
+        );
+      },
       firstDayOfWeek: DateTime.monday,
       useAbbrLabelForMonthModePicker: true,
       cancelButton: const Text(

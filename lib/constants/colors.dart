@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BokunSpizeColors {
-  static const neutralLight = Color(0xFFFDFCF5);
+  static const neutralLight = Color(0xFFFAF3DD);
   static const neutralDark = Color(0xFF121412);
 
-  static const white = Color(0xFFFFFFFF);
+  static const white = Color(0xFFF0F6F6);
 
   static const primary = Color(0xFF2E7D32);
   static const secondary = Color(0xFFFF9800);

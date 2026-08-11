@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -88,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 date: activeDate,
               ),
               currentCalories: currentCalories.round(),
-              dailyCalories: userMetrics?.dailyCalories.toInt(),
+              dailyCalories: userMetrics?.dailyCalories.round(),
             ),
 
             ///
@@ -101,6 +104,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   final meal = meals[index];
 
                   return HomeMealListTile(
+                    onDeletePressed: () async {
+                      unawaited(
+                        HapticFeedback.lightImpact(),
+                      );
+                      unawaited(
+                        homeController.deleteMeal(
+                          mealId: meal.id,
+                        ),
+                      );
+                    },
+                    onCopyPressed: () async {},
                     meal: meal,
                   );
                 },
@@ -111,6 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ///
             HomeAddMeal(
               onPressed: () {
+                // TODO: Open [MealScreen] instead of current logic
+
                 final newMeal = Meal(
                   id: const Uuid().v1(),
                   createdAt: DateTime.now(),
