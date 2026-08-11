@@ -50,9 +50,10 @@ class HomeController extends ValueNotifier<DateTime> {
     super.value = selectedDate;
   }
 
-  /// Deletes `meal` with a passed `mealId`
-  Future<void> deleteMeal({required String mealId}) async {
-    // TODO: Implement deleting from Firebase & state (probably not required since we listen to Firebase directly)
+  /// Deletes [meal] from Firebase
+  Future<void> deleteMeal({required Meal meal}) async {
+    final success = await firebase.deleteMeal(meal: meal);
+    // TODO: Show snackbar if it fails
   }
 
   /// Opens the calendar and updates the selected date when confirmed

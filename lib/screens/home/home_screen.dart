@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       unawaited(
                         homeController.deleteMeal(
-                          mealId: meal.id,
+                          meal: meal,
                         ),
                       );
                     },
