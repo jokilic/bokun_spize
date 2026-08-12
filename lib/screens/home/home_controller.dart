@@ -198,7 +198,7 @@ class HomeController extends ValueNotifier<DateTime> {
       dateTime: DateTime.now(),
       deleteMeal: false,
       imageFile: null,
-      words: 'piletina i mlinci',
+      words: '100g lubenice',
     );
 
     /// User was editing existing `meal`
@@ -220,32 +220,23 @@ class HomeController extends ValueNotifier<DateTime> {
       return;
     }
 
+    /// Check if `words` and `image` exists
     final hasWords = result?.words?.trim().isNotEmpty ?? false;
     final hasImage = result?.imageFile != null;
 
+    /// Data missing, return
     if ((!hasWords && !hasImage) || result?.dateTime == null) {
       return;
     }
 
-    /// A copied [Firebase] document cannot share its image path with the source,
-    /// because deleting either meal would also delete the shared [Storage] file
-    // TODO: Explain this and handle properly
+    /// Meal is being copied
+    /// Deleting either `meal` will remove the shared `image`
     if (isCopyingMeal && passedMeal != null) {
-      final copiedMeal = Meal(
-        id: const Uuid().v1(),
-        name: passedMeal.name,
-        emoji: passedMeal.emoji,
-        color: passedMeal.color,
-        createdAt: result!.dateTime!,
-        nutrition: passedMeal.nutrition,
-        foods: passedMeal.foods,
-        originalText: passedMeal.originalText,
-        isLoading: passedMeal.isLoading,
-        errors: passedMeal.errors,
-      );
-
       await firebase.writeMeal(
-        newMeal: copiedMeal,
+        newMeal: passedMeal.copyWith(
+          id: const Uuid().v1(),
+          createdAt: result!.dateTime,
+        ),
       );
       return;
     }
@@ -267,14 +258,11 @@ class HomeController extends ValueNotifier<DateTime> {
     /// Get `trimmedPrompt`
     final trimmedPrompt = textPrompt?.trim();
 
-    /// Generate `originalText`
-    final originalText = trimmedPrompt?.isNotEmpty ?? false ? trimmedPrompt : null;
-
     /// Create `loadingMeal` with loading state
     final loadingMeal = Meal(
       id: const Uuid().v1(),
       createdAt: dateTime,
-      originalText: originalText,
+      originalText: trimmedPrompt,
       isLoading: true,
     );
 
@@ -282,6 +270,7 @@ class HomeController extends ValueNotifier<DateTime> {
     final loadingMealWritten = await firebase.writeMeal(
       newMeal: loadingMeal,
     );
+    return;
 
     /// Return if `meal` isn't written to [Firebase]
     if (!loadingMealWritten) {
@@ -291,7 +280,7 @@ class HomeController extends ValueNotifier<DateTime> {
     /// Trigger AI
     final result = await ai.triggerAI(
       mealId: loadingMeal.id,
-      textPrompt: originalText,
+      textPrompt: trimmedPrompt,
       imageFile: imageFile,
     );
 
@@ -312,7 +301,7 @@ class HomeController extends ValueNotifier<DateTime> {
       aiResult: result.aiResult!,
       id: loadingMeal.id,
       createdAt: loadingMeal.createdAt,
-      originalText: originalText,
+      originalText: trimmedPrompt,
       imageStoragePath: result.imageStoragePath,
     );
 

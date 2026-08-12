@@ -9,15 +9,15 @@ String getDateString({required DateTime date}) {
   final dayDifference = providedDate.difference(today).inDays;
 
   if (dayDifference == 0) {
-    return 'Today';
+    return 'Danas';
   }
 
   if (dayDifference == -1) {
-    return 'Yesterday';
+    return 'Jučer';
   }
 
   if (dayDifference == 1) {
-    return 'Tomorrow';
+    return 'Sutra';
   }
 
   return DateFormat('EEEE, dd.MM.yyyy.', 'hr').format(date);
