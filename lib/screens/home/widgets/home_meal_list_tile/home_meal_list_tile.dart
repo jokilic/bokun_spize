@@ -45,6 +45,10 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
 
     final titleText = isLoading ? widget.meal.originalText ?? '📷' : widget.meal.name ?? 'Dogodila se greška';
 
+    final foodsText = capitalizeFirstLetter(
+      widget.meal.foods?.map((food) => food.name.toLowerCase()).join(', '),
+    );
+
     final imageBackgroundColor = isLoading
         ? BokunSpizeColors.neutralLight
         : hasError
@@ -126,84 +130,167 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                     ///
                     /// TOP SECTION
                     ///
-                    Row(
-                      children: [
-                        ///
-                        /// IMAGE OR EMOJI
-                        ///
-                        Animate(
-                          onPlay: (controller) {
-                            if (isLoading) {
-                              controller.loop(
-                                reverse: true,
-                                min: 0.6,
-                              );
-                            }
-                          },
-                          effects: [
-                            if (isLoading)
-                              const FadeEffect(
-                                duration: BokunSpizeDurations.shimmer,
-                                curve: Curves.easeIn,
-                              ),
-                          ],
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: widget.meal.imageStoragePath != null
-                                ? Image.network(
-                                    widget.meal.imageStoragePath!,
-                                    height: 92,
-                                    width: 92,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    height: 92,
-                                    width: 92,
-                                    color: imageBackgroundColor,
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: isLoading
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ///
+                          /// IMAGE OR EMOJI
+                          ///
+                          Animate(
+                            onPlay: (controller) {
+                              if (isLoading) {
+                                controller.loop(
+                                  reverse: true,
+                                  min: 0.6,
+                                );
+                              }
+                            },
+                            effects: [
+                              if (isLoading)
+                                const FadeEffect(
+                                  duration: BokunSpizeDurations.shimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                            ],
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: widget.meal.imageStoragePath != null
+                                  ? Image.network(
+                                      widget.meal.imageStoragePath!,
+                                      height: 92,
+                                      width: 92,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      height: 92,
+                                      width: 92,
+                                      color: imageBackgroundColor,
+                                      child: hasError
                                           ? const Icon(
-                                              Icons.question_mark_rounded,
+                                              Icons.error_rounded,
                                               size: 40,
-                                              color: BokunSpizeColors.neutralDark,
+                                              color: BokunSpizeColors.white,
                                             )
-                                          : Text(
-                                              widget.meal.emoji ?? '',
-                                              style: const TextStyle(
-                                                fontFamily: 'PlusJakartaSans',
-                                                fontSize: 40,
+                                          : FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                widget.meal.emoji ?? '',
+                                                style: const TextStyle(
+                                                  fontFamily: 'PlusJakartaSans',
+                                                  fontSize: 40,
+                                                ),
+                                                maxLines: 1,
+                                                softWrap: false,
                                               ),
-                                              maxLines: 1,
-                                              softWrap: false,
                                             ),
                                     ),
-                                  ),
+                            ),
                           ),
-                        ),
 
-                        const SizedBox(width: 20),
+                          const SizedBox(width: 20),
 
-                        ///
-                        /// TEXT
-                        ///
-                        // TODO: I want this widget to have full height of the list tile
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ///
-                              /// TITLE & TIME
-                              ///
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ///
-                                  /// TITLE
-                                  ///
-                                  // TODO: I want this widget to be centered
-                                  Expanded(
-                                    child: Animate(
+                          ///
+                          /// TEXT
+                          ///
+                          Expanded(
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ///
+                                    /// TITLE
+                                    ///
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 48),
+                                          child: Animate(
+                                            onPlay: (controller) {
+                                              if (isLoading) {
+                                                controller.loop(
+                                                  reverse: true,
+                                                  min: 0.6,
+                                                );
+                                              }
+                                            },
+                                            effects: [
+                                              if (isLoading)
+                                                const FadeEffect(
+                                                  duration: BokunSpizeDurations.shimmer,
+                                                  curve: Curves.easeIn,
+                                                ),
+                                            ],
+                                            child: Text(
+                                              capitalizeFirstLetter(titleText) ?? '',
+                                              style: const TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w900,
+                                                height: 1.4,
+                                                color: BokunSpizeColors.neutralDark,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    ///
+                                    /// FOOD
+                                    ///
+                                    SizedBox(height: isLoading ? 8 : 4),
+                                    if (foodsText != null)
+                                      Text(
+                                        foodsText,
+                                        style: const TextStyle(
+                                          fontFamily: 'PlusJakartaSans',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.4,
+                                          letterSpacing: 1.4,
+                                          color: BokunSpizeColors.neutralDark,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    else if (isLoading)
+                                      Animate(
+                                        onPlay: (controller) {
+                                          if (isLoading) {
+                                            controller.loop(
+                                              reverse: true,
+                                              min: 0.6,
+                                            );
+                                          }
+                                        },
+                                        effects: [
+                                          if (isLoading)
+                                            const FadeEffect(
+                                              duration: BokunSpizeDurations.shimmer,
+                                              curve: Curves.easeIn,
+                                            ),
+                                        ],
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(8),
+                                            color: BokunSpizeColors.neutralLight,
+                                          ),
+                                          height: 20,
+                                          width: 160,
+                                        ),
+                                      ),
+
+                                    ///
+                                    /// CALORIES
+                                    ///
+                                    const SizedBox(height: 10),
+                                    Animate(
                                       onPlay: (controller) {
                                         if (isLoading) {
                                           controller.loop(
@@ -219,28 +306,43 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                             curve: Curves.easeIn,
                                           ),
                                       ],
-                                      child: Text(
-                                        capitalizeFirstLetter(titleText) ?? '',
-                                        style: const TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900,
-                                          height: 1.4,
-                                          color: BokunSpizeColors.neutralDark,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 4,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(100),
+                                          color: isLoading ? BokunSpizeColors.neutralLight : BokunSpizeColors.tertiary.withValues(alpha: 0.25),
+                                        ),
+                                        child: isLoading
+                                            ? const SizedBox(
+                                                width: 48,
+                                                height: 12,
+                                              )
+                                            : Text(
+                                                '${formatNutritionValue(
+                                                  widget.meal.nutrition?.calories,
+                                                )} kcal',
+                                                style: const TextStyle(
+                                                  fontFamily: 'PlusJakartaSans',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w900,
+                                                  letterSpacing: 0.4,
+                                                  color: BokunSpizeColors.tertiary,
+                                                ),
+                                              ),
                                       ),
                                     ),
-                                  ),
+                                  ],
+                                ),
 
-                                  const SizedBox(width: 8),
-
-                                  ///
-                                  /// TIME
-                                  ///
-                                  // TODO: I want this widget to be top-right
-                                  Text(
+                                ///
+                                /// TIME
+                                ///
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Text(
                                     DateFormat(
                                       'HH:mm',
                                       'hr',
@@ -258,62 +360,12 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                ],
-                              ),
-
-                              ///
-                              /// FOOD
-                              ///
-                              if (widget.meal.foods?.isNotEmpty ?? false) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  // TODO: First food should be uppercase (format.dart -> capitalizeFirstLetter()), others should be lowercase
-                                  widget.meal.foods!.map((food) => food.name).join(', '),
-                                  style: const TextStyle(
-                                    fontFamily: 'PlusJakartaSans',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.4,
-                                    letterSpacing: 1.4,
-                                    color: BokunSpizeColors.neutralDark,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
-
-                              ///
-                              /// CALORIES
-                              ///
-                              if (!isLoading) ...[
-                                const SizedBox(height: 10),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: BokunSpizeColors.tertiary.withValues(alpha: 0.25),
-                                  ),
-                                  child: Text(
-                                    '${formatNutritionValue(
-                                      widget.meal.nutrition?.calories,
-                                    )} kcal',
-                                    style: const TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w900,
-                                      letterSpacing: 0.4,
-                                      color: BokunSpizeColors.tertiary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
                     ///
