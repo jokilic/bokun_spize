@@ -110,7 +110,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
             color: BokunSpizeColors.white,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
-              onTap: toggleExpanded,
+              onTap: isLoading ? null : toggleExpanded,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: BokunSpizeColors.neutralLight.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
@@ -130,9 +130,12 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                     ///
                     /// TOP SECTION
                     ///
-                    IntrinsicHeight(
+                    AnimatedSize(
+                      alignment: Alignment.topLeft,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeIn,
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ///
                           /// IMAGE OR EMOJI
@@ -195,7 +198,6 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                           ///
                           Expanded(
                             child: Stack(
-                              fit: StackFit.expand,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,28 +205,34 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                     ///
                                     /// TITLE
                                     ///
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 48),
-                                          child: Animate(
-                                            onPlay: (controller) {
-                                              if (isLoading) {
-                                                controller.loop(
-                                                  reverse: true,
-                                                  min: 0.6,
-                                                );
-                                              }
-                                            },
-                                            effects: [
-                                              if (isLoading)
-                                                const FadeEffect(
-                                                  duration: BokunSpizeDurations.shimmer,
-                                                  curve: Curves.easeIn,
-                                                ),
-                                            ],
-                                            child: Text(
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 48),
+                                        child: Animate(
+                                          onPlay: (controller) {
+                                            if (isLoading) {
+                                              controller.loop(
+                                                reverse: true,
+                                                min: 0.6,
+                                              );
+                                            }
+                                          },
+                                          effects: [
+                                            if (isLoading)
+                                              const FadeEffect(
+                                                duration: BokunSpizeDurations.shimmer,
+                                                curve: Curves.easeIn,
+                                              ),
+                                          ],
+                                          child: AnimatedCrossFade(
+                                            alignment: Alignment.centerLeft,
+                                            duration: BokunSpizeDurations.animation,
+                                            firstCurve: Curves.easeIn,
+                                            secondCurve: Curves.easeIn,
+                                            sizeCurve: Curves.easeIn,
+                                            crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                            firstChild: Text(
                                               capitalizeFirstLetter(titleText) ?? '',
                                               style: const TextStyle(
                                                 fontFamily: 'PlusJakartaSans',
@@ -236,6 +244,16 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
+                                            secondChild: Text(
+                                              capitalizeFirstLetter(titleText) ?? '',
+                                              style: const TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w900,
+                                                height: 1.4,
+                                                color: BokunSpizeColors.neutralDark,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -246,18 +264,37 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                     ///
                                     SizedBox(height: isLoading ? 8 : 4),
                                     if (foodsText != null)
-                                      Text(
-                                        foodsText,
-                                        style: const TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.4,
-                                          letterSpacing: 1.4,
-                                          color: BokunSpizeColors.neutralDark,
+                                      AnimatedCrossFade(
+                                        alignment: Alignment.centerLeft,
+                                        duration: BokunSpizeDurations.animation,
+                                        firstCurve: Curves.easeIn,
+                                        secondCurve: Curves.easeIn,
+                                        sizeCurve: Curves.easeIn,
+                                        crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                        firstChild: Text(
+                                          foodsText,
+                                          style: const TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.4,
+                                            letterSpacing: 1.4,
+                                            color: BokunSpizeColors.neutralDark,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                        secondChild: Text(
+                                          foodsText,
+                                          style: const TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.4,
+                                            letterSpacing: 1.4,
+                                            color: BokunSpizeColors.neutralDark,
+                                          ),
+                                        ),
                                       )
                                     else if (isLoading)
                                       Animate(
