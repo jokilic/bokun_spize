@@ -43,11 +43,13 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
     final isLoading = widget.meal.isLoading;
     final hasError = widget.meal.errors?.isNotEmpty ?? false;
 
-    final titleText = isLoading ? widget.meal.originalText ?? '📷' : widget.meal.name ?? 'Dogodila se greška';
+    final titleText = isLoading ? widget.meal.originalText ?? '📷' : widget.meal.name ?? 'Greška';
 
-    final foodsText = capitalizeFirstLetter(
-      widget.meal.foods?.map((food) => food.name.toLowerCase()).join(', '),
-    );
+    final subtitleText =
+        capitalizeFirstLetter(
+          widget.meal.foods?.map((food) => food.name.toLowerCase()).join(', '),
+        ) ??
+        widget.meal.errors?.map((error) => error).join(', ');
 
     final imageBackgroundColor = isLoading
         ? BokunSpizeColors.neutralLight
@@ -110,7 +112,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
             color: BokunSpizeColors.white,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
-              onTap: isLoading ? null : toggleExpanded,
+              onTap: isLoading || hasError ? null : toggleExpanded,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: BokunSpizeColors.neutralLight.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
@@ -260,19 +262,19 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                     ),
 
                                     ///
-                                    /// FOOD
+                                    /// SUBTITLE
                                     ///
                                     SizedBox(height: isLoading ? 8 : 4),
-                                    if (foodsText != null)
+                                    if (subtitleText != null)
                                       AnimatedCrossFade(
                                         alignment: Alignment.centerLeft,
                                         duration: BokunSpizeDurations.animation,
                                         firstCurve: Curves.easeIn,
                                         secondCurve: Curves.easeIn,
                                         sizeCurve: Curves.easeIn,
-                                        crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                        crossFadeState: expanded || hasError ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                                         firstChild: Text(
-                                          foodsText,
+                                          subtitleText,
                                           style: const TextStyle(
                                             fontFamily: 'PlusJakartaSans',
                                             fontSize: 14,
@@ -285,7 +287,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         secondChild: Text(
-                                          foodsText,
+                                          subtitleText,
                                           style: const TextStyle(
                                             fontFamily: 'PlusJakartaSans',
                                             fontSize: 14,
@@ -326,51 +328,53 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                     ///
                                     /// CALORIES
                                     ///
-                                    const SizedBox(height: 10),
-                                    Animate(
-                                      onPlay: (controller) {
-                                        if (isLoading) {
-                                          controller.loop(
-                                            reverse: true,
-                                            min: 0.6,
-                                          );
-                                        }
-                                      },
-                                      effects: [
-                                        if (isLoading)
-                                          const FadeEffect(
-                                            duration: BokunSpizeDurations.shimmer,
-                                            curve: Curves.easeIn,
+                                    if (!hasError) ...[
+                                      const SizedBox(height: 10),
+                                      Animate(
+                                        onPlay: (controller) {
+                                          if (isLoading) {
+                                            controller.loop(
+                                              reverse: true,
+                                              min: 0.6,
+                                            );
+                                          }
+                                        },
+                                        effects: [
+                                          if (isLoading)
+                                            const FadeEffect(
+                                              duration: BokunSpizeDurations.shimmer,
+                                              curve: Curves.easeIn,
+                                            ),
+                                        ],
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 4,
                                           ),
-                                      ],
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(100),
-                                          color: isLoading ? BokunSpizeColors.neutralLight : BokunSpizeColors.tertiary.withValues(alpha: 0.25),
-                                        ),
-                                        child: isLoading
-                                            ? const SizedBox(
-                                                width: 48,
-                                                height: 12,
-                                              )
-                                            : Text(
-                                                '${formatNutritionValue(
-                                                  widget.meal.nutrition?.calories,
-                                                )} kcal',
-                                                style: const TextStyle(
-                                                  fontFamily: 'PlusJakartaSans',
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w900,
-                                                  letterSpacing: 0.4,
-                                                  color: BokunSpizeColors.tertiary,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(100),
+                                            color: isLoading ? BokunSpizeColors.neutralLight : BokunSpizeColors.tertiary.withValues(alpha: 0.25),
+                                          ),
+                                          child: isLoading
+                                              ? const SizedBox(
+                                                  width: 48,
+                                                  height: 12,
+                                                )
+                                              : Text(
+                                                  '${formatNutritionValue(
+                                                    widget.meal.nutrition?.calories,
+                                                  )} kcal',
+                                                  style: const TextStyle(
+                                                    fontFamily: 'PlusJakartaSans',
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w900,
+                                                    letterSpacing: 0.4,
+                                                    color: BokunSpizeColors.tertiary,
+                                                  ),
                                                 ),
-                                              ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ],
                                 ),
 

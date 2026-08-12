@@ -64,6 +64,7 @@ class HomeController extends ValueNotifier<DateTime> {
   }
 
   /// Opens the calendar and updates the selected date when confirmed
+  // TODO: I would like to show a bottom sheet here with the calendar widget, instead of current dialog
   Future<void> updateDateViaPicker(BuildContext context) async => showCalendarDatePicker2Dialog(
     context: context,
     value: [value],
@@ -198,7 +199,7 @@ class HomeController extends ValueNotifier<DateTime> {
       dateTime: DateTime.now(),
       deleteMeal: false,
       imageFile: null,
-      words: '100g lubenice',
+      words: 'oslić i blitva',
     );
 
     /// User was editing existing `meal`
@@ -270,7 +271,6 @@ class HomeController extends ValueNotifier<DateTime> {
     final loadingMealWritten = await firebase.writeMeal(
       newMeal: loadingMeal,
     );
-    return;
 
     /// Return if `meal` isn't written to [Firebase]
     if (!loadingMealWritten) {

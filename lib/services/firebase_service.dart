@@ -593,7 +593,7 @@ class FirebaseService {
             'createdAt',
             isLessThan: startOfNextDay.toIso8601String(),
           )
-          .orderBy('createdAt', descending: true);
+          .orderBy('createdAt');
 
       await for (final snapshot in query.snapshots()) {
         yield snapshot.docs.map((document) {
