@@ -29,7 +29,7 @@ class HomeMealListTileNutrition extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: BokunSpizeColors.neutralLight,
+        color: BokunSpizeColors.white,
         borderRadius: BorderRadius.circular(100),
       ),
       padding: const EdgeInsets.symmetric(

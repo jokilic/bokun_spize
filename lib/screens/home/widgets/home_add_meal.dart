@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
+import '../../../main.dart';
 
 class HomeAddMeal extends StatelessWidget {
   final Function() onPressed;
@@ -8,8 +9,6 @@ class HomeAddMeal extends StatelessWidget {
   const HomeAddMeal({
     required this.onPressed,
   });
-
-  final listTileRadius = 32.0;
 
   @override
   Widget build(BuildContext context) => SliverPadding(

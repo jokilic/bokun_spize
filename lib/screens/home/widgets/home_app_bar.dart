@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
-import '../../../services/firebase_service.dart';
-import '../../../util/dependencies.dart';
 
 class HomeAppBar extends StatelessWidget {
-  final String? userName;
-  final String? userPhoto;
+  final String? title;
+  final String? imagePath;
   final Function() onCalendarPressed;
   final String dayString;
   final int currentCalories;
   final int? dailyCalories;
 
   const HomeAppBar({
-    required this.userName,
-    required this.userPhoto,
+    required this.title,
+    required this.imagePath,
     required this.onCalendarPressed,
     required this.dayString,
     required this.currentCalories,
@@ -23,7 +21,7 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SliverAppBar.large(
-    backgroundColor: BokunSpizeColors.neutralLight,
+    backgroundColor: BokunSpizeColors.white,
     elevation: 0,
     scrolledUnderElevation: 0,
     expandedHeight: 240,
@@ -35,11 +33,11 @@ class HomeAppBar extends StatelessWidget {
           ///
           /// AVATAR
           ///
-          if (userPhoto != null) ...[
+          if (imagePath != null) ...[
             ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: Image.network(
-                userPhoto!,
+                imagePath!,
                 fit: BoxFit.cover,
                 height: 48,
                 width: 48,
@@ -51,17 +49,18 @@ class HomeAppBar extends StatelessWidget {
           ///
           /// APP TITLE
           ///
-          const Text(
-            'Bokun spize',
-            style: TextStyle(
-              fontFamily: 'Epilogue',
-              fontSize: 24,
-              height: 1.2,
-              letterSpacing: 0,
-              fontWeight: FontWeight.w800,
-              color: BokunSpizeColors.primary,
+          if (title != null)
+            Text(
+              title!,
+              style: const TextStyle(
+                fontFamily: 'Epilogue',
+                fontSize: 24,
+                height: 1.2,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w800,
+                color: BokunSpizeColors.primary,
+              ),
             ),
-          ),
 
           const Spacer(),
 
@@ -72,35 +71,16 @@ class HomeAppBar extends StatelessWidget {
             onPressed: onCalendarPressed,
             icon: const Icon(
               Icons.calendar_month_rounded,
-              size: 24,
+              size: 26,
             ),
             style: IconButton.styleFrom(
+              padding: const EdgeInsets.all(12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
               backgroundColor: BokunSpizeColors.neutralLight,
               foregroundColor: BokunSpizeColors.neutralDark,
-              disabledBackgroundColor: BokunSpizeColors.neutralLight,
-              disabledForegroundColor: BokunSpizeColors.neutralDark,
-            ),
-          ),
-
-          ///
-          /// LOGOUT BUTTON
-          ///
-          IconButton(
-            onPressed: getIt.get<FirebaseService>().logOut,
-            icon: const Icon(
-              Icons.logout_rounded,
-              size: 24,
-            ),
-            style: IconButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
-              ),
-              backgroundColor: BokunSpizeColors.neutralLight,
-              foregroundColor: BokunSpizeColors.neutralDark,
-              disabledBackgroundColor: BokunSpizeColors.neutralLight,
+              disabledBackgroundColor: BokunSpizeColors.white,
               disabledForegroundColor: BokunSpizeColors.neutralDark,
             ),
           ),

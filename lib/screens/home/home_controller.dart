@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../constants/colors.dart';
+import '../../main.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
@@ -63,9 +65,14 @@ class HomeController extends ValueNotifier<DateTime> {
   }
 
   /// Opens [HomeCalendarSheet] and updates the selected `date`
-  Future<void> updateDateViaPicker(BuildContext context) async => showCupertinoSheet(
+  Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
-    scrollableBuilder: (sheetContext, scrollController) => HomeCalendarSheet(
+    backgroundColor: BokunSpizeColors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(listTileRadius),
+    ),
+    builder: (context) => HomeCalendarSheet(
       dateValue: value,
       onDateChanged: (newDate) => value = newDate,
     ),

@@ -83,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
             /// APP BAR
             ///
             HomeAppBar(
-              userName: userName ?? 'Đurđa',
-              userPhoto: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
+              title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
+              imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
               onCalendarPressed: () => homeController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,

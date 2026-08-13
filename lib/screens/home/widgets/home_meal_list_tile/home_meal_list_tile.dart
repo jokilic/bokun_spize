@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../constants/colors.dart';
 import '../../../../constants/durations.dart';
+import '../../../../main.dart';
 import '../../../../models/meal/meal.dart';
 import '../../../../util/format.dart';
 import 'home_meal_list_tile_food.dart';
@@ -27,8 +28,6 @@ class HomeMealListTile extends StatefulWidget {
 }
 
 class _HomeMealListTileState extends State<HomeMealListTile> {
-  final listTileRadius = 32.0;
-
   var expanded = false;
 
   void toggleExpanded() {
@@ -52,10 +51,10 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
         widget.meal.errors?.map((error) => error).join(', ');
 
     final imageBackgroundColor = isLoading
-        ? BokunSpizeColors.neutralLight
+        ? BokunSpizeColors.white
         : hasError
         ? BokunSpizeColors.tertiary
-        : widget.meal.color ?? BokunSpizeColors.neutralLight;
+        : widget.meal.color ?? BokunSpizeColors.white;
 
     final borderColor = hasError
         ? BokunSpizeColors.tertiary
@@ -72,7 +71,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
           key: ValueKey(widget.meal.id),
-          backgroundColor: BokunSpizeColors.white,
+          backgroundColor: BokunSpizeColors.neutralLight,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
           deleteAnimationDuration: 175,
@@ -88,7 +87,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
               backgroundRadius: listTileRadius,
               icon: const Icon(
                 Icons.tram_rounded,
-                color: BokunSpizeColors.white,
+                color: BokunSpizeColors.neutralLight,
                 size: 28,
               ),
             ),
@@ -103,18 +102,18 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
               backgroundRadius: listTileRadius,
               icon: const Icon(
                 Icons.copy_rounded,
-                color: BokunSpizeColors.white,
+                color: BokunSpizeColors.neutralLight,
                 size: 28,
               ),
             ),
           ],
           child: Material(
-            color: BokunSpizeColors.white,
+            color: BokunSpizeColors.neutralLight,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
               onTap: isLoading || hasError ? null : toggleExpanded,
               borderRadius: BorderRadius.circular(listTileRadius),
-              highlightColor: BokunSpizeColors.neutralLight.withValues(alpha: 0.5),
+              highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
@@ -318,7 +317,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(8),
-                                            color: BokunSpizeColors.neutralLight,
+                                            color: BokunSpizeColors.white,
                                           ),
                                           height: 20,
                                           width: 160,
@@ -353,7 +352,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                           ),
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(100),
-                                            color: isLoading ? BokunSpizeColors.neutralLight : BokunSpizeColors.tertiary.withValues(alpha: 0.25),
+                                            color: isLoading ? BokunSpizeColors.white : BokunSpizeColors.tertiary.withValues(alpha: 0.25),
                                           ),
                                           child: isLoading
                                               ? const SizedBox(
@@ -450,7 +449,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 4),
                                 child: Text(
-                                  'Included foods'.toUpperCase(),
+                                  'Namirnice'.toUpperCase(),
                                   style: const TextStyle(
                                     fontFamily: 'PlusJakartaSans',
                                     fontSize: 12,
@@ -479,7 +478,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                     const SizedBox(height: 12),
                                     Container(
                                       height: 1,
-                                      color: BokunSpizeColors.neutralLight,
+                                      color: BokunSpizeColors.white,
                                     ),
                                     const SizedBox(height: 12),
                                   ],

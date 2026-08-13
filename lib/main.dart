@@ -15,6 +15,9 @@ import 'screens/home/home_screen.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
+// TODO: Move this somewhere appropriate
+const listTileRadius = 32.0;
+
 Future<void> main() async {
   /// Initialize Flutter related tasks
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,9 +72,7 @@ class BokunSpizeApp extends StatelessWidget {
     home: StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       initialData: FirebaseAuth.instance.currentUser,
-      builder: (context, authSnapshot) => authSnapshot.data == null
-          ? EntranceScreen()
-          : HomeScreen(),
+      builder: (context, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : HomeScreen(),
     ),
     locale: const Locale('hr'),
     supportedLocales: const [
@@ -80,7 +81,7 @@ class BokunSpizeApp extends StatelessWidget {
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: ThemeData.light().copyWith(
-      scaffoldBackgroundColor: BokunSpizeColors.neutralLight,
+      scaffoldBackgroundColor: BokunSpizeColors.white,
     ),
     builder: (_, child) {
       final appWidget =
