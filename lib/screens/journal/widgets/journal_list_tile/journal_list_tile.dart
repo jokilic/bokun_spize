@@ -9,25 +9,25 @@ import '../../../../constants/durations.dart';
 import '../../../../main.dart';
 import '../../../../models/meal/meal.dart';
 import '../../../../util/format.dart';
-import 'home_meal_list_tile_food.dart';
-import 'home_meal_list_tile_nutrition.dart';
+import 'journal_list_tile_food.dart';
+import 'journal_list_tile_nutrition.dart';
 
-class HomeMealListTile extends StatefulWidget {
+class JournalListTile extends StatefulWidget {
   final Future<void> Function() onDeletePressed;
   final Future<void> Function() onCopyPressed;
   final Meal meal;
 
-  const HomeMealListTile({
+  const JournalListTile({
     required this.onDeletePressed,
     required this.onCopyPressed,
     required this.meal,
   });
 
   @override
-  State<HomeMealListTile> createState() => _HomeMealListTileState();
+  State<JournalListTile> createState() => _JournalListTileState();
 }
 
-class _HomeMealListTileState extends State<HomeMealListTile> {
+class _JournalListTileState extends State<JournalListTile> {
   var expanded = false;
 
   void toggleExpanded() {
@@ -436,7 +436,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                             /// NUTRITION
                             ///
                             if (widget.meal.nutrition != null) ...[
-                              HomeMealListTileNutrition(
+                              JournalListTileNutrition(
                                 nutrition: widget.meal.nutrition!,
                               ),
                               const SizedBox(height: 24),
@@ -469,7 +469,7 @@ class _HomeMealListTileState extends State<HomeMealListTile> {
                                 itemBuilder: (_, index) {
                                   final food = widget.meal.foods![index];
 
-                                  return HomeMealListTileFood(
+                                  return JournalListTileFood(
                                     food: food,
                                   );
                                 },

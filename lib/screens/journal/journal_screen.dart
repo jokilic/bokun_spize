@@ -10,23 +10,23 @@ import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/day.dart';
 import '../../util/dependencies.dart';
-import 'home_controller.dart';
-import 'widgets/home_add_meal.dart';
-import 'widgets/home_app_bar.dart';
-import 'widgets/home_meal_list_tile/home_meal_list_tile.dart';
+import 'journal_controller.dart';
+import 'widgets/journal_add_meal.dart';
+import 'widgets/journal_app_bar.dart';
+import 'widgets/journal_list_tile/journal_list_tile.dart';
 
-class HomeScreen extends WatchingStatefulWidget {
+class JournalScreen extends WatchingStatefulWidget {
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<JournalScreen> createState() => _JournalScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _JournalScreenState extends State<JournalScreen> {
   @override
   void initState() {
     super.initState();
 
-    registerIfNotInitialized<HomeController>(
-      () => HomeController(
+    registerIfNotInitialized<JournalController>(
+      () => JournalController(
         firebase: getIt.get<FirebaseService>(),
         ai: getIt.get<AIService>(),
       ),
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<HomeController>();
+    unRegisterIfNotDisposed<JournalController>();
     super.dispose();
   }
 
@@ -44,13 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     /// References to services & controllers
     final firebaseService = getIt.get<FirebaseService>();
-    final homeController = getIt.get<HomeController>();
+    final journalController = getIt.get<JournalController>();
 
     /// User name
     final userName = firebaseService.userName;
 
     /// Currently selected day
-    final activeDate = watchIt<HomeController>().value;
+    final activeDate = watchIt<JournalController>().value;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
@@ -59,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     /// Listens to `meals` from the currently selected day
     final meals =
-        watchStream<HomeController, List<Meal>?>(
-          (homeController) => homeController.mealsStream,
+        watchStream<JournalController, List<Meal>?>(
+          (journalController) => journalController.mealsStream,
           allowStreamChange: true,
           preserveState: false,
         ).data ??
@@ -82,10 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ///
             /// APP BAR
             ///
-            HomeAppBar(
+            JournalAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
-              onCalendarPressed: () => homeController.updateDateViaPicker(context),
+              onCalendarPressed: () => journalController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,
               ),
@@ -102,13 +102,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   final meal = meals[index];
 
-                  return HomeMealListTile(
+                  return JournalListTile(
                     onDeletePressed: () async {
                       unawaited(
                         HapticFeedback.lightImpact(),
                       );
                       unawaited(
-                        homeController.deleteMeal(
+                        journalController.deleteMeal(
                           meal: meal,
                         ),
                       );
@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         HapticFeedback.lightImpact(),
                       );
                       unawaited(
-                        homeController.onMealPressed(
+                        journalController.onMealPressed(
                           context,
                           passedMeal: meal,
                           isCopyingMeal: true,
@@ -133,8 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ///
             /// ADD MEAL
             ///
-            HomeAddMeal(
-              onPressed: () => homeController.onMealPressed(context),
+            JournalAddMeal(
+              onPressed: () => journalController.onMealPressed(context),
             ),
 
             ///

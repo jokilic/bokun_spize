@@ -5,11 +5,11 @@ import 'package:intl/intl.dart';
 import '../../../constants/colors.dart';
 import '../../../main.dart';
 
-class HomeCalendarSheet extends StatelessWidget {
+class JournalCalendarSheet extends StatelessWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
 
-  const HomeCalendarSheet({
+  const JournalCalendarSheet({
     required this.dateValue,
     required this.onDateChanged,
   });

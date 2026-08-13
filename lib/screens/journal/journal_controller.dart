@@ -10,9 +10,9 @@ import '../../main.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
-import 'widgets/home_calendar_sheet.dart';
+import 'widgets/journal_calendar_sheet.dart';
 
-class HomeController extends ValueNotifier<DateTime> {
+class JournalController extends ValueNotifier<DateTime> {
   ///
   /// CONSTRUCTOR
   ///
@@ -20,7 +20,7 @@ class HomeController extends ValueNotifier<DateTime> {
   final FirebaseService firebase;
   final AIService ai;
 
-  HomeController({
+  JournalController({
     required this.firebase,
     required this.ai,
   }) : super(
@@ -64,7 +64,7 @@ class HomeController extends ValueNotifier<DateTime> {
     // TODO: Show snackbar if it fails
   }
 
-  /// Opens [HomeCalendarSheet] and updates the selected `date`
+  /// Opens [JournalCalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
     backgroundColor: BokunSpizeColors.white,
@@ -72,7 +72,7 @@ class HomeController extends ValueNotifier<DateTime> {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(listTileRadius),
     ),
-    builder: (context) => HomeCalendarSheet(
+    builder: (context) => JournalCalendarSheet(
       dateValue: value,
       onDateChanged: (newDate) => value = newDate,
     ),

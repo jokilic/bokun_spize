@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../constants/colors.dart';
 import '../../../main.dart';
 
-class HomeAddMeal extends StatelessWidget {
+class JournalAddMeal extends StatelessWidget {
   final Function() onPressed;
 
-  const HomeAddMeal({
+  const JournalAddMeal({
     required this.onPressed,
   });
 

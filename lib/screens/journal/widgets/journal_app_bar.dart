@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
 
-class HomeAppBar extends StatelessWidget {
+class JournalAppBar extends StatelessWidget {
   final String? title;
   final String? imagePath;
   final Function() onCalendarPressed;
@@ -10,7 +10,7 @@ class HomeAppBar extends StatelessWidget {
   final int currentCalories;
   final int? dailyCalories;
 
-  const HomeAppBar({
+  const JournalAppBar({
     required this.title,
     required this.imagePath,
     required this.onCalendarPressed,

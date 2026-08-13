@@ -11,7 +11,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'constants/colors.dart';
 import 'firebase_options.dart';
 import 'screens/entrance/entrance_screen.dart';
-import 'screens/home/home_screen.dart';
+import 'screens/journal/journal_screen.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
@@ -72,7 +72,7 @@ class BokunSpizeApp extends StatelessWidget {
     home: StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       initialData: FirebaseAuth.instance.currentUser,
-      builder: (context, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : HomeScreen(),
+      builder: (context, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : JournalScreen(),
     ),
     locale: const Locale('hr'),
     supportedLocales: const [
