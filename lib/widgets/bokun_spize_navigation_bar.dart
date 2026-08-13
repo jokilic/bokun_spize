@@ -3,7 +3,6 @@ import 'package:watch_it/watch_it.dart';
 
 import '../constants/colors.dart';
 import '../constants/durations.dart';
-import '../constants/icons.dart';
 import '../services/screen_service.dart';
 import '../util/dependencies.dart';
 
@@ -15,16 +14,16 @@ class BokunSpizeNavigationBar extends WatchingWidget {
     final navigationBarItem = watchIt<ScreenService>().value;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(40),
+      borderRadius: BorderRadius.circular(48),
       child: NavigationBar(
-        height: navigationBarHeight,
-        backgroundColor: Colors.amber,
+        height: 88,
+        backgroundColor: BokunSpizeColors.white,
         elevation: 0,
         indicatorColor: Colors.transparent,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         animationDuration: BokunSpizeDurations.animation,
         selectedIndex: navigationBarItem.index,
-        onDestinationSelected: (newIndex) => screen.getProperWidget(
+        onDestinationSelected: (newIndex) => screen.changeNavigationBarItem(
           NavigationBarItem.values[newIndex],
         ),
         destinations: [
@@ -32,15 +31,37 @@ class BokunSpizeNavigationBar extends WatchingWidget {
           /// JOURNAL
           ///
           NavigationDestination(
-            icon: Icon(
-              Icons.book_rounded,
-              size: 22,
-              color: BokunSpizeColors.white.withValues(alpha: 0.15),
+            icon: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.book_rounded,
+                  size: 24,
+                  color: BokunSpizeColors.neutralDark,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Journal'.toUpperCase(),
+                  style: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: BokunSpizeColors.neutralDark,
+                  ),
+                ),
+              ],
             ),
-            selectedIcon: const Icon(
-              Icons.book_rounded,
-              size: 22,
-              color: BokunSpizeColors.white,
+            selectedIcon: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: BokunSpizeColors.alternative,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.book_rounded,
+                size: 24,
+                color: BokunSpizeColors.white,
+              ),
             ),
             label: '',
           ),
@@ -49,15 +70,37 @@ class BokunSpizeNavigationBar extends WatchingWidget {
           /// INSIGHTS
           ///
           NavigationDestination(
-            icon: Icon(
-              Icons.graphic_eq_rounded,
-              size: 22,
-              color: BokunSpizeColors.white.withValues(alpha: 0.15),
+            icon: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.grade_rounded,
+                  size: 24,
+                  color: BokunSpizeColors.neutralDark,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Insights'.toUpperCase(),
+                  style: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: BokunSpizeColors.neutralDark,
+                  ),
+                ),
+              ],
             ),
-            selectedIcon: const Icon(
-              Icons.graphic_eq_rounded,
-              size: 22,
-              color: BokunSpizeColors.white,
+            selectedIcon: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: BokunSpizeColors.alternative,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.grade_rounded,
+                size: 24,
+                color: BokunSpizeColors.white,
+              ),
             ),
             label: '',
           ),
@@ -66,15 +109,37 @@ class BokunSpizeNavigationBar extends WatchingWidget {
           /// SEARCH
           ///
           NavigationDestination(
-            icon: Icon(
-              Icons.search_rounded,
-              size: 22,
-              color: BokunSpizeColors.white.withValues(alpha: 0.15),
+            icon: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.search_rounded,
+                  size: 24,
+                  color: BokunSpizeColors.neutralDark,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Search'.toUpperCase(),
+                  style: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: BokunSpizeColors.neutralDark,
+                  ),
+                ),
+              ],
             ),
-            selectedIcon: const Icon(
-              Icons.search_rounded,
-              size: 22,
-              color: BokunSpizeColors.white,
+            selectedIcon: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: BokunSpizeColors.alternative,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.search_rounded,
+                size: 24,
+                color: BokunSpizeColors.white,
+              ),
             ),
             label: '',
           ),
@@ -83,15 +148,37 @@ class BokunSpizeNavigationBar extends WatchingWidget {
           /// PROFILE
           ///
           NavigationDestination(
-            icon: Icon(
-              Icons.account_box_rounded,
-              size: 22,
-              color: BokunSpizeColors.white.withValues(alpha: 0.15),
+            icon: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.account_circle_rounded,
+                  size: 24,
+                  color: BokunSpizeColors.neutralDark,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Account'.toUpperCase(),
+                  style: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: BokunSpizeColors.neutralDark,
+                  ),
+                ),
+              ],
             ),
-            selectedIcon: const Icon(
-              Icons.account_box_rounded,
-              size: 22,
-              color: BokunSpizeColors.white,
+            selectedIcon: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: BokunSpizeColors.alternative,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.account_circle_rounded,
+                size: 24,
+                color: BokunSpizeColors.white,
+              ),
             ),
             label: '',
           ),

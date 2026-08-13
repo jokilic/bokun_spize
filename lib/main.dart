@@ -12,7 +12,6 @@ import 'package:watch_it/watch_it.dart';
 import 'constants/colors.dart';
 import 'firebase_options.dart';
 import 'screens/entrance/entrance_screen.dart';
-import 'screens/journal/journal_screen.dart';
 import 'services/screen_service.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
@@ -83,7 +82,7 @@ class BokunSpizeApp extends StatelessWidget {
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: ThemeData.light().copyWith(
-      scaffoldBackgroundColor: BokunSpizeColors.white,
+      scaffoldBackgroundColor: BokunSpizeColors.neutralLight,
     ),
     builder: (_, child) {
       final appWidget =

@@ -51,10 +51,10 @@ class _JournalListTileState extends State<JournalListTile> {
         widget.meal.errors?.map((error) => error).join(', ');
 
     final imageBackgroundColor = isLoading
-        ? BokunSpizeColors.white
+        ? BokunSpizeColors.neutralLight
         : hasError
         ? BokunSpizeColors.tertiary
-        : widget.meal.color ?? BokunSpizeColors.white;
+        : widget.meal.color ?? BokunSpizeColors.neutralLight;
 
     final borderColor = hasError
         ? BokunSpizeColors.tertiary
@@ -87,7 +87,7 @@ class _JournalListTileState extends State<JournalListTile> {
               backgroundRadius: listTileRadius,
               icon: const Icon(
                 Icons.tram_rounded,
-                color: BokunSpizeColors.neutralLight,
+                color: BokunSpizeColors.white,
                 size: 28,
               ),
             ),
@@ -102,13 +102,13 @@ class _JournalListTileState extends State<JournalListTile> {
               backgroundRadius: listTileRadius,
               icon: const Icon(
                 Icons.copy_rounded,
-                color: BokunSpizeColors.neutralLight,
+                color: BokunSpizeColors.white,
                 size: 28,
               ),
             ),
           ],
           child: Material(
-            color: BokunSpizeColors.neutralLight,
+            color: BokunSpizeColors.white,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
               onTap: isLoading || hasError ? null : toggleExpanded,
@@ -234,7 +234,10 @@ class _JournalListTileState extends State<JournalListTile> {
                                             sizeCurve: Curves.easeIn,
                                             crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                                             firstChild: Text(
-                                              capitalizeFirstLetter(titleText) ?? '',
+                                              capitalizeFirstLetter(
+                                                    titleText,
+                                                  ) ??
+                                                  '',
                                               style: const TextStyle(
                                                 fontFamily: 'PlusJakartaSans',
                                                 fontSize: 20,
@@ -263,7 +266,9 @@ class _JournalListTileState extends State<JournalListTile> {
                                     ///
                                     /// SUBTITLE
                                     ///
-                                    SizedBox(height: isLoading ? 8 : 4),
+                                    SizedBox(
+                                      height: isLoading ? 8 : 4,
+                                    ),
                                     if (subtitleText != null)
                                       AnimatedCrossFade(
                                         alignment: Alignment.centerLeft,
@@ -478,7 +483,7 @@ class _JournalListTileState extends State<JournalListTile> {
                                     const SizedBox(height: 12),
                                     Container(
                                       height: 1,
-                                      color: BokunSpizeColors.white,
+                                      color: BokunSpizeColors.neutralLight,
                                     ),
                                     const SizedBox(height: 12),
                                   ],

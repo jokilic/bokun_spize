@@ -29,7 +29,7 @@ class JournalListTileNutrition extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: BokunSpizeColors.white,
+        color: BokunSpizeColors.neutralLight,
         borderRadius: BorderRadius.circular(100),
       ),
       padding: const EdgeInsets.symmetric(

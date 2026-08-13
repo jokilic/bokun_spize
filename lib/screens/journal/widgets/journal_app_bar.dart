@@ -21,7 +21,7 @@ class JournalAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SliverAppBar.large(
-    backgroundColor: BokunSpizeColors.white,
+    backgroundColor: BokunSpizeColors.neutralLight,
     elevation: 0,
     scrolledUnderElevation: 0,
     expandedHeight: 240,
@@ -78,9 +78,9 @@ class JournalAppBar extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
-              backgroundColor: BokunSpizeColors.neutralLight,
+              backgroundColor: BokunSpizeColors.white,
               foregroundColor: BokunSpizeColors.neutralDark,
-              disabledBackgroundColor: BokunSpizeColors.white,
+              disabledBackgroundColor: BokunSpizeColors.neutralLight,
               disabledForegroundColor: BokunSpizeColors.neutralDark,
             ),
           ),
