@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../services/ai_service.dart';
 import '../services/firebase_service.dart';
+import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
 
 final getIt = GetIt.instance;
@@ -68,6 +69,12 @@ Future<void> initializeServices() async {
         firebaseService: getIt.get<FirebaseService>(),
       )..init(),
       dependsOn: [FirebaseService],
+    );
+  }
+
+  if (!getIt.isRegistered<ScreenService>()) {
+    getIt.registerSingletonAsync(
+      () async => ScreenService(),
     );
   }
 
