@@ -10,6 +10,7 @@ import '../../main.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
+import '../../util/typedefs.dart';
 import 'widgets/journal_calendar_sheet.dart';
 
 class JournalController extends ValueNotifier<DateTime> {
@@ -88,16 +89,9 @@ class JournalController extends ValueNotifier<DateTime> {
     final shouldEditExistingMeal = passedMeal != null && !isCopyingMeal;
 
     /// Show [MealScreen] for adding or editing `meal`
-    // final result = await showCupertinoSheet<MealSheetResult>(
-    //   context: context,
-    //   scrollableBuilder: (context, scrollController) => const Scaffold(),
-    // );
-
-    final result = (
-      dateTime: DateTime.now(),
-      deleteMeal: false,
-      imageFile: null,
-      words: 'oslić i blitva',
+    final result = await showCupertinoSheet<MealSheetResult>(
+      context: context,
+      scrollableBuilder: (context, scrollController) => const Scaffold(),
     );
 
     /// User was editing existing `meal`
