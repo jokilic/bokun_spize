@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../constants/colors.dart';
 import '../../../main.dart';
 
-class JournalAddMeal extends StatelessWidget {
+class InsightsAddWeight extends StatelessWidget {
   final Function() onPressed;
 
-  const JournalAddMeal({
+  const InsightsAddWeight({
     required this.onPressed,
   });
 
@@ -37,7 +37,7 @@ class JournalAddMeal extends StatelessWidget {
                   width: 0.5,
                 ),
               ),
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(18),
               child: const Column(
                 children: [
                   ///
@@ -46,22 +46,20 @@ class JournalAddMeal extends StatelessWidget {
                   Icon(
                     Icons.add_circle_outline,
                     color: BokunSpizeColors.primary,
-                    size: 40,
+                    size: 28,
                   ),
 
-                  SizedBox(height: 12),
+                  SizedBox(height: 4),
 
                   ///
                   /// TEXT
                   ///
                   Text(
-                    'Unesi obrok',
+                    'Unesi masu',
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      height: 1.2,
-                      letterSpacing: 0.6,
                       color: BokunSpizeColors.neutralDark,
                     ),
                   ),

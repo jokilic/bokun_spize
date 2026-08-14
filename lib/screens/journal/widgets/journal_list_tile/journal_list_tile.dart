@@ -86,7 +86,7 @@ class _JournalListTileState extends State<JournalListTile> {
               color: BokunSpizeColors.tertiary,
               backgroundRadius: listTileRadius,
               icon: const Icon(
-                Icons.tram_rounded,
+                Icons.delete_rounded,
                 color: BokunSpizeColors.white,
                 size: 28,
               ),

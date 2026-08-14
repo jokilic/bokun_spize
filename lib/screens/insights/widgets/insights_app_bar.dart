@@ -202,7 +202,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                     'zadnjih 7 dana',
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
-                      fontSize: 10,
+                      fontSize: 8,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.2,
                       color: BokunSpizeColors.neutralDark,

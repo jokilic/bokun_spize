@@ -79,7 +79,7 @@ class JournalController extends ValueNotifier<DateTime> {
     ),
   );
 
-  /// Triggered when the user adds, edits, or copies a meal
+  /// Triggered when the user adds, edits, or copies a `meal`
   Future<void> onMealPressed(
     BuildContext context, {
     Meal? passedMeal,

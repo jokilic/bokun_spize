@@ -9,6 +9,7 @@ import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/bokun_spize_navigation_bar.dart';
 import 'insights_controller.dart';
+import 'widgets/insights_add_weight.dart';
 import 'widgets/insights_app_bar.dart';
 import 'widgets/insights_list_tile.dart';
 
@@ -101,9 +102,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ///
             /// ADD WEIGHT
             ///
-            // JournalAddMeal(
-            //   onPressed: () => journalController.onMealPressed(context),
-            // ),
+            InsightsAddWeight(
+              onPressed: () => insightsController.onAddWeightPressed(context),
+            ),
 
             ///
             /// BOTTOM SPACING
