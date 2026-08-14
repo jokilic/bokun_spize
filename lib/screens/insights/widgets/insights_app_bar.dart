@@ -5,14 +5,16 @@ import '../../../constants/colors.dart';
 class InsightsAppBar extends StatelessWidget {
   final String? title;
   final String? imagePath;
+  final String timeString;
   final double currentWeight;
-  final double? changeWithinLast7Days;
+  final double? changeWithinLastXDays;
 
   const InsightsAppBar({
     required this.title,
     required this.imagePath,
+    required this.timeString,
     required this.currentWeight,
-    required this.changeWithinLast7Days,
+    required this.changeWithinLastXDays,
   });
 
   @override
@@ -20,7 +22,7 @@ class InsightsAppBar extends StatelessWidget {
     backgroundColor: BokunSpizeColors.neutralLight,
     elevation: 0,
     scrolledUnderElevation: 0,
-    expandedHeight: 240,
+    expandedHeight: 200,
     leadingWidth: double.infinity,
     leading: Padding(
       padding: const EdgeInsets.only(left: 20, right: 8),
@@ -64,20 +66,23 @@ class InsightsAppBar extends StatelessWidget {
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: 16),
       title: FadingFlexibleTitle(
+        timeString: timeString,
         currentWeight: currentWeight,
-        changeWithinLast7Days: changeWithinLast7Days,
+        changeWithinLastXDays: changeWithinLastXDays,
       ),
     ),
   );
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
+  final String timeString;
   final double currentWeight;
-  final double? changeWithinLast7Days;
+  final double? changeWithinLastXDays;
 
   const FadingFlexibleTitle({
+    required this.timeString,
     required this.currentWeight,
-    required this.changeWithinLast7Days,
+    required this.changeWithinLastXDays,
   });
 
   @override
@@ -98,200 +103,115 @@ class FadingFlexibleTitle extends StatelessWidget {
       opacity: opacity,
       child: Transform.translate(
         offset: Offset(0, dy),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///
-            /// TITLE
+            /// CURRENT WEIGHT
             ///
-            Text(
-              'Trenutna masa'.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.6,
-                color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
-              ),
-            ),
-            const SizedBox(height: 2),
-
-            ///
-            /// WEIGHT
-            ///
-            Text.rich(
-              TextSpan(
-                text: currentWeight.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 40,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                  letterSpacing: 1.5,
-                  color: BokunSpizeColors.primary,
-                ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const WidgetSpan(
-                    child: SizedBox(width: 4),
-                  ),
-                  TextSpan(
-                    text: 'kg',
+                  ///
+                  /// TITLE
+                  ///
+                  Text(
+                    timeString.toUpperCase(),
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      height: 1.2,
-                      letterSpacing: 1.5,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.6,
                       color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
                     ),
                   ),
+                  const SizedBox(height: 2),
+
+                  ///
+                  /// WEIGHT
+                  ///
+                  Text.rich(
+                    TextSpan(
+                      text: currentWeight.toStringAsFixed(1),
+                      style: const TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 40,
+                        fontWeight: FontWeight.w800,
+                        height: 1.2,
+                        letterSpacing: 1.5,
+                        color: BokunSpizeColors.primary,
+                      ),
+                      children: [
+                        const WidgetSpan(
+                          child: SizedBox(width: 4),
+                        ),
+                        TextSpan(
+                          text: 'kg',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            letterSpacing: 1.5,
+                            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
                 ],
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
 
             ///
-            /// NUTRITION
+            /// CHANGE WITHIN LAST X DAYS
             ///
-            Row(
-              children: [
-                ///
-                /// PROTEIN
-                ///
-                Expanded(
-                  child: Container(
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      color: BokunSpizeColors.primary,
-                    ),
-                  ),
-                ),
-
-                ///
-                /// CARBS
-                ///
-                Expanded(
-                  child: Container(
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      color: BokunSpizeColors.secondary,
-                    ),
-                  ),
-                ),
-
-                ///
-                /// FATS
-                ///
-                Expanded(
-                  child: Container(
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      color: BokunSpizeColors.tertiary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                ///
-                /// PROTEIN
-                ///
-                Expanded(
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 7,
-                        width: 7,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: BokunSpizeColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Protein'.toUpperCase(),
-                        style: const TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                          letterSpacing: 0.4,
-                          color: BokunSpizeColors.neutralDark,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                ///
-                /// CARBS
-                ///
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 7,
-                        width: 7,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: BokunSpizeColors.secondary,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Carbs'.toUpperCase(),
-                        style: const TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                          letterSpacing: 0.4,
-                          color: BokunSpizeColors.neutralDark,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                ///
-                /// FATS
-                ///
-                Expanded(
-                  child: Row(
+            const Flexible(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Container(
-                        height: 7,
-                        width: 7,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: BokunSpizeColors.tertiary,
-                        ),
+                      Icon(
+                        Icons.auto_graph_rounded,
+                        size: 18,
+                        color: BokunSpizeColors.primary,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 2),
                       Text(
-                        'Fats'.toUpperCase(),
-                        style: const TextStyle(
+                        '-0.8kg',
+                        style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                          letterSpacing: 0.4,
-                          color: BokunSpizeColors.neutralDark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          color: BokunSpizeColors.primary,
                         ),
+                        textAlign: TextAlign.right,
                       ),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(height: 4),
+                  Text(
+                    'zadnjih 7 dana',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.2,
+                      color: BokunSpizeColors.neutralDark,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
           ],
         ),
       ),

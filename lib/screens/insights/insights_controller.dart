@@ -25,4 +25,14 @@ class InsightsController {
   ///
 
   late Stream<List<WeightTrack>?> weightTracksStream;
+
+  ///
+  /// METHODS
+  ///
+
+  /// Deletes [weightTrack] from Firebase
+  Future<void> deleteWeightTrack({required WeightTrack weightTrack}) async {
+    final success = await firebase.deleteWeightTrack(weightTrack: weightTrack);
+    // TODO: Show snackbar if it fails
+  }
 }

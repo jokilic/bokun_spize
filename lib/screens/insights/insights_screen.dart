@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../models/weight_track/weight_track.dart';
@@ -7,6 +10,7 @@ import '../../util/dependencies.dart';
 import '../../widgets/bokun_spize_navigation_bar.dart';
 import 'insights_controller.dart';
 import 'widgets/insights_app_bar.dart';
+import 'widgets/insights_list_tile.dart';
 
 class InsightsScreen extends WatchingStatefulWidget {
   @override
@@ -64,46 +68,35 @@ class _InsightsScreenState extends State<InsightsScreen> {
             InsightsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
+              timeString: 'Danas',
               currentWeight: 73.567,
-              changeWithinLast7Days: null,
+              changeWithinLastXDays: null,
             ),
 
             ///
             /// WEIGHTS
             ///
-            // if (meals.isNotEmpty)
-            //   SliverList.builder(
-            //     itemCount: meals.length,
-            //     itemBuilder: (context, index) {
-            //       final meal = meals[index];
+            if (weightTracks.isNotEmpty)
+              SliverList.builder(
+                itemCount: weightTracks.length,
+                itemBuilder: (context, index) {
+                  final weightTrack = weightTracks[index];
 
-            //       return JournalListTile(
-            //         onDeletePressed: () async {
-            //           unawaited(
-            //             HapticFeedback.lightImpact(),
-            //           );
-            //           unawaited(
-            //             journalController.deleteMeal(
-            //               meal: meal,
-            //             ),
-            //           );
-            //         },
-            //         onCopyPressed: () async {
-            //           unawaited(
-            //             HapticFeedback.lightImpact(),
-            //           );
-            //           unawaited(
-            //             journalController.onMealPressed(
-            //               context,
-            //               passedMeal: meal,
-            //               isCopyingMeal: true,
-            //             ),
-            //           );
-            //         },
-            //         meal: meal,
-            //       );
-            //     },
-            //   ),
+                  return InsightsListTile(
+                    onDeletePressed: () async {
+                      unawaited(
+                        HapticFeedback.lightImpact(),
+                      );
+                      unawaited(
+                        insightsController.deleteWeightTrack(
+                          weightTrack: weightTrack,
+                        ),
+                      );
+                    },
+                    weightTrack: weightTrack,
+                  );
+                },
+              ),
 
             ///
             /// ADD WEIGHT
