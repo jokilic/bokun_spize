@@ -111,7 +111,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ///
             SliverToBoxAdapter(
               child: SizedBox(
-                height: MediaQuery.paddingOf(context).bottom,
+                height: MediaQuery.paddingOf(context).bottom + 16,
               ),
             ),
           ],

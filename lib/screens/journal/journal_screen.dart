@@ -144,7 +144,7 @@ class _JournalScreenState extends State<JournalScreen> {
             ///
             SliverToBoxAdapter(
               child: SizedBox(
-                height: MediaQuery.paddingOf(context).bottom,
+                height: MediaQuery.paddingOf(context).bottom + 16,
               ),
             ),
           ],

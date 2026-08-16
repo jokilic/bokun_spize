@@ -195,10 +195,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         size: 24,
                       ),
                       label: const Text('Google'),
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
                         textStyle: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
@@ -239,10 +237,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         size: 24,
                       ),
                       label: const Text('Apple'),
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
                         textStyle: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
@@ -328,11 +324,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         size: 24,
                       ),
                       label: const Text('Anonymous'),
-                      style: OutlinedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
+                        shape: const StadiumBorder(),
                         textStyle: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
@@ -370,11 +364,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         size: 24,
                       ),
                       label: const Text('Login'),
-                      style: OutlinedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
+                        shape: const StadiumBorder(),
                         textStyle: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 16,

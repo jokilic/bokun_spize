@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/durations.dart';
 import '../../../main.dart';
+import '../../../util/day.dart';
 
 class InsightsAddWeightSheet extends StatefulWidget {
   final DateTime currentDateTime;
@@ -24,7 +24,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
   static const minimumWeight = 40.0;
   static const maximumWeight = 200.0;
   static const weightStep = 0.1;
-  static const rulerItemExtent = 40.0;
+  static const rulerItemExtent = 16.0;
 
   late final ScrollController rulerController;
   late var selectedWeight = widget.initialWeight;
@@ -73,12 +73,6 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
     );
   }
 
-  String formattedDateTime() {
-    final date = DateUtils.isSameDay(widget.currentDateTime, DateTime.now()) ? 'Danas' : DateFormat('dd.MM.yyyy.').format(widget.currentDateTime);
-    final time = DateFormat('HH:mm').format(widget.currentDateTime);
-    return '$date, $time';
-  }
-
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
@@ -108,7 +102,9 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
           /// DATE
           ///
           Text(
-            formattedDateTime(),
+            formattedInsightsAddWeightDateTime(
+              currentDateTime: widget.currentDateTime,
+            ),
             style: const TextStyle(
               fontFamily: 'Epilogue',
               fontSize: 18,
@@ -116,7 +112,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
               color: BokunSpizeColors.neutralDark,
             ),
           ),
-          const SizedBox(height: 64),
+          const SizedBox(height: 32),
 
           ///
           /// WEIGHT
@@ -146,7 +142,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
           ///
           /// WEIGHT PICKER
@@ -194,28 +190,38 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
               ),
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 56),
+
+          ///
+          /// SAVE BUTTON
+          ///
           SizedBox(
             width: double.infinity,
-            height: 66,
             child: ElevatedButton(
               onPressed: () => widget.onSavePressed(selectedWeight),
               style: ElevatedButton.styleFrom(
-                elevation: 8,
-                shadowColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.2),
+                elevation: 0,
+                shape: const StadiumBorder(),
+                textStyle: const TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                ),
+                padding: const EdgeInsets.all(20),
                 backgroundColor: BokunSpizeColors.primary,
                 foregroundColor: BokunSpizeColors.white,
-                shape: const StadiumBorder(),
+                disabledBackgroundColor: BokunSpizeColors.neutralLight,
+                disabledForegroundColor: BokunSpizeColors.neutralDark,
               ),
-              child: const Text(
-                'Spremi masu',
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 21,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
+              child: const Text('Spremi masu'),
             ),
+          ),
+
+          ///
+          /// BOTTOM SPACING
+          ///
+          SizedBox(
+            height: MediaQuery.paddingOf(context).bottom + 16,
           ),
         ],
       ),
@@ -224,7 +230,6 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
 
   Widget buildRulerMark(int index) {
     final isWholeKilogram = index % 10 == 0;
-    final isHalfKilogram = index % 5 == 0;
     final isSelected = index == selectedIndex;
     final weight = minimumWeight + (index * weightStep);
     final color = isSelected
@@ -236,29 +241,36 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: isWholeKilogram ? 2.5 : 2,
-          height: isWholeKilogram
-              ? 34
-              : isHalfKilogram
-              ? 25
-              : 18,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
+        SizedBox(
+          height: 80,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: isWholeKilogram ? 3 : 2,
+              height: isWholeKilogram ? 48 : 16,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(100),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 8),
         SizedBox(
           height: 20,
-          child: isHalfKilogram
-              ? Text(
-                  weight.toStringAsFixed(isWholeKilogram ? 0 : 1),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: color,
+          child: isWholeKilogram
+              ? OverflowBox(
+                  minWidth: 48,
+                  maxWidth: 48,
+                  child: Text(
+                    weight.toStringAsFixed(0),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: color,
+                    ),
                   ),
                 )
               : null,

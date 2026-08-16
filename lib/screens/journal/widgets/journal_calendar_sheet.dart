@@ -148,8 +148,11 @@ class JournalCalendarSheet extends StatelessWidget {
             ),
           ),
 
+          ///
+          /// BOTTOM SPACING
+          ///
           SizedBox(
-            height: MediaQuery.paddingOf(context).bottom,
+            height: MediaQuery.paddingOf(context).bottom + 16,
           ),
         ],
       ),

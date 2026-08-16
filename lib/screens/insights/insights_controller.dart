@@ -53,7 +53,9 @@ class InsightsController {
     builder: (context) => InsightsAddWeightSheet(
       currentDateTime: DateTime.now(),
       initialWeight: 77,
-      onSavePressed: print,
+      onSavePressed: (newWeight) {
+        // TODO: Add new weight to Firebase
+      },
     ),
   );
 }
