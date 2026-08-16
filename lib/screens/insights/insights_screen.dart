@@ -7,6 +7,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
+import '../../util/weight_track.dart';
 import '../../widgets/bokun_spize_navigation_bar.dart';
 import 'insights_controller.dart';
 import 'widgets/insights_add_weight.dart';
@@ -55,6 +56,15 @@ class _InsightsScreenState extends State<InsightsScreen> {
         ).data ??
         [];
 
+    /// Store last `weight`
+    final lastWeight = weightTracks.firstOrNull?.weight;
+
+    /// Calculate `weightChange`
+    final weightChange = getWeightChange(
+      weightTracks: weightTracks,
+      lastWeight: lastWeight,
+    );
+
     return Scaffold(
       bottomNavigationBar: BokunSpizeNavigationBar(),
       body: SafeArea(
@@ -69,9 +79,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
             InsightsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
-              timeString: 'Danas',
-              currentWeight: 73.567,
-              changeWithinLastXDays: null,
+              timeString: lastWeight != null ? 'Danas' : 'Dodaj masu',
+              currentWeight: lastWeight,
+              weightChange: weightChange,
             ),
 
             ///
@@ -105,7 +115,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
             InsightsAddWeight(
               onPressed: () => insightsController.onAddWeightPressed(
                 context: context,
-                initialWeight: weightTracks.firstOrNull?.weight ?? 75.0,
+                initialWeight: lastWeight ?? 75.0,
               ),
             ),
 

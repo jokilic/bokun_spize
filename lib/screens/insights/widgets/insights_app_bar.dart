@@ -6,15 +6,15 @@ class InsightsAppBar extends StatelessWidget {
   final String? title;
   final String? imagePath;
   final String timeString;
-  final double currentWeight;
-  final double? changeWithinLastXDays;
+  final double? currentWeight;
+  final double? weightChange;
 
   const InsightsAppBar({
     required this.title,
     required this.imagePath,
     required this.timeString,
     required this.currentWeight,
-    required this.changeWithinLastXDays,
+    required this.weightChange,
   });
 
   @override
@@ -68,7 +68,7 @@ class InsightsAppBar extends StatelessWidget {
       title: FadingFlexibleTitle(
         timeString: timeString,
         currentWeight: currentWeight,
-        changeWithinLastXDays: changeWithinLastXDays,
+        weightChange: weightChange,
       ),
     ),
   );
@@ -76,13 +76,13 @@ class InsightsAppBar extends StatelessWidget {
 
 class FadingFlexibleTitle extends StatelessWidget {
   final String timeString;
-  final double currentWeight;
-  final double? changeWithinLastXDays;
+  final double? currentWeight;
+  final double? weightChange;
 
   const FadingFlexibleTitle({
     required this.timeString,
     required this.currentWeight,
-    required this.changeWithinLastXDays,
+    required this.weightChange,
   });
 
   @override
@@ -134,7 +134,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   Text.rich(
                     TextSpan(
-                      text: currentWeight.toStringAsFixed(1),
+                      text: currentWeight?.toStringAsFixed(1) ?? '--.-',
                       style: const TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 40,
@@ -171,47 +171,49 @@ class FadingFlexibleTitle extends StatelessWidget {
             ///
             /// CHANGE WITHIN LAST X DAYS
             ///
-            const Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(
-                        Icons.auto_graph_rounded,
-                        size: 18,
-                        color: BokunSpizeColors.primary,
-                      ),
-                      SizedBox(width: 2),
-                      Text(
-                        '-0.8kg',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
+            if (weightChange != null)
+              Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const Icon(
+                          Icons.auto_graph_rounded,
+                          size: 18,
                           color: BokunSpizeColors.primary,
                         ),
-                        textAlign: TextAlign.right,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'zadnjih 7 dana',
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 8,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.2,
-                      color: BokunSpizeColors.neutralDark,
+                        const SizedBox(width: 2),
+                        Text(
+                          '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}kg',
+                          style: const TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            color: BokunSpizeColors.primary,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    const Text(
+                      // TODO: We also need to know within how many days has the weight change been calculated
+                      'zadnjih 7 dana',
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 8,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.2,
+                        color: BokunSpizeColors.neutralDark,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
