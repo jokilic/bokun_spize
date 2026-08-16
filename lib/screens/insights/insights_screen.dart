@@ -65,6 +65,11 @@ class _InsightsScreenState extends State<InsightsScreen> {
       lastWeight: lastWeight,
     );
 
+    /// Calculate the calendar-day span covered by `weightChange`
+    final weightChangeWithinDays = getWeightChangeWithinDays(
+      weightTracks: weightTracks,
+    );
+
     return Scaffold(
       bottomNavigationBar: BokunSpizeNavigationBar(),
       body: SafeArea(
@@ -82,6 +87,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
               timeString: lastWeight != null ? 'Danas' : 'Dodaj masu',
               currentWeight: lastWeight,
               weightChange: weightChange,
+              weightChangeWithinDays: weightChangeWithinDays,
             ),
 
             ///

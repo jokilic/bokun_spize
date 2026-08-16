@@ -8,6 +8,7 @@ class InsightsAppBar extends StatelessWidget {
   final String timeString;
   final double? currentWeight;
   final double? weightChange;
+  final int? weightChangeWithinDays;
 
   const InsightsAppBar({
     required this.title,
@@ -15,6 +16,7 @@ class InsightsAppBar extends StatelessWidget {
     required this.timeString,
     required this.currentWeight,
     required this.weightChange,
+    required this.weightChangeWithinDays,
   });
 
   @override
@@ -69,6 +71,7 @@ class InsightsAppBar extends StatelessWidget {
         timeString: timeString,
         currentWeight: currentWeight,
         weightChange: weightChange,
+        weightChangeWithinDays: weightChangeWithinDays,
       ),
     ),
   );
@@ -78,11 +81,13 @@ class FadingFlexibleTitle extends StatelessWidget {
   final String timeString;
   final double? currentWeight;
   final double? weightChange;
+  final int? weightChangeWithinDays;
 
   const FadingFlexibleTitle({
     required this.timeString,
     required this.currentWeight,
     required this.weightChange,
+    required this.weightChangeWithinDays,
   });
 
   @override
@@ -199,18 +204,23 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      // TODO: We also need to know within how many days has the weight change been calculated
-                      'zadnjih 7 dana',
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.2,
-                        color: BokunSpizeColors.neutralDark,
+                    if (weightChangeWithinDays != null)
+                      Text(
+                        switch (weightChangeWithinDays) {
+                          0 => 'danas',
+                          1 => 'zadnji dan',
+                          final int days => 'zadnjih $days dana',
+                          null => '-',
+                        },
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 8,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.2,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                        textAlign: TextAlign.right,
                       ),
-                      textAlign: TextAlign.right,
-                    ),
                   ],
                 ),
               ),

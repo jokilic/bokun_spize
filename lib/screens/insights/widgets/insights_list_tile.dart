@@ -4,6 +4,8 @@ import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import '../../../constants/colors.dart';
 import '../../../main.dart';
 import '../../../models/weight_track/weight_track.dart';
+import '../../../util/day.dart';
+import '../../../util/format.dart';
 
 class InsightsListTile extends StatelessWidget {
   final Future<void> Function() onDeletePressed;
@@ -76,7 +78,7 @@ class InsightsListTile extends StatelessWidget {
                 ///
                 /// TEXT
                 ///
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -84,8 +86,14 @@ class InsightsListTile extends StatelessWidget {
                       /// TITLE
                       ///
                       Text(
-                        'Ponedjeljak, 13. Kol',
-                        style: TextStyle(
+                        capitalizeFirstLetter(
+                              getDateString(
+                                date: weightTrack.dateTime,
+                                dateFormat: 'EEE, dd.MM.',
+                              ),
+                            ) ??
+                            '--',
+                        style: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
@@ -94,14 +102,18 @@ class InsightsListTile extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
 
                       ///
                       /// SUBTITLE
                       ///
                       Text(
-                        '08:15',
-                        style: TextStyle(
+                        getDateString(
+                          date: weightTrack.dateTime,
+                          dateFormat: 'HH:mm',
+                          useTodayYesterdayTomorrow: false,
+                        ),
+                        style: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -163,6 +175,7 @@ class InsightsListTile extends StatelessWidget {
                         ),
                         SizedBox(width: 2),
                         Text(
+                          // TODO: This value should check the previous weightTrack and the change relative to the current one
                           '0.8kg',
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',

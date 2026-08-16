@@ -90,6 +90,7 @@ class _JournalScreenState extends State<JournalScreen> {
               onCalendarPressed: () => journalController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,
+                dateFormat: 'EEEE, dd.MM.yyyy.',
               ),
               currentCalories: currentCalories.round(),
               dailyCalories: userMetrics?.dailyCalories.round(),
