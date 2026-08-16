@@ -32,7 +32,7 @@ class JournalCalendarSheet extends StatelessWidget {
             'Odaberi dan',
             style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 26,
+              fontSize: 30,
               fontWeight: FontWeight.w900,
               letterSpacing: 0.6,
               color: BokunSpizeColors.neutralDark,

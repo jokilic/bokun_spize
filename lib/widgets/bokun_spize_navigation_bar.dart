@@ -17,7 +17,8 @@ class BokunSpizeNavigationBar extends WatchingWidget {
       borderRadius: BorderRadius.circular(48),
       child: NavigationBar(
         height: 88,
-        backgroundColor: BokunSpizeColors.white,
+        surfaceTintColor: BokunSpizeColors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         indicatorColor: Colors.transparent,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,

@@ -44,6 +44,7 @@ class InsightsController {
   /// Opens [InsightsAddWeightSheet] and adds new `weight`
   Future<void> onAddWeightPressed(BuildContext context) async => showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
     shape: RoundedRectangleBorder(
@@ -51,6 +52,7 @@ class InsightsController {
     ),
     builder: (context) => InsightsAddWeightSheet(
       currentDateTime: DateTime.now(),
+      initialWeight: 77,
       onSavePressed: print,
     ),
   );
