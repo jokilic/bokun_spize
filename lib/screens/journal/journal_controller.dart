@@ -61,7 +61,9 @@ class JournalController extends ValueNotifier<DateTime> {
 
   /// Deletes [meal] from Firebase
   Future<void> deleteMeal({required Meal meal}) async {
-    final success = await firebase.deleteMeal(meal: meal);
+    final success = await firebase.deleteMeal(
+      meal: meal,
+    );
     // TODO: Show snackbar if it fails
   }
 

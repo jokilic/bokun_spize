@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
 import '../../main.dart';
@@ -35,27 +37,61 @@ class InsightsController {
   /// METHODS
   ///
 
+  /// Adds [weightTrack] to Firebase
+  Future<void> addWeightTrack({
+    required DateTime dateTime,
+    required double weight,
+  }) async {
+    final success = firebase.writeWeightTrack(
+      newWeightTrack: WeightTrack(
+        id: const Uuid().v1(),
+        dateTime: dateTime,
+        weight: weight,
+      ),
+    );
+    // TODO: Show snackbar if it fails
+  }
+
   /// Deletes [weightTrack] from Firebase
   Future<void> deleteWeightTrack({required WeightTrack weightTrack}) async {
-    final success = await firebase.deleteWeightTrack(weightTrack: weightTrack);
+    final success = await firebase.deleteWeightTrack(
+      weightTrack: weightTrack,
+    );
     // TODO: Show snackbar if it fails
   }
 
   /// Opens [InsightsAddWeightSheet] and adds new `weight`
-  Future<void> onAddWeightPressed(BuildContext context) async => showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(listTileRadius),
-    ),
-    builder: (context) => InsightsAddWeightSheet(
-      currentDateTime: DateTime.now(),
-      initialWeight: 77,
-      onSavePressed: (newWeight) {
-        // TODO: Add new weight to Firebase
-      },
-    ),
-  );
+  Future<void> onAddWeightPressed(BuildContext context) async {
+    final now = DateTime.now();
+
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: BokunSpizeColors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(listTileRadius),
+      ),
+      builder: (context) => InsightsAddWeightSheet(
+        currentDateTime: now,
+        // TODO: Initial weight should be the latest weight from Firebase (if no weights, then set to 75)
+        initialWeight: 77,
+        onSavePressed: (newWeight) async {
+          unawaited(
+            HapticFeedback.lightImpact(),
+          );
+          unawaited(
+            addWeightTrack(
+              dateTime: now,
+              weight: newWeight,
+            ),
+          );
+
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+    );
+  }
 }
