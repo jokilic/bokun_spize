@@ -103,7 +103,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
             /// ADD WEIGHT
             ///
             InsightsAddWeight(
-              onPressed: () => insightsController.onAddWeightPressed(context),
+              onPressed: () => insightsController.onAddWeightPressed(
+                context: context,
+                initialWeight: weightTracks.firstOrNull?.weight ?? 75.0,
+              ),
             ),
 
             ///

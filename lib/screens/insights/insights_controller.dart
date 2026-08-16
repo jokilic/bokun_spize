@@ -61,10 +61,13 @@ class InsightsController {
   }
 
   /// Opens [InsightsAddWeightSheet] and adds new `weight`
-  Future<void> onAddWeightPressed(BuildContext context) async {
+  Future<void> onAddWeightPressed({
+    required BuildContext context,
+    required double initialWeight,
+  }) async {
     final now = DateTime.now();
 
-    return showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: BokunSpizeColors.white,
@@ -74,8 +77,7 @@ class InsightsController {
       ),
       builder: (context) => InsightsAddWeightSheet(
         currentDateTime: now,
-        // TODO: Initial weight should be the latest weight from Firebase (if no weights, then set to 75)
-        initialWeight: 77,
+        initialWeight: initialWeight,
         onSavePressed: (newWeight) async {
           unawaited(
             HapticFeedback.lightImpact(),

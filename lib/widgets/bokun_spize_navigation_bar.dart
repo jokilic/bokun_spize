@@ -55,7 +55,7 @@ class BokunSpizeNavigationBar extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.alternative,
+                color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -94,7 +94,7 @@ class BokunSpizeNavigationBar extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.alternative,
+                color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -133,7 +133,7 @@ class BokunSpizeNavigationBar extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.alternative,
+                color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -172,7 +172,7 @@ class BokunSpizeNavigationBar extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.alternative,
+                color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
