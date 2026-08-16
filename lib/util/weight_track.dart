@@ -45,6 +45,18 @@ double? getWeightChange({
   return weightChange;
 }
 
+/// Compare the current weight with the previous weight
+double? getPreviousWeightChange({
+  required List<WeightTrack> weightTracks,
+  required WeightTrack weightTrack,
+  required int index,
+}) {
+  final previousWeightTrack = index + 1 < weightTracks.length ? weightTracks[index + 1] : null;
+  final weightChange = previousWeightTrack != null ? weightTrack.weight - previousWeightTrack.weight : null;
+
+  return weightChange;
+}
+
 /// Get the calendar-day span covered by the weights used for the change
 int? getWeightChangeWithinDays({
   required List<WeightTrack> weightTracks,

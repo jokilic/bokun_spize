@@ -95,6 +95,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
               letterSpacing: 0.6,
               color: BokunSpizeColors.neutralDark,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 2),
 
@@ -111,6 +112,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
               fontWeight: FontWeight.w500,
               color: BokunSpizeColors.neutralDark,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
 

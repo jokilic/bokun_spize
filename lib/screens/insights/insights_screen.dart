@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:watch_it/watch_it.dart';
 
+import '../../constants/colors.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
@@ -12,6 +13,7 @@ import '../../widgets/bokun_spize_navigation_bar.dart';
 import 'insights_controller.dart';
 import 'widgets/insights_add_weight.dart';
 import 'widgets/insights_app_bar.dart';
+import 'widgets/insights_graph.dart';
 import 'widgets/insights_list_tile.dart';
 
 class InsightsScreen extends WatchingStatefulWidget {
@@ -91,13 +93,55 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ),
 
             ///
+            /// GRAPH
+            ///
+            InsightsGraph(
+              weightTracks: weightTracks,
+            ),
+
+            ///
+            /// ADD WEIGHT
+            ///
+            InsightsAddWeight(
+              onPressed: () => insightsController.onAddWeightPressed(
+                context: context,
+                initialWeight: lastWeight ?? 75.0,
+              ),
+            ),
+
+            ///
             /// WEIGHTS
             ///
-            if (weightTracks.isNotEmpty)
+            if (weightTracks.isNotEmpty) ...[
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Prošli upisi',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.neutralDark,
+                    ),
+                  ),
+                ),
+              ),
+
               SliverList.builder(
                 itemCount: weightTracks.length,
                 itemBuilder: (context, index) {
                   final weightTrack = weightTracks[index];
+
+                  final previousWeightChange = getPreviousWeightChange(
+                    weightTracks: weightTracks,
+                    weightTrack: weightTrack,
+                    index: index,
+                  );
 
                   return InsightsListTile(
                     onDeletePressed: () async {
@@ -111,19 +155,11 @@ class _InsightsScreenState extends State<InsightsScreen> {
                       );
                     },
                     weightTrack: weightTrack,
+                    weightChange: previousWeightChange,
                   );
                 },
               ),
-
-            ///
-            /// ADD WEIGHT
-            ///
-            InsightsAddWeight(
-              onPressed: () => insightsController.onAddWeightPressed(
-                context: context,
-                initialWeight: lastWeight ?? 75.0,
-              ),
-            ),
+            ],
 
             ///
             /// BOTTOM SPACING
