@@ -1,4 +1,49 @@
+import 'dart:core';
+
 import '../models/weight_track/weight_track.dart';
+
+List<WeightTrack> getWeightTracksForGraph({
+  required List<WeightTrack> weightTracks,
+  required int daysToShow,
+}) {
+  final sortedWeightTracks = [...weightTracks]
+    ..sort(
+      (a, b) => b.dateTime.compareTo(
+        a.dateTime,
+      ),
+    );
+
+  final latestDateTime = sortedWeightTracks.isEmpty ? null : sortedWeightTracks.first.dateTime;
+  final latestDate = latestDateTime == null
+      ? null
+      : DateTime.utc(
+          latestDateTime.year,
+          latestDateTime.month,
+          latestDateTime.day,
+        );
+
+  final visibleWeightTracks = sortedWeightTracks
+      .where((weightTrack) {
+        if (latestDate == null) {
+          return false;
+        }
+
+        final dateTime = weightTrack.dateTime;
+        final date = DateTime.utc(
+          dateTime.year,
+          dateTime.month,
+          dateTime.day,
+        );
+        final differenceInDays = latestDate.difference(date).inDays;
+
+        return differenceInDays >= 0 && differenceInDays < daysToShow;
+      })
+      .toList()
+      .reversed
+      .toList();
+
+  return visibleWeightTracks;
+}
 
 /// Get previous weights recorded within seven calendar days of the current one
 List<WeightTrack> getPreviousWeightTracksWithinSevenDays({

@@ -4,7 +4,7 @@ import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import '../../../constants/colors.dart';
 import '../../../main.dart';
 import '../../../models/weight_track/weight_track.dart';
-import '../../../util/day.dart';
+import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 
 class InsightsListTile extends StatelessWidget {

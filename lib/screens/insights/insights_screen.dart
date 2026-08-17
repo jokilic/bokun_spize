@@ -7,6 +7,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../constants/colors.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
+import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/weight_track.dart';
 import '../../widgets/bokun_spize_navigation_bar.dart';
@@ -58,13 +59,13 @@ class _InsightsScreenState extends State<InsightsScreen> {
         ).data ??
         [];
 
-    /// Store last `weight`
-    final lastWeight = weightTracks.firstOrNull?.weight;
+    /// Store last `weightTrack`
+    final lastWeightTrack = weightTracks.firstOrNull;
 
     /// Calculate `weightChange`
     final weightChange = getWeightChange(
       weightTracks: weightTracks,
-      lastWeight: lastWeight,
+      lastWeight: lastWeightTrack?.weight,
     );
 
     /// Calculate the calendar-day span covered by `weightChange`
@@ -86,8 +87,13 @@ class _InsightsScreenState extends State<InsightsScreen> {
             InsightsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
-              timeString: lastWeight != null ? 'Danas' : 'Dodaj masu',
-              currentWeight: lastWeight,
+              timeString: lastWeightTrack != null
+                  ? getDateString(
+                      date: lastWeightTrack.dateTime,
+                      dateFormat: 'EEEE, dd.MM.yyyy.',
+                    )
+                  : 'Dodaj masu',
+              currentWeight: lastWeightTrack?.weight,
               weightChange: weightChange,
               weightChangeWithinDays: weightChangeWithinDays,
             ),
@@ -95,19 +101,34 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ///
             /// GRAPH
             ///
-            InsightsGraph(
-              weightTracks: weightTracks,
-            ),
-
-            ///
-            /// ADD WEIGHT
-            ///
-            InsightsAddWeight(
-              onPressed: () => insightsController.onAddWeightPressed(
-                context: context,
-                initialWeight: lastWeight ?? 75.0,
+            if (weightTracks.isNotEmpty) ...[
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Napredak u 7 dana',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.neutralDark,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              InsightsGraph(
+                weightTracks: weightTracks,
+                // TODO: Implement day picker
+                daysToShow: 7,
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+            ],
 
             ///
             /// WEIGHTS
@@ -160,6 +181,16 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 },
               ),
             ],
+
+            ///
+            /// ADD WEIGHT
+            ///
+            InsightsAddWeight(
+              onPressed: () => insightsController.onAddWeightPressed(
+                context: context,
+                initialWeight: lastWeightTrack?.weight ?? 75.0,
+              ),
+            ),
 
             ///
             /// BOTTOM SPACING

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/durations.dart';
 import '../../../main.dart';
-import '../../../util/day.dart';
+import '../../../util/date_time.dart';
 
 class InsightsAddWeightSheet extends StatefulWidget {
   final DateTime currentDateTime;
@@ -90,8 +90,8 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             'Unesi masu',
             style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
               color: BokunSpizeColors.neutralDark,
             ),
@@ -108,13 +108,13 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             ),
             style: const TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
               color: BokunSpizeColors.neutralDark,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 20),
 
           ///
           /// WEIGHT
@@ -129,7 +129,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                   text: ' kg',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
-                    fontSize: 28,
+                    fontSize: 22,
                     fontWeight: FontWeight.w700,
                     color: BokunSpizeColors.neutralDark,
                   ),
@@ -138,13 +138,13 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             ),
             style: const TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 72,
+              fontSize: 56,
               fontWeight: FontWeight.w900,
               color: BokunSpizeColors.neutralDark,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
 
           ///
           /// WEIGHT PICKER
@@ -206,7 +206,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                 shape: const StadiumBorder(),
                 textStyle: const TextStyle(
                   fontFamily: 'Epilogue',
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),
                 padding: const EdgeInsets.all(20),

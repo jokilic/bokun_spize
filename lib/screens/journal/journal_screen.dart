@@ -8,7 +8,7 @@ import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
-import '../../util/day.dart';
+import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/bokun_spize_navigation_bar.dart';
 import 'journal_controller.dart';
