@@ -5,6 +5,7 @@ import '../../../constants/durations.dart';
 import '../../../main.dart';
 import '../../../util/date_time.dart';
 import '../../../widgets/calendar_sheet.dart';
+import '../../../widgets/time_sheet.dart';
 
 class InsightsAddWeightSheet extends StatefulWidget {
   final double initialWeight;
@@ -100,6 +101,28 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
     ),
   );
 
+  /// Opens [Timeheet] and updates the selected `date`
+  Future<void> updateTimeViaPicker(BuildContext context) async => showModalBottomSheet(
+    context: context,
+    backgroundColor: BokunSpizeColors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(listTileRadius),
+    ),
+    builder: (context) => TimeSheet(
+      dateValue: selectedDateTime,
+      onDateChanged: (newDate) => setState(
+        () => selectedDateTime = DateTime(
+          selectedDateTime.year,
+          selectedDateTime.month,
+          selectedDateTime.day,
+          newDate.hour,
+          newDate.minute,
+        ),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final date = getDateString(
@@ -126,7 +149,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             /// TITLE
             ///
             const Text(
-              'Unesi masu',
+              'Unesi težinu',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 24,
@@ -269,12 +292,12 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                 /// TIME
                 ///
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => updateTimeViaPicker(context),
                   icon: const Icon(
                     Icons.timer_rounded,
                     size: 18,
                   ),
-                  label: const Text('HH:mm'),
+                  label: Text(time),
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     textStyle: const TextStyle(
@@ -318,7 +341,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                   disabledBackgroundColor: BokunSpizeColors.neutralLight,
                   disabledForegroundColor: BokunSpizeColors.neutralDark,
                 ),
-                child: const Text('Spremi masu'),
+                child: const Text('Spremi'),
               ),
             ),
 

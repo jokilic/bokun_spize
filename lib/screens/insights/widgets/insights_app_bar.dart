@@ -177,52 +177,50 @@ class FadingFlexibleTitle extends StatelessWidget {
             /// CHANGE WITHIN LAST X DAYS
             ///
             if (weightChange != null)
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Icon(
-                          Icons.auto_graph_rounded,
-                          size: 18,
-                          color: BokunSpizeColors.primary,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}kg',
-                          style: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
-                            color: BokunSpizeColors.primary,
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    if (weightChangeWithinDays != null)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.auto_graph_rounded,
+                        size: 18,
+                        color: BokunSpizeColors.primary,
+                      ),
+                      const SizedBox(width: 2),
                       Text(
-                        switch (weightChangeWithinDays) {
-                          0 => 'danas',
-                          1 => 'zadnji dan',
-                          final int days => 'zadnjih $days dana',
-                          null => '-',
-                        },
+                        '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}kg',
                         style: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
-                          fontSize: 8,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.2,
-                          color: BokunSpizeColors.neutralDark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          color: BokunSpizeColors.primary,
                         ),
                         textAlign: TextAlign.right,
                       ),
-                  ],
-                ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  if (weightChangeWithinDays != null)
+                    Text(
+                      switch (weightChangeWithinDays) {
+                        0 => 'danas',
+                        1 => 'zadnji dan',
+                        final int days => 'zadnjih $days dana',
+                        null => '-',
+                      },
+                      style: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 8,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.2,
+                        color: BokunSpizeColors.neutralDark,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                ],
               ),
           ],
         ),

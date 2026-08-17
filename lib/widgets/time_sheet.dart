@@ -5,7 +5,7 @@ import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 import '../constants/colors.dart';
 import '../main.dart';
 
-class TimeSheet extends StatelessWidget {
+class TimeSheet extends StatefulWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
 
@@ -13,6 +13,13 @@ class TimeSheet extends StatelessWidget {
     required this.dateValue,
     required this.onDateChanged,
   });
+
+  @override
+  State<TimeSheet> createState() => _TimeSheetState();
+}
+
+class _TimeSheetState extends State<TimeSheet> {
+  late var selectedDateTime = widget.dateValue;
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -46,32 +53,28 @@ class TimeSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(
-                color: BokunSpizeColors.neutralDark,
-                width: 1.5,
-              ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: ScrollDateTimePicker(
-              onChange: onDateChanged,
+              onChange: (newDateTime) => selectedDateTime = newDateTime,
               itemExtent: 64,
               style: DateTimePickerStyle(
                 activeStyle: const TextStyle(
                   fontFamily: 'Epilogue',
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.neutralDark,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: BokunSpizeColors.primary,
                 ),
                 inactiveStyle: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 22,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: BokunSpizeColors.neutralDark.withValues(alpha: 0.45),
                 ),
                 disabledStyle: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 22,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: BokunSpizeColors.neutralDark.withValues(alpha: 0.2),
                 ),
               ),
@@ -83,24 +86,50 @@ class TimeSheet extends StatelessWidget {
                   'HH:mm',
                   Localizations.localeOf(context).languageCode,
                 ),
-                minDate: DateTime(2010),
-                maxDate: DateTime(2040, 12, 31, 23, 59),
-                initialDate: dateValue,
+                minDate: DateTime(2020),
+                maxDate: DateTime(2050),
+                initialDate: selectedDateTime,
               ),
               centerWidget: DateTimePickerCenterWidget(
                 builder: (context, constraints, child) => Container(
-                  decoration: const ShapeDecoration(
-                    color: BokunSpizeColors.neutralLight,
-                    shape: StadiumBorder(
-                      side: BorderSide(
-                        color: BokunSpizeColors.neutralDark,
-                        width: 1.5,
-                      ),
+                  decoration: ShapeDecoration(
+                    color: BokunSpizeColors.primary.withValues(alpha: 0.25),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   child: child,
                 ),
               ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          ///
+          /// SAVE BUTTON
+          ///
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                widget.onDateChanged(selectedDateTime);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                shape: const StadiumBorder(),
+                textStyle: const TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+                padding: const EdgeInsets.all(20),
+                backgroundColor: BokunSpizeColors.primary,
+                foregroundColor: BokunSpizeColors.white,
+                disabledBackgroundColor: BokunSpizeColors.neutralLight,
+                disabledForegroundColor: BokunSpizeColors.neutralDark,
+              ),
+              child: const Text('Spremi'),
             ),
           ),
 

@@ -8,19 +8,28 @@ import '../../../main.dart';
 import '../../../models/weight_track/weight_track.dart';
 import '../../../util/weight_track.dart';
 
-class InsightsGraph extends StatelessWidget {
+class InsightsGraph extends StatefulWidget {
   final List<WeightTrack> weightTracks;
-  final int daysToShow;
 
   const InsightsGraph({
     required this.weightTracks,
-    required this.daysToShow,
   });
+
+  @override
+  State<InsightsGraph> createState() => _InsightsGraphState();
+}
+
+class _InsightsGraphState extends State<InsightsGraph> {
+  var daysToShow = 7;
+
+  void updateDaysToShow(int newDaysToShow) => setState(
+    () => daysToShow = newDaysToShow,
+  );
 
   @override
   Widget build(BuildContext context) {
     final visibleWeightTracks = getWeightTracksForGraph(
-      weightTracks: weightTracks,
+      weightTracks: widget.weightTracks,
       daysToShow: daysToShow,
     );
 
@@ -39,7 +48,7 @@ class InsightsGraph extends StatelessWidget {
               child: visibleWeightTracks.isEmpty
                   ? Center(
                       child: Text(
-                        'Unesi masu za prikaz grafa',
+                        'Unesi težinu za prikaz grafa',
                         style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 14,

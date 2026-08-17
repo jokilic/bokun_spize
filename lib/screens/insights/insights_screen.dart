@@ -120,7 +120,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
                       date: lastWeightTrack.dateTime,
                       dateFormat: 'EEEE, dd.MM.yyyy.',
                     )
-                  : 'Dodaj masu',
+                  : 'Unesi težinu',
               currentWeight: lastWeightTrack?.weight,
               weightChange: weightChange,
               weightChangeWithinDays: weightChangeWithinDays,
@@ -157,8 +157,6 @@ class _InsightsScreenState extends State<InsightsScreen> {
               ///
               InsightsGraph(
                 weightTracks: weightTracks,
-                // TODO: Implement day picker
-                daysToShow: 7,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 20),
@@ -179,7 +177,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Prošli upisi',
+                    'Nedavni upisi',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
