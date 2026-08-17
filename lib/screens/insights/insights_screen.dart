@@ -74,29 +74,33 @@ class _InsightsScreenState extends State<InsightsScreen> {
 
     return Scaffold(
       bottomNavigationBar: BokunSpizeNavigationBar(),
-      floatingActionButton: FloatingActionButton(
-        heroTag: const ValueKey('insights-fab'),
-        elevation: 0,
-        backgroundColor: BokunSpizeColors.primary,
-        foregroundColor: BokunSpizeColors.white,
-        splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        shape: const CircleBorder(),
-        onPressed: () {
-          unawaited(
-            HapticFeedback.lightImpact(),
-          );
-          unawaited(
-            insightsController.onAddWeightPressed(
-              context: context,
-              initialWeight: lastWeightTrack?.weight ?? 75.0,
-            ),
-          );
-        },
-        child: const Icon(
-          Icons.add_rounded,
-          size: 40,
+      floatingActionButton: SizedBox(
+        height: 64,
+        width: 64,
+        child: FloatingActionButton(
+          heroTag: const ValueKey('insights-fab'),
+          elevation: 0,
+          backgroundColor: BokunSpizeColors.primary,
+          foregroundColor: BokunSpizeColors.white,
+          splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          shape: const CircleBorder(),
+          onPressed: () {
+            unawaited(
+              HapticFeedback.lightImpact(),
+            );
+            unawaited(
+              insightsController.onAddWeightPressed(
+                context: context,
+                initialWeight: lastWeightTrack?.weight ?? 75.0,
+              ),
+            );
+          },
+          child: const Icon(
+            Icons.add_rounded,
+            size: 40,
+          ),
         ),
       ),
       body: SafeArea(
@@ -126,6 +130,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
             /// GRAPH
             ///
             if (weightTracks.isNotEmpty) ...[
+              ///
+              /// TITLE
+              ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -144,6 +151,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
                   ),
                 ),
               ),
+
+              ///
+              /// GRAPH
+              ///
               InsightsGraph(
                 weightTracks: weightTracks,
                 // TODO: Implement day picker
@@ -158,6 +169,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
             /// WEIGHTS
             ///
             if (weightTracks.isNotEmpty) ...[
+              ///
+              /// TITLE
+              ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -177,6 +191,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 ),
               ),
 
+              ///
+              /// LIST
+              ///
               SliverList.builder(
                 itemCount: weightTracks.length,
                 itemBuilder: (context, index) {
