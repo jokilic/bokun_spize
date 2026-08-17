@@ -45,6 +45,7 @@ dependencies:
   google_sign_in: 7.2.0
   image_picker: 1.2.3
   intl: 0.20.3
+  phosphor_icons: 3.0.1
   scroll_datetime_picker: 0.2.2
   sign_in_with_apple: 8.1.0
   speech_to_text: 7.4.0

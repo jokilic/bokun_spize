@@ -90,11 +90,13 @@ class JournalAppBar extends StatelessWidget {
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: 16),
-      title: FadingFlexibleTitle(
-        dayString: dayString,
-        currentCalories: currentCalories,
-        dailyCalories: dailyCalories,
-      ),
+      title: currentCalories > 0
+          ? FadingFlexibleTitle(
+              dayString: dayString,
+              currentCalories: currentCalories,
+              dailyCalories: dailyCalories,
+            )
+          : null,
     ),
   );
 }

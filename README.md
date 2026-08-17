@@ -2,6 +2,7 @@
 
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
+- [ ] Replace all `Icon()`
 - [ ] Check latest AI models
 
 # Bokun spize 🥗

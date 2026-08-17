@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
+import '../../constants/colors.dart';
 import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
@@ -12,7 +14,6 @@ import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'journal_controller.dart';
-import 'widgets/journal_add_meal.dart';
 import 'widgets/journal_app_bar.dart';
 import 'widgets/journal_list_tile/journal_list_tile.dart';
 
@@ -75,6 +76,32 @@ class _JournalScreenState extends State<JournalScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
+      floatingActionButton: SizedBox(
+        height: 68,
+        width: 68,
+        child: FloatingActionButton(
+          heroTag: const ValueKey('insights-fab'),
+          elevation: 0,
+          backgroundColor: BokunSpizeColors.primary,
+          foregroundColor: BokunSpizeColors.white,
+          splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          shape: const CircleBorder(),
+          onPressed: () {
+            unawaited(
+              HapticFeedback.lightImpact(),
+            );
+            unawaited(
+              journalController.onMealPressed(context),
+            );
+          },
+          child: const Icon(
+            Icons.add_rounded,
+            size: 40,
+          ),
+        ),
+      ),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -134,11 +161,50 @@ class _JournalScreenState extends State<JournalScreen> {
               ),
 
             ///
-            /// ADD MEAL
+            /// NO MEALS
             ///
-            JournalAddMeal(
-              onPressed: () => journalController.onMealPressed(context),
-            ),
+            if (meals.isEmpty)
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      PhosphorIcon(
+                        PhosphorIconsBold.notebook,
+                        color: BokunSpizeColors.primary,
+                        size: 96,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Dnevnik obroka',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Trenutno nema upisa',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             ///
             /// BOTTOM SPACING

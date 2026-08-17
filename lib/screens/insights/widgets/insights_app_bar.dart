@@ -67,12 +67,14 @@ class InsightsAppBar extends StatelessWidget {
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: 16),
-      title: FadingFlexibleTitle(
-        timeString: timeString,
-        currentWeight: currentWeight,
-        weightChange: weightChange,
-        weightChangeWithinDays: weightChangeWithinDays,
-      ),
+      title: currentWeight != null
+          ? FadingFlexibleTitle(
+              timeString: timeString,
+              currentWeight: currentWeight,
+              weightChange: weightChange,
+              weightChangeWithinDays: weightChangeWithinDays,
+            )
+          : null,
     ),
   );
 }

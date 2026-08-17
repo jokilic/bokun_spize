@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../constants/colors.dart';
@@ -34,18 +35,18 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.book_rounded,
-                  size: 24,
+                const PhosphorIcon(
+                  PhosphorIconsBold.notebook,
                   color: BokunSpizeColors.neutralDark,
+                  size: 24,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'Journal'.toUpperCase(),
                   style: const TextStyle(
-                    fontFamily: 'PlusJakartaSans',
+                    fontFamily: 'Epilogue',
                     fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: BokunSpizeColors.neutralDark,
                   ),
                 ),
@@ -57,10 +58,10 @@ class NavigationBarWidget extends WatchingWidget {
                 color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.book_rounded,
-                size: 24,
+              child: const PhosphorIcon(
+                PhosphorIconsBold.notebook,
                 color: BokunSpizeColors.white,
+                size: 24,
               ),
             ),
             label: '',
@@ -73,18 +74,18 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.grade_rounded,
-                  size: 24,
+                const PhosphorIcon(
+                  PhosphorIconsBold.chartLine,
                   color: BokunSpizeColors.neutralDark,
+                  size: 24,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'Insights'.toUpperCase(),
                   style: const TextStyle(
-                    fontFamily: 'PlusJakartaSans',
+                    fontFamily: 'Epilogue',
                     fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: BokunSpizeColors.neutralDark,
                   ),
                 ),
@@ -96,10 +97,10 @@ class NavigationBarWidget extends WatchingWidget {
                 color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.grade_rounded,
-                size: 24,
+              child: const PhosphorIcon(
+                PhosphorIconsBold.chartLine,
                 color: BokunSpizeColors.white,
+                size: 24,
               ),
             ),
             label: '',
@@ -112,18 +113,18 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.search_rounded,
-                  size: 24,
+                const PhosphorIcon(
+                  PhosphorIconsBold.magnifyingGlass,
                   color: BokunSpizeColors.neutralDark,
+                  size: 24,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'Search'.toUpperCase(),
                   style: const TextStyle(
-                    fontFamily: 'PlusJakartaSans',
+                    fontFamily: 'Epilogue',
                     fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: BokunSpizeColors.neutralDark,
                   ),
                 ),
@@ -135,10 +136,10 @@ class NavigationBarWidget extends WatchingWidget {
                 color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.search_rounded,
-                size: 24,
+              child: const PhosphorIcon(
+                PhosphorIconsBold.magnifyingGlass,
                 color: BokunSpizeColors.white,
+                size: 24,
               ),
             ),
             label: '',
@@ -151,18 +152,18 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.account_circle_rounded,
-                  size: 24,
+                const PhosphorIcon(
+                  PhosphorIconsBold.user,
                   color: BokunSpizeColors.neutralDark,
+                  size: 24,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'Account'.toUpperCase(),
                   style: const TextStyle(
-                    fontFamily: 'PlusJakartaSans',
+                    fontFamily: 'Epilogue',
                     fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: BokunSpizeColors.neutralDark,
                   ),
                 ),
@@ -174,10 +175,10 @@ class NavigationBarWidget extends WatchingWidget {
                 color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.account_circle_rounded,
-                size: 24,
+              child: const PhosphorIcon(
+                PhosphorIconsBold.user,
                 color: BokunSpizeColors.white,
+                size: 24,
               ),
             ),
             label: '',

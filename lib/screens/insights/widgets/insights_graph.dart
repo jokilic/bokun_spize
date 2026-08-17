@@ -8,29 +8,20 @@ import '../../../main.dart';
 import '../../../models/weight_track/weight_track.dart';
 import '../../../util/weight_track.dart';
 
-class InsightsGraph extends StatefulWidget {
+class InsightsGraph extends StatelessWidget {
   final List<WeightTrack> weightTracks;
+  final int weightChangeWithinDays;
 
   const InsightsGraph({
     required this.weightTracks,
+    required this.weightChangeWithinDays,
   });
-
-  @override
-  State<InsightsGraph> createState() => _InsightsGraphState();
-}
-
-class _InsightsGraphState extends State<InsightsGraph> {
-  var daysToShow = 7;
-
-  void updateDaysToShow(int newDaysToShow) => setState(
-    () => daysToShow = newDaysToShow,
-  );
 
   @override
   Widget build(BuildContext context) {
     final visibleWeightTracks = getWeightTracksForGraph(
-      weightTracks: widget.weightTracks,
-      daysToShow: daysToShow,
+      weightTracks: weightTracks,
+      weightChangeWithinDays: weightChangeWithinDays,
     );
 
     return SliverPadding(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
@@ -67,7 +68,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
       lastWeight: lastWeightTrack?.weight,
     );
 
-    /// Calculate the calendar-day span covered by `weightChange`
+    /// Calculate `weightChangeWithinDays`
     final weightChangeWithinDays = getWeightChangeWithinDays(
       weightTracks: weightTracks,
     );
@@ -126,22 +127,23 @@ class _InsightsScreenState extends State<InsightsScreen> {
               weightChangeWithinDays: weightChangeWithinDays,
             ),
 
-            ///
-            /// GRAPH
-            ///
-            if (weightTracks.isNotEmpty) ...[
+            if (weightTracks.length >= 2 && weightChangeWithinDays != null) ...[
               ///
-              /// TITLE
+              /// GRAPH TITLE
               ///
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Napredak u 7 dana',
-                    style: TextStyle(
+                    switch (weightChangeWithinDays) {
+                      0 => 'Napredak danas',
+                      1 => 'Napredak od jučer',
+                      final int days => 'Napredak u $days dana',
+                    },
+                    style: const TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
@@ -157,6 +159,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
               ///
               InsightsGraph(
                 weightTracks: weightTracks,
+                weightChangeWithinDays: weightChangeWithinDays,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 20),
@@ -164,12 +167,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ],
 
             ///
-            /// WEIGHTS
+            /// WEIGHTS TITLE
             ///
             if (weightTracks.isNotEmpty) ...[
-              ///
-              /// TITLE
-              ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -190,7 +190,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
               ),
 
               ///
-              /// LIST
+              /// WEIGHTS LIST
               ///
               SliverList.builder(
                 itemCount: weightTracks.length,
@@ -220,6 +220,52 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 },
               ),
             ],
+
+            ///
+            /// NO WEIGHT
+            ///
+            if (weightTracks.isEmpty)
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      PhosphorIcon(
+                        PhosphorIconsBold.chartLine,
+                        color: BokunSpizeColors.primary,
+                        size: 96,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Dnevnik težine',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Trenutno nema upisa',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.neutralDark,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             ///
             /// BOTTOM SPACING
