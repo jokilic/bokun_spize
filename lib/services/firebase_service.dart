@@ -78,7 +78,7 @@ class FirebaseService {
   ///
 
   /// Logs user out of [Firebase]
-  void logOut() => auth.signOut();
+  Future<void> logOut() async => auth.signOut();
 
   /// Logs user into [Firebase]
   Future<({User? user, String? error})> loginUser({

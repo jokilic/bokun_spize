@@ -80,7 +80,7 @@ class _JournalScreenState extends State<JournalScreen> {
         height: 68,
         width: 68,
         child: FloatingActionButton(
-          heroTag: const ValueKey('insights-fab'),
+          heroTag: const ValueKey('journal-fab'),
           elevation: 0,
           backgroundColor: BokunSpizeColors.primary,
           foregroundColor: BokunSpizeColors.white,
