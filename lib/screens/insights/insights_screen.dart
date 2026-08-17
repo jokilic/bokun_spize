@@ -12,7 +12,6 @@ import '../../util/dependencies.dart';
 import '../../util/weight_track.dart';
 import '../../widgets/bokun_spize_navigation_bar.dart';
 import 'insights_controller.dart';
-import 'widgets/insights_add_weight.dart';
 import 'widgets/insights_app_bar.dart';
 import 'widgets/insights_graph.dart';
 import 'widgets/insights_list_tile.dart';
@@ -75,6 +74,31 @@ class _InsightsScreenState extends State<InsightsScreen> {
 
     return Scaffold(
       bottomNavigationBar: BokunSpizeNavigationBar(),
+      floatingActionButton: FloatingActionButton(
+        heroTag: const ValueKey('insights-fab'),
+        elevation: 0,
+        backgroundColor: BokunSpizeColors.primary,
+        foregroundColor: BokunSpizeColors.white,
+        splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+        hoverColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        shape: const CircleBorder(),
+        onPressed: () {
+          unawaited(
+            HapticFeedback.lightImpact(),
+          );
+          unawaited(
+            insightsController.onAddWeightPressed(
+              context: context,
+              initialWeight: lastWeightTrack?.weight ?? 75.0,
+            ),
+          );
+        },
+        child: const Icon(
+          Icons.add_rounded,
+          size: 40,
+        ),
+      ),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -181,16 +205,6 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 },
               ),
             ],
-
-            ///
-            /// ADD WEIGHT
-            ///
-            InsightsAddWeight(
-              onPressed: () => insightsController.onAddWeightPressed(
-                context: context,
-                initialWeight: lastWeightTrack?.weight ?? 75.0,
-              ),
-            ),
 
             ///
             /// BOTTOM SPACING
