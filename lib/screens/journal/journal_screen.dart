@@ -10,7 +10,7 @@ import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
-import '../../widgets/bokun_spize_navigation_bar.dart';
+import '../../widgets/navigation_bar_widget.dart';
 import 'journal_controller.dart';
 import 'widgets/journal_add_meal.dart';
 import 'widgets/journal_app_bar.dart';
@@ -74,7 +74,7 @@ class _JournalScreenState extends State<JournalScreen> {
     );
 
     return Scaffold(
-      bottomNavigationBar: BokunSpizeNavigationBar(),
+      bottomNavigationBar: NavigationBarWidget(),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(

@@ -10,7 +10,7 @@ import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/weight_track.dart';
-import '../../widgets/bokun_spize_navigation_bar.dart';
+import '../../widgets/navigation_bar_widget.dart';
 import 'insights_controller.dart';
 import 'widgets/insights_app_bar.dart';
 import 'widgets/insights_graph.dart';
@@ -73,10 +73,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
     );
 
     return Scaffold(
-      bottomNavigationBar: BokunSpizeNavigationBar(),
+      bottomNavigationBar: NavigationBarWidget(),
       floatingActionButton: SizedBox(
-        height: 64,
-        width: 64,
+        height: 68,
+        width: 68,
         child: FloatingActionButton(
           heroTag: const ValueKey('insights-fab'),
           elevation: 0,

@@ -2,14 +2,14 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../constants/colors.dart';
 import '../../../main.dart';
+import '../constants/colors.dart';
 
-class JournalCalendarSheet extends StatelessWidget {
+class CalendarSheet extends StatelessWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
 
-  const JournalCalendarSheet({
+  const CalendarSheet({
     required this.dateValue,
     required this.onDateChanged,
   });

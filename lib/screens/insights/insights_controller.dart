@@ -65,8 +65,6 @@ class InsightsController {
     required BuildContext context,
     required double initialWeight,
   }) async {
-    final now = DateTime.now();
-
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -76,15 +74,14 @@ class InsightsController {
         borderRadius: BorderRadius.circular(listTileRadius),
       ),
       builder: (context) => InsightsAddWeightSheet(
-        currentDateTime: now,
         initialWeight: initialWeight,
-        onSavePressed: (newWeight) async {
+        onSavePressed: ({required newWeight, required dateTime}) {
           unawaited(
             HapticFeedback.lightImpact(),
           );
           unawaited(
             addWeightTrack(
-              dateTime: now,
+              dateTime: dateTime,
               weight: newWeight,
             ),
           );

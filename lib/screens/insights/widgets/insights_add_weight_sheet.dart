@@ -4,14 +4,17 @@ import '../../../constants/colors.dart';
 import '../../../constants/durations.dart';
 import '../../../main.dart';
 import '../../../util/date_time.dart';
+import '../../../widgets/calendar_sheet.dart';
 
 class InsightsAddWeightSheet extends StatefulWidget {
-  final DateTime currentDateTime;
   final double initialWeight;
-  final Function(double newWeight) onSavePressed;
+  final Function({
+    required double newWeight,
+    required DateTime dateTime,
+  })
+  onSavePressed;
 
   const InsightsAddWeightSheet({
-    required this.currentDateTime,
     required this.initialWeight,
     required this.onSavePressed,
   });
@@ -25,6 +28,8 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
   static const maximumWeight = 200.0;
   static const weightStep = 0.1;
   static const rulerItemExtent = 16.0;
+
+  var selectedDateTime = DateTime.now();
 
   late final ScrollController rulerController;
   late var selectedWeight = widget.initialWeight;
@@ -73,162 +78,261 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
     );
   }
 
+  /// Opens [CalendarSheet] and updates the selected `date`
+  Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
+    context: context,
+    backgroundColor: BokunSpizeColors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(listTileRadius),
+    ),
+    builder: (context) => CalendarSheet(
+      dateValue: selectedDateTime,
+      onDateChanged: (newDate) => setState(
+        () => selectedDateTime = DateTime(
+          newDate.year,
+          newDate.month,
+          newDate.day,
+          selectedDateTime.hour,
+          selectedDateTime.minute,
+        ),
+      ),
+    ),
+  );
+
   @override
-  Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(listTileRadius),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 40),
+  Widget build(BuildContext context) {
+    final date = getDateString(
+      date: selectedDateTime,
+      dateFormat: 'dd.MM.yyyy.',
+    );
 
-          ///
-          /// TITLE
-          ///
-          const Text(
-            'Unesi masu',
-            style: TextStyle(
-              fontFamily: 'Epilogue',
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.6,
-              color: BokunSpizeColors.neutralDark,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 2),
+    final time = getDateString(
+      date: selectedDateTime,
+      dateFormat: 'HH:mm',
+      useTodayYesterdayTomorrow: false,
+    );
 
-          ///
-          /// DATE
-          ///
-          Text(
-            formattedInsightsAddWeightDateTime(
-              currentDateTime: widget.currentDateTime,
-            ),
-            style: const TextStyle(
-              fontFamily: 'Epilogue',
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: BokunSpizeColors.neutralDark,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(listTileRadius),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 40),
 
-          ///
-          /// WEIGHT
-          ///
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: selectedWeight.toStringAsFixed(1),
-                ),
-                const TextSpan(
-                  text: ' kg',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: BokunSpizeColors.neutralDark,
-                  ),
-                ),
-              ],
+            ///
+            /// TITLE
+            ///
+            const Text(
+              'Unesi masu',
+              style: TextStyle(
+                fontFamily: 'Epilogue',
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.6,
+                color: BokunSpizeColors.neutralDark,
+              ),
+              textAlign: TextAlign.center,
             ),
-            style: const TextStyle(
-              fontFamily: 'Epilogue',
-              fontSize: 56,
-              fontWeight: FontWeight.w900,
-              color: BokunSpizeColors.neutralDark,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
+            const SizedBox(height: 2),
 
-          ///
-          /// WEIGHT PICKER
-          ///
-          SizedBox(
-            height: 120,
-            child: LayoutBuilder(
-              builder: (context, constraints) => Stack(
-                alignment: Alignment.center,
+            ///
+            /// DATE
+            ///
+            Text(
+              '$date, $time',
+              style: const TextStyle(
+                fontFamily: 'Epilogue',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: BokunSpizeColors.neutralDark,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+
+            ///
+            /// WEIGHT
+            ///
+            Text.rich(
+              TextSpan(
                 children: [
-                  NotificationListener<ScrollNotification>(
-                    onNotification: (notification) {
-                      if (notification is ScrollUpdateNotification) {
-                        updateSelectedWeight();
-                      }
-                      if (notification is ScrollEndNotification) {
-                        settleRuler();
-                      }
-                      return false;
-                    },
-                    child: ListView.builder(
-                      controller: rulerController,
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: (constraints.maxWidth - rulerItemExtent) / 2,
-                      ),
-                      itemExtent: rulerItemExtent,
-                      itemCount: rulerItemCount,
-                      itemBuilder: (context, index) => buildRulerMark(index),
-                    ),
+                  TextSpan(
+                    text: selectedWeight.toStringAsFixed(1),
                   ),
-
-                  IgnorePointer(
-                    child: Container(
-                      width: 6,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        color: BokunSpizeColors.primary,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
+                  const TextSpan(
+                    text: ' kg',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: BokunSpizeColors.neutralDark,
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-          const SizedBox(height: 56),
-
-          ///
-          /// SAVE BUTTON
-          ///
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => widget.onSavePressed(selectedWeight),
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                shape: const StadiumBorder(),
-                textStyle: const TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-                padding: const EdgeInsets.all(20),
-                backgroundColor: BokunSpizeColors.primary,
-                foregroundColor: BokunSpizeColors.white,
-                disabledBackgroundColor: BokunSpizeColors.neutralLight,
-                disabledForegroundColor: BokunSpizeColors.neutralDark,
+              style: const TextStyle(
+                fontFamily: 'Epilogue',
+                fontSize: 56,
+                fontWeight: FontWeight.w900,
+                color: BokunSpizeColors.neutralDark,
               ),
-              child: const Text('Spremi masu'),
+              textAlign: TextAlign.center,
             ),
-          ),
+            const SizedBox(height: 8),
 
-          ///
-          /// BOTTOM SPACING
-          ///
-          SizedBox(
-            height: MediaQuery.paddingOf(context).bottom + 16,
-          ),
-        ],
+            ///
+            /// WEIGHT PICKER
+            ///
+            SizedBox(
+              height: 120,
+              child: LayoutBuilder(
+                builder: (context, constraints) => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification is ScrollUpdateNotification) {
+                          updateSelectedWeight();
+                        }
+                        if (notification is ScrollEndNotification) {
+                          settleRuler();
+                        }
+                        return false;
+                      },
+                      child: ListView.builder(
+                        controller: rulerController,
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: (constraints.maxWidth - rulerItemExtent) / 2,
+                        ),
+                        itemExtent: rulerItemExtent,
+                        itemCount: rulerItemCount,
+                        itemBuilder: (context, index) => buildRulerMark(index),
+                      ),
+                    ),
+
+                    IgnorePointer(
+                      child: Container(
+                        width: 6,
+                        height: 96,
+                        decoration: BoxDecoration(
+                          color: BokunSpizeColors.primary,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            ///
+            /// DATE & TIME
+            ///
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ///
+                /// DATE
+                ///
+                ElevatedButton.icon(
+                  onPressed: () => updateDateViaPicker(context),
+                  icon: const Icon(
+                    Icons.calendar_today_rounded,
+                    size: 18,
+                  ),
+                  label: Text(date),
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: BokunSpizeColors.neutralLight,
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    backgroundColor: BokunSpizeColors.neutralLight,
+                    foregroundColor: BokunSpizeColors.neutralDark.withValues(
+                      alpha: 0.8,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 16),
+
+                ///
+                /// TIME
+                ///
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.timer_rounded,
+                    size: 18,
+                  ),
+                  label: const Text('HH:mm'),
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: BokunSpizeColors.neutralLight,
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    backgroundColor: BokunSpizeColors.neutralLight,
+                    foregroundColor: BokunSpizeColors.neutralDark.withValues(
+                      alpha: 0.8,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 28),
+
+            ///
+            /// SAVE BUTTON
+            ///
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => widget.onSavePressed(
+                  newWeight: selectedWeight,
+                  dateTime: selectedDateTime,
+                ),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  shape: const StadiumBorder(),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  backgroundColor: BokunSpizeColors.primary,
+                  foregroundColor: BokunSpizeColors.white,
+                  disabledBackgroundColor: BokunSpizeColors.neutralLight,
+                  disabledForegroundColor: BokunSpizeColors.neutralDark,
+                ),
+                child: const Text('Spremi masu'),
+              ),
+            ),
+
+            ///
+            /// BOTTOM SPACING
+            ///
+            SizedBox(
+              height: MediaQuery.paddingOf(context).bottom + 16,
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget buildRulerMark(int index) {
     final isWholeKilogram = index % 10 == 0;

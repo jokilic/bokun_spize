@@ -11,7 +11,7 @@ import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/typedefs.dart';
-import 'widgets/journal_calendar_sheet.dart';
+import '../../widgets/calendar_sheet.dart';
 
 class JournalController extends ValueNotifier<DateTime> {
   ///
@@ -67,7 +67,7 @@ class JournalController extends ValueNotifier<DateTime> {
     // TODO: Show snackbar if it fails
   }
 
-  /// Opens [JournalCalendarSheet] and updates the selected `date`
+  /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
     backgroundColor: BokunSpizeColors.white,
@@ -75,7 +75,7 @@ class JournalController extends ValueNotifier<DateTime> {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(listTileRadius),
     ),
-    builder: (context) => JournalCalendarSheet(
+    builder: (context) => CalendarSheet(
       dateValue: value,
       onDateChanged: (newDate) => value = newDate,
     ),

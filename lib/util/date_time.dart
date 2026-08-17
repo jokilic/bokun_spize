@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 String getDateString({
@@ -28,13 +27,4 @@ String getDateString({
   }
 
   return DateFormat(dateFormat, 'hr').format(date);
-}
-
-String formattedInsightsAddWeightDateTime({
-  required DateTime currentDateTime,
-}) {
-  final date = DateUtils.isSameDay(currentDateTime, DateTime.now()) ? 'Danas' : DateFormat('dd.MM.yyyy.', 'hr').format(currentDateTime);
-  final time = DateFormat('HH:mm').format(currentDateTime);
-
-  return '$date, $time';
 }

@@ -6,7 +6,7 @@ import '../constants/durations.dart';
 import '../services/screen_service.dart';
 import '../util/dependencies.dart';
 
-class BokunSpizeNavigationBar extends WatchingWidget {
+class NavigationBarWidget extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final screen = getIt.get<ScreenService>();
