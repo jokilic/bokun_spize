@@ -36,11 +36,11 @@ class _TimeSheetState extends State<TimeSheet> {
           /// TITLE
           ///
           const Text(
-            'Odaberi vrijeme',
+            'Select time',
             style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
               color: BokunSpizeColors.neutralDark,
             ),
@@ -123,13 +123,11 @@ class _TimeSheetState extends State<TimeSheet> {
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(22),
                 backgroundColor: BokunSpizeColors.primary,
                 foregroundColor: BokunSpizeColors.white,
-                disabledBackgroundColor: BokunSpizeColors.neutralLight,
-                disabledForegroundColor: BokunSpizeColors.neutralDark,
               ),
-              child: const Text('Spremi'),
+              child: const Text('Confirm'),
             ),
           ),
 

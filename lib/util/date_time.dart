@@ -14,17 +14,17 @@ String getDateString({
 
   if (useTodayYesterdayTomorrow) {
     if (dayDifference == 0) {
-      return 'Danas';
+      return 'Today';
     }
 
     if (dayDifference == -1) {
-      return 'Jučer';
+      return 'Yesterday';
     }
 
     if (dayDifference == 1) {
-      return 'Sutra';
+      return 'Tomorrow';
     }
   }
 
-  return DateFormat(dateFormat, 'hr').format(date);
+  return DateFormat(dateFormat, 'en').format(date);
 }

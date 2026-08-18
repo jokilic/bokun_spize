@@ -98,9 +98,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
               ),
             );
           },
-          child: const Icon(
-            Icons.add_rounded,
-            size: 40,
+          child: const PhosphorIcon(
+            PhosphorIconsBold.plus,
+            color: BokunSpizeColors.white,
+            size: 32,
           ),
         ),
       ),
@@ -139,9 +140,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     switch (weightChangeWithinDays) {
-                      0 => 'Napredak danas',
-                      1 => 'Napredak od jučer',
-                      final int days => 'Napredak u $days dana',
+                      0 => 'Progress today',
+                      1 => 'Progress from yesterday',
+                      final int days => 'Progress from $days days',
                     },
                     style: const TextStyle(
                       fontFamily: 'Epilogue',
@@ -177,7 +178,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Nedavni upisi',
+                    'Recent logs',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
@@ -240,10 +241,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Dnevnik težine',
+                        'Weight journal',
                         style: TextStyle(
                           fontFamily: 'Epilogue',
-                          fontSize: 32,
+                          fontSize: 28,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.6,
                           color: BokunSpizeColors.neutralDark,
@@ -252,11 +253,11 @@ class _InsightsScreenState extends State<InsightsScreen> {
                       ),
                       SizedBox(height: 2),
                       Text(
-                        'Trenutno nema upisa',
+                        'No logs at this time',
                         style: TextStyle(
                           fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                           letterSpacing: 0.6,
                           color: BokunSpizeColors.neutralDark,
                         ),

@@ -75,7 +75,7 @@ class BokunSpizeApp extends StatelessWidget {
       initialData: FirebaseAuth.instance.currentUser,
       builder: (_, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : BokunSpizeWidget(),
     ),
-    locale: const Locale('hr'),
+    locale: const Locale('en'),
     supportedLocales: const [
       Locale('hr'),
       Locale('en'),

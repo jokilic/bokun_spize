@@ -1,6 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../main.dart';
 import '../constants/colors.dart';
@@ -36,11 +37,11 @@ class _CalendarSheetState extends State<CalendarSheet> {
           /// TITLE
           ///
           const Text(
-            'Odaberi dan',
+            'Select date',
             style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
               color: BokunSpizeColors.neutralDark,
             ),
@@ -141,15 +142,15 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 );
               },
               firstDayOfWeek: DateTime.monday,
-              lastMonthIcon: const Icon(
-                Icons.chevron_left_rounded,
-                size: 28,
+              lastMonthIcon: const PhosphorIcon(
+                PhosphorIconsBold.caretLeft,
                 color: BokunSpizeColors.neutralDark,
+                size: 28,
               ),
-              nextMonthIcon: const Icon(
-                Icons.chevron_right_rounded,
-                size: 28,
+              nextMonthIcon: const PhosphorIcon(
+                PhosphorIconsBold.caretRight,
                 color: BokunSpizeColors.neutralDark,
+                size: 28,
               ),
             ),
           ),
@@ -173,13 +174,11 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(22),
                 backgroundColor: BokunSpizeColors.primary,
                 foregroundColor: BokunSpizeColors.white,
-                disabledBackgroundColor: BokunSpizeColors.neutralLight,
-                disabledForegroundColor: BokunSpizeColors.neutralDark,
               ),
-              child: const Text('Spremi'),
+              child: const Text('Confirm'),
             ),
           ),
 

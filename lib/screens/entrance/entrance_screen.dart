@@ -88,7 +88,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               ///
               SliverToBoxAdapter(
                 child: Image.network(
-                  'https://picsum.photos/400',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT25eEKqXY3z-LPhiaLBeZ222wKUARuyg_vkBmdKegriFUgGicOnoj-aM&s=10',
                   fit: BoxFit.cover,
                   height: 400,
                 ),
@@ -127,7 +127,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Start your health journey with us.',
+                    'Neki tekst ovdje, nemam pojma',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -153,7 +153,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
+                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
                     ),
                   ),
                 ),
@@ -196,7 +196,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
+                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
                     ),
                   ),
                 ),
@@ -249,7 +249,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: validated
+                      onPressed: validated && !emailIsLoading
                           ? () => handleLogin(
                               context: context,
                               onLoginPressed: entranceController.emailSignInPressed,
@@ -263,11 +263,11 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(22),
                         backgroundColor: BokunSpizeColors.primary,
                         foregroundColor: BokunSpizeColors.white,
-                        disabledBackgroundColor: BokunSpizeColors.neutralLight,
-                        disabledForegroundColor: BokunSpizeColors.neutralDark,
+                        disabledBackgroundColor: BokunSpizeColors.primary.withValues(alpha: 0.3),
+                        disabledForegroundColor: BokunSpizeColors.white,
                       ),
                       child: const Text('Sign in'),
                     ),
@@ -337,7 +337,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                               fontWeight: FontWeight.w800,
                               color: BokunSpizeColors.neutralLight,
                             ),
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(18),
                             backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                             foregroundColor: BokunSpizeColors.neutralDark,
                           ),
@@ -373,7 +373,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                               fontWeight: FontWeight.w800,
                               color: BokunSpizeColors.neutralLight,
                             ),
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(18),
                             backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                             foregroundColor: BokunSpizeColors.neutralDark,
                           ),

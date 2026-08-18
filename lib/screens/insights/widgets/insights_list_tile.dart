@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
 import '../../../main.dart';
@@ -51,10 +52,10 @@ class InsightsListTile extends StatelessWidget {
               },
               color: BokunSpizeColors.tertiary,
               backgroundRadius: listTileRadius,
-              icon: const Icon(
-                Icons.delete_rounded,
+              icon: const PhosphorIcon(
+                PhosphorIconsBold.trash,
                 color: BokunSpizeColors.white,
-                size: 28,
+                size: 26,
               ),
             ),
           ],
@@ -76,10 +77,10 @@ class InsightsListTile extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(12),
                       color: BokunSpizeColors.neutralLight,
-                      child: const Icon(
-                        Icons.monitor_weight_rounded,
-                        size: 24,
+                      child: const PhosphorIcon(
+                        PhosphorIconsBold.scales,
                         color: BokunSpizeColors.primary,
+                        size: 24,
                       ),
                     ),
                   ),
@@ -124,11 +125,11 @@ class InsightsListTile extends StatelessWidget {
                             dateFormat: 'HH:mm',
                             useTodayYesterdayTomorrow: false,
                           ),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: BokunSpizeColors.neutralDark,
+                            fontWeight: FontWeight.w500,
+                            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -180,14 +181,14 @@ class InsightsListTile extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(
+                            PhosphorIcon(
                               switch (weightChange!) {
-                                > 0 => Icons.arrow_upward_rounded,
-                                < 0 => Icons.arrow_downward_rounded,
-                                _ => Icons.remove_rounded,
+                                > 0 => PhosphorIconsBold.arrowUp,
+                                < 0 => PhosphorIconsBold.arrowDown,
+                                _ => PhosphorIconsBold.minus,
                               },
-                              size: 14,
                               color: changeColor,
+                              size: 14,
                             ),
                             const SizedBox(width: 2),
                             Text(

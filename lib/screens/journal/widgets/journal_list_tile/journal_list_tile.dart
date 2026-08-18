@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../constants/colors.dart';
 import '../../../../constants/durations.dart';
 import '../../../../main.dart';
 import '../../../../models/meal/meal.dart';
+import '../../../../util/date_time.dart';
 import '../../../../util/format.dart';
 import 'journal_list_tile_food.dart';
 import 'journal_list_tile_nutrition.dart';
@@ -85,10 +87,10 @@ class _JournalListTileState extends State<JournalListTile> {
               },
               color: BokunSpizeColors.tertiary,
               backgroundRadius: listTileRadius,
-              icon: const Icon(
-                Icons.delete_rounded,
+              icon: const PhosphorIcon(
+                PhosphorIconsBold.trash,
                 color: BokunSpizeColors.white,
-                size: 28,
+                size: 26,
               ),
             ),
           ],
@@ -100,10 +102,10 @@ class _JournalListTileState extends State<JournalListTile> {
               },
               color: BokunSpizeColors.alternative,
               backgroundRadius: listTileRadius,
-              icon: const Icon(
-                Icons.copy_rounded,
+              icon: const PhosphorIcon(
+                PhosphorIconsBold.copy,
                 color: BokunSpizeColors.white,
-                size: 28,
+                size: 26,
               ),
             ),
           ],
@@ -171,10 +173,10 @@ class _JournalListTileState extends State<JournalListTile> {
                                       width: 92,
                                       color: imageBackgroundColor,
                                       child: hasError
-                                          ? const Icon(
-                                              Icons.error_rounded,
-                                              size: 40,
+                                          ? const PhosphorIcon(
+                                              PhosphorIconsBold.warningOctagon,
                                               color: BokunSpizeColors.white,
+                                              size: 40,
                                             )
                                           : FittedBox(
                                               fit: BoxFit.scaleDown,
@@ -388,11 +390,10 @@ class _JournalListTileState extends State<JournalListTile> {
                                 Align(
                                   alignment: Alignment.topRight,
                                   child: Text(
-                                    DateFormat(
-                                      'HH:mm',
-                                      'hr',
-                                    ).format(
-                                      widget.meal.createdAt,
+                                    getDateString(
+                                      date: widget.meal.createdAt,
+                                      dateFormat: 'HH:mm',
+                                      useTodayYesterdayTomorrow: false,
                                     ),
                                     style: TextStyle(
                                       fontFamily: 'PlusJakartaSans',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/durations.dart';
@@ -151,7 +152,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             /// TITLE
             ///
             const Text(
-              'Unesi težinu',
+              'Log weight',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 24,
@@ -169,8 +170,8 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
             Text(
               '$date, $time',
               style: const TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 16,
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: BokunSpizeColors.neutralDark,
               ),
@@ -187,13 +188,13 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                   TextSpan(
                     text: selectedWeight.toStringAsFixed(1),
                   ),
-                  const TextSpan(
+                  TextSpan(
                     text: ' kg',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.neutralDark,
+                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -267,8 +268,9 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                 ///
                 ElevatedButton.icon(
                   onPressed: () => updateDateViaPicker(context),
-                  icon: const Icon(
-                    Icons.calendar_today_rounded,
+                  icon: const PhosphorIcon(
+                    PhosphorIconsBold.calendarDot,
+                    color: BokunSpizeColors.neutralDark,
                     size: 18,
                   ),
                   label: Text(date),
@@ -281,7 +283,10 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                       fontWeight: FontWeight.w600,
                       color: BokunSpizeColors.neutralLight,
                     ),
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     backgroundColor: BokunSpizeColors.neutralLight,
                     foregroundColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
                   ),
@@ -294,8 +299,9 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                 ///
                 ElevatedButton.icon(
                   onPressed: () => updateTimeViaPicker(context),
-                  icon: const Icon(
-                    Icons.timer_rounded,
+                  icon: const PhosphorIcon(
+                    PhosphorIconsBold.clock,
+                    color: BokunSpizeColors.neutralDark,
                     size: 18,
                   ),
                   label: Text(time),
@@ -308,7 +314,10 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                       fontWeight: FontWeight.w600,
                       color: BokunSpizeColors.neutralLight,
                     ),
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     backgroundColor: BokunSpizeColors.neutralLight,
                     foregroundColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
                   ),
@@ -335,13 +344,13 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(22),
                   backgroundColor: BokunSpizeColors.primary,
                   foregroundColor: BokunSpizeColors.white,
-                  disabledBackgroundColor: BokunSpizeColors.neutralLight,
-                  disabledForegroundColor: BokunSpizeColors.neutralDark,
+                  disabledBackgroundColor: BokunSpizeColors.primary.withValues(alpha: 0.3),
+                  disabledForegroundColor: BokunSpizeColors.white,
                 ),
-                child: const Text('Spremi'),
+                child: const Text('Save weight'),
               ),
             ),
 

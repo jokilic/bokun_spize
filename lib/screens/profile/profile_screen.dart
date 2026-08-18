@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../constants/colors.dart';
 import '../../services/firebase_service.dart';
@@ -33,9 +34,10 @@ class ProfileScreen extends StatelessWidget {
             getIt.get<FirebaseService>().logOut(),
           );
         },
-        child: const Icon(
-          Icons.logout_rounded,
-          size: 40,
+        child: const PhosphorIcon(
+          PhosphorIconsBold.signOut,
+          color: BokunSpizeColors.white,
+          size: 32,
         ),
       ),
     ),

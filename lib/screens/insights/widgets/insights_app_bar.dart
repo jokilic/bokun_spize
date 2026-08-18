@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
 
@@ -106,6 +107,14 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
 
+    final changeColor = weightChange != null
+        ? switch (weightChange!) {
+            > 0 => BokunSpizeColors.tertiary,
+            < 0 => BokunSpizeColors.primary,
+            _ => BokunSpizeColors.neutralDark,
+          }
+        : BokunSpizeColors.neutralDark;
+
     return Opacity(
       opacity: opacity,
       child: Transform.translate(
@@ -186,19 +195,19 @@ class FadingFlexibleTitle extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Icon(
-                        Icons.auto_graph_rounded,
-                        size: 18,
-                        color: BokunSpizeColors.primary,
+                      PhosphorIcon(
+                        weightChange! > 0 ? PhosphorIconsBold.trendUp : PhosphorIconsBold.trendDown,
+                        color: changeColor,
+                        size: 16,
                       ),
                       const SizedBox(width: 2),
                       Text(
                         '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}kg',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 12,
                           fontWeight: FontWeight.w900,
-                          color: BokunSpizeColors.primary,
+                          color: changeColor,
                         ),
                         textAlign: TextAlign.right,
                       ),
@@ -208,9 +217,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                   if (weightChangeWithinDays != null)
                     Text(
                       switch (weightChangeWithinDays) {
-                        0 => 'danas',
-                        1 => 'zadnji dan',
-                        final int days => 'zadnjih $days dana',
+                        0 => 'today',
+                        1 => 'yesterday',
+                        final int days => 'last $days days',
                         null => '-',
                       },
                       style: const TextStyle(

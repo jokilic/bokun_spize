@@ -224,7 +224,16 @@ class InsightsGraph extends StatelessWidget {
               milliseconds: (value * Duration.millisecondsPerDay).round(),
             ),
           );
-    final label = DateUtils.isSameDay(dateTime, DateTime.now()) ? 'Danas'.toUpperCase() : DateFormat('MMM dd', 'hr').format(dateTime).toUpperCase();
+    final label =
+        DateUtils.isSameDay(
+          dateTime,
+          DateTime.now(),
+        )
+        ? 'Today'.toUpperCase()
+        : DateFormat(
+            'MMM dd',
+            'en',
+          ).format(dateTime).toUpperCase();
 
     return SideTitleWidget(
       meta: meta,

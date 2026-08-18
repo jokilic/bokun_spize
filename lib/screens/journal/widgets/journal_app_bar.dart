@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
 
@@ -69,8 +70,8 @@ class JournalAppBar extends StatelessWidget {
           ///
           IconButton(
             onPressed: onCalendarPressed,
-            icon: const Icon(
-              Icons.calendar_month_rounded,
+            icon: const PhosphorIcon(
+              PhosphorIconsBold.calendarDot,
               size: 26,
             ),
             style: IconButton.styleFrom(
