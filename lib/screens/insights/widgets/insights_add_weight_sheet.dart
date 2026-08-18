@@ -82,6 +82,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
     shape: RoundedRectangleBorder(
@@ -104,6 +105,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
   /// Opens [Timeheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
     shape: RoundedRectangleBorder(
@@ -271,6 +273,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                   ),
                   label: Text(date),
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
                     shape: const StadiumBorder(),
                     textStyle: const TextStyle(
                       fontFamily: 'PlusJakartaSans',
@@ -280,9 +283,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                     ),
                     padding: const EdgeInsets.all(12),
                     backgroundColor: BokunSpizeColors.neutralLight,
-                    foregroundColor: BokunSpizeColors.neutralDark.withValues(
-                      alpha: 0.8,
-                    ),
+                    foregroundColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
                   ),
                 ),
 
@@ -299,6 +300,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                   ),
                   label: Text(time),
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
                     shape: const StadiumBorder(),
                     textStyle: const TextStyle(
                       fontFamily: 'PlusJakartaSans',
@@ -308,9 +310,7 @@ class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
                     ),
                     padding: const EdgeInsets.all(12),
                     backgroundColor: BokunSpizeColors.neutralLight,
-                    foregroundColor: BokunSpizeColors.neutralDark.withValues(
-                      alpha: 0.8,
-                    ),
+                    foregroundColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
                   ),
                 ),
               ],

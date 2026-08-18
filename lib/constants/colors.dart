@@ -4,7 +4,7 @@ class BokunSpizeColors {
   static const neutralLight = Color(0xFFDCE0D9);
   static const neutralDark = Color(0xFF121412);
 
-  static const white = Color(0xFFF0F6F6);
+  static const white = Color(0xFFFFFFFF);
 
   static const primary = Color(0xFF2E7D32);
   static const secondary = Color(0xFFFF9800);

@@ -70,6 +70,7 @@ class JournalController extends ValueNotifier<DateTime> {
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
     shape: RoundedRectangleBorder(

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../main.dart';
 import '../constants/colors.dart';
 
-class CalendarSheet extends StatelessWidget {
+class CalendarSheet extends StatefulWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
 
@@ -13,6 +13,13 @@ class CalendarSheet extends StatelessWidget {
     required this.dateValue,
     required this.onDateChanged,
   });
+
+  @override
+  State<CalendarSheet> createState() => _CalendarSheetState();
+}
+
+class _CalendarSheetState extends State<CalendarSheet> {
+  late var selectedDateTime = widget.dateValue;
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -44,13 +51,12 @@ class CalendarSheet extends StatelessWidget {
           /// CALENDAR
           ///
           CalendarDatePicker2(
-            value: [dateValue],
+            value: [widget.dateValue],
             onValueChanged: (newValue) {
               final chosenDate = newValue.firstOrNull;
 
-              if (chosenDate != null && !DateUtils.isSameDay(dateValue, chosenDate)) {
-                onDateChanged(chosenDate);
-                Navigator.of(context).pop();
+              if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
+                selectedDateTime = chosenDate;
               }
             },
             config: CalendarDatePicker2Config(
@@ -145,6 +151,35 @@ class CalendarSheet extends StatelessWidget {
                 size: 28,
                 color: BokunSpizeColors.neutralDark,
               ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          ///
+          /// SAVE BUTTON
+          ///
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                widget.onDateChanged(selectedDateTime);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                shape: const StadiumBorder(),
+                textStyle: const TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+                padding: const EdgeInsets.all(20),
+                backgroundColor: BokunSpizeColors.primary,
+                foregroundColor: BokunSpizeColors.white,
+                disabledBackgroundColor: BokunSpizeColors.neutralLight,
+                disabledForegroundColor: BokunSpizeColors.neutralDark,
+              ),
+              child: const Text('Spremi'),
             ),
           ),
 

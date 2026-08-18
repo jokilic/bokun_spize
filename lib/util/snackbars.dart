@@ -26,8 +26,9 @@ void showSnackbar(
               text,
               style: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: BokunSpizeColors.neutralDark,
               ),
             ),
           ),
@@ -37,7 +38,7 @@ void showSnackbar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: BokunSpizeColors.neutralLight,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(100),
         side: const BorderSide(
           color: BokunSpizeColors.neutralDark,
           width: 1.5,
