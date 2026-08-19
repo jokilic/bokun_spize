@@ -12,23 +12,23 @@ import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/weight_track.dart';
 import '../../widgets/navigation_bar_widget.dart';
-import 'insights_controller.dart';
-import 'widgets/insights_app_bar.dart';
-import 'widgets/insights_graph.dart';
-import 'widgets/insights_list_tile.dart';
+import 'weights_controller.dart';
+import 'widgets/weights_app_bar.dart';
+import 'widgets/weights_graph.dart';
+import 'widgets/weights_list_tile.dart';
 
-class InsightsScreen extends WatchingStatefulWidget {
+class WeightsScreen extends WatchingStatefulWidget {
   @override
-  State<InsightsScreen> createState() => _InsightsScreenState();
+  State<WeightsScreen> createState() => _WeightsScreenState();
 }
 
-class _InsightsScreenState extends State<InsightsScreen> {
+class _WeightsScreenState extends State<WeightsScreen> {
   @override
   void initState() {
     super.initState();
 
-    registerIfNotInitialized<InsightsController>(
-      () => InsightsController(
+    registerIfNotInitialized<WeightsController>(
+      () => WeightsController(
         firebase: getIt.get<FirebaseService>(),
       ),
       afterRegister: (controller) => controller.init(),
@@ -37,7 +37,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<InsightsController>();
+    unRegisterIfNotDisposed<WeightsController>();
     super.dispose();
   }
 
@@ -45,15 +45,15 @@ class _InsightsScreenState extends State<InsightsScreen> {
   Widget build(BuildContext context) {
     /// References to services & controllers
     final firebaseService = getIt.get<FirebaseService>();
-    final insightsController = getIt.get<InsightsController>();
+    final weightsController = getIt.get<WeightsController>();
 
     /// User name
     final userName = firebaseService.userName;
 
     /// Listens to `weightTracks`
     final weightTracks =
-        watchStream<InsightsController, List<WeightTrack>?>(
-          (insightsController) => insightsController.weightTracksStream,
+        watchStream<WeightsController, List<WeightTrack>?>(
+          (weightsController) => weightsController.weightTracksStream,
           allowStreamChange: true,
           preserveState: false,
         ).data ??
@@ -79,7 +79,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
         height: 68,
         width: 68,
         child: FloatingActionButton(
-          heroTag: const ValueKey('insights-fab'),
+          heroTag: const ValueKey('weights-fab'),
           elevation: 0,
           backgroundColor: BokunSpizeColors.primary,
           foregroundColor: BokunSpizeColors.white,
@@ -92,7 +92,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
               HapticFeedback.lightImpact(),
             );
             unawaited(
-              insightsController.onAddWeightPressed(
+              weightsController.onAddWeightPressed(
                 context: context,
                 initialWeight: lastWeightTrack?.weight ?? 75.0,
               ),
@@ -114,7 +114,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ///
             /// APP BAR
             ///
-            InsightsAppBar(
+            WeightsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
               timeString: lastWeightTrack != null
@@ -158,7 +158,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
               ///
               /// GRAPH
               ///
-              InsightsGraph(
+              WeightsGraph(
                 weightTracks: weightTracks,
                 weightChangeWithinDays: weightChangeWithinDays,
               ),
@@ -204,13 +204,13 @@ class _InsightsScreenState extends State<InsightsScreen> {
                     index: index,
                   );
 
-                  return InsightsListTile(
+                  return WeightsListTile(
                     onDeletePressed: () async {
                       unawaited(
                         HapticFeedback.lightImpact(),
                       );
                       unawaited(
-                        insightsController.deleteWeightTrack(
+                        weightsController.deleteWeightTrack(
                           weightTrack: weightTrack,
                         ),
                       );

@@ -3,7 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
 
-class InsightsAppBar extends StatelessWidget {
+class WeightsAppBar extends StatelessWidget {
   final String? title;
   final String? imagePath;
   final String timeString;
@@ -11,7 +11,7 @@ class InsightsAppBar extends StatelessWidget {
   final double? weightChange;
   final int? weightChangeWithinDays;
 
-  const InsightsAppBar({
+  const WeightsAppBar({
     required this.title,
     required this.imagePath,
     required this.timeString,
@@ -28,24 +28,30 @@ class InsightsAppBar extends StatelessWidget {
     expandedHeight: 200,
     leadingWidth: double.infinity,
     leading: Padding(
-      padding: const EdgeInsets.only(left: 20, right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           ///
           /// AVATAR
           ///
-          if (imagePath != null) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Image.network(
-                imagePath!,
-                fit: BoxFit.cover,
-                height: 48,
-                width: 48,
-              ),
+          IconButton(
+            onPressed: null,
+            icon: const PhosphorIcon(
+              PhosphorIconsBold.carrot,
+              size: 28,
             ),
-            const SizedBox(width: 14),
-          ],
+            style: IconButton.styleFrom(
+              padding: const EdgeInsets.all(12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              foregroundColor: BokunSpizeColors.secondary,
+              disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              disabledForegroundColor: BokunSpizeColors.secondary,
+            ),
+          ),
+          const SizedBox(width: 14),
 
           ///
           /// APP TITLE

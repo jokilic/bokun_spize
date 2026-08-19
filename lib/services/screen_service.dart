@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../screens/insights/insights_screen.dart';
 import '../screens/meals/meals_screen.dart';
 import '../screens/profile/profile_screen.dart';
-import '../screens/search/search_screen.dart';
+import '../screens/walks/walks_screen.dart';
+import '../screens/weights/weights_screen.dart';
 
 enum NavigationBarItem {
   meals,
-  insights,
-  search,
+  weights,
+  walks,
   profile,
 }
 
@@ -41,8 +41,8 @@ class ScreenService extends ValueNotifier<NavigationBarItem> {
   Widget getProperWidget(NavigationBarItem item) {
     final newScreen = switch (item) {
       NavigationBarItem.meals => MealsScreen(),
-      NavigationBarItem.insights => InsightsScreen(),
-      NavigationBarItem.search => SearchScreen(),
+      NavigationBarItem.weights => WeightsScreen(),
+      NavigationBarItem.walks => WalksScreen(),
       NavigationBarItem.profile => ProfileScreen(),
     };
 

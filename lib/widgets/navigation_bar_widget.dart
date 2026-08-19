@@ -36,7 +36,7 @@ class NavigationBarWidget extends WatchingWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const PhosphorIcon(
-                  PhosphorIconsBold.notebook,
+                  PhosphorIconsBold.bowlFood,
                   color: BokunSpizeColors.neutralDark,
                   size: 24,
                 ),
@@ -59,7 +59,7 @@ class NavigationBarWidget extends WatchingWidget {
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(
-                PhosphorIconsBold.notebook,
+                PhosphorIconsBold.bowlFood,
                 color: BokunSpizeColors.white,
                 size: 24,
               ),
@@ -68,20 +68,20 @@ class NavigationBarWidget extends WatchingWidget {
           ),
 
           ///
-          /// INSIGHTS
+          /// WEIGHTS
           ///
           NavigationDestination(
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const PhosphorIcon(
-                  PhosphorIconsBold.chartLine,
+                  PhosphorIconsBold.personSimple,
                   color: BokunSpizeColors.neutralDark,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Insights'.toUpperCase(),
+                  'Weights'.toUpperCase(),
                   style: const TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -98,7 +98,7 @@ class NavigationBarWidget extends WatchingWidget {
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(
-                PhosphorIconsBold.chartLine,
+                PhosphorIconsBold.personSimple,
                 color: BokunSpizeColors.white,
                 size: 24,
               ),
@@ -107,20 +107,20 @@ class NavigationBarWidget extends WatchingWidget {
           ),
 
           ///
-          /// SEARCH
+          /// WALKS
           ///
           NavigationDestination(
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const PhosphorIcon(
-                  PhosphorIconsBold.magnifyingGlass,
+                  PhosphorIconsBold.footprints,
                   color: BokunSpizeColors.neutralDark,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Search'.toUpperCase(),
+                  'Walks'.toUpperCase(),
                   style: const TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -137,7 +137,7 @@ class NavigationBarWidget extends WatchingWidget {
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(
-                PhosphorIconsBold.magnifyingGlass,
+                PhosphorIconsBold.footprints,
                 color: BokunSpizeColors.white,
                 size: 24,
               ),

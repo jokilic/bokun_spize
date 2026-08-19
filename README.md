@@ -4,7 +4,7 @@
 - [ ] Replace all `TextStyle()`
 - [ ] Replace all `Icon()`
 - [ ] Check latest AI models
-- [ ] Meals - Weights - Walks - Account
+- [ ] Update database permissions
 
 # Bokun spize 🥗
 

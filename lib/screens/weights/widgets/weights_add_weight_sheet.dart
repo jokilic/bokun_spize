@@ -8,7 +8,7 @@ import '../../../util/date_time.dart';
 import '../../../widgets/calendar_sheet.dart';
 import '../../../widgets/time_sheet.dart';
 
-class InsightsAddWeightSheet extends StatefulWidget {
+class WeightsAddWeightSheet extends StatefulWidget {
   final double initialWeight;
   final Function({
     required double newWeight,
@@ -16,16 +16,16 @@ class InsightsAddWeightSheet extends StatefulWidget {
   })
   onSavePressed;
 
-  const InsightsAddWeightSheet({
+  const WeightsAddWeightSheet({
     required this.initialWeight,
     required this.onSavePressed,
   });
 
   @override
-  State<InsightsAddWeightSheet> createState() => InsightsAddWeightSheetState();
+  State<WeightsAddWeightSheet> createState() => WeightsAddWeightSheetState();
 }
 
-class InsightsAddWeightSheetState extends State<InsightsAddWeightSheet> {
+class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   static const minimumWeight = 40.0;
   static const maximumWeight = 200.0;
   static const weightStep = 0.1;

@@ -8,11 +8,11 @@ import '../../../main.dart';
 import '../../../models/weight_track/weight_track.dart';
 import '../../../util/weight_track.dart';
 
-class InsightsGraph extends StatelessWidget {
+class WeightsGraph extends StatelessWidget {
   final List<WeightTrack> weightTracks;
   final int weightChangeWithinDays;
 
-  const InsightsGraph({
+  const WeightsGraph({
     required this.weightTracks,
     required this.weightChangeWithinDays,
   });

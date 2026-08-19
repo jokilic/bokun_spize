@@ -8,12 +8,12 @@ import '../../../models/weight_track/weight_track.dart';
 import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 
-class InsightsListTile extends StatelessWidget {
+class WeightsListTile extends StatelessWidget {
   final Future<void> Function() onDeletePressed;
   final WeightTrack weightTrack;
   final double? weightChange;
 
-  const InsightsListTile({
+  const WeightsListTile({
     required this.onDeletePressed,
     required this.weightTrack,
     required this.weightChange,

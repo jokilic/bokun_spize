@@ -8,16 +8,16 @@ import '../../constants/colors.dart';
 import '../../main.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
-import 'widgets/insights_add_weight_sheet.dart';
+import 'widgets/weights_add_weight_sheet.dart';
 
-class InsightsController {
+class WeightsController {
   ///
   /// CONSTRUCTOR
   ///
 
   final FirebaseService firebase;
 
-  InsightsController({
+  WeightsController({
     required this.firebase,
   });
 
@@ -60,37 +60,35 @@ class InsightsController {
     // TODO: Show snackbar if it fails
   }
 
-  /// Opens [InsightsAddWeightSheet] and adds new `weight`
+  /// Opens [WeightsAddWeightSheet] and adds new `weight`
   Future<void> onAddWeightPressed({
     required BuildContext context,
     required double initialWeight,
-  }) async {
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: BokunSpizeColors.white,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(listTileRadius),
-      ),
-      builder: (context) => InsightsAddWeightSheet(
-        initialWeight: initialWeight,
-        onSavePressed: ({required newWeight, required dateTime}) {
-          unawaited(
-            HapticFeedback.lightImpact(),
-          );
-          unawaited(
-            addWeightTrack(
-              dateTime: dateTime,
-              weight: newWeight,
-            ),
-          );
+  }) async => showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: BokunSpizeColors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(listTileRadius),
+    ),
+    builder: (context) => WeightsAddWeightSheet(
+      initialWeight: initialWeight,
+      onSavePressed: ({required newWeight, required dateTime}) {
+        unawaited(
+          HapticFeedback.lightImpact(),
+        );
+        unawaited(
+          addWeightTrack(
+            dateTime: dateTime,
+            weight: newWeight,
+          ),
+        );
 
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        },
-      ),
-    );
-  }
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+    ),
+  );
 }
