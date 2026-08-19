@@ -45,8 +45,8 @@ List<WeightTrack> getWeightTracksForGraph({
   return visibleWeightTracks;
 }
 
-/// Get previous weights recorded within seven calendar days of the current one
-List<WeightTrack> getPreviousWeightTracksWithinSevenDays({
+/// Get all weights recorded on the calendar day before the latest measurement
+List<WeightTrack> getWeightTracksFromPreviousCalendarDay({
   required List<WeightTrack> weightTracks,
 }) {
   if (weightTracks.isEmpty) {
@@ -54,37 +54,37 @@ List<WeightTrack> getPreviousWeightTracksWithinSevenDays({
   }
 
   final currentDateTime = weightTracks.first.dateTime;
-  final currentDate = DateTime(
+  final currentDate = DateTime.utc(
     currentDateTime.year,
     currentDateTime.month,
     currentDateTime.day,
   );
+  final previousDate = currentDate.subtract(const Duration(days: 1));
 
-  return weightTracks.skip(1).where((weightTrack) {
+  return weightTracks.where((weightTrack) {
     final dateTime = weightTrack.dateTime;
-    final date = DateTime(dateTime.year, dateTime.month, dateTime.day);
-    final differenceInDays = currentDate.difference(date).inDays;
+    final date = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
 
-    return differenceInDays >= 0 && differenceInDays <= 7;
+    return date == previousDate;
   }).toList();
 }
 
-/// Compare the current weight with the average of previous weights from the last seven days
+/// Compare the latest weight with the average weight from the previous calendar day
 double? getWeightChange({
   required List<WeightTrack> weightTracks,
   required double? lastWeight,
 }) {
-  final previousWeightTracks = getPreviousWeightTracksWithinSevenDays(
+  final previousDayWeightTracks = getWeightTracksFromPreviousCalendarDay(
     weightTracks: weightTracks,
   );
 
-  final weightChange = previousWeightTracks.length > 1 && lastWeight != null
+  final weightChange = previousDayWeightTracks.isNotEmpty && lastWeight != null
       ? lastWeight -
-            previousWeightTracks.fold<double>(
+            previousDayWeightTracks.fold<double>(
                   0,
                   (sum, weightTrack) => sum + weightTrack.weight,
                 ) /
-                previousWeightTracks.length
+                previousDayWeightTracks.length
       : null;
 
   return weightChange;
@@ -102,30 +102,13 @@ double? getPreviousWeightChange({
   return weightChange;
 }
 
-/// Get the calendar-day span covered by the weights used for the change
+/// Get the calendar-day span covered by the latest-to-previous-day change
 int? getWeightChangeWithinDays({
   required List<WeightTrack> weightTracks,
 }) {
-  final previousWeightTracks = getPreviousWeightTracksWithinSevenDays(
+  final previousDayWeightTracks = getWeightTracksFromPreviousCalendarDay(
     weightTracks: weightTracks,
   );
 
-  if (previousWeightTracks.length <= 1) {
-    return null;
-  }
-
-  final currentDateTime = weightTracks.first.dateTime;
-  final oldestComparedDateTime = previousWeightTracks.last.dateTime;
-  final currentDate = DateTime(
-    currentDateTime.year,
-    currentDateTime.month,
-    currentDateTime.day,
-  );
-  final oldestComparedDate = DateTime(
-    oldestComparedDateTime.year,
-    oldestComparedDateTime.month,
-    oldestComparedDateTime.day,
-  );
-
-  return currentDate.difference(oldestComparedDate).inDays.abs();
+  return previousDayWeightTracks.isNotEmpty ? 1 : null;
 }

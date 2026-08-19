@@ -157,6 +157,7 @@ class InsightsGraph extends StatelessWidget {
         ),
         lineBarsData: [
           LineChartBarData(
+            curveSmoothness: 0.15,
             spots: spots,
             isCurved: spots.length > 2,
             preventCurveOverShooting: true,

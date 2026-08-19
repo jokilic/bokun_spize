@@ -79,7 +79,7 @@ class JournalAppBar extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
-              backgroundColor: BokunSpizeColors.white,
+              backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
               foregroundColor: BokunSpizeColors.neutralDark,
               disabledBackgroundColor: BokunSpizeColors.neutralLight,
               disabledForegroundColor: BokunSpizeColors.neutralDark,
