@@ -4,10 +4,10 @@ import '../../../../constants/colors.dart';
 import '../../../../models/meal/food.dart';
 import '../../../../util/format.dart';
 
-class JournalListTileFood extends StatelessWidget {
+class MealsListTileFood extends StatelessWidget {
   final Food food;
 
-  const JournalListTileFood({
+  const MealsListTileFood({
     required this.food,
   });
 

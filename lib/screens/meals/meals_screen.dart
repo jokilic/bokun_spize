@@ -13,22 +13,22 @@ import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/navigation_bar_widget.dart';
-import 'journal_controller.dart';
-import 'widgets/journal_app_bar.dart';
-import 'widgets/journal_list_tile/journal_list_tile.dart';
+import 'meals_controller.dart';
+import 'widgets/meals_app_bar.dart';
+import 'widgets/meals_list_tile/meals_list_tile.dart';
 
-class JournalScreen extends WatchingStatefulWidget {
+class MealsScreen extends WatchingStatefulWidget {
   @override
-  State<JournalScreen> createState() => _JournalScreenState();
+  State<MealsScreen> createState() => _MealsScreenState();
 }
 
-class _JournalScreenState extends State<JournalScreen> {
+class _MealsScreenState extends State<MealsScreen> {
   @override
   void initState() {
     super.initState();
 
-    registerIfNotInitialized<JournalController>(
-      () => JournalController(
+    registerIfNotInitialized<MealsController>(
+      () => MealsController(
         firebase: getIt.get<FirebaseService>(),
         ai: getIt.get<AIService>(),
       ),
@@ -38,7 +38,7 @@ class _JournalScreenState extends State<JournalScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<JournalController>();
+    unRegisterIfNotDisposed<MealsController>();
     super.dispose();
   }
 
@@ -46,13 +46,13 @@ class _JournalScreenState extends State<JournalScreen> {
   Widget build(BuildContext context) {
     /// References to services & controllers
     final firebaseService = getIt.get<FirebaseService>();
-    final journalController = getIt.get<JournalController>();
+    final mealsController = getIt.get<MealsController>();
 
     /// User name
     final userName = firebaseService.userName;
 
     /// Currently selected day
-    final activeDate = watchIt<JournalController>().value;
+    final activeDate = watchIt<MealsController>().value;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
@@ -61,8 +61,8 @@ class _JournalScreenState extends State<JournalScreen> {
 
     /// Listens to `meals` from the currently selected day
     final meals =
-        watchStream<JournalController, List<Meal>?>(
-          (journalController) => journalController.mealsStream,
+        watchStream<MealsController, List<Meal>?>(
+          (mealsController) => mealsController.mealsStream,
           allowStreamChange: true,
           preserveState: false,
         ).data ??
@@ -80,7 +80,7 @@ class _JournalScreenState extends State<JournalScreen> {
         height: 68,
         width: 68,
         child: FloatingActionButton(
-          heroTag: const ValueKey('journal-fab'),
+          heroTag: const ValueKey('meals-fab'),
           elevation: 0,
           backgroundColor: BokunSpizeColors.primary,
           foregroundColor: BokunSpizeColors.white,
@@ -93,7 +93,7 @@ class _JournalScreenState extends State<JournalScreen> {
               HapticFeedback.lightImpact(),
             );
             unawaited(
-              journalController.onMealPressed(context),
+              mealsController.onMealPressed(context),
             );
           },
           child: const PhosphorIcon(
@@ -112,10 +112,10 @@ class _JournalScreenState extends State<JournalScreen> {
             ///
             /// APP BAR
             ///
-            JournalAppBar(
+            MealsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
-              onCalendarPressed: () => journalController.updateDateViaPicker(context),
+              onCalendarPressed: () => mealsController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,
                 dateFormat: 'EEEE, dd.MM.yyyy.',
@@ -133,13 +133,13 @@ class _JournalScreenState extends State<JournalScreen> {
                 itemBuilder: (context, index) {
                   final meal = meals[index];
 
-                  return JournalListTile(
+                  return MealsListTile(
                     onDeletePressed: () async {
                       unawaited(
                         HapticFeedback.lightImpact(),
                       );
                       unawaited(
-                        journalController.deleteMeal(
+                        mealsController.deleteMeal(
                           meal: meal,
                         ),
                       );
@@ -149,7 +149,7 @@ class _JournalScreenState extends State<JournalScreen> {
                         HapticFeedback.lightImpact(),
                       );
                       unawaited(
-                        journalController.onMealPressed(
+                        mealsController.onMealPressed(
                           context,
                           passedMeal: meal,
                           isCopyingMeal: true,

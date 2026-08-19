@@ -29,7 +29,7 @@ class NavigationBarWidget extends WatchingWidget {
         ),
         destinations: [
           ///
-          /// JOURNAL
+          /// MEALS
           ///
           NavigationDestination(
             icon: Column(
@@ -42,7 +42,7 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Journal'.toUpperCase(),
+                  'Meals'.toUpperCase(),
                   style: const TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,

@@ -13,7 +13,7 @@ import '../../services/firebase_service.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
 
-class JournalController extends ValueNotifier<DateTime> {
+class MealsController extends ValueNotifier<DateTime> {
   ///
   /// CONSTRUCTOR
   ///
@@ -21,7 +21,7 @@ class JournalController extends ValueNotifier<DateTime> {
   final FirebaseService firebase;
   final AIService ai;
 
-  JournalController({
+  MealsController({
     required this.firebase,
     required this.ai,
   }) : super(

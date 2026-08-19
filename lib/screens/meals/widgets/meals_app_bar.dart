@@ -3,7 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
 
-class JournalAppBar extends StatelessWidget {
+class MealsAppBar extends StatelessWidget {
   final String? title;
   final String? imagePath;
   final Function() onCalendarPressed;
@@ -11,7 +11,7 @@ class JournalAppBar extends StatelessWidget {
   final int currentCalories;
   final int? dailyCalories;
 
-  const JournalAppBar({
+  const MealsAppBar({
     required this.title,
     required this.imagePath,
     required this.onCalendarPressed,
