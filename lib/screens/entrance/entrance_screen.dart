@@ -50,7 +50,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
     required BuildContext context,
     required Future<({User? user, String? error})> Function() onPressed,
   }) async {
+    /// Hide snackbars & keyboard
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    FocusManager.instance.primaryFocus?.unfocus();
 
     unawaited(
       HapticFeedback.lightImpact(),
@@ -168,6 +170,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             context: context,
                             onPressed: entranceController.emailSignInPressed,
                           ),
+                          onForgetPasswordPressed: entranceController.forgetPasswordPressed,
                         )
                       : EntranceRegister(
                           emailTextEditingController: entranceController.registerEmailTextEditingController,

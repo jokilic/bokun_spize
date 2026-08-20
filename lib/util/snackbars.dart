@@ -26,7 +26,7 @@ void showSnackbar(
               text,
               style: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: BokunSpizeColors.black,
               ),

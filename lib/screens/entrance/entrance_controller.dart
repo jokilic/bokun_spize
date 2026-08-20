@@ -176,6 +176,8 @@ class EntranceController
     }
   }
 
+  // TODO: Implement `forgetPasswordPressed()`
+
   /// Triggered when the user presses email register button
   Future<({User? user, String? error})> emailRegisterPressed() async {
     final isLoading = value.emailIsLoading || value.googleIsLoading || value.appleIsLoading;

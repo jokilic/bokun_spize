@@ -10,7 +10,8 @@ class EntranceLogin extends StatelessWidget {
   final TextEditingController passwordTextEditingController;
   final bool validated;
   final bool emailIsLoading;
-  final Function onLoginPressed;
+  final Function() onLoginPressed;
+  final Function() onForgetPasswordPressed;
 
   const EntranceLogin({
     required this.emailTextEditingController,
@@ -18,6 +19,7 @@ class EntranceLogin extends StatelessWidget {
     required this.validated,
     required this.emailIsLoading,
     required this.onLoginPressed,
+    required this.onForgetPasswordPressed,
   });
 
   @override
@@ -60,18 +62,51 @@ class EntranceLogin extends StatelessWidget {
       const SizedBox(height: 32),
 
       ///
-      /// PASSWORD TITLE
+      /// PASSWORD TITLE & FORGET PASSWORD
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36),
-        child: Text(
-          'Password'.toUpperCase(),
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ///
+            /// PASSWORD TITLE
+            ///
+            Text(
+              'Password'.toUpperCase(),
+              style: TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+              ),
+            ),
+
+            ///
+            /// FORGET PASSWORD
+            ///
+            TextButton(
+              onPressed: onForgetPasswordPressed,
+              style: TextButton.styleFrom(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                textStyle: const TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontWeight: FontWeight.w900,
+                ),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.transparent,
+                foregroundColor: BokunSpizeColors.primary,
+              ),
+              child: Text(
+                'Forgot?'.toUpperCase(),
+              ),
+            ),
+          ],
         ),
       ),
       const SizedBox(height: 12),
