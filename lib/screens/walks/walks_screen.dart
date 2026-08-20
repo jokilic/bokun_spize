@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:health/health.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -24,7 +25,9 @@ class _WalksScreenState extends State<WalksScreen> {
     super.initState();
 
     registerIfNotInitialized<WalksController>(
-      WalksController.new,
+      () => WalksController(
+        health: Health(),
+      ),
       afterRegister: (controller) => controller.init(),
     );
   }
@@ -47,11 +50,8 @@ class _WalksScreenState extends State<WalksScreen> {
     /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
-    // final steps = state.stepCount?.steps;
-    // final stepsTimestamp = state.stepCount?.timeStamp;
-
-    const steps = 3002;
-    final stepsTimestamp = DateTime.now();
+    final steps = state.steps ?? 0;
+    final stepsTimestamp = state.stepsFetchedAt;
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
@@ -97,27 +97,6 @@ class _WalksScreenState extends State<WalksScreen> {
                     )
                   : 'Vrijeme ne postoji',
               currentSteps: steps,
-            ),
-
-            SliverToBoxAdapter(
-              child: Text(
-                '${state.stepCount?.steps} steps',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Text(
-                state.pedestrianStatus?.status ?? 'No status',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Text(
-                state.stepCountError != null ? state.stepCountError.toString() : 'No step error',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Text(
-                state.pedestrianStatusError != null ? state.pedestrianStatusError.toString() : 'No pedestrian error',
-              ),
             ),
 
             ///

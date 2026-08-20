@@ -1,74 +1,170 @@
-import 'package:flutter/material.dart';
-import 'package:pedometer/pedometer.dart';
+import 'package:flutter/foundation.dart';
+import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class WalksController extends ValueNotifier<({StepCount? stepCount, PedestrianStatus? pedestrianStatus, dynamic stepCountError, dynamic pedestrianStatusError})> {
+class WalksController
+    extends
+        ValueNotifier<
+          ({
+            int? steps,
+            DateTime? stepsFetchedAt,
+            bool isLoading,
+            bool isAuthorized,
+            String? error,
+          })
+        > {
   ///
   /// CONSTRUCTOR
   ///
 
-  WalksController()
-    : super((
-        stepCount: null,
-        pedestrianStatus: null,
-        stepCountError: null,
-        pedestrianStatusError: null,
-      ));
+  final Health health;
+
+  WalksController({
+    required this.health,
+  }) : super((
+         steps: null,
+         stepsFetchedAt: null,
+         isLoading: false,
+         isAuthorized: false,
+         error: null,
+       ));
 
   ///
   /// INIT
   ///
 
-  Future<void> init() async {
-    /// Init streams
-    pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    stepCountStream = Pedometer.stepCountStream;
-
-    /// Listen to streams and handle errors
-    stepCountStream.listen(onStepCount).onError(onStepCountError);
-    pedestrianStatusStream.listen(onPedestrianStatusChanged).onError(onPedestrianStatusError);
-  }
-
-  ///
-  /// VARIABLES
-  ///
-
-  late Stream<StepCount> stepCountStream;
-  late Stream<PedestrianStatus> pedestrianStatusStream;
+  Future<void> init() async => refreshSteps();
 
   ///
   /// METHODS
   ///
 
-  /// Handle step count changed
-  void onStepCount(StepCount event) => updateState(
-    stepCount: event,
-  );
+  /// Requests read access to step data from `Apple Health` or `Health Connect`
+  Future<({bool granted, String? error})> requestStepPermission() async {
+    /// Declare `types` and `permissions`
+    const types = [HealthDataType.STEPS];
+    const permissions = [HealthDataAccess.READ];
 
-  /// Handle status changed
-  void onPedestrianStatusChanged(PedestrianStatus event) => updateState(
-    pedestrianStatus: event,
-  );
+    /// Handle `Android` permissions
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final activityRecognitionPermission = await Permission.activityRecognition.request();
 
-  /// Handle the error
-  void onStepCountError(error) => updateState(
-    stepCountError: error,
-  );
+      if (!activityRecognitionPermission.isGranted) {
+        return (
+          granted: false,
+          error: 'Activity recognition permission was not granted.',
+        );
+      }
 
-  /// Handle the error
-  void onPedestrianStatusError(error) => updateState(
-    pedestrianStatusError: error,
-  );
+      /// Check if `Health Connect` is available
+      final healthConnectAvailable = await health.isHealthConnectAvailable();
 
-  /// Updates `state`
+      if (!healthConnectAvailable) {
+        return (
+          granted: false,
+          error: 'Health Connect is not available on this device.',
+        );
+      }
+    }
+
+    /// Handle `iOS` permissions
+    final hasPermission = await health.hasPermissions(
+      types,
+      permissions: permissions,
+    );
+
+    if (hasPermission == true) {
+      return (granted: true, error: null);
+    }
+
+    /// Request `HealthKit` authorization
+    final granted = await health.requestAuthorization(
+      types,
+      permissions: permissions,
+    );
+
+    return (
+      granted: granted,
+      error: granted ? null : 'Step access was not granted.',
+    );
+  }
+
+  /// Requests permission and fetches the total steps recorded today
+  Future<void> refreshSteps() async {
+    if (value.isLoading) {
+      return;
+    }
+
+    updateState(
+      isLoading: true,
+      clearError: true,
+    );
+
+    try {
+      /// Configura `Health` plugin
+      await health.configure();
+
+      /// Request and handle permissions
+      final permissionResult = await requestStepPermission();
+
+      /// Permissions not granted, return error
+      if (!permissionResult.granted) {
+        updateState(
+          isLoading: false,
+          isAuthorized: false,
+          error: permissionResult.error ?? 'Step access is unavailable.',
+        );
+        return;
+      }
+
+      final now = DateTime.now();
+      final startOfDay = DateTime(now.year, now.month, now.day);
+
+      /// Get steps
+      final steps = await health.getTotalStepsInInterval(startOfDay, now);
+
+      /// Error fetching steps
+      if (steps == null) {
+        updateState(
+          isLoading: false,
+          isAuthorized: true,
+          error: 'Steps could not be fetched.',
+        );
+        return;
+      }
+
+      /// Steps fetched succesfully
+      updateState(
+        steps: steps,
+        stepsFetchedAt: now,
+        isLoading: false,
+        isAuthorized: true,
+        clearError: true,
+      );
+    }
+    /// Some error fetching steps
+    catch (error) {
+      updateState(
+        isLoading: false,
+        isAuthorized: false,
+        error: error.toString(),
+      );
+    }
+  }
+
+  /// Updates `state`.
   void updateState({
-    StepCount? stepCount,
-    PedestrianStatus? pedestrianStatus,
-    stepCountError,
-    pedestrianStatusError,
+    int? steps,
+    DateTime? stepsFetchedAt,
+    bool? isLoading,
+    bool? isAuthorized,
+    String? error,
+    bool clearError = false,
   }) => value = (
-    stepCount: stepCount ?? value.stepCount,
-    pedestrianStatus: pedestrianStatus ?? value.pedestrianStatus,
-    stepCountError: stepCountError ?? value.stepCountError,
-    pedestrianStatusError: pedestrianStatusError ?? value.pedestrianStatusError,
+    steps: steps ?? value.steps,
+    stepsFetchedAt: stepsFetchedAt ?? value.stepsFetchedAt,
+    isLoading: isLoading ?? value.isLoading,
+    isAuthorized: isAuthorized ?? value.isAuthorized,
+    error: clearError ? null : error ?? value.error,
   );
 }
