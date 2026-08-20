@@ -251,6 +251,7 @@ class FirebaseService {
   Future<({User? user, String? error})> registerUser({
     required String email,
     required String password,
+    required String name,
   }) async {
     try {
       final userCredential = await auth.createUserWithEmailAndPassword(
@@ -258,7 +259,17 @@ class FirebaseService {
         password: password,
       );
 
-      return (user: userCredential.user, error: null);
+      final user = userCredential.user;
+
+      if (user == null) {
+        return (user: null, error: 'errorUnknown');
+      }
+
+      await firestore.collection('users').doc(user.uid).set({
+        'name': name,
+      });
+
+      return (user: user, error: null);
     } on FirebaseAuthException catch (e) {
       final error = switch (e.code) {
         'email-already-in-use' => 'errorEmailInUse',

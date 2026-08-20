@@ -15,6 +15,7 @@ class EntranceController
             bool loginPasswordValid,
             bool registerEmailValid,
             bool registerPasswordValid,
+            bool registerNameValid,
             bool emailIsLoading,
             bool googleIsLoading,
             bool appleIsLoading,
@@ -34,6 +35,7 @@ class EntranceController
          loginPasswordValid: false,
          registerEmailValid: false,
          registerPasswordValid: false,
+         registerNameValid: false,
          emailIsLoading: false,
          googleIsLoading: false,
          appleIsLoading: false,
@@ -57,17 +59,20 @@ class EntranceController
   void init() {
     /// Validation listeners
     loginEmailTextEditingController.addListener(
-      validateEmailAndPassword,
+      validateTextFields,
     );
     loginPasswordTextEditingController.addListener(
-      validateEmailAndPassword,
+      validateTextFields,
     );
 
     registerEmailTextEditingController.addListener(
-      validateEmailAndPassword,
+      validateTextFields,
     );
     registerPasswordTextEditingController.addListener(
-      validateEmailAndPassword,
+      validateTextFields,
+    );
+    registerNameTextEditingController.addListener(
+      validateTextFields,
     );
   }
 
@@ -90,9 +95,9 @@ class EntranceController
   ///
 
   /// Triggered on every [TextField] change
-  /// Validates email & password
-  /// Updates login button state
-  void validateEmailAndPassword() {
+  /// Validates values
+  /// Updates login / register button state
+  void validateTextFields() {
     /// Parse login values
     final loginEmail = loginEmailTextEditingController.text.trim();
     final loginPassword = loginPasswordTextEditingController.text.trim();
@@ -100,6 +105,7 @@ class EntranceController
     /// Parse register values
     final registerEmail = registerEmailTextEditingController.text.trim();
     final registerPassword = registerPasswordTextEditingController.text.trim();
+    final registerName = registerNameTextEditingController.text.trim();
 
     /// Validate values
     updateState(
@@ -107,6 +113,7 @@ class EntranceController
       loginPasswordValid: loginPassword.length >= 8,
       registerEmailValid: isValidEmail(registerEmail),
       registerPasswordValid: registerPassword.length >= 8,
+      registerNameValid: registerName.isNotEmpty,
     );
   }
 
@@ -187,11 +194,13 @@ class EntranceController
     /// Get relevant values
     final email = registerEmailTextEditingController.text.trim();
     final password = registerPasswordTextEditingController.text.trim();
+    final name = registerNameTextEditingController.text.trim();
 
     try {
       final registerResult = await firebase.registerUser(
         email: email,
         password: password,
+        name: name,
       );
 
       /// Successful registration
@@ -338,6 +347,7 @@ class EntranceController
     bool? loginPasswordValid,
     bool? registerEmailValid,
     bool? registerPasswordValid,
+    bool? registerNameValid,
     bool? emailIsLoading,
     bool? googleIsLoading,
     bool? appleIsLoading,
@@ -346,6 +356,7 @@ class EntranceController
     loginPasswordValid: loginPasswordValid ?? value.loginPasswordValid,
     registerEmailValid: registerEmailValid ?? value.registerEmailValid,
     registerPasswordValid: registerPasswordValid ?? value.registerPasswordValid,
+    registerNameValid: registerNameValid ?? value.registerNameValid,
     emailIsLoading: emailIsLoading ?? value.emailIsLoading,
     googleIsLoading: googleIsLoading ?? value.googleIsLoading,
     appleIsLoading: appleIsLoading ?? value.appleIsLoading,

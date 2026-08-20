@@ -78,7 +78,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     final state = watchIt<EntranceController>().value;
 
     final loginValidated = state.loginEmailValid && state.loginPasswordValid;
-    final registerValidated = state.registerEmailValid && state.registerPasswordValid;
+    final registerValidated = state.registerEmailValid && state.registerPasswordValid && state.registerNameValid;
 
     final emailIsLoading = state.emailIsLoading;
     final googleIsLoading = state.googleIsLoading;
