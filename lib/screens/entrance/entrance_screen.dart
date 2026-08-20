@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -288,6 +289,45 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 40),
+              ),
+
+              ///
+              /// CREATE ACCOUNT / SIGN IN
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
+                  child: Text.rich(
+                    TextSpan(
+                      text: showLogin ? 'New to Bokun spize?' : 'You have an account?',
+                      children: [
+                        const WidgetSpan(
+                          child: SizedBox(width: 4),
+                        ),
+                        TextSpan(
+                          recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
+                          text: showLogin ? 'Create an account' : 'Sign in',
+                          style: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: BokunSpizeColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    style: const TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: BokunSpizeColors.neutralDark,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

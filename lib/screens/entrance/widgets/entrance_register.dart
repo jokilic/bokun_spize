@@ -29,123 +29,139 @@ class EntranceRegister extends StatelessWidget {
       ///
       /// EMAIL TITLE
       ///
-      SliverPadding(
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36),
-        sliver: SliverToBoxAdapter(
-          child: Text(
-            'Email address'.toUpperCase(),
-            style: TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
-            ),
+        child: Text(
+          'Email address'.toUpperCase(),
+          style: TextStyle(
+            fontFamily: 'PlusJakartaSans',
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
           ),
         ),
       ),
-      const SliverToBoxAdapter(
-        child: SizedBox(height: 12),
-      ),
+      const SizedBox(height: 12),
 
       ///
       /// EMAIL TEXTFIELD
       ///
-      SliverPadding(
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        sliver: SliverToBoxAdapter(
-          child: TextFieldWidget(
-            autocorrect: false,
-            controller: emailTextEditingController,
-            hintText: 'name@example.com',
-            autofillHints: const [AutofillHints.email],
-            keyboardType: TextInputType.emailAddress,
-            textAlign: TextAlign.left,
-            textCapitalization: TextCapitalization.none,
-            textInputAction: TextInputAction.next,
-          ),
+        child: TextFieldWidget(
+          autocorrect: false,
+          controller: emailTextEditingController,
+          hintText: 'name@example.com',
+          autofillHints: const [AutofillHints.email],
+          keyboardType: TextInputType.emailAddress,
+          textAlign: TextAlign.left,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.next,
         ),
       ),
-      const SliverToBoxAdapter(
-        child: SizedBox(height: 32),
-      ),
+      const SizedBox(height: 32),
 
       ///
       /// PASSWORD TITLE
       ///
-      SliverPadding(
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36),
-        sliver: SliverToBoxAdapter(
-          child: Text(
-            'Password'.toUpperCase(),
-            style: TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
-            ),
+        child: Text(
+          'Password'.toUpperCase(),
+          style: TextStyle(
+            fontFamily: 'PlusJakartaSans',
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
           ),
         ),
       ),
-      const SliverToBoxAdapter(
-        child: SizedBox(height: 12),
-      ),
+      const SizedBox(height: 12),
 
       ///
       /// PASSWORD TEXTFIELD
       ///
-      SliverPadding(
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        sliver: SliverToBoxAdapter(
-          child: TextFieldWidget(
-            autocorrect: false,
-            obscureText: true,
-            controller: passwordTextEditingController,
-            hintText: '•' * 8,
-            onSubmitted: (_) {
-              if (!validated || emailIsLoading) {
-                return;
-              }
+        child: TextFieldWidget(
+          autocorrect: false,
+          obscureText: true,
+          controller: passwordTextEditingController,
+          hintText: '•' * 8,
+          autofillHints: const [AutofillHints.password],
+          keyboardType: TextInputType.visiblePassword,
+          textAlign: TextAlign.left,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.next,
+        ),
+      ),
+      const SizedBox(height: 32),
 
-              onRegisterPressed();
-            },
-            autofillHints: const [AutofillHints.password],
-            keyboardType: TextInputType.visiblePassword,
-            textAlign: TextAlign.left,
-            textCapitalization: TextCapitalization.none,
-            textInputAction: TextInputAction.go,
+      ///
+      /// NAME TITLE
+      ///
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 36),
+        child: Text(
+          'Name'.toUpperCase(),
+          style: TextStyle(
+            fontFamily: 'PlusJakartaSans',
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
           ),
         ),
       ),
-      const SliverToBoxAdapter(
-        child: SizedBox(height: 36),
+      const SizedBox(height: 12),
+
+      ///
+      /// NAME TEXTFIELD
+      ///
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: TextFieldWidget(
+          controller: nameTextEditingController,
+          hintText: 'Danny',
+          onSubmitted: (_) {
+            if (!validated || emailIsLoading) {
+              return;
+            }
+
+            onRegisterPressed();
+          },
+          autofillHints: const [AutofillHints.name],
+          keyboardType: TextInputType.name,
+          textAlign: TextAlign.left,
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.go,
+        ),
       ),
+      const SizedBox(height: 36),
 
       ///
       /// SIGN IN BUTTON
       ///
-      SliverPadding(
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        sliver: SliverToBoxAdapter(
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: validated && !emailIsLoading ? () => onRegisterPressed() : null,
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                shape: const StadiumBorder(),
-                textStyle: const TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-                padding: const EdgeInsets.all(22),
-                backgroundColor: BokunSpizeColors.primary,
-                foregroundColor: BokunSpizeColors.white,
-                disabledBackgroundColor: BokunSpizeColors.primary.withValues(alpha: 0.3),
-                disabledForegroundColor: BokunSpizeColors.white,
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: validated && !emailIsLoading ? () => onRegisterPressed() : null,
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              shape: const StadiumBorder(),
+              textStyle: const TextStyle(
+                fontFamily: 'Epilogue',
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
               ),
-              child: const Text('Sign in'),
+              padding: const EdgeInsets.all(22),
+              backgroundColor: BokunSpizeColors.primary,
+              foregroundColor: BokunSpizeColors.white,
+              disabledBackgroundColor: BokunSpizeColors.primary.withValues(alpha: 0.3),
+              disabledForegroundColor: BokunSpizeColors.white,
             ),
+            child: const Text('Register'),
           ),
         ),
       ),
