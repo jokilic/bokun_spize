@@ -11,8 +11,10 @@ class EntranceController
     extends
         ValueNotifier<
           ({
-            bool emailValid,
-            bool passwordValid,
+            bool loginEmailValid,
+            bool loginPasswordValid,
+            bool registerEmailValid,
+            bool registerPasswordValid,
             bool emailIsLoading,
             bool googleIsLoading,
             bool appleIsLoading,
@@ -28,8 +30,10 @@ class EntranceController
   EntranceController({
     required this.firebase,
   }) : super((
-         emailValid: false,
-         passwordValid: false,
+         loginEmailValid: false,
+         loginPasswordValid: false,
+         registerEmailValid: false,
+         registerPasswordValid: false,
          emailIsLoading: false,
          googleIsLoading: false,
          appleIsLoading: false,
@@ -39,21 +43,30 @@ class EntranceController
   /// VARIABLES
   ///
 
-  late final emailTextEditingController = TextEditingController();
-  late final passwordTextEditingController = TextEditingController();
+  late final loginEmailTextEditingController = TextEditingController();
+  late final loginPasswordTextEditingController = TextEditingController();
+
+  late final registerEmailTextEditingController = TextEditingController();
+  late final registerPasswordTextEditingController = TextEditingController();
+  late final registerNameTextEditingController = TextEditingController();
 
   ///
   /// INIT
   ///
 
   void init() {
-    /// Validation
-    emailTextEditingController.addListener(
+    /// Validation listeners
+    loginEmailTextEditingController.addListener(
+      validateEmailAndPassword,
+    );
+    loginPasswordTextEditingController.addListener(
       validateEmailAndPassword,
     );
 
-    /// Validation
-    passwordTextEditingController.addListener(
+    registerEmailTextEditingController.addListener(
+      validateEmailAndPassword,
+    );
+    registerPasswordTextEditingController.addListener(
       validateEmailAndPassword,
     );
   }
@@ -64,8 +77,12 @@ class EntranceController
 
   @override
   void onDispose() {
-    emailTextEditingController.dispose();
-    passwordTextEditingController.dispose();
+    loginEmailTextEditingController.dispose();
+    loginPasswordTextEditingController.dispose();
+
+    registerEmailTextEditingController.dispose();
+    registerPasswordTextEditingController.dispose();
+    registerNameTextEditingController.dispose();
   }
 
   ///
@@ -76,14 +93,20 @@ class EntranceController
   /// Validates email & password
   /// Updates login button state
   void validateEmailAndPassword() {
-    /// Parse values
-    final email = emailTextEditingController.text.trim();
-    final password = passwordTextEditingController.text.trim();
+    /// Parse login values
+    final loginEmail = loginEmailTextEditingController.text.trim();
+    final loginPassword = loginPasswordTextEditingController.text.trim();
+
+    /// Parse register values
+    final registerEmail = registerEmailTextEditingController.text.trim();
+    final registerPassword = registerPasswordTextEditingController.text.trim();
 
     /// Validate values
     updateState(
-      emailValid: isValidEmail(email),
-      passwordValid: password.length >= 8,
+      loginEmailValid: isValidEmail(loginEmail),
+      loginPasswordValid: loginPassword.length >= 8,
+      registerEmailValid: isValidEmail(registerEmail),
+      registerPasswordValid: registerPassword.length >= 8,
     );
   }
 
@@ -102,8 +125,8 @@ class EntranceController
       emailIsLoading: true,
     );
 
-    final email = emailTextEditingController.text.trim();
-    final password = passwordTextEditingController.text.trim();
+    final email = loginEmailTextEditingController.text.trim();
+    final password = loginPasswordTextEditingController.text.trim();
 
     try {
       final loginResult = await firebase.loginUser(
@@ -251,14 +274,18 @@ class EntranceController
 
   /// Updates `state`
   void updateState({
-    bool? emailValid,
-    bool? passwordValid,
+    bool? loginEmailValid,
+    bool? loginPasswordValid,
+    bool? registerEmailValid,
+    bool? registerPasswordValid,
     bool? emailIsLoading,
     bool? googleIsLoading,
     bool? appleIsLoading,
   }) => value = (
-    emailValid: emailValid ?? value.emailValid,
-    passwordValid: passwordValid ?? value.passwordValid,
+    loginEmailValid: loginEmailValid ?? value.loginEmailValid,
+    loginPasswordValid: loginPasswordValid ?? value.loginPasswordValid,
+    registerEmailValid: registerEmailValid ?? value.registerEmailValid,
+    registerPasswordValid: registerPasswordValid ?? value.registerPasswordValid,
     emailIsLoading: emailIsLoading ?? value.emailIsLoading,
     googleIsLoading: googleIsLoading ?? value.googleIsLoading,
     appleIsLoading: appleIsLoading ?? value.appleIsLoading,

@@ -7,11 +7,14 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import '../../widgets/text_field_widget.dart';
 import 'entrance_controller.dart';
+import 'widgets/entrance_login.dart';
+import 'widgets/entrance_register.dart';
 
 class EntranceScreen extends WatchingStatefulWidget {
   @override
@@ -19,6 +22,8 @@ class EntranceScreen extends WatchingStatefulWidget {
 }
 
 class _EntranceScreenState extends State<EntranceScreen> {
+  var showLogin = true;
+
   @override
   void initState() {
     super.initState();
@@ -37,9 +42,13 @@ class _EntranceScreenState extends State<EntranceScreen> {
     super.dispose();
   }
 
-  Future<void> handleLogin({
+  void toggleLoginRegister() => setState(
+    () => showLogin = !showLogin,
+  );
+
+  Future<void> handleOnPressed({
     required BuildContext context,
-    required Future<({User? user, String? error})> Function() onLoginPressed,
+    required Future<({User? user, String? error})> Function() onPressed,
   }) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -47,19 +56,18 @@ class _EntranceScreenState extends State<EntranceScreen> {
       HapticFeedback.lightImpact(),
     );
 
-    final loginResult = await onLoginPressed();
+    final result = await onPressed();
 
-    /// Successful login
-    if (loginResult.user != null && loginResult.error == null) {
-      // openHome(context);
+    /// Successful logic
+    if (result.user != null && result.error == null) {
       return;
     }
 
     /// Non-successful login
     showSnackbar(
       context,
-      text: loginResult.error ?? 'errorUnknown',
-      icon: Icons.error_rounded,
+      text: result.error ?? 'errorUnknown',
+      icon: PhosphorIconsBold.warningOctagon,
     );
   }
 
@@ -69,7 +77,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
     final state = watchIt<EntranceController>().value;
 
-    final validated = state.emailValid && state.passwordValid;
+    final loginValidated = state.loginEmailValid && state.loginPasswordValid;
+    final registerValidated = state.registerEmailValid && state.registerPasswordValid;
 
     final emailIsLoading = state.emailIsLoading;
     final googleIsLoading = state.googleIsLoading;
@@ -104,7 +113,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Welcome back',
+                    'Welcome',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 36,
@@ -127,7 +136,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    'Neki tekst ovdje, nemam pojma',
+                    'Track your everyday meals, weight & walks',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -141,139 +150,34 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 child: SizedBox(height: 32),
               ),
 
-              ///
-              /// EMAIL TITLE
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 36),
-                sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Email address'.toUpperCase(),
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 12),
-              ),
-
-              ///
-              /// EMAIL TEXTFIELD
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                sliver: SliverToBoxAdapter(
-                  child: TextFieldWidget(
-                    autocorrect: false,
-                    controller: entranceController.emailTextEditingController,
-                    hintText: 'name@example.com',
-                    autofillHints: const [AutofillHints.email],
-                    keyboardType: TextInputType.emailAddress,
-                    textAlign: TextAlign.left,
-                    textCapitalization: TextCapitalization.none,
-                    textInputAction: TextInputAction.next,
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 32),
-              ),
-
-              ///
-              /// PASSWORD TITLE
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 36),
-                sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Password'.toUpperCase(),
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 12),
-              ),
-
-              ///
-              /// PASSWORD TEXTFIELD
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                sliver: SliverToBoxAdapter(
-                  child: TextFieldWidget(
-                    autocorrect: false,
-                    obscureText: true,
-                    controller: entranceController.passwordTextEditingController,
-                    hintText: '•' * 8,
-                    onSubmitted: (_) {
-                      if (!validated || emailIsLoading) {
-                        return;
-                      }
-
-                      unawaited(
-                        handleLogin(
+              AnimatedSwitcher(
+                duration: BokunSpizeDurations.animation,
+                switchInCurve: Curves.easeIn,
+                switchOutCurve: Curves.easeIn,
+                child: showLogin
+                    ? EntranceLogin(
+                        emailTextEditingController: entranceController.loginEmailTextEditingController,
+                        passwordTextEditingController: entranceController.loginPasswordTextEditingController,
+                        validated: loginValidated,
+                        emailIsLoading: emailIsLoading,
+                        onLoginPressed: () => handleOnPressed(
                           context: context,
-                          onLoginPressed: entranceController.emailSignInPressed,
+                          onPressed: entranceController.emailSignInPressed,
                         ),
-                      );
-                    },
-                    autofillHints: const [AutofillHints.password],
-                    keyboardType: TextInputType.visiblePassword,
-                    textAlign: TextAlign.left,
-                    textCapitalization: TextCapitalization.none,
-                    textInputAction: TextInputAction.go,
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 36),
+                      )
+                    : EntranceRegister(
+                        emailTextEditingController: entranceController.registerEmailTextEditingController,
+                        passwordTextEditingController: entranceController.registerPasswordTextEditingController,
+                        nameTextEditingController: entranceController.registerNameTextEditingController,
+                        validated: registerValidated,
+                        emailIsLoading: emailIsLoading,
+                        onRegisterPressed: () => handleOnPressed(
+                          context: context,
+                          onPressed: entranceController.emailRegisterPressed,
+                        ),
+                      ),
               ),
 
-              ///
-              /// SIGN IN BUTTON
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                sliver: SliverToBoxAdapter(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: validated && !emailIsLoading
-                          ? () => handleLogin(
-                              context: context,
-                              onLoginPressed: entranceController.emailSignInPressed,
-                            )
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        padding: const EdgeInsets.all(22),
-                        backgroundColor: BokunSpizeColors.primary,
-                        foregroundColor: BokunSpizeColors.white,
-                        disabledBackgroundColor: BokunSpizeColors.primary.withValues(alpha: 0.3),
-                        disabledForegroundColor: BokunSpizeColors.white,
-                      ),
-                      child: const Text('Sign in'),
-                    ),
-                  ),
-                ),
-              ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 32),
               ),
@@ -317,9 +221,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         child: ElevatedButton.icon(
                           onPressed: googleIsLoading
                               ? null
-                              : () => handleLogin(
+                              : () => handleOnPressed(
                                   context: context,
-                                  onLoginPressed: entranceController.googleSignInPressed,
+                                  onPressed: entranceController.googleSignInPressed,
                                 ),
                           icon: const PhosphorIcon(
                             PhosphorIconsBold.googleLogo,
@@ -353,9 +257,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         child: ElevatedButton.icon(
                           onPressed: appleIsLoading
                               ? null
-                              : () => handleLogin(
+                              : () => handleOnPressed(
                                   context: context,
-                                  onLoginPressed: entranceController.appleSignInPressed,
+                                  onPressed: entranceController.appleSignInPressed,
                                 ),
                           icon: const PhosphorIcon(
                             PhosphorIconsBold.appleLogo,
