@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 
 import '../constants/colors.dart';
-import '../main.dart';
+import '../constants/constants.dart';
 
 class TimeSheet extends StatefulWidget {
   final DateTime dateValue;
@@ -42,7 +42,7 @@ class _TimeSheetState extends State<TimeSheet> {
               fontSize: 28,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
-              color: BokunSpizeColors.neutralDark,
+              color: BokunSpizeColors.black,
             ),
           ),
           const SizedBox(height: 20),
@@ -69,13 +69,13 @@ class _TimeSheetState extends State<TimeSheet> {
                   fontFamily: 'Epilogue',
                   fontSize: 22,
                   fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.neutralDark.withValues(alpha: 0.45),
+                  color: BokunSpizeColors.black.withValues(alpha: 0.45),
                 ),
                 disabledStyle: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 22,
                   fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.neutralDark.withValues(alpha: 0.2),
+                  color: BokunSpizeColors.black.withValues(alpha: 0.2),
                 ),
               ),
               wheelOption: const DateTimePickerWheelOption(

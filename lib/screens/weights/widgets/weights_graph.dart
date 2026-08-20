@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
-import '../../../main.dart';
 import '../../../models/weight_track/weight_track.dart';
 import '../../../util/weight_track.dart';
 
@@ -44,7 +44,7 @@ class WeightsGraph extends StatelessWidget {
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: BokunSpizeColors.neutralDark.withValues(
+                          color: BokunSpizeColors.black.withValues(
                             alpha: 0.4,
                           ),
                         ),
@@ -249,7 +249,7 @@ class WeightsGraph extends StatelessWidget {
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
-          color: BokunSpizeColors.neutralDark.withValues(alpha: 0.4),
+          color: BokunSpizeColors.black.withValues(alpha: 0.4),
         ),
       ),
     );

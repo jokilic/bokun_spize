@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
-import '../../../main.dart';
 import '../../../util/date_time.dart';
 import '../../../widgets/calendar_sheet.dart';
 import '../../../widgets/time_sheet.dart';
@@ -158,7 +158,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.6,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               textAlign: TextAlign.center,
             ),
@@ -173,7 +173,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               textAlign: TextAlign.center,
             ),
@@ -194,7 +194,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       fontFamily: 'Epilogue',
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
+                      color: BokunSpizeColors.black.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -203,7 +203,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 fontFamily: 'Epilogue',
                 fontSize: 56,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               textAlign: TextAlign.center,
             ),
@@ -270,7 +270,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   onPressed: () => updateDateViaPicker(context),
                   icon: const PhosphorIcon(
                     PhosphorIconsBold.calendarDot,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                     size: 18,
                   ),
                   label: Text(date),
@@ -281,14 +281,14 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: BokunSpizeColors.neutralLight,
+                      color: BokunSpizeColors.grey,
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    backgroundColor: BokunSpizeColors.neutralLight,
-                    foregroundColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
+                    backgroundColor: BokunSpizeColors.grey,
+                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.8),
                   ),
                 ),
 
@@ -301,7 +301,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   onPressed: () => updateTimeViaPicker(context),
                   icon: const PhosphorIcon(
                     PhosphorIconsBold.clock,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                     size: 18,
                   ),
                   label: Text(time),
@@ -312,14 +312,14 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: BokunSpizeColors.neutralLight,
+                      color: BokunSpizeColors.grey,
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    backgroundColor: BokunSpizeColors.neutralLight,
-                    foregroundColor: BokunSpizeColors.neutralDark.withValues(alpha: 0.8),
+                    backgroundColor: BokunSpizeColors.grey,
+                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -372,7 +372,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     final weight = minimumWeight + (index * weightStep);
     final color = isSelected
         ? BokunSpizeColors.primary.withValues(alpha: 0.35)
-        : BokunSpizeColors.neutralDark.withValues(
+        : BokunSpizeColors.black.withValues(
             alpha: isWholeKilogram ? 0.28 : 0.14,
           );
 

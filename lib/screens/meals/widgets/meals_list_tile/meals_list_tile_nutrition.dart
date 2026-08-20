@@ -29,7 +29,7 @@ class MealsListTileNutrition extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: BokunSpizeColors.neutralLight,
+        color: BokunSpizeColors.grey,
         borderRadius: BorderRadius.circular(100),
       ),
       padding: const EdgeInsets.symmetric(
@@ -54,7 +54,7 @@ class MealsListTileNutrition extends StatelessWidget {
                       fontSize: 10,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.4,
-                      color: BokunSpizeColors.neutralDark,
+                      color: BokunSpizeColors.black,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -68,7 +68,7 @@ class MealsListTileNutrition extends StatelessWidget {
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.4,
-                      color: BokunSpizeColors.neutralDark,
+                      color: BokunSpizeColors.black,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -3,7 +3,7 @@ import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
-import '../../../main.dart';
+import '../../../constants/constants.dart';
 import '../../../models/weight_track/weight_track.dart';
 import '../../../util/date_time.dart';
 import '../../../util/format.dart';
@@ -25,9 +25,9 @@ class WeightsListTile extends StatelessWidget {
         ? switch (weightChange!) {
             > 0 => BokunSpizeColors.tertiary,
             < 0 => BokunSpizeColors.primary,
-            _ => BokunSpizeColors.neutralDark,
+            _ => BokunSpizeColors.black,
           }
-        : BokunSpizeColors.neutralDark;
+        : BokunSpizeColors.black;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -38,7 +38,7 @@ class WeightsListTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
           key: ValueKey(weightTrack.id),
-          backgroundColor: BokunSpizeColors.neutralLight,
+          backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
           deleteAnimationDuration: 175,
@@ -76,9 +76,9 @@ class WeightsListTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
                       padding: const EdgeInsets.all(12),
-                      color: BokunSpizeColors.neutralLight,
+                      color: BokunSpizeColors.grey,
                       child: const PhosphorIcon(
-                        PhosphorIconsBold.scales,
+                        PhosphorIconsBold.personSimple,
                         color: BokunSpizeColors.primary,
                         size: 24,
                       ),
@@ -109,7 +109,7 @@ class WeightsListTile extends StatelessWidget {
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
-                            color: BokunSpizeColors.neutralDark,
+                            color: BokunSpizeColors.black,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -129,7 +129,7 @@ class WeightsListTile extends StatelessWidget {
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
+                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -151,7 +151,7 @@ class WeightsListTile extends StatelessWidget {
                             fontFamily: 'Epilogue',
                             fontSize: 24,
                             fontWeight: FontWeight.w900,
-                            color: BokunSpizeColors.neutralDark,
+                            color: BokunSpizeColors.black,
                           ),
                           children: [
                             const WidgetSpan(
@@ -165,7 +165,7 @@ class WeightsListTile extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 height: 1.2,
                                 letterSpacing: 1.5,
-                                color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
+                                color: BokunSpizeColors.black.withValues(alpha: 0.7),
                               ),
                             ),
                           ],

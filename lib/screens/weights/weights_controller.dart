@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
-import '../../main.dart';
+import '../../constants/constants.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import 'widgets/weights_add_weight_sheet.dart';

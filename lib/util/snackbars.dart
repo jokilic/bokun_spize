@@ -17,7 +17,7 @@ void showSnackbar(
         children: [
           PhosphorIcon(
             icon,
-            color: BokunSpizeColors.neutralDark,
+            color: BokunSpizeColors.black,
             size: 28,
           ),
           const SizedBox(width: 10),
@@ -28,7 +28,7 @@ void showSnackbar(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
             ),
           ),
@@ -36,11 +36,11 @@ void showSnackbar(
       ),
       padding: const EdgeInsets.all(14),
       behavior: SnackBarBehavior.floating,
-      backgroundColor: BokunSpizeColors.neutralLight,
+      backgroundColor: BokunSpizeColors.grey,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(100),
         side: const BorderSide(
-          color: BokunSpizeColors.neutralDark,
+          color: BokunSpizeColors.black,
           width: 1.5,
         ),
       ),

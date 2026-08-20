@@ -23,7 +23,7 @@ class NavigationBarWidget extends WatchingWidget {
       borderRadius: BorderRadius.circular(48),
       child: NavigationBar(
         height: 88,
-        backgroundColor: BokunSpizeColors.neutralLight,
+        backgroundColor: BokunSpizeColors.grey,
         elevation: 0,
         indicatorColor: Colors.transparent,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
@@ -42,7 +42,7 @@ class NavigationBarWidget extends WatchingWidget {
               children: [
                 const PhosphorIcon(
                   PhosphorIconsBold.bowlFood,
-                  color: BokunSpizeColors.neutralDark,
+                  color: BokunSpizeColors.black,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
@@ -52,7 +52,7 @@ class NavigationBarWidget extends WatchingWidget {
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                   ),
                 ),
               ],
@@ -81,7 +81,7 @@ class NavigationBarWidget extends WatchingWidget {
               children: [
                 const PhosphorIcon(
                   PhosphorIconsBold.personSimple,
-                  color: BokunSpizeColors.neutralDark,
+                  color: BokunSpizeColors.black,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
@@ -91,7 +91,7 @@ class NavigationBarWidget extends WatchingWidget {
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                   ),
                 ),
               ],
@@ -120,7 +120,7 @@ class NavigationBarWidget extends WatchingWidget {
               children: [
                 const PhosphorIcon(
                   PhosphorIconsBold.footprints,
-                  color: BokunSpizeColors.neutralDark,
+                  color: BokunSpizeColors.black,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
@@ -130,7 +130,7 @@ class NavigationBarWidget extends WatchingWidget {
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                   ),
                 ),
               ],
@@ -169,7 +169,7 @@ class NavigationBarWidget extends WatchingWidget {
                 else
                   const PhosphorIcon(
                     PhosphorIconsBold.user,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                     size: 24,
                   ),
                 const SizedBox(height: 8),
@@ -179,7 +179,7 @@ class NavigationBarWidget extends WatchingWidget {
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.neutralDark,
+                    color: BokunSpizeColors.black,
                   ),
                 ),
               ],

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
-import '../../main.dart';
+import '../../constants/constants.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';

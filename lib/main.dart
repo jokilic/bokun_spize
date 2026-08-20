@@ -16,9 +16,6 @@ import 'services/screen_service.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
-// TODO: Move this somewhere appropriate
-const listTileRadius = 32.0;
-
 Future<void> main() async {
   /// Initialize Flutter related tasks
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,7 +79,7 @@ class BokunSpizeApp extends StatelessWidget {
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: ThemeData.light().copyWith(
-      scaffoldBackgroundColor: BokunSpizeColors.neutralLight,
+      scaffoldBackgroundColor: BokunSpizeColors.grey,
     ),
     builder: (_, child) {
       final appWidget =

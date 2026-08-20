@@ -5,8 +5,8 @@ import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../constants/colors.dart';
+import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
-import '../../../../main.dart';
 import '../../../../models/meal/meal.dart';
 import '../../../../util/date_time.dart';
 import '../../../../util/format.dart';
@@ -52,10 +52,10 @@ class _MealsListTileState extends State<MealsListTile> {
         widget.meal.errors?.map((error) => error).join(', ');
 
     final imageBackgroundColor = isLoading
-        ? BokunSpizeColors.neutralLight
+        ? BokunSpizeColors.grey
         : hasError
         ? BokunSpizeColors.tertiary
-        : widget.meal.color ?? BokunSpizeColors.neutralLight;
+        : widget.meal.color ?? BokunSpizeColors.grey;
 
     final borderColor = hasError
         ? BokunSpizeColors.tertiary
@@ -72,7 +72,7 @@ class _MealsListTileState extends State<MealsListTile> {
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
           key: ValueKey(widget.meal.id),
-          backgroundColor: BokunSpizeColors.neutralLight,
+          backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
           deleteAnimationDuration: 175,
@@ -99,7 +99,7 @@ class _MealsListTileState extends State<MealsListTile> {
                 await handler(false);
                 await widget.onCopyPressed();
               },
-              color: BokunSpizeColors.alternative,
+              color: BokunSpizeColors.secondary,
               backgroundRadius: listTileRadius,
               icon: const PhosphorIcon(
                 PhosphorIconsBold.copy,
@@ -244,7 +244,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.w900,
                                                 height: 1.4,
-                                                color: BokunSpizeColors.neutralDark,
+                                                color: BokunSpizeColors.black,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -256,7 +256,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.w900,
                                                 height: 1.4,
-                                                color: BokunSpizeColors.neutralDark,
+                                                color: BokunSpizeColors.black,
                                               ),
                                             ),
                                           ),
@@ -286,7 +286,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                             fontWeight: FontWeight.w400,
                                             height: 1.4,
                                             letterSpacing: 1.4,
-                                            color: BokunSpizeColors.neutralDark,
+                                            color: BokunSpizeColors.black,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -299,7 +299,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                             fontWeight: FontWeight.w400,
                                             height: 1.4,
                                             letterSpacing: 1.4,
-                                            color: BokunSpizeColors.neutralDark,
+                                            color: BokunSpizeColors.black,
                                           ),
                                         ),
                                       )
@@ -400,7 +400,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                       fontWeight: FontWeight.w600,
                                       height: 1,
                                       letterSpacing: 1,
-                                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.75),
+                                      color: BokunSpizeColors.black.withValues(alpha: 0.75),
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -460,7 +460,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 1,
-                                    color: BokunSpizeColors.neutralDark,
+                                    color: BokunSpizeColors.black,
                                   ),
                                 ),
                               ),
@@ -483,7 +483,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                     const SizedBox(height: 12),
                                     Container(
                                       height: 1,
-                                      color: BokunSpizeColors.neutralLight,
+                                      color: BokunSpizeColors.grey,
                                     ),
                                     const SizedBox(height: 12),
                                   ],

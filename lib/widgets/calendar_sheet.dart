@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../../main.dart';
 import '../constants/colors.dart';
+import '../constants/constants.dart';
 
 class CalendarSheet extends StatefulWidget {
   final DateTime dateValue;
@@ -43,7 +43,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
               fontSize: 28,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
-              color: BokunSpizeColors.neutralDark,
+              color: BokunSpizeColors.black,
             ),
           ),
           const SizedBox(height: 20),
@@ -67,55 +67,55 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 14,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               controlsTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               dayTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               todayTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               selectedDayTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralLight,
+                color: BokunSpizeColors.grey,
               ),
               selectedMonthTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralLight,
+                color: BokunSpizeColors.grey,
               ),
               monthTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               selectedYearTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.neutralLight,
+                color: BokunSpizeColors.grey,
               ),
               yearTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
               ),
               selectedDayHighlightColor: BokunSpizeColors.primary,
               daySplashColor: BokunSpizeColors.primary,
@@ -125,7 +125,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 if ((isToday ?? false) && !(isSelected ?? false)) {
                   currentDecoration = BoxDecoration(
                     border: Border.all(
-                      color: BokunSpizeColors.neutralDark,
+                      color: BokunSpizeColors.black,
                       width: 1.5,
                     ),
                     shape: BoxShape.circle,
@@ -144,12 +144,12 @@ class _CalendarSheetState extends State<CalendarSheet> {
               firstDayOfWeek: DateTime.monday,
               lastMonthIcon: const PhosphorIcon(
                 PhosphorIconsBold.caretLeft,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
                 size: 28,
               ),
               nextMonthIcon: const PhosphorIcon(
                 PhosphorIconsBold.caretRight,
-                color: BokunSpizeColors.neutralDark,
+                color: BokunSpizeColors.black,
                 size: 28,
               ),
             ),

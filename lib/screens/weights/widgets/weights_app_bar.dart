@@ -20,7 +20,7 @@ class WeightsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SliverAppBar.large(
-    backgroundColor: BokunSpizeColors.neutralLight,
+    backgroundColor: BokunSpizeColors.grey,
     elevation: 0,
     scrolledUnderElevation: 0,
     expandedHeight: 200,
@@ -115,9 +115,9 @@ class FadingFlexibleTitle extends StatelessWidget {
         ? switch (weightChange!) {
             > 0 => BokunSpizeColors.tertiary,
             < 0 => BokunSpizeColors.primary,
-            _ => BokunSpizeColors.neutralDark,
+            _ => BokunSpizeColors.black,
           }
-        : BokunSpizeColors.neutralDark;
+        : BokunSpizeColors.black;
 
     return Opacity(
       opacity: opacity,
@@ -144,7 +144,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       fontSize: 10,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.6,
-                      color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
+                      color: BokunSpizeColors.black.withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -175,7 +175,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             height: 1.2,
                             letterSpacing: 1.5,
-                            color: BokunSpizeColors.neutralDark.withValues(alpha: 0.7),
+                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -231,7 +231,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         fontSize: 8,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.2,
-                        color: BokunSpizeColors.neutralDark,
+                        color: BokunSpizeColors.black,
                       ),
                       textAlign: TextAlign.right,
                     ),
