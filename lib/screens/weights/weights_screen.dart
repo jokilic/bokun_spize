@@ -62,15 +62,20 @@ class _WeightsScreenState extends State<WeightsScreen> {
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;
 
+    /// Number of previous calendar days used for the weight comparison
+    const weightChangeCalendarDays = 7;
+
     /// Calculate `weightChange`
     final weightChange = getWeightChange(
       weightTracks: weightTracks,
       lastWeight: lastWeightTrack?.weight,
+      calendarDays: weightChangeCalendarDays,
     );
 
     /// Calculate `weightChangeWithinDays`
     final weightChangeWithinDays = getWeightChangeWithinDays(
       weightTracks: weightTracks,
+      calendarDays: weightChangeCalendarDays,
     );
 
     return Scaffold(
