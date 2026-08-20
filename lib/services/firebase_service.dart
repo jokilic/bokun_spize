@@ -113,6 +113,33 @@ class FirebaseService {
     }
   }
 
+  /// Sends a password reset email through [Firebase]
+  Future<({bool success, String? error})> sendPasswordResetEmail({
+    required String email,
+  }) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+
+      return (success: true, error: null);
+    } on FirebaseAuthException catch (e) {
+      final error = switch (e.code) {
+        'invalid-email' => 'errorEmailInvalid',
+        'user-disabled' => 'errorAccountDisabled',
+        'user-not-found' => 'errorUserNotFound',
+        'too-many-requests' => 'errorTooManyRequests',
+        'operation-not-allowed' => 'errorOperationNotAllowed',
+        _ => e.code,
+      };
+
+      log(error);
+      return (success: false, error: error);
+    } catch (e) {
+      final error = 'Password reset error $e';
+      log(error);
+      return (success: false, error: error);
+    }
+  }
+
   /// Signs user in with Google and authenticates with [Firebase]
   Future<({User? user, String? error})> signInWithGoogle() async {
     try {

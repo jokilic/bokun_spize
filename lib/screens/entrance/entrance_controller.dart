@@ -176,7 +176,37 @@ class EntranceController
     }
   }
 
-  // TODO: Implement `forgetPasswordPressed()`
+  /// Triggered when the user presses forgot password button
+  Future<({bool success, String? error})> forgetPasswordPressed() async {
+    final isLoading = value.emailIsLoading || value.googleIsLoading || value.appleIsLoading;
+
+    if (isLoading) {
+      return (
+        success: false,
+        error: 'Already loading',
+      );
+    }
+
+    updateState(
+      emailIsLoading: true,
+    );
+
+    /// Get relevant values
+    final email = loginEmailTextEditingController.text.trim();
+
+    try {
+      return await firebase.sendPasswordResetEmail(
+        email: email,
+      );
+    } catch (e) {
+      log('EntranceController -> forgetPasswordPressed() -> $e');
+      return (success: false, error: '$e');
+    } finally {
+      updateState(
+        emailIsLoading: false,
+      );
+    }
+  }
 
   /// Triggered when the user presses email register button
   Future<({User? user, String? error})> emailRegisterPressed() async {
