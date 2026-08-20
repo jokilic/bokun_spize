@@ -48,7 +48,7 @@ class _MealsScreenState extends State<MealsScreen> {
     final firebaseService = getIt.get<FirebaseService>();
     final mealsController = getIt.get<MealsController>();
 
-    /// User name
+    /// User data from `Firebase`
     final userName = firebaseService.userName;
 
     /// Currently selected day
@@ -114,7 +114,6 @@ class _MealsScreenState extends State<MealsScreen> {
             ///
             MealsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
               onCalendarPressed: () => mealsController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,

@@ -121,7 +121,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
             ///
             WeightsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              imagePath: 'https://thedeliciousplate.com/wp-content/uploads/2024/01/Mediterranean-tomato-and-cucumber-salad-11.jpg',
               timeString: lastWeightTrack != null
                   ? getDateString(
                       date: lastWeightTrack.dateTime,

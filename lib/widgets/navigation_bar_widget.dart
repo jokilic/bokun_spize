@@ -4,6 +4,7 @@ import 'package:watch_it/watch_it.dart';
 
 import '../constants/colors.dart';
 import '../constants/durations.dart';
+import '../services/firebase_service.dart';
 import '../services/screen_service.dart';
 import '../util/dependencies.dart';
 
@@ -12,6 +13,10 @@ class NavigationBarWidget extends WatchingWidget {
   Widget build(BuildContext context) {
     final screen = getIt.get<ScreenService>();
 
+    /// User data from `Firebase`
+    final userPhoto = getIt.get<FirebaseService>().userPhoto;
+
+    /// Current navigation bar item
     final navigationBarItem = watchIt<ScreenService>().value;
 
     return ClipRRect(
@@ -152,11 +157,21 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const PhosphorIcon(
-                  PhosphorIconsBold.user,
-                  color: BokunSpizeColors.neutralDark,
-                  size: 24,
-                ),
+                if (userPhoto != null)
+                  ClipOval(
+                    child: Image.network(
+                      userPhoto,
+                      height: 24,
+                      width: 24,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                else
+                  const PhosphorIcon(
+                    PhosphorIconsBold.user,
+                    color: BokunSpizeColors.neutralDark,
+                    size: 24,
+                  ),
                 const SizedBox(height: 8),
                 Text(
                   'Account'.toUpperCase(),
@@ -175,11 +190,20 @@ class NavigationBarWidget extends WatchingWidget {
                 color: BokunSpizeColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: const PhosphorIcon(
-                PhosphorIconsBold.user,
-                color: BokunSpizeColors.white,
-                size: 24,
-              ),
+              child: userPhoto != null
+                  ? ClipOval(
+                      child: Image.network(
+                        userPhoto,
+                        height: 24,
+                        width: 24,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : const PhosphorIcon(
+                      PhosphorIconsBold.user,
+                      color: BokunSpizeColors.white,
+                      size: 24,
+                    ),
             ),
             label: '',
           ),

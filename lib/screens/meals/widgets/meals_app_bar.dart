@@ -5,7 +5,6 @@ import '../../../constants/colors.dart';
 
 class MealsAppBar extends StatelessWidget {
   final String? title;
-  final String? imagePath;
   final Function() onCalendarPressed;
   final String dayString;
   final int currentCalories;
@@ -13,7 +12,6 @@ class MealsAppBar extends StatelessWidget {
 
   const MealsAppBar({
     required this.title,
-    required this.imagePath,
     required this.onCalendarPressed,
     required this.dayString,
     required this.currentCalories,

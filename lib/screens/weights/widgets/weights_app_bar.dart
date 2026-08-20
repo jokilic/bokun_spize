@@ -5,7 +5,6 @@ import '../../../constants/colors.dart';
 
 class WeightsAppBar extends StatelessWidget {
   final String? title;
-  final String? imagePath;
   final String timeString;
   final double? currentWeight;
   final double? weightChange;
@@ -13,7 +12,6 @@ class WeightsAppBar extends StatelessWidget {
 
   const WeightsAppBar({
     required this.title,
-    required this.imagePath,
     required this.timeString,
     required this.currentWeight,
     required this.weightChange,
