@@ -11,7 +11,6 @@ import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
-import '../../widgets/text_field_widget.dart';
 import 'entrance_controller.dart';
 import 'widgets/entrance_login.dart';
 import 'widgets/entrance_register.dart';
@@ -150,32 +149,37 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 child: SizedBox(height: 32),
               ),
 
-              AnimatedSwitcher(
-                duration: BokunSpizeDurations.animation,
-                switchInCurve: Curves.easeIn,
-                switchOutCurve: Curves.easeIn,
-                child: showLogin
-                    ? EntranceLogin(
-                        emailTextEditingController: entranceController.loginEmailTextEditingController,
-                        passwordTextEditingController: entranceController.loginPasswordTextEditingController,
-                        validated: loginValidated,
-                        emailIsLoading: emailIsLoading,
-                        onLoginPressed: () => handleOnPressed(
-                          context: context,
-                          onPressed: entranceController.emailSignInPressed,
+              ///
+              /// LOGIN / REGISTER
+              ///
+              SliverToBoxAdapter(
+                child: AnimatedSwitcher(
+                  duration: BokunSpizeDurations.animation,
+                  switchInCurve: Curves.easeIn,
+                  switchOutCurve: Curves.easeIn,
+                  child: showLogin
+                      ? EntranceLogin(
+                          emailTextEditingController: entranceController.loginEmailTextEditingController,
+                          passwordTextEditingController: entranceController.loginPasswordTextEditingController,
+                          validated: loginValidated,
+                          emailIsLoading: emailIsLoading,
+                          onLoginPressed: () => handleOnPressed(
+                            context: context,
+                            onPressed: entranceController.emailSignInPressed,
+                          ),
+                        )
+                      : EntranceRegister(
+                          emailTextEditingController: entranceController.registerEmailTextEditingController,
+                          passwordTextEditingController: entranceController.registerPasswordTextEditingController,
+                          nameTextEditingController: entranceController.registerNameTextEditingController,
+                          validated: registerValidated,
+                          emailIsLoading: emailIsLoading,
+                          onRegisterPressed: () => handleOnPressed(
+                            context: context,
+                            onPressed: entranceController.emailRegisterPressed,
+                          ),
                         ),
-                      )
-                    : EntranceRegister(
-                        emailTextEditingController: entranceController.registerEmailTextEditingController,
-                        passwordTextEditingController: entranceController.registerPasswordTextEditingController,
-                        nameTextEditingController: entranceController.registerNameTextEditingController,
-                        validated: registerValidated,
-                        emailIsLoading: emailIsLoading,
-                        onRegisterPressed: () => handleOnPressed(
-                          context: context,
-                          onPressed: entranceController.emailRegisterPressed,
-                        ),
-                      ),
+                ),
               ),
 
               const SliverToBoxAdapter(

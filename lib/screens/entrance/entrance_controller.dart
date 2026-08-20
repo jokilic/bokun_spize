@@ -125,6 +125,7 @@ class EntranceController
       emailIsLoading: true,
     );
 
+    /// Get relevant values
     final email = loginEmailTextEditingController.text.trim();
     final password = loginPasswordTextEditingController.text.trim();
 
@@ -161,6 +162,65 @@ class EntranceController
       return loginResult;
     } catch (e) {
       log('EntranceController -> emailSignInPressed() -> $e');
+      updateState(
+        emailIsLoading: false,
+      );
+      return (user: null, error: '$e');
+    }
+  }
+
+  /// Triggered when the user presses email register button
+  Future<({User? user, String? error})> emailRegisterPressed() async {
+    final isLoading = value.emailIsLoading || value.googleIsLoading || value.appleIsLoading;
+
+    if (isLoading) {
+      return (
+        user: null,
+        error: 'Already loading',
+      );
+    }
+
+    updateState(
+      emailIsLoading: true,
+    );
+
+    /// Get relevant values
+    final email = registerEmailTextEditingController.text.trim();
+    final password = registerPasswordTextEditingController.text.trim();
+
+    try {
+      final registerResult = await firebase.registerUser(
+        email: email,
+        password: password,
+      );
+
+      /// Successful registration
+      if (registerResult.user != null && registerResult.error == null) {
+        /// Store `isLoggedIn` into [Hive]
+        // await hive.writeSettings(
+        //   hive.getSettings().copyWith(
+        //     isLoggedIn: true,
+        //   ),
+        // );
+
+        /// Fetch all data from [Firebase] & store into [Hive]
+        // await getFirebaseDataIntoHive();
+
+        updateState(
+          emailIsLoading: false,
+        );
+      }
+      /// Not successful registration
+      else {
+        log('EntranceController -> emailRegisterPressed() -> user == null');
+        updateState(
+          emailIsLoading: false,
+        );
+      }
+
+      return registerResult;
+    } catch (e) {
+      log('EntranceController -> emailRegisterPressed() -> $e');
       updateState(
         emailIsLoading: false,
       );
