@@ -36,10 +36,10 @@ class MealsAppBar extends StatelessWidget {
             onPressed: null,
             icon: const PhosphorIcon(
               PhosphorIconsBold.carrot,
-              size: 28,
+              size: 26,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -59,11 +59,11 @@ class MealsAppBar extends StatelessWidget {
               title!,
               style: const TextStyle(
                 fontFamily: 'Epilogue',
-                fontSize: 24,
+                fontSize: 22,
                 height: 1.2,
-                letterSpacing: 0,
+                letterSpacing: 0.6,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.secondary,
               ),
             ),
 
@@ -79,7 +79,7 @@ class MealsAppBar extends StatelessWidget {
               size: 26,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
