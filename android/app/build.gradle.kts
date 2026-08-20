@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId = "com.josipkilic.bokun_spize"
-        minSdk = flutter.minSdkVersion
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

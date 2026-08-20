@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<key>NSHealthShareUsageDescription</key>
+		<string>Bokun spize reads your health data to show your activity and progress.</string>
+		<key>NSHealthUpdateUsageDescription</key>
+		<string>Bokun spize saves health data you choose to share with Apple Health.</string>
 		<key>NSMotionUsageDescription</key>
-		<string>Bokun spize is tracking your steps to show you proper info</string>
+		<string>Bokun spize reads your steps to show your activity and progress.</string>
 		<key>UIBackgroundModes</key>
 		<array>
     		<string>processing</string>

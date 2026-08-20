@@ -43,6 +43,7 @@ dependencies:
   fuzzywuzzy: 1.2.0
   get_it: 9.2.1
   google_sign_in: 7.2.0
+  health: 13.3.2
   image_picker: 1.2.3
   intl: 0.20.3
   pedometer: 4.2.0
