@@ -9,6 +9,7 @@ class EntranceLogin extends StatelessWidget {
   final TextEditingController emailTextEditingController;
   final TextEditingController passwordTextEditingController;
   final bool validated;
+  final bool emailValidated;
   final bool emailIsLoading;
   final Function() onLoginPressed;
   final Function() onForgetPasswordPressed;
@@ -17,6 +18,7 @@ class EntranceLogin extends StatelessWidget {
     required this.emailTextEditingController,
     required this.passwordTextEditingController,
     required this.validated,
+    required this.emailValidated,
     required this.emailIsLoading,
     required this.onLoginPressed,
     required this.onForgetPasswordPressed,
@@ -86,7 +88,7 @@ class EntranceLogin extends StatelessWidget {
             /// FORGET PASSWORD
             ///
             TextButton(
-              onPressed: onForgetPasswordPressed,
+              onPressed: emailValidated ? onForgetPasswordPressed : null,
               style: TextButton.styleFrom(
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -101,6 +103,7 @@ class EntranceLogin extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 backgroundColor: Colors.transparent,
                 foregroundColor: BokunSpizeColors.primary,
+                disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
               ),
               child: Text(
                 'Forgot?'.toUpperCase(),

@@ -80,6 +80,11 @@ class BokunSpizeApp extends StatelessWidget {
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: ThemeData.light().copyWith(
       scaffoldBackgroundColor: BokunSpizeColors.grey,
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: BokunSpizeColors.primary,
+        selectionColor: BokunSpizeColors.primary,
+        selectionHandleColor: BokunSpizeColors.primary,
+      ),
     ),
     builder: (_, child) {
       final appWidget =

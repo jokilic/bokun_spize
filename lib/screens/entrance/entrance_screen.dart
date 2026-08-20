@@ -65,7 +65,34 @@ class _EntranceScreenState extends State<EntranceScreen> {
       return;
     }
 
-    /// Non-successful login
+    /// Non-successful logic
+    showSnackbar(
+      context,
+      text: result.error ?? 'errorUnknown',
+      icon: PhosphorIconsBold.warningOctagon,
+    );
+  }
+
+  Future<void> handleOnPressedForgetPassword({
+    required BuildContext context,
+    required Future<({bool success, String? error})> Function() onPressed,
+  }) async {
+    /// Hide snackbars & keyboard
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    unawaited(
+      HapticFeedback.lightImpact(),
+    );
+
+    final result = await onPressed();
+
+    /// Successful logic
+    if (result.success && result.error == null) {
+      return;
+    }
+
+    /// Non-successful logic
     showSnackbar(
       context,
       text: result.error ?? 'errorUnknown',
@@ -165,12 +192,16 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           emailTextEditingController: entranceController.loginEmailTextEditingController,
                           passwordTextEditingController: entranceController.loginPasswordTextEditingController,
                           validated: loginValidated,
+                          emailValidated: state.loginEmailValid,
                           emailIsLoading: emailIsLoading,
                           onLoginPressed: () => handleOnPressed(
                             context: context,
                             onPressed: entranceController.emailSignInPressed,
                           ),
-                          onForgetPasswordPressed: entranceController.forgetPasswordPressed,
+                          onForgetPasswordPressed: () => handleOnPressedForgetPassword(
+                            context: context,
+                            onPressed: entranceController.forgetPasswordPressed,
+                          ),
                         )
                       : EntranceRegister(
                           emailTextEditingController: entranceController.registerEmailTextEditingController,
