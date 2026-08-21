@@ -28,7 +28,7 @@ class WalksListTile extends StatelessWidget {
     final changeColor = stepsChange != null
         ? switch (stepsChange) {
             > 0 => BokunSpizeColors.green,
-            < 0 => BokunSpizeColors.yellow,
+            < 0 => BokunSpizeColors.red,
             _ => BokunSpizeColors.black,
           }
         : BokunSpizeColors.black;
