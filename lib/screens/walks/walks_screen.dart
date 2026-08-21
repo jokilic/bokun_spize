@@ -147,19 +147,15 @@ class _WalksScreenState extends State<WalksScreen> {
               ///
               /// GRAPH TITLE
               ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    switch (stepsChangeWithinDays) {
-                      0 => 'Progress today',
-                      1 => 'Progress from yesterday',
-                      final int days => 'Progress from $days days',
-                    },
-                    style: const TextStyle(
+                    'Recent progress',
+                    style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
