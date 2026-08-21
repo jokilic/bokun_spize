@@ -31,12 +31,15 @@ class WeightsController extends ValueNotifier<({bool isLoading, String? error})>
   void init() {
     updateState(
       isLoading: true,
+      clearError: true,
     );
 
     weightTracksStream = firebase.listenToWeightTracks().map(
       (weightTracks) {
         updateState(
           isLoading: false,
+          error: weightTracks == null ? 'Weight tracks could not be loaded.' : null,
+          clearError: weightTracks != null,
         );
 
         return weightTracks;
@@ -59,7 +62,7 @@ class WeightsController extends ValueNotifier<({bool isLoading, String? error})>
     required DateTime dateTime,
     required double weight,
   }) async {
-    final success = firebase.writeWeightTrack(
+    final success = await firebase.writeWeightTrack(
       newWeightTrack: WeightTrack(
         id: const Uuid().v1(),
         dateTime: dateTime,
