@@ -74,6 +74,8 @@ class _WalksScreenState extends State<WalksScreen> {
     final isLoading = state.isLoading;
     final permissionAuthorized = state.permissionAuthorized;
 
+    final showRefreshButton = !isLoading && stepsWithDate.isEmpty && (error != null || permissionAuthorized == false);
+
     /// Number of previous calendar days used for the step comparison.
     const stepsChangeCalendarDays = 7;
 
@@ -90,33 +92,35 @@ class _WalksScreenState extends State<WalksScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
-      // floatingActionButton: SizedBox(
-      //   height: 68,
-      //   width: 68,
-      //   child: FloatingActionButton(
-      //     heroTag: const ValueKey('walks-fab'),
-      //     elevation: 0,
-      //     backgroundColor: BokunSpizeColors.primary,
-      //     foregroundColor: BokunSpizeColors.white,
-      //     splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-      //     hoverColor: Colors.transparent,
-      //     focusColor: Colors.transparent,
-      //     shape: const CircleBorder(),
-      //     onPressed: () {
-      //       unawaited(
-      //         HapticFeedback.lightImpact(),
-      //       );
-      //       unawaited(
-      //         walksController.refreshSteps(),
-      //       );
-      //     },
-      //     child: const PhosphorIcon(
-      //       PhosphorIconsBold.arrowClockwise,
-      //       color: BokunSpizeColors.white,
-      //       size: 32,
-      //     ),
-      //   ),
-      // ),
+      floatingActionButton: showRefreshButton
+          ? SizedBox(
+              height: 68,
+              width: 68,
+              child: FloatingActionButton(
+                heroTag: const ValueKey('walks-fab'),
+                elevation: 0,
+                backgroundColor: BokunSpizeColors.primary,
+                foregroundColor: BokunSpizeColors.white,
+                splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                shape: const CircleBorder(),
+                onPressed: () {
+                  unawaited(
+                    HapticFeedback.lightImpact(),
+                  );
+                  unawaited(
+                    walksController.refreshSteps(),
+                  );
+                },
+                child: const PhosphorIcon(
+                  PhosphorIconsBold.arrowClockwise,
+                  color: BokunSpizeColors.white,
+                  size: 32,
+                ),
+              ),
+            )
+          : null,
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
