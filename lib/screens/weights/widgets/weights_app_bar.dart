@@ -44,9 +44,9 @@ class WeightsAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
               ),
               backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.secondary,
+              foregroundColor: BokunSpizeColors.blue,
               disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              disabledForegroundColor: BokunSpizeColors.secondary,
+              disabledForegroundColor: BokunSpizeColors.blue,
             ),
           ),
           const SizedBox(width: 14),
@@ -63,7 +63,7 @@ class WeightsAppBar extends StatelessWidget {
                 height: 1.2,
                 letterSpacing: 0,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.green,
               ),
             ),
         ],
@@ -113,8 +113,8 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final changeColor = weightChange != null
         ? switch (weightChange!) {
-            > 0 => BokunSpizeColors.tertiary,
-            < 0 => BokunSpizeColors.primary,
+            > 0 => BokunSpizeColors.red,
+            < 0 => BokunSpizeColors.green,
             _ => BokunSpizeColors.black,
           }
         : BokunSpizeColors.black;
@@ -161,7 +161,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 1.5,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                       ),
                       children: [
                         const WidgetSpan(

@@ -44,9 +44,9 @@ class MealsAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
               ),
               backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.secondary,
+              foregroundColor: BokunSpizeColors.blue,
               disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              disabledForegroundColor: BokunSpizeColors.secondary,
+              disabledForegroundColor: BokunSpizeColors.blue,
             ),
           ),
           const SizedBox(width: 14),
@@ -63,7 +63,7 @@ class MealsAppBar extends StatelessWidget {
                 height: 1.2,
                 letterSpacing: 0.6,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.secondary,
+                color: BokunSpizeColors.blue,
               ),
             ),
 
@@ -166,7 +166,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   height: 1.2,
                   letterSpacing: 1.5,
-                  color: BokunSpizeColors.primary,
+                  color: BokunSpizeColors.green,
                 ),
                 children: [
                   const WidgetSpan(
@@ -202,7 +202,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   child: Container(
                     height: 7,
                     decoration: const BoxDecoration(
-                      color: BokunSpizeColors.primary,
+                      color: BokunSpizeColors.green,
                     ),
                   ),
                 ),
@@ -214,7 +214,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   child: Container(
                     height: 7,
                     decoration: const BoxDecoration(
-                      color: BokunSpizeColors.secondary,
+                      color: BokunSpizeColors.blue,
                     ),
                   ),
                 ),
@@ -226,7 +226,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   child: Container(
                     height: 7,
                     decoration: const BoxDecoration(
-                      color: BokunSpizeColors.tertiary,
+                      color: BokunSpizeColors.red,
                     ),
                   ),
                 ),
@@ -246,7 +246,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         width: 7,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: BokunSpizeColors.primary,
+                          color: BokunSpizeColors.green,
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -277,7 +277,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         width: 7,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: BokunSpizeColors.secondary,
+                          color: BokunSpizeColors.blue,
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -308,7 +308,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         width: 7,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: BokunSpizeColors.tertiary,
+                          color: BokunSpizeColors.red,
                         ),
                       ),
                       const SizedBox(width: 4),

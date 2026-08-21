@@ -5,7 +5,8 @@ class BokunSpizeColors {
   static const black = Color(0xFF121412);
   static const white = Color(0xFFFFFFFF);
 
-  static const primary = Color(0xFF3B7D5E);
-  static const secondary = Color(0xFF4F5094);
-  static const tertiary = Color(0xFFEE6055);
+  static const green = Color(0xFF3B7D5E);
+  static const blue = Color(0xFF4F5094);
+  static const red = Color(0xFFEE6055);
+  static const yellow = Color(0xFFE9BB75);
 }

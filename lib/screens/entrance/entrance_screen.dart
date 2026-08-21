@@ -350,7 +350,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             fontFamily: 'Epilogue',
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: BokunSpizeColors.primary,
+                            color: BokunSpizeColors.green,
                           ),
                         ),
                       ],

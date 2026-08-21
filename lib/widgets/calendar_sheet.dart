@@ -117,8 +117,8 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 fontWeight: FontWeight.w600,
                 color: BokunSpizeColors.black,
               ),
-              selectedDayHighlightColor: BokunSpizeColors.primary,
-              daySplashColor: BokunSpizeColors.primary,
+              selectedDayHighlightColor: BokunSpizeColors.green,
+              daySplashColor: BokunSpizeColors.green,
               dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
                 var currentDecoration = decoration;
 
@@ -175,7 +175,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   fontWeight: FontWeight.w800,
                 ),
                 padding: const EdgeInsets.all(22),
-                backgroundColor: BokunSpizeColors.primary,
+                backgroundColor: BokunSpizeColors.green,
                 foregroundColor: BokunSpizeColors.white,
               ),
               child: const Text('Confirm'),

@@ -82,7 +82,7 @@ class _MealsScreenState extends State<MealsScreen> {
         child: FloatingActionButton(
           heroTag: const ValueKey('meals-fab'),
           elevation: 0,
-          backgroundColor: BokunSpizeColors.primary,
+          backgroundColor: BokunSpizeColors.green,
           foregroundColor: BokunSpizeColors.white,
           splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
           hoverColor: Colors.transparent,
@@ -174,7 +174,7 @@ class _MealsScreenState extends State<MealsScreen> {
                     children: [
                       PhosphorIcon(
                         PhosphorIconsBold.notebook,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                         size: 96,
                       ),
                       SizedBox(height: 16),

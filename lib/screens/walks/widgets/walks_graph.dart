@@ -117,8 +117,8 @@ class WalksGraph extends StatelessWidget {
     final chartMinY = (minimumSteps - stepsPadding).clamp(0.0, double.infinity).toDouble();
 
     final lineEndColor = Color.lerp(
-      BokunSpizeColors.primary,
-      BokunSpizeColors.primary.withValues(alpha: 0.25),
+      BokunSpizeColors.green,
+      BokunSpizeColors.green.withValues(alpha: 0.25),
       0.75,
     )!;
 
@@ -164,7 +164,7 @@ class WalksGraph extends StatelessWidget {
             gradientArea: LineChartGradientArea.wholeChart,
             gradient: LinearGradient(
               colors: [
-                BokunSpizeColors.primary,
+                BokunSpizeColors.green,
                 lineEndColor,
               ],
             ),
@@ -174,8 +174,8 @@ class WalksGraph extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  BokunSpizeColors.primary.withValues(alpha: 0.16),
-                  BokunSpizeColors.primary.withValues(alpha: 0),
+                  BokunSpizeColors.green.withValues(alpha: 0.16),
+                  BokunSpizeColors.green.withValues(alpha: 0),
                 ],
               ),
             ),
@@ -186,9 +186,9 @@ class WalksGraph extends StatelessWidget {
               ),
               getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                 radius: 4.5,
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.green,
                 strokeWidth: 6,
-                strokeColor: BokunSpizeColors.primary.withValues(alpha: 0.25),
+                strokeColor: BokunSpizeColors.green.withValues(alpha: 0.25),
               ),
             ),
           ),

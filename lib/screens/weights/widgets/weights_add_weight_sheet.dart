@@ -246,7 +246,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         width: 6,
                         height: 96,
                         decoration: BoxDecoration(
-                          color: BokunSpizeColors.primary,
+                          color: BokunSpizeColors.green,
                           borderRadius: BorderRadius.circular(100),
                         ),
                       ),
@@ -345,9 +345,9 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                     fontWeight: FontWeight.w800,
                   ),
                   padding: const EdgeInsets.all(22),
-                  backgroundColor: BokunSpizeColors.primary,
+                  backgroundColor: BokunSpizeColors.green,
                   foregroundColor: BokunSpizeColors.white,
-                  disabledBackgroundColor: BokunSpizeColors.primary.withValues(alpha: 0.3),
+                  disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.3),
                   disabledForegroundColor: BokunSpizeColors.white,
                 ),
                 child: const Text('Save weight'),
@@ -371,7 +371,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     final isSelected = index == selectedIndex;
     final weight = minimumWeight + (index * weightStep);
     final color = isSelected
-        ? BokunSpizeColors.primary.withValues(alpha: 0.35)
+        ? BokunSpizeColors.green.withValues(alpha: 0.35)
         : BokunSpizeColors.black.withValues(
             alpha: isWholeKilogram ? 0.28 : 0.14,
           );

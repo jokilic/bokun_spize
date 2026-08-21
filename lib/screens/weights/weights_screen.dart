@@ -86,7 +86,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
         child: FloatingActionButton(
           heroTag: const ValueKey('weights-fab'),
           elevation: 0,
-          backgroundColor: BokunSpizeColors.primary,
+          backgroundColor: BokunSpizeColors.green,
           foregroundColor: BokunSpizeColors.white,
           splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
           hoverColor: Colors.transparent,
@@ -240,7 +240,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                     children: [
                       PhosphorIcon(
                         PhosphorIconsBold.chartLine,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                         size: 96,
                       ),
                       SizedBox(height: 16),

@@ -63,7 +63,7 @@ class _TimeSheetState extends State<TimeSheet> {
                   fontFamily: 'Epilogue',
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: BokunSpizeColors.primary,
+                  color: BokunSpizeColors.green,
                 ),
                 inactiveStyle: TextStyle(
                   fontFamily: 'Epilogue',
@@ -93,7 +93,7 @@ class _TimeSheetState extends State<TimeSheet> {
               centerWidget: DateTimePickerCenterWidget(
                 builder: (context, constraints, child) => Container(
                   decoration: ShapeDecoration(
-                    color: BokunSpizeColors.primary.withValues(alpha: 0.25),
+                    color: BokunSpizeColors.green.withValues(alpha: 0.25),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -124,7 +124,7 @@ class _TimeSheetState extends State<TimeSheet> {
                   fontWeight: FontWeight.w800,
                 ),
                 padding: const EdgeInsets.all(22),
-                backgroundColor: BokunSpizeColors.primary,
+                backgroundColor: BokunSpizeColors.green,
                 foregroundColor: BokunSpizeColors.white,
               ),
               child: const Text('Confirm'),

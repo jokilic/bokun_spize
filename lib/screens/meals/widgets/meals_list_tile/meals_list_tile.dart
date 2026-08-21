@@ -54,13 +54,13 @@ class _MealsListTileState extends State<MealsListTile> {
     final imageBackgroundColor = isLoading
         ? BokunSpizeColors.grey
         : hasError
-        ? BokunSpizeColors.tertiary
+        ? BokunSpizeColors.red
         : widget.meal.color ?? BokunSpizeColors.grey;
 
     final borderColor = hasError
-        ? BokunSpizeColors.tertiary
+        ? BokunSpizeColors.red
         : expanded
-        ? widget.meal.color ?? BokunSpizeColors.primary
+        ? widget.meal.color ?? BokunSpizeColors.green
         : Colors.transparent;
 
     return Padding(
@@ -84,7 +84,7 @@ class _MealsListTileState extends State<MealsListTile> {
                 await handler(true);
                 await widget.onDeletePressed();
               },
-              color: BokunSpizeColors.tertiary,
+              color: BokunSpizeColors.red,
               backgroundRadius: listTileRadius,
               icon: const PhosphorIcon(
                 PhosphorIconsBold.trash,
@@ -99,7 +99,7 @@ class _MealsListTileState extends State<MealsListTile> {
                 await handler(false);
                 await widget.onCopyPressed();
               },
-              color: BokunSpizeColors.secondary,
+              color: BokunSpizeColors.blue,
               backgroundRadius: listTileRadius,
               icon: const PhosphorIcon(
                 PhosphorIconsBold.copy,
@@ -358,7 +358,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                           ),
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(100),
-                                            color: isLoading ? BokunSpizeColors.white : BokunSpizeColors.tertiary.withValues(alpha: 0.25),
+                                            color: isLoading ? BokunSpizeColors.white : BokunSpizeColors.red.withValues(alpha: 0.25),
                                           ),
                                           child: isLoading
                                               ? const SizedBox(
@@ -374,7 +374,7 @@ class _MealsListTileState extends State<MealsListTile> {
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w900,
                                                     letterSpacing: 0.4,
-                                                    color: BokunSpizeColors.tertiary,
+                                                    color: BokunSpizeColors.red,
                                                   ),
                                                 ),
                                         ),

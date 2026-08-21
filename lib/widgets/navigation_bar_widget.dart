@@ -60,7 +60,7 @@ class NavigationBarWidget extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.green,
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(
@@ -99,7 +99,7 @@ class NavigationBarWidget extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.blue,
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(
@@ -138,7 +138,7 @@ class NavigationBarWidget extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.red,
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(
@@ -187,7 +187,7 @@ class NavigationBarWidget extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.primary,
+                color: BokunSpizeColors.yellow,
                 shape: BoxShape.circle,
               ),
               child: userPhoto != null

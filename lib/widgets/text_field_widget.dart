@@ -47,7 +47,7 @@ class TextFieldWidget extends StatelessWidget {
     cursorHeight: 24,
     cursorRadius: const Radius.circular(8),
     cursorWidth: 1.5,
-    cursorColor: BokunSpizeColors.primary,
+    cursorColor: BokunSpizeColors.green,
     decoration: InputDecoration(
       filled: true,
       fillColor: BokunSpizeColors.white.withValues(alpha: 0.5),

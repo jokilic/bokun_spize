@@ -23,8 +23,8 @@ class WeightsListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final changeColor = weightChange != null
         ? switch (weightChange!) {
-            > 0 => BokunSpizeColors.tertiary,
-            < 0 => BokunSpizeColors.primary,
+            > 0 => BokunSpizeColors.red,
+            < 0 => BokunSpizeColors.green,
             _ => BokunSpizeColors.black,
           }
         : BokunSpizeColors.black;
@@ -50,7 +50,7 @@ class WeightsListTile extends StatelessWidget {
                 await handler(true);
                 await onDeletePressed();
               },
-              color: BokunSpizeColors.tertiary,
+              color: BokunSpizeColors.red,
               backgroundRadius: listTileRadius,
               icon: const PhosphorIcon(
                 PhosphorIconsBold.trash,
@@ -79,7 +79,7 @@ class WeightsListTile extends StatelessWidget {
                       color: BokunSpizeColors.grey,
                       child: const PhosphorIcon(
                         PhosphorIconsBold.personSimple,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                         size: 24,
                       ),
                     ),

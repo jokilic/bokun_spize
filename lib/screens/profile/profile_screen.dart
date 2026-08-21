@@ -20,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
       child: FloatingActionButton(
         heroTag: const ValueKey('profile-fab'),
         elevation: 0,
-        backgroundColor: BokunSpizeColors.primary,
+        backgroundColor: BokunSpizeColors.green,
         foregroundColor: BokunSpizeColors.white,
         splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
         hoverColor: Colors.transparent,

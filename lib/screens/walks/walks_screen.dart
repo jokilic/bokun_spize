@@ -99,7 +99,7 @@ class _WalksScreenState extends State<WalksScreen> {
               child: FloatingActionButton(
                 heroTag: const ValueKey('walks-fab'),
                 elevation: 0,
-                backgroundColor: BokunSpizeColors.primary,
+                backgroundColor: BokunSpizeColors.green,
                 foregroundColor: BokunSpizeColors.white,
                 splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                 hoverColor: Colors.transparent,
@@ -208,9 +208,7 @@ class _WalksScreenState extends State<WalksScreen> {
                 itemCount: stepsWithDate.length,
                 itemBuilder: (context, index) {
                   final stepWithDate = stepsWithDate[index];
-                  final previousStepsWithDate = index + 1 < stepsWithDate.length
-                      ? stepsWithDate[index + 1]
-                      : null;
+                  final previousStepsWithDate = index + 1 < stepsWithDate.length ? stepsWithDate[index + 1] : null;
 
                   return WalksListTile(
                     stepWithDate: stepWithDate,
@@ -234,7 +232,7 @@ class _WalksScreenState extends State<WalksScreen> {
                     children: [
                       PhosphorIcon(
                         PhosphorIconsBold.personSimpleWalk,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                         size: 96,
                       ),
                       SizedBox(height: 16),
@@ -280,7 +278,7 @@ class _WalksScreenState extends State<WalksScreen> {
                     children: [
                       PhosphorIcon(
                         PhosphorIconsBold.personSimpleWalk,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                         size: 96,
                       ),
                       SizedBox(height: 16),
@@ -326,7 +324,7 @@ class _WalksScreenState extends State<WalksScreen> {
                     children: [
                       const PhosphorIcon(
                         PhosphorIconsBold.warningOctagon,
-                        color: BokunSpizeColors.primary,
+                        color: BokunSpizeColors.green,
                         size: 96,
                       ),
                       const SizedBox(height: 16),
