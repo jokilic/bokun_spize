@@ -142,19 +142,15 @@ class _WeightsScreenState extends State<WeightsScreen> {
               ///
               /// GRAPH TITLE
               ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    switch (weightChangeWithinDays) {
-                      0 => 'Progress today',
-                      1 => 'Progress from yesterday',
-                      final int days => 'Progress from $days days',
-                    },
-                    style: const TextStyle(
+                    'Recent progress',
+                    style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
@@ -170,7 +166,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
               ///
               WeightsGraph(
                 weightTracks: weightTracks,
-                weightChangeWithinDays: weightChangeWithinDays,
+                calendarDays: weightChangeCalendarDays,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 20),

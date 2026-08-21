@@ -76,8 +76,8 @@ class _WalksScreenState extends State<WalksScreen> {
 
     final showRefreshButton = !isLoading && stepsWithDate.isEmpty && (error != null || permissionAuthorized == false);
 
-    /// Number of previous calendar days used for the step comparison.
-    const stepsChangeCalendarDays = 7;
+    /// Number of previous calendar days used for the step comparison
+    const stepsChangeCalendarDays = 30;
 
     final stepsChange = getStepsChange(
       stepsWithDate: completedStepsWithDate,

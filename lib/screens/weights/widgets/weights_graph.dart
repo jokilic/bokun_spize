@@ -10,18 +10,18 @@ import '../../../util/weight_track.dart';
 
 class WeightsGraph extends StatelessWidget {
   final List<WeightTrack> weightTracks;
-  final int weightChangeWithinDays;
+  final int calendarDays;
 
   const WeightsGraph({
     required this.weightTracks,
-    required this.weightChangeWithinDays,
+    required this.calendarDays,
   });
 
   @override
   Widget build(BuildContext context) {
     final visibleWeightTracks = getWeightTracksForGraph(
       weightTracks: weightTracks,
-      weightChangeWithinDays: weightChangeWithinDays,
+      calendarDays: calendarDays,
     );
 
     return SliverPadding(
@@ -54,6 +54,7 @@ class WeightsGraph extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                       child: buildLineChart(
                         weightTracks: visibleWeightTracks,
+                        calendarDays: calendarDays,
                       ),
                     ),
             ),
@@ -65,9 +66,12 @@ class WeightsGraph extends StatelessWidget {
 
   Widget buildLineChart({
     required List<WeightTrack> weightTracks,
+    required int calendarDays,
   }) {
-    final firstDateTime = weightTracks.first.dateTime;
     final lastDateTime = weightTracks.last.dateTime;
+    final firstDateTime = lastDateTime.subtract(
+      Duration(days: calendarDays),
+    );
 
     final timeSpan = lastDateTime.difference(firstDateTime);
     final timeSpanInDays = timeSpan.inMilliseconds / Duration.millisecondsPerDay;
@@ -81,7 +85,7 @@ class WeightsGraph extends StatelessWidget {
       final elapsedDays = elapsedTime.inMilliseconds / Duration.millisecondsPerDay;
 
       return FlSpot(
-        hasSinglePosition ? 0 : elapsedDays,
+        hasSinglePosition ? 0 : elapsedDays.clamp(0, timeSpanInDays).toDouble(),
         weightTrack.weight,
       );
     }).toList();

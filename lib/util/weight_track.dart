@@ -4,7 +4,7 @@ import '../models/weight_track/weight_track.dart';
 
 List<WeightTrack> getWeightTracksForGraph({
   required List<WeightTrack> weightTracks,
-  required int weightChangeWithinDays,
+  required int calendarDays,
 }) {
   final sortedWeightTracks = [...weightTracks]
     ..sort(
@@ -36,7 +36,7 @@ List<WeightTrack> getWeightTracksForGraph({
         );
         final differenceInDays = latestDate.difference(date).inDays;
 
-        return differenceInDays >= 0 && differenceInDays <= weightChangeWithinDays;
+        return differenceInDays >= 0 && differenceInDays <= calendarDays;
       })
       .toList()
       .reversed
