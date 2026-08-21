@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/steps_with_date/steps_with_date.dart';
+import '../../../util/date_time.dart';
 import '../../../util/steps_with_date.dart';
 
 class WalksGraph extends StatelessWidget {
@@ -114,9 +114,7 @@ class WalksGraph extends StatelessWidget {
 
     final chartMinX = hasSinglePosition ? -1.0 : 0.0;
     final chartMaxX = hasSinglePosition ? 1.0 : timeSpanInDays;
-    final chartMinY = (minimumSteps - stepsPadding)
-        .clamp(0.0, double.infinity)
-        .toDouble();
+    final chartMinY = (minimumSteps - stepsPadding).clamp(0.0, double.infinity).toDouble();
 
     final lineEndColor = Color.lerp(
       BokunSpizeColors.primary,
@@ -223,12 +221,10 @@ class WalksGraph extends StatelessWidget {
               milliseconds: (value * Duration.millisecondsPerDay).round(),
             ),
           );
-    final label = DateUtils.isSameDay(dateTime, DateTime.now())
-        ? 'Today'.toUpperCase()
-        : DateFormat(
-            'MMM dd',
-            'en',
-          ).format(dateTime).toUpperCase();
+    final label = getDateString(
+      date: dateTime,
+      dateFormat: 'MMM d',
+    ).toUpperCase();
 
     return SideTitleWidget(
       meta: meta,

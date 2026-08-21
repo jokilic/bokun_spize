@@ -3,20 +3,21 @@ import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
+import '../../../util/date_time.dart';
 
 class WalksAppBar extends StatelessWidget {
   final String? title;
   final String timeString;
   final int? currentSteps;
   final double? stepsChange;
-  final int? stepsChangeWithinDays;
+  final DateTime? stepsChangeDateTime;
 
   const WalksAppBar({
     required this.title,
     required this.timeString,
     required this.currentSteps,
     required this.stepsChange,
-    required this.stepsChangeWithinDays,
+    required this.stepsChangeDateTime,
   });
 
   @override
@@ -78,7 +79,7 @@ class WalksAppBar extends StatelessWidget {
               timeString: timeString,
               currentSteps: currentSteps,
               stepsChange: stepsChange,
-              stepsChangeWithinDays: stepsChangeWithinDays,
+              stepsChangeDateTime: stepsChangeDateTime,
             )
           : null,
     ),
@@ -89,13 +90,13 @@ class FadingFlexibleTitle extends StatelessWidget {
   final String timeString;
   final int? currentSteps;
   final double? stepsChange;
-  final int? stepsChangeWithinDays;
+  final DateTime? stepsChangeDateTime;
 
   const FadingFlexibleTitle({
     required this.timeString,
     required this.currentSteps,
     required this.stepsChange,
-    required this.stepsChangeWithinDays,
+    required this.stepsChangeDateTime,
   });
 
   @override
@@ -119,6 +120,12 @@ class FadingFlexibleTitle extends StatelessWidget {
             _ => BokunSpizeColors.black,
           }
         : BokunSpizeColors.black;
+    final stepsChangeDateString = stepsChangeDateTime != null
+        ? getDateString(
+            date: stepsChangeDateTime!,
+            dateFormat: 'MMM d',
+          ).toUpperCase()
+        : null;
 
     return Opacity(
       opacity: opacity,
@@ -183,7 +190,7 @@ class FadingFlexibleTitle extends StatelessWidget {
             ),
 
             ///
-            /// CHANGE WITHIN LAST X DAYS
+            /// LATEST COMPLETED DAY CHANGE AGAINST ITS RECENT AVERAGE
             ///
             if (stepsChange != null)
               Column(
@@ -212,14 +219,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  if (stepsChangeWithinDays != null)
+                  if (stepsChangeDateString != null)
                     Text(
-                      switch (stepsChangeWithinDays) {
-                        0 => 'today',
-                        1 => 'yesterday',
-                        final int days => 'last $days days',
-                        null => '-',
-                      },
+                      '$stepsChangeDateString vs recent avg',
                       style: const TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 8,

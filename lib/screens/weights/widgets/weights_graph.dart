@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/weight_track/weight_track.dart';
+import '../../../util/date_time.dart';
 import '../../../util/weight_track.dart';
 
 class WeightsGraph extends StatelessWidget {
@@ -225,16 +225,10 @@ class WeightsGraph extends StatelessWidget {
               milliseconds: (value * Duration.millisecondsPerDay).round(),
             ),
           );
-    final label =
-        DateUtils.isSameDay(
-          dateTime,
-          DateTime.now(),
-        )
-        ? 'Today'.toUpperCase()
-        : DateFormat(
-            'MMM dd',
-            'en',
-          ).format(dateTime).toUpperCase();
+    final label = getDateString(
+      date: dateTime,
+      dateFormat: 'MMM dd',
+    ).toUpperCase();
 
     return SideTitleWidget(
       meta: meta,
