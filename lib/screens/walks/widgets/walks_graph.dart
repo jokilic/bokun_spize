@@ -10,18 +10,18 @@ import '../../../util/steps_with_date.dart';
 
 class WalksGraph extends StatelessWidget {
   final List<StepsWithDate> stepsWithDate;
-  final int stepsChangeWithinDays;
+  final int calendarDays;
 
   const WalksGraph({
     required this.stepsWithDate,
-    required this.stepsChangeWithinDays,
+    required this.calendarDays,
   });
 
   @override
   Widget build(BuildContext context) {
     final visibleStepsWithDate = getStepsWithDateForGraph(
       stepsWithDate: stepsWithDate,
-      stepsChangeWithinDays: stepsChangeWithinDays,
+      calendarDays: calendarDays,
     );
 
     return SliverPadding(
@@ -52,6 +52,7 @@ class WalksGraph extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                       child: buildLineChart(
                         stepsWithDate: visibleStepsWithDate,
+                        calendarDays: calendarDays,
                       ),
                     ),
             ),
@@ -63,9 +64,12 @@ class WalksGraph extends StatelessWidget {
 
   Widget buildLineChart({
     required List<StepsWithDate> stepsWithDate,
+    required int calendarDays,
   }) {
-    final firstDateTime = stepsWithDate.first.dateTime;
     final lastDateTime = stepsWithDate.last.dateTime;
+    final firstDateTime = lastDateTime.subtract(
+      Duration(days: calendarDays),
+    );
 
     final timeSpan = lastDateTime.difference(firstDateTime);
     final timeSpanInDays = timeSpan.inMilliseconds / Duration.millisecondsPerDay;
@@ -79,7 +83,7 @@ class WalksGraph extends StatelessWidget {
       final elapsedDays = elapsedTime.inMilliseconds / Duration.millisecondsPerDay;
 
       return FlSpot(
-        hasSinglePosition ? 0 : elapsedDays,
+        hasSinglePosition ? 0 : elapsedDays.clamp(0, timeSpanInDays).toDouble(),
         stepWithDate.steps.toDouble(),
       );
     }).toList();

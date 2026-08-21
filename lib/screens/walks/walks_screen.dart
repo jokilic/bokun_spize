@@ -77,7 +77,7 @@ class _WalksScreenState extends State<WalksScreen> {
     final showRefreshButton = !isLoading && stepsWithDate.isEmpty && (error != null || permissionAuthorized == false);
 
     /// Number of previous calendar days used for the step comparison
-    const stepsChangeCalendarDays = 30;
+    const stepsChangeCalendarDays = 7;
 
     final stepsChange = getStepsChange(
       stepsWithDate: completedStepsWithDate,
@@ -171,7 +171,7 @@ class _WalksScreenState extends State<WalksScreen> {
               ///
               WalksGraph(
                 stepsWithDate: completedStepsWithDate,
-                stepsChangeWithinDays: stepsChangeWithinDays,
+                calendarDays: stepsChangeCalendarDays,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 20),

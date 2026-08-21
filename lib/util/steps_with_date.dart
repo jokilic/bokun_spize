@@ -4,7 +4,7 @@ import '../models/steps_with_date/steps_with_date.dart';
 
 List<StepsWithDate> getStepsWithDateForGraph({
   required List<StepsWithDate> stepsWithDate,
-  required int stepsChangeWithinDays,
+  required int calendarDays,
 }) {
   final sortedStepsWithDate = [...stepsWithDate]
     ..sort(
@@ -34,7 +34,7 @@ List<StepsWithDate> getStepsWithDateForGraph({
         );
         final differenceInDays = latestDate.difference(date).inDays;
 
-        return differenceInDays >= 0 && differenceInDays <= stepsChangeWithinDays;
+        return differenceInDays >= 0 && differenceInDays <= calendarDays;
       })
       .toList()
       .reversed
