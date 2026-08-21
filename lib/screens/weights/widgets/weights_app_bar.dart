@@ -35,11 +35,11 @@ class WeightsAppBar extends StatelessWidget {
           IconButton(
             onPressed: null,
             icon: const PhosphorIcon(
-              PhosphorIconsBold.carrot,
-              size: 28,
+              PhosphorIconsBold.personSimple,
+              size: 26,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -59,11 +59,11 @@ class WeightsAppBar extends StatelessWidget {
               title!,
               style: const TextStyle(
                 fontFamily: 'Epilogue',
-                fontSize: 24,
+                fontSize: 22,
                 height: 1.2,
-                letterSpacing: 0,
+                letterSpacing: 0.6,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.green,
+                color: BokunSpizeColors.blue,
               ),
             ),
         ],

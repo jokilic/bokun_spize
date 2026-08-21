@@ -30,12 +30,12 @@ class MealsAppBar extends StatelessWidget {
       child: Row(
         children: [
           ///
-          /// AVATAR
+          /// ICON
           ///
           IconButton(
             onPressed: null,
             icon: const PhosphorIcon(
-              PhosphorIconsBold.carrot,
+              PhosphorIconsBold.bowlFood,
               size: 26,
             ),
             style: IconButton.styleFrom(
@@ -44,9 +44,9 @@ class MealsAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
               ),
               backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.blue,
+              foregroundColor: BokunSpizeColors.green,
               disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              disabledForegroundColor: BokunSpizeColors.blue,
+              disabledForegroundColor: BokunSpizeColors.green,
             ),
           ),
           const SizedBox(width: 14),
@@ -63,7 +63,7 @@ class MealsAppBar extends StatelessWidget {
                 height: 1.2,
                 letterSpacing: 0.6,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.blue,
+                color: BokunSpizeColors.green,
               ),
             ),
 

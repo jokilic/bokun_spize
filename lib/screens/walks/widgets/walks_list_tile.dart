@@ -79,7 +79,7 @@ class WalksListTile extends StatelessWidget {
                       capitalizeFirstLetter(
                             getDateString(
                               date: stepWithDate.dateTime,
-                              dateFormat: 'EEE, dd.MM.',
+                              dateFormat: 'dd.MM.',
                             ),
                           ) ??
                           '--',
@@ -98,7 +98,14 @@ class WalksListTile extends StatelessWidget {
                     /// SUBTITLE
                     ///
                     Text(
-                      isToday ? 'Current day' : 'Daily total',
+                      capitalizeFirstLetter(
+                            getDateString(
+                              date: stepWithDate.dateTime,
+                              dateFormat: 'EEEE',
+                              useTodayYesterdayTomorrow: false,
+                            ),
+                          ) ??
+                          '--',
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 14,

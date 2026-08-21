@@ -36,18 +36,18 @@ class WalksAppBar extends StatelessWidget {
           IconButton(
             onPressed: null,
             icon: const PhosphorIcon(
-              PhosphorIconsBold.carrot,
-              size: 28,
+              PhosphorIconsBold.footprints,
+              size: 26,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
               backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.blue,
+              foregroundColor: BokunSpizeColors.red,
               disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              disabledForegroundColor: BokunSpizeColors.blue,
+              disabledForegroundColor: BokunSpizeColors.red,
             ),
           ),
           const SizedBox(width: 14),
@@ -60,11 +60,11 @@ class WalksAppBar extends StatelessWidget {
               title!,
               style: const TextStyle(
                 fontFamily: 'Epilogue',
-                fontSize: 24,
+                fontSize: 22,
                 height: 1.2,
-                letterSpacing: 0,
+                letterSpacing: 0.6,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.green,
+                color: BokunSpizeColors.red,
               ),
             ),
         ],

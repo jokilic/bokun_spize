@@ -7,7 +7,6 @@
 - [ ] Update database permissions
 - [ ] Loading states for every section
 - [ ] Perhaps keep main controllers in memory
-- [ ] Different colors for each destination
 
 # Bokun spize 🥗
 
