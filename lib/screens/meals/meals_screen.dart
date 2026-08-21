@@ -167,7 +167,7 @@ class _MealsScreenState extends State<MealsScreen> {
             ///
             /// NO MEALS
             ///
-            if (meals.isEmpty)
+            if (!isLoading && meals.isEmpty && error == null)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -197,6 +197,98 @@ class _MealsScreenState extends State<MealsScreen> {
                       Text(
                         'No logs at this time',
                         style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            ///
+            /// LOADING
+            ///
+            if (isLoading)
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      PhosphorIcon(
+                        PhosphorIconsBold.notebook,
+                        color: BokunSpizeColors.green,
+                        size: 96,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Meal journal',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Loading...',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            ///
+            /// ERROR
+            ///
+            if (error != null)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      const PhosphorIcon(
+                        PhosphorIconsBold.warningOctagon,
+                        color: BokunSpizeColors.green,
+                        size: 96,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Error',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        error,
+                        style: const TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
