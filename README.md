@@ -5,8 +5,8 @@
 - [ ] Replace all `Icon()`
 - [ ] Check latest AI models
 - [ ] Update database permissions
-- [ ] Loading states for every section
 - [ ] Perhaps keep main controllers in memory
+- [ ] Put 30-day graphs in `Weights` & `Walks`
 
 # Bokun spize 🥗
 
