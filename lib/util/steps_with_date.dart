@@ -91,17 +91,6 @@ double? getStepsChange({
       : null;
 }
 
-/// Compares a step total with the preceding entry in a newest-first list
-int? getPreviousStepsChange({
-  required List<StepsWithDate> stepsWithDate,
-  required StepsWithDate stepWithDate,
-  required int index,
-}) {
-  final previousStepWithDate = index + 1 < stepsWithDate.length ? stepsWithDate[index + 1] : null;
-
-  return previousStepWithDate != null ? stepWithDate.steps - previousStepWithDate.steps : null;
-}
-
 /// Gets the calendar-day span covered by the step totals used for the change
 int? getStepsChangeWithinDays({
   required List<StepsWithDate> stepsWithDate,

@@ -10,11 +10,11 @@ import '../../../util/format.dart';
 
 class WalksListTile extends StatelessWidget {
   final StepsWithDate stepWithDate;
-  final int? stepsChange;
+  final StepsWithDate? previousStepsWithDate;
 
   const WalksListTile({
     required this.stepWithDate,
-    required this.stepsChange,
+    required this.previousStepsWithDate,
   });
 
   @override
@@ -23,9 +23,31 @@ class WalksListTile extends StatelessWidget {
       stepWithDate.dateTime,
       DateTime.now(),
     );
+    final stepsChange = previousStepsWithDate != null ? stepWithDate.steps - previousStepsWithDate!.steps : null;
+    final comparisonCalendarDays = previousStepsWithDate != null
+        ? DateTime.utc(
+                stepWithDate.dateTime.year,
+                stepWithDate.dateTime.month,
+                stepWithDate.dateTime.day,
+              )
+              .difference(
+                DateTime.utc(
+                  previousStepsWithDate!.dateTime.year,
+                  previousStepsWithDate!.dateTime.month,
+                  previousStepsWithDate!.dateTime.day,
+                ),
+              )
+              .inDays
+        : null;
+    final comparisonPeriod = switch (comparisonCalendarDays) {
+      1 => 'vs previous day',
+      final int days when days > 1 => 'vs $days days earlier',
+      final int _ => 'vs previous entry',
+      null => null,
+    };
 
     final changeColor = stepsChange != null
-        ? switch (stepsChange!) {
+        ? switch (stepsChange) {
             > 0 => BokunSpizeColors.primary,
             < 0 => BokunSpizeColors.tertiary,
             _ => BokunSpizeColors.black,
@@ -151,29 +173,48 @@ class WalksListTile extends StatelessWidget {
                   /// CHANGE
                   ///
                   if (stepsChange != null && !isToday)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        PhosphorIcon(
-                          switch (stepsChange!) {
-                            > 0 => PhosphorIconsBold.arrowUp,
-                            < 0 => PhosphorIconsBold.arrowDown,
-                            _ => PhosphorIconsBold.minus,
-                          },
-                          color: changeColor,
-                          size: 14,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            PhosphorIcon(
+                              switch (stepsChange) {
+                                > 0 => PhosphorIconsBold.arrowUp,
+                                < 0 => PhosphorIconsBold.arrowDown,
+                                _ => PhosphorIconsBold.minus,
+                              },
+                              color: changeColor,
+                              size: 14,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              NumberFormat.decimalPattern('en').format(stepsChange.abs()),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: changeColor,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 2),
-                        Text(
-                          NumberFormat.decimalPattern('en').format(stepsChange!.abs()),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: changeColor,
+                        const SizedBox(height: 2),
+                        if (comparisonPeriod != null)
+                          Text(
+                            comparisonPeriod,
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
                           ),
-                          textAlign: TextAlign.right,
-                        ),
                       ],
                     ),
                 ],

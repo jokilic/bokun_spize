@@ -212,16 +212,13 @@ class _WalksScreenState extends State<WalksScreen> {
                 itemCount: stepsWithDate.length,
                 itemBuilder: (context, index) {
                   final stepWithDate = stepsWithDate[index];
-
-                  final previousStepsChange = getPreviousStepsChange(
-                    stepsWithDate: stepsWithDate,
-                    stepWithDate: stepWithDate,
-                    index: index,
-                  );
+                  final previousStepsWithDate = index + 1 < stepsWithDate.length
+                      ? stepsWithDate[index + 1]
+                      : null;
 
                   return WalksListTile(
                     stepWithDate: stepWithDate,
-                    stepsChange: previousStepsChange,
+                    previousStepsWithDate: previousStepsWithDate,
                   );
                 },
               ),
