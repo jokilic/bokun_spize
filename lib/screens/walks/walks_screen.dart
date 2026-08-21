@@ -50,8 +50,9 @@ class _WalksScreenState extends State<WalksScreen> {
     /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
-    final steps = state.steps ?? 0;
+    final steps = state.steps;
     final stepsTimestamp = state.stepsFetchedAt;
+    final error = state.error;
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
@@ -98,6 +99,52 @@ class _WalksScreenState extends State<WalksScreen> {
                   : 'Vrijeme ne postoji',
               currentSteps: steps,
             ),
+
+            ///
+            /// ERROR
+            ///
+            if (error != null)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      const PhosphorIcon(
+                        PhosphorIconsBold.warningOctagon,
+                        color: BokunSpizeColors.primary,
+                        size: 96,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Error',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        error,
+                        style: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             ///
             /// BOTTOM SPACING

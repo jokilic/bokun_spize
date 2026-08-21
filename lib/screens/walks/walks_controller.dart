@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../models/steps_with_date/steps_with_date.dart';
+
 class WalksController
     extends
         ValueNotifier<
           ({
-            int? steps,
-            DateTime? stepsFetchedAt,
-            bool isLoading,
-            bool isAuthorized,
+            List<StepsWithDate>? stepsWithDate,
+            bool permissionAuthorized,
             String? error,
           })
         > {
@@ -22,10 +22,8 @@ class WalksController
   WalksController({
     required this.health,
   }) : super((
-         steps: null,
-         stepsFetchedAt: null,
-         isLoading: false,
-         isAuthorized: false,
+         stepsWithDate: null,
+         permissionAuthorized: false,
          error: null,
        ));
 
@@ -89,14 +87,9 @@ class WalksController
     );
   }
 
-  /// Requests permission and fetches the total steps recorded today
+  /// Requests permission and fetches the total steps recorded for the last 30 days
   Future<void> refreshSteps() async {
-    if (value.isLoading) {
-      return;
-    }
-
     updateState(
-      isLoading: true,
       clearError: true,
     );
 
@@ -110,8 +103,7 @@ class WalksController
       /// Permissions not granted, return error
       if (!permissionResult.granted) {
         updateState(
-          isLoading: false,
-          isAuthorized: false,
+          permissionAuthorized: false,
           error: permissionResult.error ?? 'Step access is unavailable.',
         );
         return;
@@ -120,14 +112,15 @@ class WalksController
       final now = DateTime.now();
       final startOfDay = DateTime(now.year, now.month, now.day);
 
+      // TODO: I've created `List<StepsWithDate>`, can you update the state logic and instead of having only one day here, get last 30 days and fill out the state
+
       /// Get steps
       final steps = await health.getTotalStepsInInterval(startOfDay, now);
 
       /// Error fetching steps
       if (steps == null) {
         updateState(
-          isLoading: false,
-          isAuthorized: true,
+          permissionAuthorized: true,
           error: 'Steps could not be fetched.',
         );
         return;
@@ -137,16 +130,14 @@ class WalksController
       updateState(
         steps: steps,
         stepsFetchedAt: now,
-        isLoading: false,
-        isAuthorized: true,
+        permissionAuthorized: true,
         clearError: true,
       );
     }
     /// Some error fetching steps
     catch (error) {
       updateState(
-        isLoading: false,
-        isAuthorized: false,
+        permissionAuthorized: false,
         error: error.toString(),
       );
     }
@@ -154,17 +145,13 @@ class WalksController
 
   /// Updates `state`.
   void updateState({
-    int? steps,
-    DateTime? stepsFetchedAt,
-    bool? isLoading,
-    bool? isAuthorized,
+    List<StepsWithDate>? stepsWithDate,
+    bool? permissionAuthorized,
     String? error,
     bool clearError = false,
   }) => value = (
-    steps: steps ?? value.steps,
-    stepsFetchedAt: stepsFetchedAt ?? value.stepsFetchedAt,
-    isLoading: isLoading ?? value.isLoading,
-    isAuthorized: isAuthorized ?? value.isAuthorized,
+    stepsWithDate: stepsWithDate ?? value.stepsWithDate,
+    permissionAuthorized: permissionAuthorized ?? value.permissionAuthorized,
     error: clearError ? null : error ?? value.error,
   );
 }
