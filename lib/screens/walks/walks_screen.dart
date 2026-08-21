@@ -58,19 +58,31 @@ class _WalksScreenState extends State<WalksScreen> {
         (a, b) => b.dateTime.compareTo(a.dateTime),
       );
     final latestStepsWithDate = stepsWithDate.firstOrNull;
+
+    final currentDateTime = DateTime.now();
+    final completedStepsWithDate = stepsWithDate
+        .where(
+          (stepWithDate) => !DateUtils.isSameDay(
+            stepWithDate.dateTime,
+            currentDateTime,
+          ),
+        )
+        .toList();
+    final latestCompletedStepsWithDate = completedStepsWithDate.firstOrNull;
+
     final error = state.error;
 
     /// Number of previous calendar days used for the step comparison.
     const stepsChangeCalendarDays = 7;
 
     final stepsChange = getStepsChange(
-      stepsWithDate: stepsWithDate,
-      latestSteps: latestStepsWithDate?.steps,
+      stepsWithDate: completedStepsWithDate,
+      latestSteps: latestCompletedStepsWithDate?.steps,
       calendarDays: stepsChangeCalendarDays,
     );
 
     final stepsChangeWithinDays = getStepsChangeWithinDays(
-      stepsWithDate: stepsWithDate,
+      stepsWithDate: completedStepsWithDate,
       calendarDays: stepsChangeCalendarDays,
     );
 
@@ -125,7 +137,7 @@ class _WalksScreenState extends State<WalksScreen> {
               stepsChangeWithinDays: stepsChangeWithinDays,
             ),
 
-            if (stepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
+            if (completedStepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
               ///
               /// GRAPH TITLE
               ///
@@ -156,7 +168,7 @@ class _WalksScreenState extends State<WalksScreen> {
               /// GRAPH
               ///
               WalksGraph(
-                stepsWithDate: stepsWithDate,
+                stepsWithDate: completedStepsWithDate,
                 stepsChangeWithinDays: stepsChangeWithinDays,
               ),
               const SliverToBoxAdapter(

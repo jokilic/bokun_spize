@@ -19,6 +19,11 @@ class WalksListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isToday = DateUtils.isSameDay(
+      stepWithDate.dateTime,
+      DateTime.now(),
+    );
+
     final changeColor = stepsChange != null
         ? switch (stepsChange!) {
             > 0 => BokunSpizeColors.primary,
@@ -92,7 +97,7 @@ class WalksListTile extends StatelessWidget {
                     /// SUBTITLE
                     ///
                     Text(
-                      'Daily total',
+                      isToday ? 'Current day' : 'Daily total',
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 14,
@@ -145,7 +150,7 @@ class WalksListTile extends StatelessWidget {
                   ///
                   /// CHANGE
                   ///
-                  if (stepsChange != null)
+                  if (stepsChange != null && !isToday)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
