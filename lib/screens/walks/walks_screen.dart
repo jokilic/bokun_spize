@@ -53,6 +53,10 @@ class _WalksScreenState extends State<WalksScreen> {
     /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
+    final error = state.error;
+    final isLoading = state.isLoading;
+    final permissionAuthorized = state.permissionAuthorized;
+
     final stepsWithDate = [...?state.stepsWithDate]
       ..sort(
         (a, b) => b.dateTime.compareTo(a.dateTime),
@@ -69,10 +73,6 @@ class _WalksScreenState extends State<WalksScreen> {
         )
         .toList();
     final latestCompletedStepsWithDate = completedStepsWithDate.firstOrNull;
-
-    final error = state.error;
-    final isLoading = state.isLoading;
-    final permissionAuthorized = state.permissionAuthorized;
 
     final showRefreshButton = !isLoading && stepsWithDate.isEmpty && (error != null || permissionAuthorized == false);
 

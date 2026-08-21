@@ -10,7 +10,7 @@ import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
-class WeightsController {
+class WeightsController extends ValueNotifier<({bool isLoading, String? error})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -19,13 +19,30 @@ class WeightsController {
 
   WeightsController({
     required this.firebase,
-  });
+  }) : super((
+         isLoading: false,
+         error: null,
+       ));
 
   ///
   /// INIT
   ///
 
-  void init() => weightTracksStream = firebase.listenToWeightTracks();
+  void init() {
+    updateState(
+      isLoading: true,
+    );
+
+    weightTracksStream = firebase.listenToWeightTracks().map(
+      (weightTracks) {
+        updateState(
+          isLoading: false,
+        );
+
+        return weightTracks;
+      },
+    );
+  }
 
   ///
   /// VARIABLES
@@ -90,5 +107,15 @@ class WeightsController {
         }
       },
     ),
+  );
+
+  /// Updates `state`.
+  void updateState({
+    bool? isLoading,
+    String? error,
+    bool clearError = false,
+  }) => value = (
+    isLoading: isLoading ?? value.isLoading,
+    error: clearError ? null : error ?? value.error,
   );
 }

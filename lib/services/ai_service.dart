@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../util/meal_image.dart';
 import 'firebase_service.dart';
 
-class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})> {
+class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
   /// CONSTRUCTOR
   ///
@@ -18,9 +18,7 @@ class AIService extends ValueNotifier<({List<GenerativeModel> generativeModels})
   AIService({
     required this.ai,
     required this.firebaseService,
-  }) : super((
-         generativeModels: [],
-       ));
+  }) : super([]);
 
   ///
   /// VARIABLES
@@ -306,7 +304,7 @@ JSON structure to follow strictly:
       ),
     ];
 
-    if (value.generativeModels.isEmpty) {
+    if (value.isEmpty) {
       errors.add('Nema dostupnih modela');
       final uploadResult = await imageUpload;
       if (uploadResult == null) {
@@ -321,7 +319,7 @@ JSON structure to follow strictly:
     }
 
     String? aiResult;
-    for (final model in value.generativeModels) {
+    for (final model in value) {
       try {
         final response = await model.generateContent(contents);
         final result = response.text;
@@ -354,7 +352,7 @@ JSON structure to follow strictly:
   /// Updates state
   void updateState({
     List<GenerativeModel>? generativeModels,
-  }) => value = (
-    generativeModels: generativeModels ?? value.generativeModels,
+  }) => value = List.from(
+    generativeModels ?? [],
   );
 }
