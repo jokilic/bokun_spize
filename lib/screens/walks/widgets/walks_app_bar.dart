@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
@@ -7,11 +8,15 @@ class WalksAppBar extends StatelessWidget {
   final String? title;
   final String timeString;
   final int? currentSteps;
+  final double? stepsChange;
+  final int? stepsChangeWithinDays;
 
   const WalksAppBar({
     required this.title,
     required this.timeString,
     required this.currentSteps,
+    required this.stepsChange,
+    required this.stepsChangeWithinDays,
   });
 
   @override
@@ -72,6 +77,8 @@ class WalksAppBar extends StatelessWidget {
           ? FadingFlexibleTitle(
               timeString: timeString,
               currentSteps: currentSteps,
+              stepsChange: stepsChange,
+              stepsChangeWithinDays: stepsChangeWithinDays,
             )
           : null,
     ),
@@ -81,10 +88,14 @@ class WalksAppBar extends StatelessWidget {
 class FadingFlexibleTitle extends StatelessWidget {
   final String timeString;
   final int? currentSteps;
+  final double? stepsChange;
+  final int? stepsChangeWithinDays;
 
   const FadingFlexibleTitle({
     required this.timeString,
     required this.currentSteps,
+    required this.stepsChange,
+    required this.stepsChangeWithinDays,
   });
 
   @override
@@ -101,64 +112,125 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
 
+    final changeColor = stepsChange != null
+        ? switch (stepsChange!) {
+            > 0 => BokunSpizeColors.primary,
+            < 0 => BokunSpizeColors.tertiary,
+            _ => BokunSpizeColors.black,
+          }
+        : BokunSpizeColors.black;
+
     return Opacity(
       opacity: opacity,
       child: Transform.translate(
         offset: Offset(0, dy),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///
-            /// TITLE
+            /// CURRENT STEPS
             ///
-            Text(
-              timeString.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.6,
-                color: BokunSpizeColors.black.withValues(alpha: 0.7),
-              ),
-            ),
-            const SizedBox(height: 2),
-
-            ///
-            /// WEIGHT
-            ///
-            Text.rich(
-              TextSpan(
-                text: currentSteps?.toString() ?? '--.-',
-                style: const TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 40,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                  letterSpacing: 1.5,
-                  color: BokunSpizeColors.primary,
-                ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const WidgetSpan(
-                    child: SizedBox(width: 4),
-                  ),
-                  TextSpan(
-                    text: 'steps',
+                  Text(
+                    timeString.toUpperCase(),
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      height: 1.2,
-                      letterSpacing: 1.5,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.6,
                       color: BokunSpizeColors.black.withValues(alpha: 0.7),
                     ),
                   ),
+                  const SizedBox(height: 2),
+                  Text.rich(
+                    TextSpan(
+                      text: currentSteps != null ? NumberFormat.decimalPattern('en').format(currentSteps) : '--',
+                      style: const TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 40,
+                        fontWeight: FontWeight.w800,
+                        height: 1.2,
+                        letterSpacing: 1.5,
+                        color: BokunSpizeColors.primary,
+                      ),
+                      children: [
+                        const WidgetSpan(
+                          child: SizedBox(width: 4),
+                        ),
+                        TextSpan(
+                          text: 'steps',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            letterSpacing: 1.5,
+                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
                 ],
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
+
+            ///
+            /// CHANGE WITHIN LAST X DAYS
+            ///
+            if (stepsChange != null)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      PhosphorIcon(
+                        stepsChange! > 0 ? PhosphorIconsBold.trendUp : PhosphorIconsBold.trendDown,
+                        color: changeColor,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        '${stepsChange! > 0 ? '+' : ''}${NumberFormat.decimalPattern('en').format(stepsChange!.round())}',
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          color: changeColor,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  if (stepsChangeWithinDays != null)
+                    Text(
+                      switch (stepsChangeWithinDays) {
+                        0 => 'today',
+                        1 => 'yesterday',
+                        final int days => 'last $days days',
+                        null => '-',
+                      },
+                      style: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 8,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.2,
+                        color: BokunSpizeColors.black,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                ],
+              ),
           ],
         ),
       ),

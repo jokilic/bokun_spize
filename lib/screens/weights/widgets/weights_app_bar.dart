@@ -30,7 +30,7 @@ class WeightsAppBar extends StatelessWidget {
       child: Row(
         children: [
           ///
-          /// AVATAR
+          /// ICON
           ///
           IconButton(
             onPressed: null,

@@ -84,7 +84,6 @@ class WeightsListTile extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 20),
 
                   ///

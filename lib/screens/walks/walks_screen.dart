@@ -10,10 +10,12 @@ import '../../constants/colors.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
-import '../../util/weight_track.dart';
+import '../../util/steps_with_date.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'walks_controller.dart';
 import 'widgets/walks_app_bar.dart';
+import 'widgets/walks_graph.dart';
+import 'widgets/walks_list_tile.dart';
 
 class WalksScreen extends WatchingStatefulWidget {
   @override
@@ -51,9 +53,26 @@ class _WalksScreenState extends State<WalksScreen> {
     /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
-    final stepsWithDate = state.stepsWithDate;
-    final latestStepsWithDate = stepsWithDate?.isNotEmpty ?? false ? stepsWithDate!.last : null;
+    final stepsWithDate = [...?state.stepsWithDate]
+      ..sort(
+        (a, b) => b.dateTime.compareTo(a.dateTime),
+      );
+    final latestStepsWithDate = stepsWithDate.firstOrNull;
     final error = state.error;
+
+    /// Number of previous calendar days used for the step comparison.
+    const stepsChangeCalendarDays = 7;
+
+    final stepsChange = getStepsChange(
+      stepsWithDate: stepsWithDate,
+      latestSteps: latestStepsWithDate?.steps,
+      calendarDays: stepsChangeCalendarDays,
+    );
+
+    final stepsChangeWithinDays = getStepsChangeWithinDays(
+      stepsWithDate: stepsWithDate,
+      calendarDays: stepsChangeCalendarDays,
+    );
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
@@ -73,9 +92,12 @@ class _WalksScreenState extends State<WalksScreen> {
             unawaited(
               HapticFeedback.lightImpact(),
             );
+            unawaited(
+              walksController.refreshSteps(),
+            );
           },
           child: const PhosphorIcon(
-            PhosphorIconsBold.plus,
+            PhosphorIconsBold.arrowClockwise,
             color: BokunSpizeColors.white,
             size: 32,
           ),
@@ -99,12 +121,53 @@ class _WalksScreenState extends State<WalksScreen> {
                     )
                   : 'Vrijeme ne postoji',
               currentSteps: latestStepsWithDate?.steps,
+              stepsChange: stepsChange,
+              stepsChangeWithinDays: stepsChangeWithinDays,
             ),
 
-            ///
-            /// STEPS TITLE
-            ///
-            if (stepsWithDate?.isNotEmpty ?? false) ...[
+            if (stepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
+              ///
+              /// GRAPH TITLE
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    switch (stepsChangeWithinDays) {
+                      0 => 'Progress today',
+                      1 => 'Progress from yesterday',
+                      final int days => 'Progress from $days days',
+                    },
+                    style: const TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.black,
+                    ),
+                  ),
+                ),
+              ),
+
+              ///
+              /// GRAPH
+              ///
+              WalksGraph(
+                stepsWithDate: stepsWithDate,
+                stepsChangeWithinDays: stepsChangeWithinDays,
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+            ],
+
+            if (stepsWithDate.isNotEmpty) ...[
+              ///
+              /// STEPS TITLE
+              ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -128,33 +191,69 @@ class _WalksScreenState extends State<WalksScreen> {
               /// STEPS LIST
               ///
               SliverList.builder(
-                itemCount: stepsWithDate!.length,
+                itemCount: stepsWithDate.length,
                 itemBuilder: (context, index) {
                   final stepWithDate = stepsWithDate[index];
 
-                  final previousWeightChange = getPreviousWeightChange(
-                    weightTracks: weightTracks,
-                    weightTrack: weightTrack,
+                  final previousStepsChange = getPreviousStepsChange(
+                    stepsWithDate: stepsWithDate,
+                    stepWithDate: stepWithDate,
                     index: index,
                   );
 
-                  return WeightsListTile(
-                    onDeletePressed: () async {
-                      unawaited(
-                        HapticFeedback.lightImpact(),
-                      );
-                      unawaited(
-                        weightsController.deleteWeightTrack(
-                          weightTrack: weightTrack,
-                        ),
-                      );
-                    },
-                    weightTrack: weightTrack,
-                    weightChange: previousWeightChange,
+                  return WalksListTile(
+                    stepWithDate: stepWithDate,
+                    stepsChange: previousStepsChange,
                   );
                 },
               ),
             ],
+
+            ///
+            /// NO STEPS
+            ///
+            if (stepsWithDate.isEmpty && error == null)
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      PhosphorIcon(
+                        PhosphorIconsBold.personSimpleWalk,
+                        color: BokunSpizeColors.primary,
+                        size: 96,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Walking journal',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'No step data at this time',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             ///
             /// ERROR
