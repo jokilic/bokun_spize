@@ -171,10 +171,10 @@ class _WeightsScreenState extends State<WeightsScreen> {
               ),
             ],
 
-            ///
-            /// WEIGHTS TITLE
-            ///
             if (weightTracks.isNotEmpty) ...[
+              ///
+              /// WEIGHTS TITLE
+              ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,

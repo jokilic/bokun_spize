@@ -10,6 +10,7 @@ import '../../constants/colors.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/weight_track.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'walks_controller.dart';
 import 'widgets/walks_app_bar.dart';
@@ -99,6 +100,61 @@ class _WalksScreenState extends State<WalksScreen> {
                   : 'Vrijeme ne postoji',
               currentSteps: latestStepsWithDate?.steps,
             ),
+
+            ///
+            /// STEPS TITLE
+            ///
+            if (stepsWithDate?.isNotEmpty ?? false) ...[
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Recent logs',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.black,
+                    ),
+                  ),
+                ),
+              ),
+
+              ///
+              /// STEPS LIST
+              ///
+              SliverList.builder(
+                itemCount: stepsWithDate!.length,
+                itemBuilder: (context, index) {
+                  final stepWithDate = stepsWithDate[index];
+
+                  final previousWeightChange = getPreviousWeightChange(
+                    weightTracks: weightTracks,
+                    weightTrack: weightTrack,
+                    index: index,
+                  );
+
+                  return WeightsListTile(
+                    onDeletePressed: () async {
+                      unawaited(
+                        HapticFeedback.lightImpact(),
+                      );
+                      unawaited(
+                        weightsController.deleteWeightTrack(
+                          weightTrack: weightTrack,
+                        ),
+                      );
+                    },
+                    weightTrack: weightTrack,
+                    weightChange: previousWeightChange,
+                  );
+                },
+              ),
+            ],
 
             ///
             /// ERROR
