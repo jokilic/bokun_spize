@@ -71,6 +71,8 @@ class _WalksScreenState extends State<WalksScreen> {
     final latestCompletedStepsWithDate = completedStepsWithDate.firstOrNull;
 
     final error = state.error;
+    final isLoading = state.isLoading;
+    final permissionAuthorized = state.permissionAuthorized;
 
     /// Number of previous calendar days used for the step comparison.
     const stepsChangeCalendarDays = 7;
@@ -88,33 +90,33 @@ class _WalksScreenState extends State<WalksScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
-      floatingActionButton: SizedBox(
-        height: 68,
-        width: 68,
-        child: FloatingActionButton(
-          heroTag: const ValueKey('walks-fab'),
-          elevation: 0,
-          backgroundColor: BokunSpizeColors.primary,
-          foregroundColor: BokunSpizeColors.white,
-          splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          shape: const CircleBorder(),
-          onPressed: () {
-            unawaited(
-              HapticFeedback.lightImpact(),
-            );
-            unawaited(
-              walksController.refreshSteps(),
-            );
-          },
-          child: const PhosphorIcon(
-            PhosphorIconsBold.arrowClockwise,
-            color: BokunSpizeColors.white,
-            size: 32,
-          ),
-        ),
-      ),
+      // floatingActionButton: SizedBox(
+      //   height: 68,
+      //   width: 68,
+      //   child: FloatingActionButton(
+      //     heroTag: const ValueKey('walks-fab'),
+      //     elevation: 0,
+      //     backgroundColor: BokunSpizeColors.primary,
+      //     foregroundColor: BokunSpizeColors.white,
+      //     splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+      //     hoverColor: Colors.transparent,
+      //     focusColor: Colors.transparent,
+      //     shape: const CircleBorder(),
+      //     onPressed: () {
+      //       unawaited(
+      //         HapticFeedback.lightImpact(),
+      //       );
+      //       unawaited(
+      //         walksController.refreshSteps(),
+      //       );
+      //     },
+      //     child: const PhosphorIcon(
+      //       PhosphorIconsBold.arrowClockwise,
+      //       color: BokunSpizeColors.white,
+      //       size: 32,
+      //     ),
+      //   ),
+      // ),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -224,7 +226,7 @@ class _WalksScreenState extends State<WalksScreen> {
             ///
             /// NO STEPS
             ///
-            if (stepsWithDate.isEmpty && error == null)
+            if (!isLoading && stepsWithDate.isEmpty && error == null)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -268,9 +270,55 @@ class _WalksScreenState extends State<WalksScreen> {
               ),
 
             ///
+            /// LOADING
+            ///
+            if (isLoading)
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      PhosphorIcon(
+                        PhosphorIconsBold.personSimpleWalk,
+                        color: BokunSpizeColors.primary,
+                        size: 96,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Walking journal',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Loading...',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            ///
             /// ERROR
             ///
-            if (error != null)
+            if (error != null || (permissionAuthorized != null && !permissionAuthorized))
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -285,9 +333,9 @@ class _WalksScreenState extends State<WalksScreen> {
                         size: 96,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Error',
-                        style: TextStyle(
+                      Text(
+                        (permissionAuthorized != null && !permissionAuthorized) ? 'Permission error' : 'Error',
+                        style: const TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
@@ -298,7 +346,7 @@ class _WalksScreenState extends State<WalksScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        error,
+                        error ?? 'Proper permission was not granted',
                         style: const TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 16,

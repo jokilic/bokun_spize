@@ -4,15 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../models/steps_with_date/steps_with_date.dart';
 
-class WalksController
-    extends
-        ValueNotifier<
-          ({
-            List<StepsWithDate>? stepsWithDate,
-            bool permissionAuthorized,
-            String? error,
-          })
-        > {
+class WalksController extends ValueNotifier<({List<StepsWithDate>? stepsWithDate, bool? permissionAuthorized, bool isLoading, String? error})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -23,7 +15,8 @@ class WalksController
     required this.health,
   }) : super((
          stepsWithDate: null,
-         permissionAuthorized: false,
+         permissionAuthorized: null,
+         isLoading: false,
          error: null,
        ));
 
@@ -90,11 +83,12 @@ class WalksController
   /// Requests permission and fetches the total steps recorded for the last 30 days
   Future<void> refreshSteps() async {
     updateState(
+      isLoading: true,
       clearError: true,
     );
 
     try {
-      /// Configura `Health` plugin
+      /// Configure `Health` plugin
       await health.configure();
 
       /// Request and handle permissions
@@ -108,6 +102,11 @@ class WalksController
         );
         return;
       }
+
+      /// Permission is confirmed before step data starts loading
+      updateState(
+        permissionAuthorized: true,
+      );
 
       final now = DateTime.now();
       final stepsWithDate = <StepsWithDate>[];
@@ -132,13 +131,9 @@ class WalksController
           endOfInterval,
         );
 
-        /// Error fetching steps
+        /// Skip days for which step data could not be fetched
         if (steps == null) {
-          updateState(
-            permissionAuthorized: true,
-            error: 'Steps could not be fetched for one or more days.',
-          );
-          return;
+          continue;
         }
 
         stepsWithDate.add(
@@ -159,8 +154,11 @@ class WalksController
     /// Some error fetching steps
     catch (error) {
       updateState(
-        permissionAuthorized: false,
         error: error.toString(),
+      );
+    } finally {
+      updateState(
+        isLoading: false,
       );
     }
   }
@@ -169,11 +167,13 @@ class WalksController
   void updateState({
     List<StepsWithDate>? stepsWithDate,
     bool? permissionAuthorized,
+    bool? isLoading,
     String? error,
     bool clearError = false,
   }) => value = (
     stepsWithDate: stepsWithDate ?? value.stepsWithDate,
     permissionAuthorized: permissionAuthorized ?? value.permissionAuthorized,
+    isLoading: isLoading ?? value.isLoading,
     error: clearError ? null : error ?? value.error,
   );
 }
