@@ -140,7 +140,7 @@ class _WalksScreenState extends State<WalksScreen> {
                   : 'Vrijeme ne postoji',
               currentSteps: latestStepsWithDate?.steps,
               stepsChange: stepsChange,
-              stepsChangeDateTime: latestCompletedStepsWithDate?.dateTime,
+              stepsChangeWithinDays: stepsChangeWithinDays,
             ),
 
             if (completedStepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
