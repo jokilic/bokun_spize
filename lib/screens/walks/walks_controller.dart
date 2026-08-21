@@ -110,26 +110,48 @@ class WalksController
       }
 
       final now = DateTime.now();
-      final startOfDay = DateTime(now.year, now.month, now.day);
+      final stepsWithDate = <StepsWithDate>[];
 
-      // TODO: I've created `List<StepsWithDate>`, can you update the state logic and instead of having only one day here, get last 30 days and fill out the state
-
-      /// Get steps
-      final steps = await health.getTotalStepsInInterval(startOfDay, now);
-
-      /// Error fetching steps
-      if (steps == null) {
-        updateState(
-          permissionAuthorized: true,
-          error: 'Steps could not be fetched.',
+      /// Get steps for today and the previous 29 calendar days
+      for (var dayOffset = 29; dayOffset >= 0; dayOffset--) {
+        final startOfDay = DateTime(
+          now.year,
+          now.month,
+          now.day - dayOffset,
         );
-        return;
+        final startOfNextDay = DateTime(
+          startOfDay.year,
+          startOfDay.month,
+          startOfDay.day + 1,
+        );
+
+        final endOfInterval = startOfNextDay.isAfter(now) ? now : startOfNextDay;
+
+        final steps = await health.getTotalStepsInInterval(
+          startOfDay,
+          endOfInterval,
+        );
+
+        /// Error fetching steps
+        if (steps == null) {
+          updateState(
+            permissionAuthorized: true,
+            error: 'Steps could not be fetched for one or more days.',
+          );
+          return;
+        }
+
+        stepsWithDate.add(
+          StepsWithDate(
+            dateTime: startOfDay,
+            steps: steps,
+          ),
+        );
       }
 
       /// Steps fetched succesfully
       updateState(
-        steps: steps,
-        stepsFetchedAt: now,
+        stepsWithDate: stepsWithDate,
         permissionAuthorized: true,
         clearError: true,
       );

@@ -50,8 +50,8 @@ class _WalksScreenState extends State<WalksScreen> {
     /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
-    final steps = state.steps;
-    final stepsTimestamp = state.stepsFetchedAt;
+    final stepsWithDate = state.stepsWithDate;
+    final latestStepsWithDate = stepsWithDate?.isNotEmpty ?? false ? stepsWithDate!.last : null;
     final error = state.error;
 
     return Scaffold(
@@ -91,13 +91,13 @@ class _WalksScreenState extends State<WalksScreen> {
             ///
             WalksAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              timeString: stepsTimestamp != null
+              timeString: latestStepsWithDate != null
                   ? getDateString(
-                      date: stepsTimestamp,
+                      date: latestStepsWithDate.dateTime,
                       dateFormat: 'EEEE, dd.MM.yyyy.',
                     )
                   : 'Vrijeme ne postoji',
-              currentSteps: steps,
+              currentSteps: latestStepsWithDate?.steps,
             ),
 
             ///
