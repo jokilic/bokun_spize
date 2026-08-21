@@ -51,8 +51,12 @@ class _MealsScreenState extends State<MealsScreen> {
     /// User data from `Firebase`
     final userName = firebaseService.userName;
 
-    /// Currently selected day
-    final activeDate = watchIt<MealsController>().value;
+    /// Reference to `state`
+    final state = watchIt<MealsController>().value;
+
+    final activeDate = state.activeDate;
+    final error = state.error;
+    final isLoading = state.isLoading;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(

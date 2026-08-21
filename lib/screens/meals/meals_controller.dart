@@ -13,7 +13,7 @@ import '../../services/firebase_service.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
 
-class MealsController extends ValueNotifier<DateTime> {
+class MealsController extends ValueNotifier<({DateTime activeDate, bool isLoading, String? error})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -24,17 +24,21 @@ class MealsController extends ValueNotifier<DateTime> {
   MealsController({
     required this.firebase,
     required this.ai,
-  }) : super(
-         DateUtils.dateOnly(
+  }) : super((
+         activeDate: DateUtils.dateOnly(
            DateTime.now(),
          ),
-       );
+         isLoading: false,
+         error: null,
+       ));
 
   ///
   /// INIT
   ///
 
-  void init() => mealsStream = firebase.listenToMeals(date: value);
+  void init() => listenToMeals(
+    date: value.activeDate,
+  );
 
   ///
   /// VARIABLES
@@ -47,16 +51,41 @@ class MealsController extends ValueNotifier<DateTime> {
   ///
 
   /// Updates the active `date` and switches the meal listener to that day
-  @override
-  set value(DateTime newValue) {
+  void updateDate(DateTime newValue) {
     final selectedDate = DateUtils.dateOnly(newValue);
 
-    if (DateUtils.isSameDay(super.value, selectedDate)) {
+    if (DateUtils.isSameDay(value.activeDate, selectedDate)) {
       return;
     }
 
-    mealsStream = firebase.listenToMeals(date: selectedDate);
-    super.value = selectedDate;
+    listenToMeals(
+      date: selectedDate,
+    );
+  }
+
+  /// Listens to meals from [date] and updates the loading and error state.
+  void listenToMeals({required DateTime date}) {
+    mealsStream = firebase.listenToMeals(date: date).map(
+      (meals) {
+        if (!DateUtils.isSameDay(value.activeDate, date)) {
+          return meals;
+        }
+
+        updateState(
+          isLoading: false,
+          error: meals == null ? 'Meals could not be loaded.' : null,
+          clearError: meals != null,
+        );
+
+        return meals;
+      },
+    );
+
+    updateState(
+      activeDate: date,
+      isLoading: true,
+      clearError: true,
+    );
   }
 
   /// Deletes [meal] from Firebase
@@ -77,8 +106,8 @@ class MealsController extends ValueNotifier<DateTime> {
       borderRadius: BorderRadius.circular(listTileRadius),
     ),
     builder: (context) => CalendarSheet(
-      dateValue: value,
-      onDateChanged: (newDate) => value = newDate,
+      dateValue: value.activeDate,
+      onDateChanged: updateDate,
       primaryColor: BokunSpizeColors.green,
     ),
   );
@@ -247,4 +276,16 @@ class MealsController extends ValueNotifier<DateTime> {
       return null;
     }
   }
+
+  /// Updates `state`.
+  void updateState({
+    DateTime? activeDate,
+    bool? isLoading,
+    String? error,
+    bool clearError = false,
+  }) => value = (
+    activeDate: activeDate ?? value.activeDate,
+    isLoading: isLoading ?? value.isLoading,
+    error: clearError ? null : error ?? value.error,
+  );
 }
