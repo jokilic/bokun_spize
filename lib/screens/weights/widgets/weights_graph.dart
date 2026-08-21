@@ -121,8 +121,8 @@ class WeightsGraph extends StatelessWidget {
     final chartMaxX = hasSinglePosition ? 1.0 : timeSpanInDays;
 
     final lineEndColor = Color.lerp(
-      BokunSpizeColors.green,
-      BokunSpizeColors.green.withValues(alpha: 0.25),
+      BokunSpizeColors.blue,
+      BokunSpizeColors.blue.withValues(alpha: 0.25),
       0.75,
     )!;
 
@@ -168,7 +168,7 @@ class WeightsGraph extends StatelessWidget {
             gradientArea: LineChartGradientArea.wholeChart,
             gradient: LinearGradient(
               colors: [
-                BokunSpizeColors.green,
+                BokunSpizeColors.blue,
                 lineEndColor,
               ],
             ),
@@ -178,8 +178,8 @@ class WeightsGraph extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  BokunSpizeColors.green.withValues(alpha: 0.16),
-                  BokunSpizeColors.green.withValues(alpha: 0),
+                  BokunSpizeColors.blue.withValues(alpha: 0.16),
+                  BokunSpizeColors.blue.withValues(alpha: 0),
                 ],
               ),
             ),
@@ -190,9 +190,9 @@ class WeightsGraph extends StatelessWidget {
               ),
               getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                 radius: 4.5,
-                color: BokunSpizeColors.green,
+                color: BokunSpizeColors.blue,
                 strokeWidth: 6,
-                strokeColor: BokunSpizeColors.green.withValues(alpha: 0.25),
+                strokeColor: BokunSpizeColors.blue.withValues(alpha: 0.25),
               ),
             ),
           ),

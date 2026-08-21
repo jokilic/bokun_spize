@@ -9,10 +9,12 @@ import '../constants/constants.dart';
 class CalendarSheet extends StatefulWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
+  final Color primaryColor;
 
   const CalendarSheet({
     required this.dateValue,
     required this.onDateChanged,
+    required this.primaryColor,
   });
 
   @override
@@ -117,8 +119,8 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 fontWeight: FontWeight.w600,
                 color: BokunSpizeColors.black,
               ),
-              selectedDayHighlightColor: BokunSpizeColors.green,
-              daySplashColor: BokunSpizeColors.green,
+              selectedDayHighlightColor: widget.primaryColor,
+              daySplashColor: widget.primaryColor,
               dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
                 var currentDecoration = decoration;
 
@@ -175,7 +177,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   fontWeight: FontWeight.w800,
                 ),
                 padding: const EdgeInsets.all(22),
-                backgroundColor: BokunSpizeColors.green,
+                backgroundColor: widget.primaryColor,
                 foregroundColor: BokunSpizeColors.white,
               ),
               child: const Text('Confirm'),

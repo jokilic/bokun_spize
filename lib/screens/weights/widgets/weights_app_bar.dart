@@ -161,7 +161,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 1.5,
-                        color: BokunSpizeColors.green,
+                        color: BokunSpizeColors.blue,
                       ),
                       children: [
                         const WidgetSpan(

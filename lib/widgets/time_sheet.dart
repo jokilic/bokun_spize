@@ -8,10 +8,12 @@ import '../constants/constants.dart';
 class TimeSheet extends StatefulWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
+  final Color primaryColor;
 
   const TimeSheet({
     required this.dateValue,
     required this.onDateChanged,
+    required this.primaryColor,
   });
 
   @override
@@ -59,11 +61,11 @@ class _TimeSheetState extends State<TimeSheet> {
               onChange: (newDateTime) => selectedDateTime = newDateTime,
               itemExtent: 64,
               style: DateTimePickerStyle(
-                activeStyle: const TextStyle(
+                activeStyle: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: BokunSpizeColors.green,
+                  color: widget.primaryColor,
                 ),
                 inactiveStyle: TextStyle(
                   fontFamily: 'Epilogue',
@@ -93,7 +95,7 @@ class _TimeSheetState extends State<TimeSheet> {
               centerWidget: DateTimePickerCenterWidget(
                 builder: (context, constraints, child) => Container(
                   decoration: ShapeDecoration(
-                    color: BokunSpizeColors.green.withValues(alpha: 0.25),
+                    color: widget.primaryColor.withValues(alpha: 0.25),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -124,7 +126,7 @@ class _TimeSheetState extends State<TimeSheet> {
                   fontWeight: FontWeight.w800,
                 ),
                 padding: const EdgeInsets.all(22),
-                backgroundColor: BokunSpizeColors.green,
+                backgroundColor: widget.primaryColor,
                 foregroundColor: BokunSpizeColors.white,
               ),
               child: const Text('Confirm'),

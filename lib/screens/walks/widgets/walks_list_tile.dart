@@ -28,7 +28,7 @@ class WalksListTile extends StatelessWidget {
     final changeColor = stepsChange != null
         ? switch (stepsChange) {
             > 0 => BokunSpizeColors.green,
-            < 0 => BokunSpizeColors.red,
+            < 0 => BokunSpizeColors.yellow,
             _ => BokunSpizeColors.black,
           }
         : BokunSpizeColors.black;
@@ -58,7 +58,7 @@ class WalksListTile extends StatelessWidget {
                   color: BokunSpizeColors.grey,
                   child: const PhosphorIcon(
                     PhosphorIconsBold.personSimpleWalk,
-                    color: BokunSpizeColors.green,
+                    color: BokunSpizeColors.yellow,
                     size: 24,
                   ),
                 ),

@@ -45,9 +45,9 @@ class WalksAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
               ),
               backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.red,
+              foregroundColor: BokunSpizeColors.yellow,
               disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              disabledForegroundColor: BokunSpizeColors.red,
+              disabledForegroundColor: BokunSpizeColors.yellow,
             ),
           ),
           const SizedBox(width: 14),
@@ -64,7 +64,7 @@ class WalksAppBar extends StatelessWidget {
                 height: 1.2,
                 letterSpacing: 0.6,
                 fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.red,
+                color: BokunSpizeColors.yellow,
               ),
             ),
         ],
@@ -115,7 +115,7 @@ class FadingFlexibleTitle extends StatelessWidget {
     final changeColor = stepsChange != null
         ? switch (stepsChange!) {
             > 0 => BokunSpizeColors.green,
-            < 0 => BokunSpizeColors.red,
+            < 0 => BokunSpizeColors.yellow,
             _ => BokunSpizeColors.black,
           }
         : BokunSpizeColors.black;
@@ -155,7 +155,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 1.5,
-                        color: BokunSpizeColors.green,
+                        color: BokunSpizeColors.yellow,
                       ),
                       children: [
                         const WidgetSpan(

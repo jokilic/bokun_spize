@@ -79,6 +79,7 @@ class MealsController extends ValueNotifier<DateTime> {
     builder: (context) => CalendarSheet(
       dateValue: value,
       onDateChanged: (newDate) => value = newDate,
+      primaryColor: BokunSpizeColors.green,
     ),
   );
 

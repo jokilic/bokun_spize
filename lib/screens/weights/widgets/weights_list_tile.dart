@@ -79,7 +79,7 @@ class WeightsListTile extends StatelessWidget {
                       color: BokunSpizeColors.grey,
                       child: const PhosphorIcon(
                         PhosphorIconsBold.personSimple,
-                        color: BokunSpizeColors.green,
+                        color: BokunSpizeColors.blue,
                         size: 24,
                       ),
                     ),
