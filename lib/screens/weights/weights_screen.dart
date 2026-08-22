@@ -61,20 +61,17 @@ class _WeightsScreenState extends State<WeightsScreen> {
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;
 
-    /// Number of previous calendar days used for the weight comparison
-    const weightChangeCalendarDays = 7;
-
     /// Calculate `weightChange`
     final weightChange = getWeightChange(
       weightTracks: weightTracks,
       lastWeight: lastWeightTrack?.weight,
-      calendarDays: weightChangeCalendarDays,
+      calendarDays: graphCalendarDays,
     );
 
     /// Calculate `weightChangeWithinDays`
     final weightChangeWithinDays = getWeightChangeWithinDays(
       weightTracks: weightTracks,
-      calendarDays: weightChangeCalendarDays,
+      calendarDays: graphCalendarDays,
     );
 
     return Scaffold(
@@ -132,9 +129,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
             ),
 
             if (weightTracks.length >= 2 && weightChangeWithinDays != null) ...[
-              ///
-              /// GRAPH TITLE
-              ///
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,

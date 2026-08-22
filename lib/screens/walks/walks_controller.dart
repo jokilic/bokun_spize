@@ -4,7 +4,17 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../models/steps_with_date/steps_with_date.dart';
 
-class WalksController extends ValueNotifier<({List<StepsWithDate>? stepsWithDate, bool? permissionAuthorized, bool isLoading, String? error})> {
+class WalksController
+    extends
+        ValueNotifier<
+          ({
+            List<StepsWithDate>? stepsWithDate,
+            int graphCalendarDays,
+            bool? permissionAuthorized,
+            bool isLoading,
+            String? error,
+          })
+        > {
   ///
   /// CONSTRUCTOR
   ///
@@ -15,6 +25,7 @@ class WalksController extends ValueNotifier<({List<StepsWithDate>? stepsWithDate
     required this.health,
   }) : super((
          stepsWithDate: null,
+         graphCalendarDays: 7,
          permissionAuthorized: null,
          isLoading: false,
          error: null,
@@ -25,6 +36,12 @@ class WalksController extends ValueNotifier<({List<StepsWithDate>? stepsWithDate
   ///
 
   Future<void> init() async => refreshSteps();
+
+  ///
+  /// VARIABLES
+  ///
+
+  final graphCalendarDayOptions = [3, 7, 14, 30];
 
   ///
   /// METHODS
@@ -166,12 +183,14 @@ class WalksController extends ValueNotifier<({List<StepsWithDate>? stepsWithDate
   /// Updates `state`.
   void updateState({
     List<StepsWithDate>? stepsWithDate,
+    int? graphCalendarDays,
     bool? permissionAuthorized,
     bool? isLoading,
     String? error,
     bool clearError = false,
   }) => value = (
     stepsWithDate: stepsWithDate ?? value.stepsWithDate,
+    graphCalendarDays: graphCalendarDays ?? value.graphCalendarDays,
     permissionAuthorized: permissionAuthorized ?? value.permissionAuthorized,
     isLoading: isLoading ?? value.isLoading,
     error: clearError ? null : error ?? value.error,

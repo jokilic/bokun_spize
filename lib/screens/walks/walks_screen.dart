@@ -56,6 +56,7 @@ class _WalksScreenState extends State<WalksScreen> {
     final error = state.error;
     final isLoading = state.isLoading;
     final permissionAuthorized = state.permissionAuthorized;
+    final graphCalendarDays = state.graphCalendarDays;
 
     final stepsWithDate = [...?state.stepsWithDate]
       ..sort(
@@ -76,18 +77,15 @@ class _WalksScreenState extends State<WalksScreen> {
 
     final showRefreshButton = !isLoading && stepsWithDate.isEmpty && (error != null || permissionAuthorized == false);
 
-    /// Number of previous calendar days used for the step comparison
-    const stepsChangeCalendarDays = 7;
-
     final stepsChange = getStepsChange(
       stepsWithDate: completedStepsWithDate,
       latestSteps: latestCompletedStepsWithDate?.steps,
-      calendarDays: stepsChangeCalendarDays,
+      calendarDays: graphCalendarDays,
     );
 
     final stepsChangeWithinDays = getStepsChangeWithinDays(
       stepsWithDate: completedStepsWithDate,
-      calendarDays: stepsChangeCalendarDays,
+      calendarDays: graphCalendarDays,
     );
 
     return Scaffold(
@@ -144,24 +142,98 @@ class _WalksScreenState extends State<WalksScreen> {
             ),
 
             if (completedStepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
-              ///
-              /// GRAPH TITLE
-              ///
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Recent progress',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: BokunSpizeColors.black,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ///
+                      /// GRAPH TITLE
+                      ///
+                      const Expanded(
+                        child: Text(
+                          'Recent progress',
+                          style: TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.6,
+                            color: BokunSpizeColors.black,
+                          ),
+                        ),
+                      ),
+
+                      ///
+                      /// GRAPH BUTTON
+                      ///
+                      PopupMenuButton<int>(
+                        menuPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        position: PopupMenuPosition.under,
+                        offset: const Offset(0, 8),
+                        elevation: 0,
+                        color: BokunSpizeColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        onSelected: (calendarDays) => walksController.updateState(
+                          graphCalendarDays: calendarDays,
+                        ),
+                        itemBuilder: (context) => walksController.graphCalendarDayOptions
+                            .map(
+                              (calendarDays) => PopupMenuItem<int>(
+                                value: calendarDays,
+                                child: Text(
+                                  '$calendarDays days',
+                                  style: const TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: BokunSpizeColors.black,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        child: DecoratedBox(
+                          decoration: ShapeDecoration(
+                            color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                            shape: const StadiumBorder(),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const PhosphorIcon(
+                                  PhosphorIconsBold.caretDown,
+                                  color: BokunSpizeColors.black,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '$graphCalendarDays days',
+                                  style: const TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 16,
+                                    height: 1.6,
+                                    fontWeight: FontWeight.w600,
+                                    color: BokunSpizeColors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -171,7 +243,7 @@ class _WalksScreenState extends State<WalksScreen> {
               ///
               WalksGraph(
                 stepsWithDate: completedStepsWithDate,
-                calendarDays: stepsChangeCalendarDays,
+                calendarDays: graphCalendarDays,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 20),
