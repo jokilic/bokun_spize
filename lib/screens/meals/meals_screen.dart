@@ -6,7 +6,6 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
@@ -57,20 +56,12 @@ class _MealsScreenState extends State<MealsScreen> {
     final activeDate = state.activeDate;
     final error = state.error;
     final isLoading = state.isLoading;
+    final meals = state.meals;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
-
-    /// Listens to `meals` from the currently selected day
-    final meals =
-        watchStream<MealsController, List<Meal>?>(
-          (mealsController) => mealsController.mealsStream,
-          allowStreamChange: true,
-          preserveState: false,
-        ).data ??
-        [];
 
     /// Calculates total calories for `List<Meals>`
     final currentCalories = meals.fold<double>(

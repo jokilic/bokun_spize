@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
@@ -13,7 +15,7 @@ import '../../services/firebase_service.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
 
-class MealsController extends ValueNotifier<({DateTime activeDate, bool isLoading, String? error})> {
+class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -28,6 +30,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, bool isLoadin
          activeDate: DateUtils.dateOnly(
            DateTime.now(),
          ),
+         meals: const [],
          isLoading: false,
          error: null,
        ));
@@ -41,10 +44,20 @@ class MealsController extends ValueNotifier<({DateTime activeDate, bool isLoadin
   );
 
   ///
+  /// DISPOSE
+  ///
+
+  @override
+  void onDispose() {
+    mealsSubscription?.cancel();
+    super.dispose();
+  }
+
+  ///
   /// VARIABLES
   ///
 
-  late Stream<List<Meal>?> mealsStream;
+  StreamSubscription<List<Meal>?>? mealsSubscription;
 
   ///
   /// METHODS
@@ -65,26 +78,30 @@ class MealsController extends ValueNotifier<({DateTime activeDate, bool isLoadin
 
   /// Listens to meals from [date] and updates the loading and error state.
   void listenToMeals({required DateTime date}) {
-    mealsStream = firebase.listenToMeals(date: date).map(
+    updateState(
+      activeDate: date,
+      meals: const [],
+      isLoading: true,
+      clearError: true,
+    );
+
+    unawaited(
+      mealsSubscription?.cancel(),
+    );
+
+    mealsSubscription = firebase.listenToMeals(date: date).listen(
       (meals) {
         if (!DateUtils.isSameDay(value.activeDate, date)) {
-          return meals;
+          return;
         }
 
         updateState(
+          meals: meals ?? const [],
           isLoading: false,
           error: meals == null ? 'Meals could not be loaded.' : null,
           clearError: meals != null,
         );
-
-        return meals;
       },
-    );
-
-    updateState(
-      activeDate: date,
-      isLoading: true,
-      clearError: true,
     );
   }
 
@@ -280,11 +297,13 @@ class MealsController extends ValueNotifier<({DateTime activeDate, bool isLoadin
   /// Updates `state`.
   void updateState({
     DateTime? activeDate,
+    List<Meal>? meals,
     bool? isLoading,
     String? error,
     bool clearError = false,
   }) => value = (
     activeDate: activeDate ?? value.activeDate,
+    meals: meals ?? value.meals,
     isLoading: isLoading ?? value.isLoading,
     error: clearError ? null : error ?? value.error,
   );

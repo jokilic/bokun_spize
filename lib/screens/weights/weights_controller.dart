@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
@@ -10,7 +11,7 @@ import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
-class WeightsController extends ValueNotifier<({bool isLoading, String? error})> {
+class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, bool isLoading, String? error})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -20,6 +21,7 @@ class WeightsController extends ValueNotifier<({bool isLoading, String? error})>
   WeightsController({
     required this.firebase,
   }) : super((
+         weightTracks: const [],
          isLoading: false,
          error: null,
        ));
@@ -34,24 +36,33 @@ class WeightsController extends ValueNotifier<({bool isLoading, String? error})>
       clearError: true,
     );
 
-    weightTracksStream = firebase.listenToWeightTracks().map(
+    weightTracksSubscription = firebase.listenToWeightTracks().listen(
       (weightTracks) {
         updateState(
+          weightTracks: weightTracks ?? const [],
           isLoading: false,
           error: weightTracks == null ? 'Weight tracks could not be loaded.' : null,
           clearError: weightTracks != null,
         );
-
-        return weightTracks;
       },
     );
+  }
+
+  ///
+  /// DISPOSE
+  ///
+
+  @override
+  void onDispose() {
+    weightTracksSubscription?.cancel();
+    super.dispose();
   }
 
   ///
   /// VARIABLES
   ///
 
-  late Stream<List<WeightTrack>?> weightTracksStream;
+  StreamSubscription<List<WeightTrack>?>? weightTracksSubscription;
 
   ///
   /// METHODS
@@ -114,10 +125,12 @@ class WeightsController extends ValueNotifier<({bool isLoading, String? error})>
 
   /// Updates `state`.
   void updateState({
+    List<WeightTrack>? weightTracks,
     bool? isLoading,
     String? error,
     bool clearError = false,
   }) => value = (
+    weightTracks: weightTracks ?? value.weightTracks,
     isLoading: isLoading ?? value.isLoading,
     error: clearError ? null : error ?? value.error,
   );

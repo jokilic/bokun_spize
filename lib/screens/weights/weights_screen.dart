@@ -6,7 +6,6 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
@@ -55,15 +54,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
     final error = state.error;
     final isLoading = state.isLoading;
-
-    /// Listens to `weightTracks`
-    final weightTracks =
-        watchStream<WeightsController, List<WeightTrack>?>(
-          (weightsController) => weightsController.weightTracksStream,
-          allowStreamChange: true,
-          preserveState: false,
-        ).data ??
-        [];
+    final weightTracks = state.weightTracks;
 
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;
