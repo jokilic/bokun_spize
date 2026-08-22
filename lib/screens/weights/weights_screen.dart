@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
@@ -55,6 +56,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
     final error = state.error;
     final isLoading = state.isLoading;
     final weightTracks = state.weightTracks;
+    final graphCalendarDays = state.graphCalendarDays;
 
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;
@@ -162,31 +164,66 @@ class _WeightsScreenState extends State<WeightsScreen> {
                       ///
                       /// GRAPH BUTTON
                       ///
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          // TODO: Open a dropdown here with 3, 7, 14, 30, 60 & 90
-                        },
-                        icon: const PhosphorIcon(
-                          PhosphorIconsBold.caretDown,
-                          color: BokunSpizeColors.black,
-                          size: 16,
+                      PopupMenuButton<int>(
+                        menuPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                        label: const Text('30 days'),
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shape: const StadiumBorder(),
-                          textStyle: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 16,
-                            height: 1.6,
-                            fontWeight: FontWeight.w600,
-                            color: BokunSpizeColors.grey,
+                        position: PopupMenuPosition.under,
+                        offset: const Offset(0, 8),
+                        elevation: 0,
+                        color: BokunSpizeColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        onSelected: (calendarDays) => weightsController.updateState(
+                          graphCalendarDays: calendarDays,
+                        ),
+                        itemBuilder: (context) => weightsController.graphCalendarDayOptions
+                            .map(
+                              (calendarDays) => PopupMenuItem<int>(
+                                value: calendarDays,
+                                child: Text(
+                                  '$calendarDays days',
+                                  style: const TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: BokunSpizeColors.black,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        child: DecoratedBox(
+                          decoration: ShapeDecoration(
+                            color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                            shape: const StadiumBorder(),
                           ),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                          foregroundColor: BokunSpizeColors.black,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const PhosphorIcon(
+                                  PhosphorIconsBold.caretDown,
+                                  color: BokunSpizeColors.black,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '$graphCalendarDays days',
+                                  style: const TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 16,
+                                    height: 1.6,
+                                    fontWeight: FontWeight.w600,
+                                    color: BokunSpizeColors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -199,7 +236,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
               ///
               WeightsGraph(
                 weightTracks: weightTracks,
-                calendarDays: weightChangeCalendarDays,
+                calendarDays: graphCalendarDays,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 20),

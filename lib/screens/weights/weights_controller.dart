@@ -11,7 +11,17 @@ import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
-class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, bool isLoading, String? error})> implements Disposable {
+class WeightsController
+    extends
+        ValueNotifier<
+          ({
+            List<WeightTrack> weightTracks,
+            int graphCalendarDays,
+            bool isLoading,
+            String? error,
+          })
+        >
+    implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -22,6 +32,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     required this.firebase,
   }) : super((
          weightTracks: const [],
+         graphCalendarDays: 7,
          isLoading: false,
          error: null,
        ));
@@ -63,6 +74,8 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
 
   StreamSubscription<List<WeightTrack>?>? weightTracksSubscription;
+
+  final graphCalendarDayOptions = [3, 7, 14, 30, 60, 90];
 
   ///
   /// METHODS
@@ -126,11 +139,13 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   /// Updates `state`.
   void updateState({
     List<WeightTrack>? weightTracks,
+    int? graphCalendarDays,
     bool? isLoading,
     String? error,
     bool clearError = false,
   }) => value = (
     weightTracks: weightTracks ?? value.weightTracks,
+    graphCalendarDays: graphCalendarDays ?? value.graphCalendarDays,
     isLoading: isLoading ?? value.isLoading,
     error: clearError ? null : error ?? value.error,
   );
