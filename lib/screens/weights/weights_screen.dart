@@ -133,21 +133,63 @@ class _WeightsScreenState extends State<WeightsScreen> {
               ///
               /// GRAPH TITLE
               ///
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Recent progress',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: BokunSpizeColors.black,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ///
+                      /// GRAPH TITLE
+                      ///
+                      const Expanded(
+                        child: Text(
+                          'Recent progress',
+                          style: TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.6,
+                            color: BokunSpizeColors.black,
+                          ),
+                        ),
+                      ),
+
+                      ///
+                      /// GRAPH BUTTON
+                      ///
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // TODO: Open a dropdown here with 3, 7, 14, 30, 60 & 90
+                        },
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.caretDown,
+                          color: BokunSpizeColors.black,
+                          size: 16,
+                        ),
+                        label: const Text('30 days'),
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          shape: const StadiumBorder(),
+                          textStyle: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 16,
+                            height: 1.6,
+                            fontWeight: FontWeight.w600,
+                            color: BokunSpizeColors.grey,
+                          ),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          foregroundColor: BokunSpizeColors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
