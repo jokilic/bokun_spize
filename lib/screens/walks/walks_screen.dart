@@ -37,7 +37,7 @@ class _WalksScreenState extends State<WalksScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<WalksController>();
+    // unRegisterIfNotDisposed<WalksController>();
     super.dispose();
   }
 

@@ -38,7 +38,7 @@ class _MealsScreenState extends State<MealsScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<MealsController>();
+    // unRegisterIfNotDisposed<MealsController>();
     super.dispose();
   }
 

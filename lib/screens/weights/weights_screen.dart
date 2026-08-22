@@ -37,7 +37,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<WeightsController>();
+    // unRegisterIfNotDisposed<WeightsController>();
     super.dispose();
   }
 
