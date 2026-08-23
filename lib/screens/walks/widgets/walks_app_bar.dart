@@ -215,9 +215,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                   if (stepsChangeWithinDays != null)
                     Text(
                       switch (stepsChangeWithinDays) {
-                        0 => 'today',
-                        1 => 'yesterday',
-                        final int days => 'last $days days',
+                        0 => 'vs today',
+                        1 => 'vs yesterday',
+                        final int days => 'vs last $days days',
                         null => '-',
                       },
                       style: const TextStyle(

@@ -35,18 +35,46 @@ class _CalendarSheetState extends State<CalendarSheet> {
         children: [
           const SizedBox(height: 40),
 
-          ///
-          /// TITLE
-          ///
-          const Text(
-            'Select date',
-            style: TextStyle(
-              fontFamily: 'Epilogue',
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.6,
-              color: BokunSpizeColors.black,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ///
+              /// TITLE
+              ///
+              const Expanded(
+                child: Text(
+                  'Select date',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
+                ),
+              ),
+
+              ///
+              /// CLOSE BUTTON
+              ///
+              IconButton(
+                onPressed: Navigator.of(context).pop,
+                icon: const PhosphorIcon(
+                  PhosphorIconsBold.x,
+                  size: 22,
+                ),
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                  foregroundColor: BokunSpizeColors.black,
+                  disabledBackgroundColor: BokunSpizeColors.white,
+                  disabledForegroundColor: BokunSpizeColors.black,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
 
@@ -63,17 +91,25 @@ class _CalendarSheetState extends State<CalendarSheet> {
               }
             },
             config: CalendarDatePicker2Config(
+              calendarViewScrollPhysics: const BouncingScrollPhysics(),
               calendarType: CalendarDatePicker2Type.single,
               dynamicCalendarRows: true,
+              customModePickerIcon: const SizedBox.shrink(),
               weekdayLabelTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.w900,
                 color: BokunSpizeColors.black,
               ),
               controlsTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 20,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: BokunSpizeColors.black,
+              ),
+              todayTextStyle: const TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 16,
                 fontWeight: FontWeight.w900,
                 color: BokunSpizeColors.black,
               ),
@@ -83,25 +119,25 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 fontWeight: FontWeight.w500,
                 color: BokunSpizeColors.black,
               ),
-              todayTextStyle: const TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.black,
-              ),
               selectedDayTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.grey,
+                color: BokunSpizeColors.white,
+              ),
+              monthTextStyle: const TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: BokunSpizeColors.black,
               ),
               selectedMonthTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.grey,
+                color: BokunSpizeColors.white,
               ),
-              monthTextStyle: const TextStyle(
+              yearTextStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -111,13 +147,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
-                color: BokunSpizeColors.grey,
-              ),
-              yearTextStyle: const TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: BokunSpizeColors.black,
+                color: BokunSpizeColors.white,
               ),
               selectedDayHighlightColor: widget.primaryColor,
               daySplashColor: widget.primaryColor,
@@ -128,7 +158,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   currentDecoration = BoxDecoration(
                     border: Border.all(
                       color: BokunSpizeColors.black,
-                      width: 1.5,
+                      width: 2,
                     ),
                     shape: BoxShape.circle,
                   );
@@ -147,12 +177,12 @@ class _CalendarSheetState extends State<CalendarSheet> {
               lastMonthIcon: const PhosphorIcon(
                 PhosphorIconsBold.caretLeft,
                 color: BokunSpizeColors.black,
-                size: 28,
+                size: 22,
               ),
               nextMonthIcon: const PhosphorIcon(
                 PhosphorIconsBold.caretRight,
                 color: BokunSpizeColors.black,
-                size: 28,
+                size: 22,
               ),
             ),
           ),

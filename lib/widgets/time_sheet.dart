@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 
 import '../constants/colors.dart';
@@ -34,18 +35,46 @@ class _TimeSheetState extends State<TimeSheet> {
         children: [
           const SizedBox(height: 40),
 
-          ///
-          /// TITLE
-          ///
-          const Text(
-            'Select time',
-            style: TextStyle(
-              fontFamily: 'Epilogue',
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.6,
-              color: BokunSpizeColors.black,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ///
+              /// TITLE
+              ///
+              const Expanded(
+                child: Text(
+                  'Select time',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
+                ),
+              ),
+
+              ///
+              /// CLOSE BUTTON
+              ///
+              IconButton(
+                onPressed: Navigator.of(context).pop,
+                icon: const PhosphorIcon(
+                  PhosphorIconsBold.x,
+                  size: 22,
+                ),
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                  foregroundColor: BokunSpizeColors.black,
+                  disabledBackgroundColor: BokunSpizeColors.white,
+                  disabledForegroundColor: BokunSpizeColors.black,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
 
