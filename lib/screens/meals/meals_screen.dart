@@ -71,32 +71,57 @@ class _MealsScreenState extends State<MealsScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
-      floatingActionButton: SizedBox(
-        height: 68,
-        width: 68,
-        child: FloatingActionButton(
-          heroTag: const ValueKey('meals-fab'),
-          elevation: 0,
-          backgroundColor: BokunSpizeColors.green,
-          foregroundColor: BokunSpizeColors.white,
-          splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          shape: const CircleBorder(),
-          onPressed: () {
-            unawaited(
-              HapticFeedback.lightImpact(),
-            );
-            unawaited(
-              mealsController.onMealPressed(context),
-            );
-          },
-          child: const PhosphorIcon(
-            PhosphorIconsBold.plus,
-            color: BokunSpizeColors.white,
-            size: 32,
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 48,
+            width: 48,
+            child: FloatingActionButton(
+              heroTag: const ValueKey('meals-calendar-fab'),
+              elevation: 0,
+              backgroundColor: BokunSpizeColors.green,
+              foregroundColor: BokunSpizeColors.white,
+              splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              shape: const CircleBorder(),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                mealsController.updateDateViaPicker(context);
+              },
+              child: const PhosphorIcon(
+                PhosphorIconsBold.calendarDot,
+                color: BokunSpizeColors.white,
+                size: 24,
+              ),
+            ),
           ),
-        ),
+          const SizedBox(height: 18),
+          SizedBox(
+            height: 68,
+            width: 68,
+            child: FloatingActionButton(
+              heroTag: const ValueKey('meals-fab'),
+              elevation: 0,
+              backgroundColor: BokunSpizeColors.green,
+              foregroundColor: BokunSpizeColors.white,
+              splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              shape: const CircleBorder(),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                mealsController.onMealPressed(context);
+              },
+              child: const PhosphorIcon(
+                PhosphorIconsBold.plus,
+                color: BokunSpizeColors.white,
+                size: 32,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         bottom: false,
@@ -109,7 +134,6 @@ class _MealsScreenState extends State<MealsScreen> {
             ///
             MealsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              onCalendarPressed: () => mealsController.updateDateViaPicker(context),
               dayString: getDateString(
                 date: activeDate,
                 dateFormat: 'EEEE, dd.MM.yyyy.',

@@ -5,14 +5,12 @@ import '../../../constants/colors.dart';
 
 class MealsAppBar extends StatelessWidget {
   final String? title;
-  final Function() onCalendarPressed;
   final String dayString;
   final int currentCalories;
   final int? dailyCalories;
 
   const MealsAppBar({
     required this.title,
-    required this.onCalendarPressed,
     required this.dayString,
     required this.currentCalories,
     required this.dailyCalories,
@@ -55,40 +53,19 @@ class MealsAppBar extends StatelessWidget {
           /// APP TITLE
           ///
           if (title != null)
-            Text(
-              title!,
-              style: const TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 22,
-                height: 1.2,
-                letterSpacing: 0.6,
-                fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.green,
+            Expanded(
+              child: Text(
+                title!,
+                style: const TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 22,
+                  height: 1.2,
+                  letterSpacing: 0.6,
+                  fontWeight: FontWeight.w800,
+                  color: BokunSpizeColors.green,
+                ),
               ),
             ),
-
-          const Spacer(),
-
-          ///
-          /// CALENDAR BUTTON
-          ///
-          IconButton(
-            onPressed: onCalendarPressed,
-            icon: const PhosphorIcon(
-              PhosphorIconsBold.calendarDot,
-              size: 26,
-            ),
-            style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
-              ),
-              backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.black,
-              disabledBackgroundColor: BokunSpizeColors.grey,
-              disabledForegroundColor: BokunSpizeColors.black,
-            ),
-          ),
         ],
       ),
     ),

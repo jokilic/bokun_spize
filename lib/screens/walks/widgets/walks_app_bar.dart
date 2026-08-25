@@ -56,15 +56,17 @@ class WalksAppBar extends StatelessWidget {
           /// APP TITLE
           ///
           if (title != null)
-            Text(
-              title!,
-              style: const TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 22,
-                height: 1.2,
-                letterSpacing: 0.6,
-                fontWeight: FontWeight.w800,
-                color: BokunSpizeColors.yellow,
+            Expanded(
+              child: Text(
+                title!,
+                style: const TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 22,
+                  height: 1.2,
+                  letterSpacing: 0.6,
+                  fontWeight: FontWeight.w800,
+                  color: BokunSpizeColors.yellow,
+                ),
               ),
             ),
         ],

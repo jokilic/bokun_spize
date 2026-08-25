@@ -97,7 +97,7 @@ class WalksController
     );
   }
 
-  /// Requests permission and fetches the total steps recorded for the last 30 days
+  /// Requests permission and fetches the total steps recorded
   Future<void> refreshSteps() async {
     updateState(
       isLoading: true,
@@ -128,8 +128,9 @@ class WalksController
       final now = DateTime.now();
       final stepsWithDate = <StepsWithDate>[];
 
-      /// Get steps for today and the previous 29 calendar days
-      for (var dayOffset = 29; dayOffset >= 0; dayOffset--) {
+      /// Get steps for today and the previous days
+      // TODO: Test max number of days to fetch
+      for (var dayOffset = 45; dayOffset >= 0; dayOffset--) {
         final startOfDay = DateTime(
           now.year,
           now.month,
