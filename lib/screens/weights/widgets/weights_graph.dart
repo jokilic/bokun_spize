@@ -138,7 +138,68 @@ class WeightsGraph extends StatelessWidget {
         maxY: maximumWeight + weightPadding,
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
-        lineTouchData: const LineTouchData(enabled: false),
+        lineTouchData: LineTouchData(
+          touchSpotThreshold: double.infinity,
+          touchTooltipData: LineTouchTooltipData(
+            tooltipBorderRadius: BorderRadius.circular(100),
+            tooltipMargin: 12,
+            maxContentWidth: 160,
+            fitInsideHorizontally: true,
+            fitInsideVertically: true,
+            getTooltipColor: (touchedSpot) => BokunSpizeColors.blue,
+            getTooltipItems: (touchedSpots) => touchedSpots.map(
+              (touchedSpot) {
+                final weightTrack = weightTracks[touchedSpot.spotIndex];
+
+                final date = getDateString(
+                  date: weightTrack.dateTime,
+                  dateFormat: 'MMM d, yyyy',
+                  useTodayYesterdayTomorrow: false,
+                );
+
+                return LineTooltipItem(
+                  date,
+                  TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: BokunSpizeColors.white.withValues(alpha: 0.7),
+                  ),
+                  children: [
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: '${weightTrack.weight.toStringAsFixed(1)} kg',
+                      style: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        color: BokunSpizeColors.white,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
+          getTouchedSpotIndicator: (barData, spotIndexes) => spotIndexes
+              .map(
+                (spotIndex) => TouchedSpotIndicatorData(
+                  FlLine(
+                    color: BokunSpizeColors.blue.withValues(alpha: 0.25),
+                    strokeWidth: 3.5,
+                  ),
+                  FlDotData(
+                    getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
+                      radius: 4.5,
+                      color: BokunSpizeColors.blue,
+                      strokeWidth: 6,
+                      strokeColor: BokunSpizeColors.blue.withValues(alpha: 0.25),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
         titlesData: FlTitlesData(
           leftTitles: const AxisTitles(),
           topTitles: const AxisTitles(),

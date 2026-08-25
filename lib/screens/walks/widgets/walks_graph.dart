@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
@@ -134,7 +135,72 @@ class WalksGraph extends StatelessWidget {
         maxY: maximumSteps + stepsPadding,
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
-        lineTouchData: const LineTouchData(enabled: false),
+        lineTouchData: LineTouchData(
+          touchSpotThreshold: double.infinity,
+          touchTooltipData: LineTouchTooltipData(
+            tooltipBorderRadius: BorderRadius.circular(100),
+            tooltipMargin: 12,
+            maxContentWidth: 160,
+            fitInsideHorizontally: true,
+            fitInsideVertically: true,
+            getTooltipColor: (touchedSpot) => BokunSpizeColors.yellow,
+            getTooltipItems: (touchedSpots) => touchedSpots.map(
+              (touchedSpot) {
+                final stepWithDate = stepsWithDate[touchedSpot.spotIndex];
+
+                final date = getDateString(
+                  date: stepWithDate.dateTime,
+                  dateFormat: 'MMM d, yyyy',
+                  useTodayYesterdayTomorrow: false,
+                );
+
+                final steps = NumberFormat.decimalPattern('en').format(
+                  stepWithDate.steps,
+                );
+
+                return LineTooltipItem(
+                  date,
+                  TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: BokunSpizeColors.white.withValues(alpha: 0.7),
+                  ),
+                  children: [
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: '$steps steps',
+                      style: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        color: BokunSpizeColors.white,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
+          getTouchedSpotIndicator: (barData, spotIndexes) => spotIndexes
+              .map(
+                (spotIndex) => TouchedSpotIndicatorData(
+                  FlLine(
+                    color: BokunSpizeColors.yellow.withValues(alpha: 0.25),
+                    strokeWidth: 3.5,
+                  ),
+                  FlDotData(
+                    getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
+                      radius: 4.5,
+                      color: BokunSpizeColors.yellow,
+                      strokeWidth: 6,
+                      strokeColor: BokunSpizeColors.yellow.withValues(alpha: 0.25),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
         titlesData: FlTitlesData(
           leftTitles: const AxisTitles(),
           topTitles: const AxisTitles(),
