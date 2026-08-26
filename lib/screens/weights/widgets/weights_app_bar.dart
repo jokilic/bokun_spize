@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
 
 class WeightsAppBar extends StatelessWidget {
   final String? title;
@@ -26,7 +27,7 @@ class WeightsAppBar extends StatelessWidget {
     expandedHeight: 200,
     leadingWidth: double.infinity,
     leading: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       child: Row(
         children: [
           ///
@@ -73,7 +74,7 @@ class WeightsAppBar extends StatelessWidget {
     ),
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
-      titlePadding: const EdgeInsets.symmetric(horizontal: 16),
+      titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: currentWeight != null
           ? FadingFlexibleTitle(
               timeString: timeString,

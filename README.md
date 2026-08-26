@@ -8,6 +8,8 @@
 - [ ] Proper loading UIs
 - [ ] Refactor app init logic
 - [ ] Delete photo from [Storage] only if no meals use it
+- [ ] Entrance -> email & pressing keyboard Enter won't go to password
+- [ ] Find all `NumberFormat.decimalPattern`
 
 # Bokun spize 🥗
 

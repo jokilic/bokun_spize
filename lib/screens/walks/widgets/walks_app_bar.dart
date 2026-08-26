@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
 
 class WalksAppBar extends StatelessWidget {
   final String? title;
@@ -27,7 +28,7 @@ class WalksAppBar extends StatelessWidget {
     expandedHeight: 200,
     leadingWidth: double.infinity,
     leading: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       child: Row(
         children: [
           ///
@@ -74,7 +75,7 @@ class WalksAppBar extends StatelessWidget {
     ),
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
-      titlePadding: const EdgeInsets.symmetric(horizontal: 16),
+      titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: currentSteps != null
           ? FadingFlexibleTitle(
               timeString: timeString,

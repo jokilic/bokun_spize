@@ -26,7 +26,7 @@ class WeightsGraph extends StatelessWidget {
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 16,
+        horizontal: marginHorizontal,
         vertical: 8,
       ),
       sliver: SliverToBoxAdapter(

@@ -24,11 +24,13 @@ class CalendarSheet extends StatefulWidget {
 class _CalendarSheetState extends State<CalendarSheet> {
   late var selectedDateTime = widget.dateValue;
 
+  // TODO: Use CustomScrollView
+
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

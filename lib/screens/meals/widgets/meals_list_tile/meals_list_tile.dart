@@ -65,7 +65,7 @@ class _MealsListTileState extends State<MealsListTile> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 16,
+        horizontal: marginHorizontal,
         vertical: 8,
       ),
       child: ClipRRect(

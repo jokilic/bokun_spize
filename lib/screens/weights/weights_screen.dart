@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
@@ -132,7 +133,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             if (weightTracks.length >= 2 && weightChangeWithinDays != null) ...[
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -244,7 +245,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
               ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -299,7 +300,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             if (!isLoading && weightTracks.isEmpty && error == null)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -345,7 +346,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             if (isLoading)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -391,7 +392,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             if (error != null)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(

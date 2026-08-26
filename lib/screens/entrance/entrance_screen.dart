@@ -8,6 +8,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
@@ -139,7 +140,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// TITLE
               ///
               const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     'Welcome',
@@ -162,7 +163,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// SUBTITLE
               ///
               const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     'Track your everyday meals, weight & walks',
@@ -225,7 +226,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// OR CONNECT WITH TEXT
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     'Or connect with'.toUpperCase(),
@@ -249,7 +250,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// BUTTONS
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Row(
                     children: [
@@ -287,7 +288,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         ),
                       ),
 
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 20),
 
                       ///
                       /// APPLE
@@ -334,7 +335,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// CREATE ACCOUNT / SIGN IN
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Text.rich(
                     TextSpan(

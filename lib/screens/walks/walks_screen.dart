@@ -7,6 +7,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
@@ -144,7 +145,7 @@ class _WalksScreenState extends State<WalksScreen> {
             if (completedStepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -256,7 +257,7 @@ class _WalksScreenState extends State<WalksScreen> {
               ///
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -296,7 +297,7 @@ class _WalksScreenState extends State<WalksScreen> {
             if (!isLoading && stepsWithDate.isEmpty && error == null)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -342,7 +343,7 @@ class _WalksScreenState extends State<WalksScreen> {
             if (isLoading)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
@@ -388,7 +389,7 @@ class _WalksScreenState extends State<WalksScreen> {
             if (error != null || (permissionAuthorized != null && !permissionAuthorized))
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(

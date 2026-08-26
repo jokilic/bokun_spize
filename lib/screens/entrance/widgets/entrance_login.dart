@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
 import '../../../widgets/text_field_widget.dart';
 
 class EntranceLogin extends StatelessWidget {
@@ -32,7 +33,9 @@ class EntranceLogin extends StatelessWidget {
       /// EMAIL TITLE
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 36),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal + 16,
+        ),
         child: Text(
           'Email address'.toUpperCase(),
           style: TextStyle(
@@ -49,7 +52,7 @@ class EntranceLogin extends StatelessWidget {
       /// EMAIL TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
           autocorrect: false,
           controller: emailTextEditingController,
@@ -67,7 +70,9 @@ class EntranceLogin extends StatelessWidget {
       /// PASSWORD TITLE & FORGET PASSWORD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 36),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal + 16,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -118,7 +123,7 @@ class EntranceLogin extends StatelessWidget {
       /// PASSWORD TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
           autocorrect: false,
           obscureText: true,
@@ -144,7 +149,7 @@ class EntranceLogin extends StatelessWidget {
       /// SIGN IN BUTTON
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(

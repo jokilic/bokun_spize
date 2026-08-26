@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
 import '../../../widgets/text_field_widget.dart';
 
 class EntranceRegister extends StatelessWidget {
@@ -30,7 +31,9 @@ class EntranceRegister extends StatelessWidget {
       /// EMAIL TITLE
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 36),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal + 16,
+        ),
         child: Text(
           'Email address'.toUpperCase(),
           style: TextStyle(
@@ -47,7 +50,7 @@ class EntranceRegister extends StatelessWidget {
       /// EMAIL TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
           autocorrect: false,
           controller: emailTextEditingController,
@@ -65,7 +68,9 @@ class EntranceRegister extends StatelessWidget {
       /// PASSWORD TITLE
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 36),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal + 16,
+        ),
         child: Text(
           'Password'.toUpperCase(),
           style: TextStyle(
@@ -82,7 +87,7 @@ class EntranceRegister extends StatelessWidget {
       /// PASSWORD TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
           autocorrect: false,
           obscureText: true,
@@ -101,7 +106,9 @@ class EntranceRegister extends StatelessWidget {
       /// NAME TITLE
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 36),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal + 16,
+        ),
         child: Text(
           'Name'.toUpperCase(),
           style: TextStyle(
@@ -118,7 +125,7 @@ class EntranceRegister extends StatelessWidget {
       /// NAME TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
           controller: nameTextEditingController,
           hintText: 'Danny',
@@ -142,7 +149,7 @@ class EntranceRegister extends StatelessWidget {
       /// SIGN IN BUTTON
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(

@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/constants.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
@@ -185,14 +186,14 @@ class _MealsScreenState extends State<MealsScreen> {
             if (!isLoading && meals.isEmpty && error == null)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
                       PhosphorIcon(
-                        PhosphorIconsBold.notebook,
+                        PhosphorIconsBold.bowlFood,
                         color: BokunSpizeColors.green,
                         size: 96,
                       ),
@@ -231,14 +232,14 @@ class _MealsScreenState extends State<MealsScreen> {
             if (isLoading)
               const SliverPadding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
                       PhosphorIcon(
-                        PhosphorIconsBold.notebook,
+                        PhosphorIconsBold.bowlFood,
                         color: BokunSpizeColors.green,
                         size: 96,
                       ),
@@ -277,7 +278,7 @@ class _MealsScreenState extends State<MealsScreen> {
             if (error != null)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: marginHorizontal,
                   vertical: 12,
                 ),
                 sliver: SliverToBoxAdapter(
