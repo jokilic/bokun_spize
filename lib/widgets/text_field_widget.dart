@@ -17,6 +17,9 @@ class TextFieldWidget extends StatelessWidget {
   final bool obscureText;
   final Function(String value)? onSubmitted;
   final Iterable<String>? autofillHints;
+  final double borderRadius;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
 
   const TextFieldWidget({
     required this.controller,
@@ -33,6 +36,9 @@ class TextFieldWidget extends StatelessWidget {
     this.obscureText = false,
     this.onSubmitted,
     this.autofillHints,
+    this.borderRadius = 100,
+    this.hintStyle,
+    this.textStyle,
   });
 
   @override
@@ -56,37 +62,41 @@ class TextFieldWidget extends StatelessWidget {
         borderSide: const BorderSide(
           color: Colors.transparent,
         ),
-        borderRadius: BorderRadius.circular(100),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       enabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(
           color: Colors.transparent,
         ),
-        borderRadius: BorderRadius.circular(100),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: const BorderSide(
           color: Colors.transparent,
         ),
-        borderRadius: BorderRadius.circular(100),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       hintText: hintText,
-      hintStyle: TextStyle(
-        fontFamily: 'PlusJakartaSans',
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: BokunSpizeColors.black.withValues(alpha: 0.5),
-      ),
+      hintStyle:
+          hintStyle ??
+          TextStyle(
+            fontFamily: 'PlusJakartaSans',
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: BokunSpizeColors.black.withValues(alpha: 0.5),
+          ),
     ),
     keyboardType: keyboardType,
     minLines: minLines,
     maxLines: maxLines,
-    style: const TextStyle(
-      fontFamily: 'PlusJakartaSans',
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-      color: BokunSpizeColors.black,
-    ),
+    style:
+        textStyle ??
+        const TextStyle(
+          fontFamily: 'PlusJakartaSans',
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: BokunSpizeColors.black,
+        ),
     textAlign: textAlign,
     textCapitalization: textCapitalization,
     textInputAction: textInputAction,

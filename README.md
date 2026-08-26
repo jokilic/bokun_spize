@@ -6,6 +6,7 @@
 - [ ] Check latest AI models
 - [ ] Update database permissions
 - [ ] Proper loading UIs
+- [ ] Refactor app init logic
 
 # Bokun spize 🥗
 

@@ -145,13 +145,15 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final result = await showModalBottomSheet<MealSheetResult>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: BokunSpizeColors.white,
+      backgroundColor: BokunSpizeColors.grey,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(listTileRadius),
       ),
       builder: (context) => MealScreen(
         mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,
+        passedMeal: passedMeal,
+        isCopyingMeal: isCopyingMeal,
       ),
     );
 
