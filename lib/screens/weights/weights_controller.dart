@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
@@ -83,12 +82,13 @@ class WeightsController
 
   /// Adds [weightTrack] to Firebase
   Future<void> addWeightTrack({
+    required String weightTrackId,
     required DateTime dateTime,
     required double weight,
   }) async {
     final success = await firebase.writeWeightTrack(
       newWeightTrack: WeightTrack(
-        id: const Uuid().v1(),
+        id: weightTrackId,
         dateTime: dateTime,
         weight: weight,
       ),
@@ -108,6 +108,7 @@ class WeightsController
   Future<void> onAddWeightPressed({
     required BuildContext context,
     required double initialWeight,
+    required String weightTrackId,
   }) async => showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -117,6 +118,7 @@ class WeightsController
       borderRadius: BorderRadius.circular(listTileRadius),
     ),
     builder: (context) => WeightsAddWeightSheet(
+      key: ValueKey(weightTrackId),
       initialWeight: initialWeight,
       onSavePressed: ({required newWeight, required dateTime}) {
         unawaited(
@@ -124,6 +126,7 @@ class WeightsController
         );
         unawaited(
           addWeightTrack(
+            weightTrackId: weightTrackId,
             dateTime: dateTime,
             weight: newWeight,
           ),

@@ -19,6 +19,7 @@ class WeightsAddWeightSheet extends StatefulWidget {
   const WeightsAddWeightSheet({
     required this.initialWeight,
     required this.onSavePressed,
+    required super.key,
   });
 
   @override

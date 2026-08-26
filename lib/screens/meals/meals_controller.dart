@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +13,7 @@ import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
+import '../meal/meal_screen.dart';
 
 class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
@@ -138,10 +138,21 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Determine if user is editing existing `meal`
     final shouldEditExistingMeal = passedMeal != null && !isCopyingMeal;
 
+    /// Generate `newMealId`
+    final newMealId = const Uuid().v1();
+
     /// Show [MealScreen] for adding or editing `meal`
-    final result = await showCupertinoSheet<MealSheetResult>(
+    final result = await showModalBottomSheet<MealSheetResult>(
       context: context,
-      scrollableBuilder: (context, scrollController) => const Scaffold(),
+      isScrollControlled: true,
+      backgroundColor: BokunSpizeColors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(listTileRadius),
+      ),
+      builder: (context) => MealScreen(
+        mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,
+      ),
     );
 
     /// User was editing existing `meal`
@@ -177,7 +188,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     if (isCopyingMeal && passedMeal != null) {
       await firebase.writeMeal(
         newMeal: passedMeal.copyWith(
-          id: const Uuid().v1(),
+          id: newMealId,
           createdAt: result!.dateTime,
         ),
       );
@@ -186,6 +197,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
     /// Trigger AI which generates a new `meal` and stores into [Firebase]
     await triggerAI(
+      newMealId: newMealId,
       textPrompt: result?.words,
       imageFile: result?.imageFile,
       dateTime: result!.dateTime!,
@@ -194,6 +206,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
   /// Creates a loading `meal`, processes it with AI, and persists the result in [Firebase]
   Future<void> triggerAI({
+    required String newMealId,
     required String? textPrompt,
     required File? imageFile,
     required DateTime dateTime,
@@ -203,7 +216,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
     /// Create `loadingMeal` with loading state
     final loadingMeal = Meal(
-      id: const Uuid().v1(),
+      id: newMealId,
       createdAt: dateTime,
       originalText: trimmedPrompt,
       isLoading: true,

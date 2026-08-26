@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
@@ -95,6 +96,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
               weightsController.onAddWeightPressed(
                 context: context,
                 initialWeight: lastWeightTrack?.weight ?? 75.0,
+                weightTrackId: const Uuid().v1(),
               ),
             );
           },
