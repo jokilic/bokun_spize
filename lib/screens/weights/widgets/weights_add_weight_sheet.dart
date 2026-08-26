@@ -107,7 +107,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     ),
   );
 
-  /// Opens [Timeheet] and updates the selected `date`
+  /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showModalBottomSheet(
     context: context,
     isScrollControlled: true,

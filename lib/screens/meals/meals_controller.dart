@@ -11,6 +11,7 @@ import '../../constants/constants.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
+import '../../util/null_state.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../meal/meal_screen.dart';
@@ -82,7 +83,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       activeDate: date,
       meals: const [],
       isLoading: true,
-      clearError: true,
+      error: null,
     );
 
     unawaited(
@@ -99,7 +100,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
           meals: meals ?? const [],
           isLoading: false,
           error: meals == null ? 'Meals could not be loaded.' : null,
-          clearError: meals != null,
         );
       },
     );
@@ -318,12 +318,11 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     DateTime? activeDate,
     List<Meal>? meals,
     bool? isLoading,
-    String? error,
-    bool clearError = false,
+    Object? error = nullStateNoChange,
   }) => value = (
     activeDate: activeDate ?? value.activeDate,
     meals: meals ?? value.meals,
     isLoading: isLoading ?? value.isLoading,
-    error: clearError ? null : error ?? value.error,
+    error: identical(error, nullStateNoChange) ? value.error : error as String?,
   );
 }

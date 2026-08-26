@@ -8,6 +8,7 @@ import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
+import '../../util/null_state.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
 class WeightsController
@@ -43,7 +44,7 @@ class WeightsController
   void init() {
     updateState(
       isLoading: true,
-      clearError: true,
+      error: null,
     );
 
     weightTracksSubscription = firebase.listenToWeightTracks().listen(
@@ -52,7 +53,6 @@ class WeightsController
           weightTracks: weightTracks ?? const [],
           isLoading: false,
           error: weightTracks == null ? 'Weight tracks could not be loaded.' : null,
-          clearError: weightTracks != null,
         );
       },
     );
@@ -146,12 +146,11 @@ class WeightsController
     List<WeightTrack>? weightTracks,
     int? graphCalendarDays,
     bool? isLoading,
-    String? error,
-    bool clearError = false,
+    Object? error = nullStateNoChange,
   }) => value = (
     weightTracks: weightTracks ?? value.weightTracks,
     graphCalendarDays: graphCalendarDays ?? value.graphCalendarDays,
     isLoading: isLoading ?? value.isLoading,
-    error: clearError ? null : error ?? value.error,
+    error: identical(error, nullStateNoChange) ? value.error : error as String?,
   );
 }

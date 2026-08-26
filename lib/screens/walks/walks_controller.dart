@@ -3,6 +3,7 @@ import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../models/steps_with_date/steps_with_date.dart';
+import '../../util/null_state.dart';
 
 class WalksController
     extends
@@ -101,7 +102,7 @@ class WalksController
   Future<void> refreshSteps() async {
     updateState(
       isLoading: true,
-      clearError: true,
+      error: null,
     );
 
     try {
@@ -166,7 +167,7 @@ class WalksController
       updateState(
         stepsWithDate: stepsWithDate,
         permissionAuthorized: true,
-        clearError: true,
+        error: null,
       );
     }
     /// Some error fetching steps
@@ -187,13 +188,12 @@ class WalksController
     int? graphCalendarDays,
     bool? permissionAuthorized,
     bool? isLoading,
-    String? error,
-    bool clearError = false,
+    Object? error = nullStateNoChange,
   }) => value = (
     stepsWithDate: stepsWithDate ?? value.stepsWithDate,
     graphCalendarDays: graphCalendarDays ?? value.graphCalendarDays,
     permissionAuthorized: permissionAuthorized ?? value.permissionAuthorized,
     isLoading: isLoading ?? value.isLoading,
-    error: clearError ? null : error ?? value.error,
+    error: identical(error, nullStateNoChange) ? value.error : error as String?,
   );
 }

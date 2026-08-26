@@ -7,6 +7,7 @@
 - [ ] Update database permissions
 - [ ] Proper loading UIs
 - [ ] Refactor app init logic
+- [ ] Delete photo from [Storage] only if no meals use it
 
 # Bokun spize 🥗
 

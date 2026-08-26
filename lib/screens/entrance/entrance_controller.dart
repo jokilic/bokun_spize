@@ -42,17 +42,6 @@ class EntranceController
        ));
 
   ///
-  /// VARIABLES
-  ///
-
-  late final loginEmailTextEditingController = TextEditingController();
-  late final loginPasswordTextEditingController = TextEditingController();
-
-  late final registerEmailTextEditingController = TextEditingController();
-  late final registerPasswordTextEditingController = TextEditingController();
-  late final registerNameTextEditingController = TextEditingController();
-
-  ///
   /// INIT
   ///
 
@@ -89,6 +78,17 @@ class EntranceController
     registerPasswordTextEditingController.dispose();
     registerNameTextEditingController.dispose();
   }
+
+  ///
+  /// VARIABLES
+  ///
+
+  late final loginEmailTextEditingController = TextEditingController();
+  late final loginPasswordTextEditingController = TextEditingController();
+
+  late final registerEmailTextEditingController = TextEditingController();
+  late final registerPasswordTextEditingController = TextEditingController();
+  late final registerNameTextEditingController = TextEditingController();
 
   ///
   /// METHODS

@@ -21,6 +21,14 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   }) : super([]);
 
   ///
+  /// INIT
+  ///
+
+  void init() {
+    initializeGemini();
+  }
+
+  ///
   /// VARIABLES
   ///
 
@@ -210,14 +218,6 @@ JSON structure to follow strictly:
       ),
     },
   );
-
-  ///
-  /// INIT
-  ///
-
-  void init() {
-    initializeGemini();
-  }
 
   ///
   /// METHODS

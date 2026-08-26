@@ -13,10 +13,10 @@ extension SexExtension on Sex {
 
   PhosphorIconData get icon => switch (this) {
     Sex.male => PhosphorIcons.genderMale(
-      PhosphorIconsStyle.duotone,
+      PhosphorIconsStyle.bold,
     ),
     Sex.female => PhosphorIcons.genderFemale(
-      PhosphorIconsStyle.duotone,
+      PhosphorIconsStyle.bold,
     ),
   };
 }
