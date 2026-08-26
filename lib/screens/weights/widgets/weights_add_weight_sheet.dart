@@ -87,8 +87,10 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(listTileRadius),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(listTileRadius),
+      ),
     ),
     builder: (context) => CalendarSheet(
       dateValue: selectedDateTime,
@@ -111,8 +113,10 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(listTileRadius),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(listTileRadius),
+      ),
     ),
     builder: (context) => TimeSheet(
       dateValue: selectedDateTime,

@@ -124,7 +124,7 @@ class _MealScreenState extends State<MealScreen> {
             /// SUBTITLE
             ///
             const Text(
-              'Write your',
+              'Write details about your meal',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 16,
@@ -139,20 +139,43 @@ class _MealScreenState extends State<MealScreen> {
             ///
             TextFieldWidget(
               controller: TextEditingController(),
-              hintText: 'What did you eat?',
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               onSubmitted: (_) {},
               keyboardType: TextInputType.text,
               textAlign: TextAlign.left,
               textCapitalization: TextCapitalization.sentences,
               textInputAction: TextInputAction.done,
-              minLines: 4,
+              minLines: 5,
               maxLines: null,
               borderRadius: listTileRadius,
-              hintStyle: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+              hintWidget: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Describe your meal'.toUpperCase(),
+                    style: const TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.green,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'What did you eat?',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
               ),
               textStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
@@ -166,45 +189,260 @@ class _MealScreenState extends State<MealScreen> {
             ///
             /// IMAGE
             ///
-            Material(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(8),
-              child: InkWell(
-                onTap: () {},
-                highlightColor: Colors.yellow,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blue,
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: AnimatedSwitcher(
-                    duration: BokunSpizeDurations.animation,
-                    reverseDuration: BokunSpizeDurations.animation,
-                    switchInCurve: Curves.easeIn,
-                    switchOutCurve: Curves.easeIn,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.green,
-                      ),
-                      height: 160,
-                      width: double.infinity,
-                      child: PhosphorIcon(
-                        PhosphorIcons.bowlFood(
-                          PhosphorIconsStyle.duotone,
-                        ),
-                        size: 56,
-                        color: Colors.cyan,
-                      ),
-                    ),
-                  ),
-                ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(listTileRadius),
+                color: BokunSpizeColors.white.withValues(alpha: 0.5),
               ),
+              height: 160,
+              width: double.infinity,
+              child: Row(
+                spacing: 56,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ///
+                  /// CAMERA
+                  ///
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // TODO: Trigger camera
+                        },
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.cameraPlus,
+                          size: 32,
+                        ),
+                        style: IconButton.styleFrom(
+                          elevation: 0,
+                          padding: const EdgeInsets.all(16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          foregroundColor: BokunSpizeColors.green,
+                          disabledBackgroundColor: BokunSpizeColors.grey,
+                          disabledForegroundColor: BokunSpizeColors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Camera',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  ///
+                  /// GALLERY
+                  ///
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // TODO: Trigger gallery
+                        },
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.images,
+                          size: 32,
+                        ),
+                        style: IconButton.styleFrom(
+                          elevation: 0,
+                          padding: const EdgeInsets.all(16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          foregroundColor: BokunSpizeColors.green,
+                          disabledBackgroundColor: BokunSpizeColors.grey,
+                          disabledForegroundColor: BokunSpizeColors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Gallery',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            ///
+            /// DATE
+            ///
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 16,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(listTileRadius),
+                color: BokunSpizeColors.white.withValues(alpha: 0.5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ///
+                      /// TITLE
+                      ///
+                      Text(
+                        'Date'.toUpperCase(),
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+
+                      ///
+                      /// DATE
+                      ///
+                      const Text(
+                        'Today',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          color: BokunSpizeColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  ///
+                  /// ICON
+                  ///
+                  const PhosphorIcon(
+                    PhosphorIconsBold.calendarPlus,
+                    size: 28,
+                    color: BokunSpizeColors.green,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            ///
+            /// TIME
+            ///
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 16,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(listTileRadius),
+                color: BokunSpizeColors.white.withValues(alpha: 0.5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ///
+                      /// TITLE
+                      ///
+                      Text(
+                        'Time'.toUpperCase(),
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+
+                      ///
+                      /// TIME
+                      ///
+                      const Text(
+                        '12:30',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          color: BokunSpizeColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  ///
+                  /// ICON
+                  ///
+                  const PhosphorIcon(
+                    PhosphorIconsBold.clock,
+                    size: 28,
+                    color: BokunSpizeColors.green,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            ///
+            /// SAVE BUTTON
+            ///
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO: Save meal
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  shape: const StadiumBorder(),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  padding: const EdgeInsets.all(22),
+                  backgroundColor: BokunSpizeColors.green,
+                  foregroundColor: BokunSpizeColors.white,
+                ),
+                child: const Text('Log meal'),
+              ),
+            ),
+
+            ///
+            /// BOTTOM SPACING
+            ///
+            SizedBox(
+              height: MediaQuery.paddingOf(context).bottom + 16,
             ),
           ],
         ),

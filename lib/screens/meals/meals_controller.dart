@@ -119,8 +119,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     isScrollControlled: true,
     backgroundColor: BokunSpizeColors.white,
     elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(listTileRadius),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(listTileRadius),
+      ),
     ),
     builder: (context) => CalendarSheet(
       dateValue: value.activeDate,
@@ -147,8 +149,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       isScrollControlled: true,
       backgroundColor: BokunSpizeColors.grey,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(listTileRadius),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(listTileRadius),
+        ),
       ),
       builder: (context) => MealScreen(
         mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,

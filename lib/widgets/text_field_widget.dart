@@ -7,7 +7,8 @@ class TextFieldWidget extends StatelessWidget {
   final bool autofocus;
   final TextEditingController controller;
   final FocusNode? focusNode;
-  final String hintText;
+  final String? hintText;
+  final Widget? hintWidget;
   final TextInputType keyboardType;
   final int? minLines;
   final int? maxLines;
@@ -20,14 +21,16 @@ class TextFieldWidget extends StatelessWidget {
   final double borderRadius;
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
+  final EdgeInsets contentPadding;
 
   const TextFieldWidget({
     required this.controller,
-    required this.hintText,
     required this.keyboardType,
     required this.textAlign,
     required this.textCapitalization,
     required this.textInputAction,
+    this.hintText,
+    this.hintWidget,
     this.focusNode,
     this.autocorrect = true,
     this.autofocus = false,
@@ -39,6 +42,7 @@ class TextFieldWidget extends StatelessWidget {
     this.borderRadius = 100,
     this.hintStyle,
     this.textStyle,
+    this.contentPadding = const EdgeInsets.all(20),
   });
 
   @override
@@ -57,7 +61,7 @@ class TextFieldWidget extends StatelessWidget {
     decoration: InputDecoration(
       filled: true,
       fillColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-      contentPadding: const EdgeInsets.all(20),
+      contentPadding: contentPadding,
       border: OutlineInputBorder(
         borderSide: const BorderSide(
           color: Colors.transparent,
@@ -76,6 +80,7 @@ class TextFieldWidget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
+      hint: hintWidget,
       hintText: hintText,
       hintStyle:
           hintStyle ??
