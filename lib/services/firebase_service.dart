@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
@@ -709,9 +710,20 @@ class FirebaseService {
       await collection.doc(meal.id).delete();
 
       if (meal.imageStoragePath != null) {
-        await deleteMealImage(
-          imageStoragePath: meal.imageStoragePath!,
-        );
+        /// Keep shared images while another meal still references them
+        final mealsUsingImage = await collection
+            .where(
+              'imageStoragePath',
+              isEqualTo: meal.imageStoragePath,
+            )
+            .limit(1)
+            .get();
+
+        if (mealsUsingImage.docs.isEmpty) {
+          return deleteMealImage(
+            imageStoragePath: meal.imageStoragePath!,
+          );
+        }
       }
 
       return true;
@@ -737,7 +749,6 @@ class FirebaseService {
 
   /// Uploads the image used to create a meal and returns its Storage path
   Future<String?> uploadMealImage({
-    required String mealId,
     required File imageFile,
   }) async {
     try {
@@ -747,8 +758,9 @@ class FirebaseService {
         return null;
       }
 
+      final imageId = const Uuid().v4();
       final ext = mealImageExtension(imageFile);
-      final storagePath = 'users/${user.uid}/meals/$mealId/image.$ext';
+      final storagePath = 'users/${user.uid}/meal-images/$imageId.$ext';
       final imageReference = storage.ref(storagePath);
 
       await imageReference.putFile(
@@ -756,7 +768,7 @@ class FirebaseService {
         SettableMetadata(
           contentType: mealImageContentType(ext),
           customMetadata: {
-            'mealId': mealId,
+            'imageId': imageId,
             'userId': user.uid,
           },
         ),

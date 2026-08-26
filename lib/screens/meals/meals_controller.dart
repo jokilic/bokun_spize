@@ -183,19 +183,20 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Check if `words` and `image` exists
     final hasWords = result?.words?.trim().isNotEmpty ?? false;
     final hasImage = result?.imageFile != null;
+    final hasPersistedImage = isCopyingMeal && passedMeal?.imageStoragePath != null;
 
     /// Data missing, return
-    if ((!hasWords && !hasImage) || result?.dateTime == null) {
+    if ((!hasWords && !hasImage && !hasPersistedImage) || result?.dateTime == null) {
       return;
     }
 
-    /// Meal is being copied
-    /// Deleting either `meal` will remove the shared `image`
+    /// Copy the meal while keeping its shared image reference
     if (isCopyingMeal && passedMeal != null) {
       await firebase.writeMeal(
         newMeal: passedMeal.copyWith(
           id: newMealId,
           createdAt: result!.dateTime,
+          imageStoragePath: passedMeal.imageStoragePath,
         ),
       );
       return;
@@ -240,7 +241,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
     /// Trigger AI
     final result = await ai.triggerAI(
-      mealId: loadingMeal.id,
       textPrompt: trimmedPrompt,
       imageFile: imageFile,
     );

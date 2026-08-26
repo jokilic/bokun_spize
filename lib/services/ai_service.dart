@@ -256,7 +256,6 @@ JSON structure to follow strictly:
 
   /// Triggers `AI` with `prompt` and all necessary data
   Future<({String? aiResult, String? imageStoragePath, List<String>? errors})> triggerAI({
-    required String mealId,
     required String? textPrompt,
     required File? imageFile,
   }) async {
@@ -283,7 +282,6 @@ JSON structure to follow strictly:
 
       // Upload while Gemini processes the same image.
       imageUpload = firebaseService.uploadMealImage(
-        mealId: mealId,
         imageFile: imageFile,
       );
     }

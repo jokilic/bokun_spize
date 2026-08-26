@@ -102,7 +102,7 @@ class MealController extends ValueNotifier<({bool textImageValid, String? speech
   /// Checks if validation passed
   void triggerValidation() {
     final isTextValidated = textEditingController.text.trim().isNotEmpty;
-    final isImageValidated = value.imageFile != null;
+    final isImageValidated = value.imageFile != null || passedMeal?.imageStoragePath != null;
 
     updateState(
       textImageValid: isTextValidated || isImageValidated,

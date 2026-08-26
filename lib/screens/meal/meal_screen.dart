@@ -10,6 +10,7 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
+import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_widget.dart';
 import 'meal_controller.dart';
 
@@ -228,22 +229,23 @@ class _MealScreenState extends State<MealScreen> {
               sliver: SliverToBoxAdapter(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  child: Image.network(
+                  child: SizedBox(
                     key: ValueKey(widget.passedMeal!.imageStoragePath),
-                    widget.passedMeal!.imageStoragePath!,
                     height: 160,
                     width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                      ),
-                      height: 160,
-                      width: double.infinity,
-                      child: const PhosphorIcon(
-                        PhosphorIconsBold.warningOctagon,
-                        size: 56,
-                        color: BokunSpizeColors.red,
+                    child: MealImage(
+                      imageStoragePath: widget.passedMeal!.imageStoragePath!,
+                      errorWidget: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                        ),
+                        height: 160,
+                        width: double.infinity,
+                        child: const PhosphorIcon(
+                          PhosphorIconsBold.warningOctagon,
+                          size: 56,
+                          color: BokunSpizeColors.red,
+                        ),
                       ),
                     ),
                   ),
