@@ -13,6 +13,7 @@ import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
+import '../../util/spacing.dart';
 import 'entrance_controller.dart';
 import 'widgets/entrance_login.dart';
 import 'widgets/entrance_register.dart';
@@ -372,7 +373,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
               ///
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: MediaQuery.paddingOf(context).bottom + 16,
+                  height: getBottomSpacing(context),
                 ),
               ),
             ],

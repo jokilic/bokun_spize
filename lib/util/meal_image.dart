@@ -12,7 +12,7 @@ String mealImageExtension(File imageFile) {
   };
 }
 
-/// Returns the MIME type matching a meal image extension.
+/// Returns the MIME type matching a meal image extension
 String mealImageContentType(String ext) => switch (ext) {
   'png' => 'image/png',
   'webp' => 'image/webp',

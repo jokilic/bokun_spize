@@ -5,6 +5,7 @@ import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../util/spacing.dart';
 
 class TimeSheet extends StatefulWidget {
   final DateTime dateValue;
@@ -168,7 +169,7 @@ class _TimeSheetState extends State<TimeSheet> {
           /// BOTTOM SPACING
           ///
           SizedBox(
-            height: MediaQuery.paddingOf(context).bottom + 16,
+            height: getBottomSpacing(context),
           ),
         ],
       ),

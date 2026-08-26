@@ -725,6 +725,16 @@ class FirebaseService {
   /// MEAL IMAGE
   ///
 
+  /// Returns image URL
+  Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
+    try {
+      return await storage.ref(imageStoragePath).getDownloadURL();
+    } catch (e) {
+      log('FirebaseService -> getMealImageDownloadUrl() -> $e');
+      return null;
+    }
+  }
+
   /// Uploads the image used to create a meal and returns its Storage path
   Future<String?> uploadMealImage({
     required String mealId,
@@ -758,16 +768,6 @@ class FirebaseService {
       return null;
     } catch (e) {
       log('FirebaseService -> uploadMealImage() -> $e');
-      return null;
-    }
-  }
-
-  /// Returns image URL
-  Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
-    try {
-      return await storage.ref(imageStoragePath).getDownloadURL();
-    } catch (e) {
-      log('FirebaseService -> getMealImageDownloadUrl() -> $e');
       return null;
     }
   }

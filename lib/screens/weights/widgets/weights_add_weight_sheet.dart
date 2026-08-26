@@ -5,6 +5,7 @@ import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../util/date_time.dart';
+import '../../../util/spacing.dart';
 import '../../../widgets/calendar_sheet.dart';
 import '../../../widgets/time_sheet.dart';
 
@@ -367,7 +368,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
             /// BOTTOM SPACING
             ///
             SizedBox(
-              height: MediaQuery.paddingOf(context).bottom + 16,
+              height: getBottomSpacing(context),
             ),
           ],
         ),

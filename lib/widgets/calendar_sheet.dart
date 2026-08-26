@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../util/spacing.dart';
 
 class CalendarSheet extends StatefulWidget {
   final DateTime dateValue;
@@ -220,7 +221,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
           /// BOTTOM SPACING
           ///
           SizedBox(
-            height: MediaQuery.paddingOf(context).bottom + 16,
+            height: getBottomSpacing(context),
           ),
         ],
       ),

@@ -16,6 +16,7 @@ class TextFieldWidget extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final TextInputAction textInputAction;
   final bool obscureText;
+  final Function(String value)? onChanged;
   final Function(String value)? onSubmitted;
   final Iterable<String>? autofillHints;
   final double borderRadius;
@@ -37,6 +38,7 @@ class TextFieldWidget extends StatelessWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.obscureText = false,
+    this.onChanged,
     this.onSubmitted,
     this.autofillHints,
     this.borderRadius = 100,
@@ -48,6 +50,7 @@ class TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TextField(
     autofillHints: autofillHints,
+    onChanged: onChanged,
     onSubmitted: onSubmitted,
     obscureText: obscureText,
     autocorrect: autocorrect,

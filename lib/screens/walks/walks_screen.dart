@@ -11,6 +11,7 @@ import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/spacing.dart';
 import '../../util/steps_with_date.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'walks_controller.dart';
@@ -434,7 +435,7 @@ class _WalksScreenState extends State<WalksScreen> {
             ///
             SliverToBoxAdapter(
               child: SizedBox(
-                height: MediaQuery.paddingOf(context).bottom + 16,
+                height: getBottomSpacing(context),
               ),
             ),
           ],

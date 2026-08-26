@@ -12,6 +12,7 @@ import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/spacing.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'meals_controller.dart';
 import 'widgets/meals_app_bar.dart';
@@ -323,7 +324,7 @@ class _MealsScreenState extends State<MealsScreen> {
             ///
             SliverToBoxAdapter(
               child: SizedBox(
-                height: MediaQuery.paddingOf(context).bottom + 16,
+                height: getBottomSpacing(context),
               ),
             ),
           ],
