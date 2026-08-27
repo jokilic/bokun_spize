@@ -720,7 +720,7 @@ class FirebaseService {
             .get();
 
         if (mealsUsingImage.docs.isEmpty) {
-          return deleteMealImage(
+          return await deleteMealImage(
             imageStoragePath: meal.imageStoragePath!,
           );
         }
