@@ -3,7 +3,6 @@
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Replace all `Icon()`
-- [ ] Check latest AI models
 - [ ] Update database permissions
 - [ ] Proper loading UIs
 - [ ] Refactor app init logic
