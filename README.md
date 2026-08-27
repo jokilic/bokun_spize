@@ -10,6 +10,7 @@
 - [ ] Delete photo from [Storage] only if no meals use it
 - [ ] Entrance -> email & pressing keyboard Enter won't go to password
 - [ ] Find all `NumberFormat.decimalPattern`
+- [ ] Blur background when opening sheets
 
 # Bokun spize 🥗
 

@@ -118,6 +118,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     return Scaffold(
       body: SafeArea(
         top: false,
+        bottom: false,
         child: AutofillGroup(
           child: CustomScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

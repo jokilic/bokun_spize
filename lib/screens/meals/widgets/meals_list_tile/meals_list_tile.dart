@@ -57,12 +57,6 @@ class _MealsListTileState extends State<MealsListTile> {
         ? BokunSpizeColors.red
         : widget.meal.color ?? BokunSpizeColors.grey;
 
-    final borderColor = hasError
-        ? BokunSpizeColors.red
-        : expanded
-        ? widget.meal.color ?? BokunSpizeColors.green
-        : Colors.transparent;
-
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: marginHorizontal,
@@ -121,10 +115,6 @@ class _MealsListTileState extends State<MealsListTile> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  border: Border.all(
-                    color: borderColor,
-                    width: 0.5,
-                  ),
                 ),
                 padding: const EdgeInsets.all(20),
                 child: Column(
