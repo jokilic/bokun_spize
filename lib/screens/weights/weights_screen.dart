@@ -131,7 +131,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
               weightChangeWithinDays: weightChangeWithinDays,
             ),
 
-            if (weightTracks.length >= 2 && weightChangeWithinDays != null) ...[
+            if (weightTracks.length >= 2) ...[
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: marginHorizontal,

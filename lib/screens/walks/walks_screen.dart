@@ -143,7 +143,7 @@ class _WalksScreenState extends State<WalksScreen> {
               stepsChangeWithinDays: stepsChangeWithinDays,
             ),
 
-            if (completedStepsWithDate.length >= 2 && stepsChangeWithinDays != null) ...[
+            if (completedStepsWithDate.length >= 2) ...[
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: marginHorizontal,
