@@ -106,34 +106,62 @@ class MealsListTile extends StatelessWidget {
                 child: Row(
                   children: [
                     ///
-                    /// IMAGE OR EMOJI
+                    /// LOADING IMAGE
                     ///
-                    Animate(
-                      onPlay: (controller) {
-                        if (isLoading) {
-                          controller.loop(
-                            reverse: true,
-                            min: 0.6,
-                          );
-                        }
-                      },
-                      effects: [
-                        if (isLoading)
-                          const FadeEffect(
+                    if (isLoading)
+                      Animate(
+                        onPlay: (controller) => controller.loop(
+                          reverse: true,
+                          min: 0.6,
+                        ),
+                        effects: const [
+                          FadeEffect(
                             duration: BokunSpizeDurations.shimmer,
                             curve: Curves.easeIn,
                           ),
-                      ],
-                      child: ClipRRect(
+                        ],
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            // TODO: Randomize color
+                            color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                          ),
+                          height: listTileIconRadius,
+                          width: listTileIconRadius,
+                        ),
+                      )
+                    ///
+                    /// IMAGE OR EMOJI
+                    ///
+                    else
+                      ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: meal.imageStoragePath != null
                             ? MealImage(
                                 imageStoragePath: meal.imageStoragePath!,
                                 height: listTileIconRadius,
                                 width: listTileIconRadius,
+                                placeholderWidget: Animate(
+                                  onPlay: (controller) => controller.loop(
+                                    reverse: true,
+                                    min: 0.6,
+                                  ),
+                                  effects: const [
+                                    FadeEffect(
+                                      duration: BokunSpizeDurations.shimmer,
+                                      curve: Curves.easeIn,
+                                    ),
+                                  ],
+                                  child: Container(
+                                    color: BokunSpizeColors.grey,
+                                    height: listTileIconRadius,
+                                    width: listTileIconRadius,
+                                  ),
+                                ),
                                 errorWidget: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(100),
+                                    color: BokunSpizeColors.red,
                                   ),
                                   height: listTileIconRadius,
                                   width: listTileIconRadius,
@@ -168,7 +196,6 @@ class MealsListTile extends StatelessWidget {
                                       ),
                               ),
                       ),
-                    ),
                     const SizedBox(width: 20),
 
                     ///
@@ -179,35 +206,81 @@ class MealsListTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ///
+                          /// LOADING TITLE
+                          ///
+                          if (isLoading)
+                            Animate(
+                              onPlay: (controller) => controller.loop(
+                                reverse: true,
+                                min: 0.6,
+                              ),
+                              effects: const [
+                                FadeEffect(
+                                  duration: BokunSpizeDurations.shimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                              ],
+                              child: Container(
+                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                height: 20,
+                                width: 112,
+                              ),
+                            )
+                          ///
                           /// TITLE
                           ///
-                          Text(
-                            titleText,
-                            style: const TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: BokunSpizeColors.black,
+                          else
+                            Text(
+                              titleText,
+                              style: const TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: BokunSpizeColors.black,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
                           const SizedBox(height: 2),
 
                           ///
+                          /// LOADING SUBTITLE
+                          ///
+                          if (isLoading) ...[
+                            const SizedBox(height: 8),
+                            Animate(
+                              onPlay: (controller) => controller.loop(
+                                reverse: true,
+                                min: 0.6,
+                              ),
+                              effects: const [
+                                FadeEffect(
+                                  duration: BokunSpizeDurations.shimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                              ],
+                              child: Container(
+                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                height: 16,
+                                width: 144,
+                              ),
+                            ),
+                          ]
+                          ///
                           /// SUBTITLE
                           ///
-                          Text(
-                            subtitleText,
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                          else
+                            Text(
+                              subtitleText,
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
                         ],
                       ),
                     ),
@@ -218,31 +291,77 @@ class MealsListTile extends StatelessWidget {
                     ///
                     Column(
                       children: [
-                        Text(
-                          formatNutritionValue(
-                                meal.nutrition?.calories,
-                              ) ??
-                              '',
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: BokunSpizeColors.black,
+                        ///
+                        /// CALORIES VALUE
+                        ///
+                        if (isLoading)
+                          Animate(
+                            onPlay: (controller) => controller.loop(
+                              reverse: true,
+                              min: 0.6,
+                            ),
+                            effects: const [
+                              FadeEffect(
+                                duration: BokunSpizeDurations.shimmer,
+                                curve: Curves.easeIn,
+                              ),
+                            ],
+                            child: Container(
+                              color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                              height: 28,
+                              width: 48,
+                            ),
+                          )
+                        else
+                          Text(
+                            formatNutritionValue(
+                                  meal.nutrition?.calories,
+                                ) ??
+                                '',
+                            style: const TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: BokunSpizeColors.black,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          'kcal'.toUpperCase(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.5),
+
+                        ///
+                        /// CALORIES UNIT
+                        ///
+                        if (isLoading) ...[
+                          const SizedBox(height: 8),
+                          Animate(
+                            onPlay: (controller) => controller.loop(
+                              reverse: true,
+                              min: 0.6,
+                            ),
+                            effects: const [
+                              FadeEffect(
+                                duration: BokunSpizeDurations.shimmer,
+                                curve: Curves.easeIn,
+                              ),
+                            ],
+                            child: Container(
+                              color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                              height: 12,
+                              width: 32,
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        ] else
+                          Text(
+                            'kcal'.toUpperCase(),
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                       ],
                     ),
                   ],

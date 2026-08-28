@@ -60,6 +60,7 @@ class MealImageState extends State<MealImage> {
       }
 
       final imageUrl = snapshot.data;
+
       if (imageUrl == null) {
         return widget.errorWidget;
       }
