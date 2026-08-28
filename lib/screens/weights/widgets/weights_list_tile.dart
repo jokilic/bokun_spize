@@ -9,7 +9,7 @@ import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 
 class WeightsListTile extends StatelessWidget {
-  final Future<void> Function() onDeletePressed;
+  final Function() onDeletePressed;
   final WeightTrack weightTrack;
   final double? weightChange;
 
@@ -75,12 +75,12 @@ class WeightsListTile extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(listTileIconRadius / 4),
                       color: BokunSpizeColors.grey,
                       child: const PhosphorIcon(
                         PhosphorIconsBold.personSimple,
                         color: BokunSpizeColors.blue,
-                        size: 24,
+                        size: listTileIconRadius / 2,
                       ),
                     ),
                   ),
@@ -136,7 +136,11 @@ class WeightsListTile extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 20),
 
+                  ///
+                  /// WEIGHT & CHANGE
+                  ///
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

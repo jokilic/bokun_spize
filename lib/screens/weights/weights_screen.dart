@@ -278,14 +278,10 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   );
 
                   return WeightsListTile(
-                    onDeletePressed: () async {
-                      unawaited(
-                        HapticFeedback.lightImpact(),
-                      );
-                      unawaited(
-                        weightsController.deleteWeightTrack(
-                          weightTrack: weightTrack,
-                        ),
+                    onDeletePressed: () {
+                      HapticFeedback.lightImpact();
+                      weightsController.deleteWeightTrack(
+                        weightTrack: weightTrack,
                       );
                     },
                     weightTrack: weightTrack,

@@ -54,12 +54,12 @@ class WalksListTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(listTileIconRadius / 4),
                   color: BokunSpizeColors.grey,
                   child: const PhosphorIcon(
                     PhosphorIconsBold.personSimpleWalk,
                     color: BokunSpizeColors.orange,
-                    size: 24,
+                    size: listTileIconRadius / 2,
                   ),
                 ),
               ),
@@ -118,7 +118,11 @@ class WalksListTile extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(width: 20),
 
+              ///
+              /// STEPS & CHANGE
+              ///
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -8,55 +7,41 @@ import '../../../../constants/colors.dart';
 import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../models/meal/meal.dart';
-import '../../../../util/date_time.dart';
 import '../../../../util/format.dart';
 import '../../../../widgets/meal_image.dart';
-import 'meals_list_tile_food.dart';
-import 'meals_list_tile_nutrition.dart';
 
-class MealsListTile extends StatefulWidget {
-  final Future<void> Function() onDeletePressed;
-  final Future<void> Function() onCopyPressed;
+class MealsListTile extends StatelessWidget {
+  final Function() onPressed;
+  final Function() onDeletePressed;
+  final Function() onCopyPressed;
   final Meal meal;
 
   const MealsListTile({
+    required this.onPressed,
     required this.onDeletePressed,
     required this.onCopyPressed,
     required this.meal,
   });
 
   @override
-  State<MealsListTile> createState() => _MealsListTileState();
-}
-
-class _MealsListTileState extends State<MealsListTile> {
-  var expanded = false;
-
-  void toggleExpanded() {
-    HapticFeedback.lightImpact();
-    setState(
-      () => expanded = !expanded,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isLoading = widget.meal.isLoading;
-    final hasError = widget.meal.errors?.isNotEmpty ?? false;
+    final isLoading = meal.isLoading;
+    final hasError = meal.errors?.isNotEmpty ?? false;
 
-    final titleText = isLoading ? widget.meal.originalText ?? '📷' : widget.meal.name ?? 'Greška';
+    final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? 'Erroro has happendo';
 
     final subtitleText =
         capitalizeFirstLetter(
-          widget.meal.foods?.map((food) => food.name.toLowerCase()).join(', '),
+          meal.foods?.map((food) => food.name.toLowerCase()).join(', '),
         ) ??
-        widget.meal.errors?.map((error) => error).join(', ');
+        meal.errors?.map((error) => error).join(', ') ??
+        '';
 
     final imageBackgroundColor = isLoading
         ? BokunSpizeColors.grey
         : hasError
         ? BokunSpizeColors.red
-        : widget.meal.color ?? BokunSpizeColors.grey;
+        : meal.color ?? BokunSpizeColors.grey;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -66,7 +51,7 @@ class _MealsListTileState extends State<MealsListTile> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
-          key: ValueKey(widget.meal.id),
+          key: ValueKey(meal.id),
           backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
@@ -77,7 +62,7 @@ class _MealsListTileState extends State<MealsListTile> {
             SwipeAction(
               onTap: (handler) async {
                 await handler(true);
-                await widget.onDeletePressed();
+                await onDeletePressed();
               },
               color: BokunSpizeColors.red,
               backgroundRadius: listTileRadius,
@@ -92,9 +77,9 @@ class _MealsListTileState extends State<MealsListTile> {
             SwipeAction(
               onTap: (handler) async {
                 await handler(false);
-                await widget.onCopyPressed();
+                await onCopyPressed();
               },
-              color: BokunSpizeColors.blue,
+              color: BokunSpizeColors.green,
               backgroundRadius: listTileRadius,
               icon: const PhosphorIcon(
                 PhosphorIconsBold.copy,
@@ -107,7 +92,7 @@ class _MealsListTileState extends State<MealsListTile> {
             color: BokunSpizeColors.white,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
-              onTap: isLoading || hasError ? null : toggleExpanded,
+              onTap: isLoading || hasError ? null : onPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
@@ -118,383 +103,147 @@ class _MealsListTileState extends State<MealsListTile> {
                   borderRadius: BorderRadius.circular(listTileRadius),
                 ),
                 padding: const EdgeInsets.all(20),
-                child: Column(
+                child: Row(
                   children: [
                     ///
-                    /// TOP SECTION
+                    /// IMAGE OR EMOJI
                     ///
-                    AnimatedSize(
-                      alignment: Alignment.topLeft,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeIn,
-                      child: Row(
+                    Animate(
+                      onPlay: (controller) {
+                        if (isLoading) {
+                          controller.loop(
+                            reverse: true,
+                            min: 0.6,
+                          );
+                        }
+                      },
+                      effects: [
+                        if (isLoading)
+                          const FadeEffect(
+                            duration: BokunSpizeDurations.shimmer,
+                            curve: Curves.easeIn,
+                          ),
+                      ],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: meal.imageStoragePath != null
+                            ? MealImage(
+                                imageStoragePath: meal.imageStoragePath!,
+                                height: listTileIconRadius,
+                                width: listTileIconRadius,
+                                errorWidget: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  height: listTileIconRadius,
+                                  width: listTileIconRadius,
+                                  child: const PhosphorIcon(
+                                    PhosphorIconsBold.warningOctagon,
+                                    color: BokunSpizeColors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: listTileIconRadius,
+                                width: listTileIconRadius,
+                                color: imageBackgroundColor,
+                                child: hasError
+                                    ? const PhosphorIcon(
+                                        PhosphorIconsBold.warningOctagon,
+                                        color: BokunSpizeColors.white,
+                                        size: 24,
+                                      )
+                                    : FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          meal.emoji ?? '',
+                                          style: const TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 24,
+                                          ),
+                                          maxLines: 1,
+                                          softWrap: false,
+                                        ),
+                                      ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+
+                    ///
+                    /// TEXT
+                    ///
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ///
-                          /// IMAGE OR EMOJI
+                          /// TITLE
                           ///
-                          Animate(
-                            onPlay: (controller) {
-                              if (isLoading) {
-                                controller.loop(
-                                  reverse: true,
-                                  min: 0.6,
-                                );
-                              }
-                            },
-                            effects: [
-                              if (isLoading)
-                                const FadeEffect(
-                                  duration: BokunSpizeDurations.shimmer,
-                                  curve: Curves.easeIn,
-                                ),
-                            ],
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(24),
-                              child: widget.meal.imageStoragePath != null
-                                  ? MealImage(
-                                      imageStoragePath: widget.meal.imageStoragePath!,
-                                      height: 92,
-                                      width: 92,
-                                      errorWidget: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(listTileRadius),
-                                        ),
-                                        height: 92,
-                                        width: 92,
-                                        child: const PhosphorIcon(
-                                          PhosphorIconsBold.warningOctagon,
-                                          color: BokunSpizeColors.white,
-                                          size: 40,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 92,
-                                      width: 92,
-                                      color: imageBackgroundColor,
-                                      child: hasError
-                                          ? const PhosphorIcon(
-                                              PhosphorIconsBold.warningOctagon,
-                                              color: BokunSpizeColors.white,
-                                              size: 40,
-                                            )
-                                          : FittedBox(
-                                              fit: BoxFit.scaleDown,
-                                              child: Text(
-                                                widget.meal.emoji ?? '',
-                                                style: const TextStyle(
-                                                  fontFamily: 'PlusJakartaSans',
-                                                  fontSize: 40,
-                                                ),
-                                                maxLines: 1,
-                                                softWrap: false,
-                                              ),
-                                            ),
-                                    ),
+                          Text(
+                            titleText,
+                            style: const TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: BokunSpizeColors.black,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-
-                          const SizedBox(width: 20),
+                          const SizedBox(height: 2),
 
                           ///
-                          /// TEXT
+                          /// SUBTITLE
                           ///
-                          Expanded(
-                            child: Stack(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ///
-                                    /// TITLE
-                                    ///
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(right: 48),
-                                        child: Animate(
-                                          onPlay: (controller) {
-                                            if (isLoading) {
-                                              controller.loop(
-                                                reverse: true,
-                                                min: 0.6,
-                                              );
-                                            }
-                                          },
-                                          effects: [
-                                            if (isLoading)
-                                              const FadeEffect(
-                                                duration: BokunSpizeDurations.shimmer,
-                                                curve: Curves.easeIn,
-                                              ),
-                                          ],
-                                          child: AnimatedCrossFade(
-                                            alignment: Alignment.centerLeft,
-                                            duration: BokunSpizeDurations.animation,
-                                            firstCurve: Curves.easeIn,
-                                            secondCurve: Curves.easeIn,
-                                            sizeCurve: Curves.easeIn,
-                                            crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                            firstChild: Text(
-                                              capitalizeFirstLetter(
-                                                    titleText,
-                                                  ) ??
-                                                  '',
-                                              style: const TextStyle(
-                                                fontFamily: 'PlusJakartaSans',
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w900,
-                                                height: 1.4,
-                                                color: BokunSpizeColors.black,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            secondChild: Text(
-                                              capitalizeFirstLetter(titleText) ?? '',
-                                              style: const TextStyle(
-                                                fontFamily: 'PlusJakartaSans',
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w900,
-                                                height: 1.4,
-                                                color: BokunSpizeColors.black,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    ///
-                                    /// SUBTITLE
-                                    ///
-                                    SizedBox(
-                                      height: isLoading ? 8 : 4,
-                                    ),
-                                    if (subtitleText != null)
-                                      AnimatedCrossFade(
-                                        alignment: Alignment.centerLeft,
-                                        duration: BokunSpizeDurations.animation,
-                                        firstCurve: Curves.easeIn,
-                                        secondCurve: Curves.easeIn,
-                                        sizeCurve: Curves.easeIn,
-                                        crossFadeState: expanded || hasError ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                        firstChild: Text(
-                                          subtitleText,
-                                          style: const TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.4,
-                                            letterSpacing: 1.4,
-                                            color: BokunSpizeColors.black,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        secondChild: Text(
-                                          subtitleText,
-                                          style: const TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.4,
-                                            letterSpacing: 1.4,
-                                            color: BokunSpizeColors.black,
-                                          ),
-                                        ),
-                                      )
-                                    else if (isLoading)
-                                      Animate(
-                                        onPlay: (controller) {
-                                          if (isLoading) {
-                                            controller.loop(
-                                              reverse: true,
-                                              min: 0.6,
-                                            );
-                                          }
-                                        },
-                                        effects: [
-                                          if (isLoading)
-                                            const FadeEffect(
-                                              duration: BokunSpizeDurations.shimmer,
-                                              curve: Curves.easeIn,
-                                            ),
-                                        ],
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: BokunSpizeColors.white,
-                                          ),
-                                          height: 20,
-                                          width: 160,
-                                        ),
-                                      ),
-
-                                    ///
-                                    /// CALORIES
-                                    ///
-                                    if (!hasError) ...[
-                                      const SizedBox(height: 10),
-                                      Animate(
-                                        onPlay: (controller) {
-                                          if (isLoading) {
-                                            controller.loop(
-                                              reverse: true,
-                                              min: 0.6,
-                                            );
-                                          }
-                                        },
-                                        effects: [
-                                          if (isLoading)
-                                            const FadeEffect(
-                                              duration: BokunSpizeDurations.shimmer,
-                                              curve: Curves.easeIn,
-                                            ),
-                                        ],
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(100),
-                                            color: isLoading ? BokunSpizeColors.white : BokunSpizeColors.red.withValues(alpha: 0.25),
-                                          ),
-                                          child: isLoading
-                                              ? const SizedBox(
-                                                  width: 48,
-                                                  height: 12,
-                                                )
-                                              : Text(
-                                                  '${formatNutritionValue(
-                                                    widget.meal.nutrition?.calories,
-                                                  )} kcal',
-                                                  style: const TextStyle(
-                                                    fontFamily: 'PlusJakartaSans',
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w900,
-                                                    letterSpacing: 0.4,
-                                                    color: BokunSpizeColors.red,
-                                                  ),
-                                                ),
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-
-                                ///
-                                /// TIME
-                                ///
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Text(
-                                    getDateString(
-                                      date: widget.meal.createdAt,
-                                      dateFormat: 'HH:mm',
-                                      useTodayYesterdayTomorrow: false,
-                                    ),
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      height: 1,
-                                      letterSpacing: 1,
-                                      color: BokunSpizeColors.black.withValues(alpha: 0.75),
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            subtitleText,
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(width: 20),
 
                     ///
-                    /// BOTTOM SECTION
+                    /// CALORIES
                     ///
-                    AnimatedSwitcher(
-                      duration: BokunSpizeDurations.animation,
-                      switchInCurve: Curves.easeIn,
-                      switchOutCurve: Curves.easeIn,
-                      transitionBuilder: (child, animation) => FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      ),
-                      child: AnimatedCrossFade(
-                        alignment: Alignment.centerLeft,
-                        duration: BokunSpizeDurations.animation,
-                        firstCurve: Curves.easeIn,
-                        secondCurve: Curves.easeIn,
-                        sizeCurve: Curves.easeIn,
-                        crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                        firstChild: const SizedBox.shrink(),
-                        secondChild: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 24),
-
-                            ///
-                            /// NUTRITION
-                            ///
-                            if (widget.meal.nutrition != null) ...[
-                              MealsListTileNutrition(
-                                nutrition: widget.meal.nutrition!,
-                              ),
-                              const SizedBox(height: 24),
-                            ],
-
-                            ///
-                            /// FOODS
-                            ///
-                            if (widget.meal.foods?.isNotEmpty ?? false) ...[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4),
-                                child: Text(
-                                  'Namirnice'.toUpperCase(),
-                                  style: const TextStyle(
-                                    fontFamily: 'PlusJakartaSans',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 1,
-                                    color: BokunSpizeColors.black,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-
-                              ListView.separated(
-                                padding: EdgeInsets.zero,
-                                itemCount: widget.meal.foods!.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (_, index) {
-                                  final food = widget.meal.foods![index];
-
-                                  return MealsListTileFood(
-                                    food: food,
-                                  );
-                                },
-                                separatorBuilder: (_, __) => Column(
-                                  children: [
-                                    const SizedBox(height: 12),
-                                    Container(
-                                      height: 1,
-                                      color: BokunSpizeColors.grey,
-                                    ),
-                                    const SizedBox(height: 12),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ],
+                    Column(
+                      children: [
+                        Text(
+                          formatNutritionValue(
+                                meal.nutrition?.calories,
+                              ) ??
+                              '',
+                          style: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: BokunSpizeColors.black,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
+                        Text(
+                          'kcal'.toUpperCase(),
+                          style: TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ],
                 ),

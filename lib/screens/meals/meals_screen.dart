@@ -154,26 +154,21 @@ class _MealsScreenState extends State<MealsScreen> {
                   final meal = meals[index];
 
                   return MealsListTile(
-                    onDeletePressed: () async {
-                      unawaited(
-                        HapticFeedback.lightImpact(),
-                      );
-                      unawaited(
-                        mealsController.deleteMeal(
-                          meal: meal,
-                        ),
+                    onPressed: () {
+                      // TODO: Open [MealScreen]
+                    },
+                    onDeletePressed: () {
+                      HapticFeedback.lightImpact();
+                      mealsController.deleteMeal(
+                        meal: meal,
                       );
                     },
-                    onCopyPressed: () async {
-                      unawaited(
-                        HapticFeedback.lightImpact(),
-                      );
-                      unawaited(
-                        mealsController.onMealPressed(
-                          context,
-                          passedMeal: meal,
-                          isCopyingMeal: true,
-                        ),
+                    onCopyPressed: () {
+                      HapticFeedback.lightImpact();
+                      mealsController.onMealPressed(
+                        context,
+                        passedMeal: meal,
+                        isCopyingMeal: true,
                       );
                     },
                     meal: meal,
