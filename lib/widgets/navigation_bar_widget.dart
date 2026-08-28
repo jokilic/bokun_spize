@@ -1,3 +1,4 @@
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
@@ -159,11 +160,13 @@ class NavigationBarWidget extends WatchingWidget {
               children: [
                 if (userPhoto != null)
                   ClipOval(
-                    child: Image.network(
-                      userPhoto,
+                    child: CachedNetworkImage(
+                      imageUrl: userPhoto,
                       height: 24,
                       width: 24,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => const SizedBox.shrink(),
+                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                     ),
                   )
                 else
@@ -192,11 +195,13 @@ class NavigationBarWidget extends WatchingWidget {
               ),
               child: userPhoto != null
                   ? ClipOval(
-                      child: Image.network(
-                        userPhoto,
+                      child: CachedNetworkImage(
+                        imageUrl: userPhoto,
                         height: 24,
                         width: 24,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => const SizedBox.shrink(),
+                        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                       ),
                     )
                   : const PhosphorIcon(

@@ -30,6 +30,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  cached_network_image_ce: 4.10.1
   cloud_firestore: 6.9.0
   diacritic: 0.1.6
   firebase_ai: 4.0.0

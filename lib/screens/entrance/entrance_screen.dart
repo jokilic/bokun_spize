@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -128,10 +129,12 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// ILLUSTRATION
               ///
               SliverToBoxAdapter(
-                child: Image.network(
-                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT25eEKqXY3z-LPhiaLBeZ222wKUARuyg_vkBmdKegriFUgGicOnoj-aM&s=10',
+                child: CachedNetworkImage(
+                  imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT25eEKqXY3z-LPhiaLBeZ222wKUARuyg_vkBmdKegriFUgGicOnoj-aM&s=10',
                   fit: BoxFit.cover,
                   height: 400,
+                  placeholder: (context, url) => const SizedBox.shrink(),
+                  errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                 ),
               ),
               const SliverToBoxAdapter(

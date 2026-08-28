@@ -1,3 +1,4 @@
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../services/firebase_service.dart';
@@ -6,17 +7,17 @@ import '../util/dependencies.dart';
 class MealImage extends StatefulWidget {
   final String imageStoragePath;
   final BoxFit fit;
-  final Widget loadingWidget;
-  final Widget errorWidget;
   final double height;
   final double width;
+  final Widget placeholderWidget;
+  final Widget errorWidget;
 
   const MealImage({
     required this.imageStoragePath,
     required this.height,
     required this.width,
     this.fit = BoxFit.cover,
-    this.loadingWidget = const Center(
+    this.placeholderWidget = const Center(
       child: CircularProgressIndicator(),
     ),
     this.errorWidget = const SizedBox.shrink(),
@@ -55,7 +56,7 @@ class MealImageState extends State<MealImage> {
     future: imageUrlFuture,
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done) {
-        return widget.loadingWidget;
+        return widget.placeholderWidget;
       }
 
       final imageUrl = snapshot.data;
@@ -63,11 +64,12 @@ class MealImageState extends State<MealImage> {
         return widget.errorWidget;
       }
 
-      return Image.network(
-        imageUrl,
+      return CachedNetworkImage(
+        imageUrl: imageUrl,
         fit: widget.fit,
         height: widget.height,
         width: widget.width,
+        placeholder: (context, url) => widget.placeholderWidget,
         errorBuilder: (context, error, stackTrace) => widget.errorWidget,
       );
     },
