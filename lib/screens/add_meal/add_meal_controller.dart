@@ -13,7 +13,7 @@ import '../../util/path.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
-class MealController extends ValueNotifier<({bool textImageValid, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
+class AddMealController extends ValueNotifier<({bool textImageValid, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -22,7 +22,7 @@ class MealController extends ValueNotifier<({bool textImageValid, String? speech
   final Meal? passedMeal;
   final bool isCopyingMeal;
 
-  MealController({
+  AddMealController({
     required this.speechToText,
     required this.passedMeal,
     required this.isCopyingMeal,

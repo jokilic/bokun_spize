@@ -12,30 +12,30 @@ import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_widget.dart';
-import 'meal_controller.dart';
+import 'add_meal_controller.dart';
 
-class MealScreen extends WatchingStatefulWidget {
+class AddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
   final bool isCopyingMeal;
 
-  const MealScreen({
+  const AddMealScreen({
     required this.mealId,
     required this.passedMeal,
     required this.isCopyingMeal,
   });
 
   @override
-  State<MealScreen> createState() => _MealScreenState();
+  State<AddMealScreen> createState() => _AddMealScreenState();
 }
 
-class _MealScreenState extends State<MealScreen> {
+class _AddMealScreenState extends State<AddMealScreen> {
   @override
   void initState() {
     super.initState();
 
-    registerIfNotInitialized<MealController>(
-      () => MealController(
+    registerIfNotInitialized<AddMealController>(
+      () => AddMealController(
         speechToText: getIt.get<SpeechToTextService>(),
         passedMeal: widget.passedMeal,
         isCopyingMeal: widget.isCopyingMeal,
@@ -47,7 +47,7 @@ class _MealScreenState extends State<MealScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<MealController>(
+    unRegisterIfNotDisposed<AddMealController>(
       instanceName: widget.mealId,
     );
     super.dispose();
@@ -55,12 +55,12 @@ class _MealScreenState extends State<MealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mealController = getIt.get<MealController>(
+    final mealController = getIt.get<AddMealController>(
       instanceName: widget.mealId,
     );
 
     /// Reference to `state`
-    final state = watchIt<MealController>(
+    final state = watchIt<AddMealController>(
       instanceName: widget.mealId,
     ).value;
 

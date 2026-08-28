@@ -12,6 +12,7 @@
 - [ ] Blur background when opening sheets
 - [ ] Check if all buttons trigger vibration
 - [ ] Test all text overflows
+- [ ] Animations
 
 # Bokun spize 🥗
 

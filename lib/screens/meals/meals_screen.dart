@@ -14,7 +14,7 @@ import '../../util/spacing.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'meals_controller.dart';
 import 'widgets/meals_app_bar.dart';
-import 'widgets/meals_list_tile/meals_list_tile.dart';
+import 'widgets/meals_list_tile.dart';
 
 class MealsScreen extends WatchingStatefulWidget {
   @override

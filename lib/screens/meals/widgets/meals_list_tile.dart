@@ -3,12 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../../constants/colors.dart';
-import '../../../../constants/constants.dart';
-import '../../../../constants/durations.dart';
-import '../../../../models/meal/meal.dart';
-import '../../../../util/format.dart';
-import '../../../../widgets/meal_image.dart';
+import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
+import '../../../models/meal/meal.dart';
+import '../../../util/format.dart';
+import '../../../widgets/meal_image.dart';
 
 class MealsListTile extends StatelessWidget {
   final Function() onPressed;

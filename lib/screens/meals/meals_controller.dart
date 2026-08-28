@@ -14,7 +14,7 @@ import '../../services/firebase_service.dart';
 import '../../util/null_state.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
-import '../meal/meal_screen.dart';
+import '../add_meal/add_meal_screen.dart';
 
 class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
@@ -143,7 +143,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
 
-    /// Show [MealScreen] for adding or editing `meal`
+    /// Show [AddMealScreen] for adding or editing `meal`
     final result = await showModalBottomSheet<MealSheetResult>(
       context: context,
       isScrollControlled: true,
@@ -154,7 +154,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
           top: Radius.circular(listTileRadius),
         ),
       ),
-      builder: (context) => MealScreen(
+      builder: (context) => AddMealScreen(
         mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,
         passedMeal: passedMeal,
         isCopyingMeal: isCopyingMeal,
