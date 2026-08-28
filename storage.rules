@@ -2,15 +2,29 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    match /users/{userId}/meal-images/{fileName} {
-      allow read: if request.auth != null && request.auth.uid == userId;
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
 
-      allow create, update: if request.auth != null
-        && request.auth.uid == userId
+    function isSupportedMealImage(fileName) {
+      let uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+
+      return request.resource.size > 0
         && request.resource.size < 10 * 1024 * 1024
-        && request.resource.contentType.matches('image/.*');
+        && (
+          (fileName.matches(uuid + '\\.jpg') && request.resource.contentType == 'image/jpeg')
+          || (fileName.matches(uuid + '\\.png') && request.resource.contentType == 'image/png')
+          || (fileName.matches(uuid + '\\.webp') && request.resource.contentType == 'image/webp')
+          || (fileName.matches(uuid + '\\.heic') && request.resource.contentType == 'image/heic')
+          || (fileName.matches(uuid + '\\.heif') && request.resource.contentType == 'image/heif')
+        );
+    }
 
-      allow delete: if request.auth != null && request.auth.uid == userId;
+    match /users/{userId}/meal-images/{fileName} {
+      allow read, delete: if isOwner(userId);
+
+      // Meal image paths are UUID-based, and uploaded objects are immutable.
+      allow create: if isOwner(userId) && isSupportedMealImage(fileName);
     }
   }
 }

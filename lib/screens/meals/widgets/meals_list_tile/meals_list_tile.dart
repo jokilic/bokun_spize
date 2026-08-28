@@ -10,6 +10,7 @@ import '../../../../constants/durations.dart';
 import '../../../../models/meal/meal.dart';
 import '../../../../util/date_time.dart';
 import '../../../../util/format.dart';
+import '../../../../widgets/meal_image.dart';
 import 'meals_list_tile_food.dart';
 import 'meals_list_tile_nutrition.dart';
 
@@ -151,11 +152,20 @@ class _MealsListTileState extends State<MealsListTile> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24),
                               child: widget.meal.imageStoragePath != null
-                                  ? Image.network(
-                                      widget.meal.imageStoragePath!,
-                                      height: 92,
-                                      width: 92,
-                                      fit: BoxFit.cover,
+                                  ? MealImage(
+                                      imageStoragePath: widget.meal.imageStoragePath!,
+                                      errorWidget: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(listTileRadius),
+                                        ),
+                                        height: 92,
+                                        width: 92,
+                                        child: const PhosphorIcon(
+                                          PhosphorIconsBold.warningOctagon,
+                                          color: BokunSpizeColors.white,
+                                          size: 40,
+                                        ),
+                                      ),
                                     )
                                   : Container(
                                       height: 92,

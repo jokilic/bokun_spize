@@ -204,7 +204,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   child: Container(
                     height: 7,
                     decoration: const BoxDecoration(
-                      color: BokunSpizeColors.red,
+                      color: BokunSpizeColors.orange,
                     ),
                   ),
                 ),
@@ -286,7 +286,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         width: 7,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: BokunSpizeColors.red,
+                          color: BokunSpizeColors.orange,
                         ),
                       ),
                       const SizedBox(width: 4),

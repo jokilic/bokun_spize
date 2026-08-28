@@ -82,9 +82,9 @@ class _MealsScreenState extends State<MealsScreen> {
             child: FloatingActionButton(
               heroTag: const ValueKey('meals-calendar-fab'),
               elevation: 0,
-              backgroundColor: BokunSpizeColors.white,
-              foregroundColor: BokunSpizeColors.green,
-              splashColor: BokunSpizeColors.green.withValues(alpha: 0.5),
+              backgroundColor: BokunSpizeColors.green,
+              foregroundColor: BokunSpizeColors.white,
+              splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
               shape: const CircleBorder(),
@@ -94,7 +94,7 @@ class _MealsScreenState extends State<MealsScreen> {
               },
               child: const PhosphorIcon(
                 PhosphorIconsBold.calendarDot,
-                color: BokunSpizeColors.green,
+                color: BokunSpizeColors.white,
                 size: 24,
               ),
             ),

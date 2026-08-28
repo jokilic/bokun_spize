@@ -1,0 +1,137 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isOptionalString(value, maxLength) {
+      return value == null || (value is string && value.size() <= maxLength);
+    }
+
+    function isValidUserDocument(data) {
+      let metricFields = [
+        'age',
+        'height',
+        'weight',
+        'activity',
+        'sex',
+        'dailyCalories',
+        'dailyProtein',
+        'dailyCarbs',
+        'dailyFat',
+      ];
+
+      let isRegistrationDocument = data.keys().hasAll(['name'])
+        && data.keys().hasOnly(['name'])
+        && data.name is string
+        && data.name.size() <= 200;
+
+      let isMetricsDocument = data.keys().hasAll(metricFields)
+        && data.keys().hasOnly(metricFields.concat(['name']))
+        && (!('name' in data) || (data.name is string && data.name.size() <= 200))
+        && data.age is int
+        && data.age > 0
+        && data.age <= 150
+        && data.height is number
+        && data.height > 0
+        && data.height <= 300
+        && data.weight is number
+        && data.weight > 0
+        && data.weight <= 1000
+        && data.activity is int
+        && data.activity >= 0
+        && data.activity <= 4
+        && data.sex is int
+        && data.sex >= 0
+        && data.sex <= 1
+        && data.dailyCalories is number
+        && data.dailyCalories >= 0
+        && data.dailyProtein is number
+        && data.dailyProtein >= 0
+        && data.dailyCarbs is number
+        && data.dailyCarbs >= 0
+        && data.dailyFat is number
+        && data.dailyFat >= 0;
+
+      return isRegistrationDocument || isMetricsDocument;
+    }
+
+    function isValidNutrition(data) {
+      return data is map
+        && data.keys().hasAll(['calories', 'protein', 'carbs', 'fat'])
+        && data.keys().hasOnly(['calories', 'protein', 'carbs', 'fat'])
+        && data.calories is number
+        && data.protein is number
+        && data.carbs is number
+        && data.fat is number;
+    }
+
+    function isValidMeal(data, userId, mealId) {
+      let fields = [
+        'id',
+        'name',
+        'emoji',
+        'color',
+        'createdAt',
+        'nutrition',
+        'foods',
+        'originalText',
+        'isLoading',
+        'errors',
+        'imageStoragePath',
+      ];
+
+      return data.keys().hasAll(fields)
+        && data.keys().hasOnly(fields)
+        && data.id is string
+        && data.id == mealId
+        && isOptionalString(data.name, 500)
+        && isOptionalString(data.emoji, 32)
+        && isOptionalString(data.color, 16)
+        && ((data.createdAt is string && data.createdAt.size() <= 64) || data.createdAt is timestamp)
+        && (data.nutrition == null || isValidNutrition(data.nutrition))
+        && (data.foods == null || (data.foods is list && data.foods.size() <= 200))
+        && isOptionalString(data.originalText, 50000)
+        && data.isLoading is bool
+        && (data.errors == null || (data.errors is list && data.errors.size() <= 100))
+        && (
+          data.imageStoragePath == null
+          || (
+            data.imageStoragePath is string
+            && data.imageStoragePath.matches('users/' + userId + '/meal-images/[^/]+')
+          )
+        );
+    }
+
+    function isValidWeightTrack(data, weightTrackId) {
+      return data.keys().hasAll(['id', 'dateTime', 'weight'])
+        && data.keys().hasOnly(['id', 'dateTime', 'weight'])
+        && data.id is string
+        && data.id == weightTrackId
+        && (data.dateTime is timestamp || data.dateTime is string)
+        && data.weight is number
+        && data.weight > 0
+        && data.weight <= 1000;
+    }
+
+    match /users/{userId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && isValidUserDocument(request.resource.data);
+
+      match /meals/{mealId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidMeal(request.resource.data, userId, mealId);
+      }
+
+      match /weightTracks/{weightTrackId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isValidWeightTrack(request.resource.data, weightTrackId);
+      }
+    }
+  }
+}

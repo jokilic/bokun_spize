@@ -7,6 +7,6 @@ class BokunSpizeColors {
 
   static const green = Color(0xFF3B7D5E);
   static const blue = Color(0xFF4F5094);
-  static const yellow = Color(0xFFE9BB75);
-  static const red = Color(0xFFEE6055);
+  static const orange = Color(0xFFF38D68);
+  static const red = Color(0xFF9D5C63);
 }

@@ -275,7 +275,7 @@ JSON structure to follow strictly:
         image,
       );
 
-      // Upload while Gemini processes the same image.
+      /// Upload while Gemini processes the same image
       imageUpload = firebaseService.uploadMealImage(
         imageFile: imageFile,
       );
