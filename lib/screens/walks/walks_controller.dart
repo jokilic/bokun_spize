@@ -150,15 +150,15 @@ class WalksController
           endOfInterval,
         );
 
-        /// Skip days for which step data could not be fetched
-        if (steps == null) {
+        /// Keep only past days with recorded steps, but always include today
+        if (dayOffset > 0 && (steps == null || steps <= 0)) {
           continue;
         }
 
         stepsWithDate.add(
           StepsWithDate(
             dateTime: startOfDay,
-            steps: steps,
+            steps: steps ?? 0,
           ),
         );
       }
