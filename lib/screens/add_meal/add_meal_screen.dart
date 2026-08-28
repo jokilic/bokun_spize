@@ -116,7 +116,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
                         height: 1.2,
-                        letterSpacing: 1,
+                        letterSpacing: 0.6,
                         color: BokunSpizeColors.black,
                       ),
                     ),
@@ -154,7 +154,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
             padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Text(
-                'Write details about your meal',
+                'Add your meal in the diary',
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
@@ -254,71 +254,73 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   ///
                   /// TEXT FIELD TITLE
                   ///
-                  Positioned(
-                    top: 16,
-                    left: 20,
-                    child: IgnorePointer(
-                      child: Text(
-                        'Describe your meal'.toUpperCase(),
-                        style: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.green,
+                  if (!copyingMealWithoutText)
+                    Positioned(
+                      top: 16,
+                      left: 20,
+                      child: IgnorePointer(
+                        child: Text(
+                          'Describe your meal'.toUpperCase(),
+                          style: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.6,
+                            color: BokunSpizeColors.green,
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
                   ///
                   /// SPEECH TO TEXT ICON
                   ///
-                  Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: Animate(
-                      onPlay: (controller) {
-                        if (isListening) {
-                          controller.loop(
-                            reverse: true,
-                            min: 0.6,
-                          );
-                        }
-                      },
-                      effects: [
-                        if (isListening)
-                          const FadeEffect(
-                            duration: BokunSpizeDurations.speechToTextShimmer,
-                            curve: Curves.easeIn,
-                          ),
-                      ],
-                      child: IconButton(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          mealController.onSpeechToTextPressed(
-                            locale: 'hr',
-                            speechToTextAvailable: available,
-                          );
+                  if (!copyingMealWithoutText && !widget.isCopyingMeal)
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: Animate(
+                        onPlay: (controller) {
+                          if (isListening) {
+                            controller.loop(
+                              reverse: true,
+                              min: 0.6,
+                            );
+                          }
                         },
-                        icon: const PhosphorIcon(
-                          PhosphorIconsBold.microphone,
-                          size: 22,
-                        ),
-                        style: IconButton.styleFrom(
-                          elevation: 0,
-                          padding: const EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
+                        effects: [
+                          if (isListening)
+                            const FadeEffect(
+                              duration: BokunSpizeDurations.speechToTextShimmer,
+                              curve: Curves.easeIn,
+                            ),
+                        ],
+                        child: IconButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            mealController.onSpeechToTextPressed(
+                              locale: 'hr',
+                              speechToTextAvailable: available,
+                            );
+                          },
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.microphone,
+                            size: 22,
                           ),
-                          backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                          foregroundColor: isListening ? BokunSpizeColors.white.withValues(alpha: 0.5) : BokunSpizeColors.red,
-                          disabledBackgroundColor: BokunSpizeColors.grey,
-                          disabledForegroundColor: BokunSpizeColors.black,
+                          style: IconButton.styleFrom(
+                            elevation: 0,
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                            foregroundColor: isListening ? BokunSpizeColors.white.withValues(alpha: 0.5) : BokunSpizeColors.red,
+                            disabledBackgroundColor: BokunSpizeColors.grey,
+                            disabledForegroundColor: BokunSpizeColors.black,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -638,7 +640,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                 fontFamily: 'Epilogue',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
+                                letterSpacing: 0.6,
                                 color: BokunSpizeColors.black,
                               ),
                             ),
@@ -718,7 +720,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                 fontFamily: 'Epilogue',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
+                                letterSpacing: 0.6,
                                 color: BokunSpizeColors.black,
                               ),
                             ),

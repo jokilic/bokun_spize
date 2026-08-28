@@ -52,7 +52,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
                     height: 1.2,
-                    letterSpacing: 1,
+                    letterSpacing: 0.6,
                     color: BokunSpizeColors.black,
                   ),
                 ),
