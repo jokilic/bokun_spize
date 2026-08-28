@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
 import '../util/dependencies.dart';
 
-class MealImage extends StatelessWidget {
+class MealImage extends StatefulWidget {
   final String imageStoragePath;
   final BoxFit fit;
   final Widget loadingWidget;
@@ -24,26 +24,51 @@ class MealImage extends StatelessWidget {
   });
 
   @override
+  State<MealImage> createState() => MealImageState();
+}
+
+class MealImageState extends State<MealImage> {
+  late Future<String?> imageUrlFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    imageUrlFuture = getIt.get<FirebaseService>().getMealImageDownloadUrl(
+      imageStoragePath: widget.imageStoragePath,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant MealImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.imageStoragePath != widget.imageStoragePath) {
+      imageUrlFuture = getIt.get<FirebaseService>().getMealImageDownloadUrl(
+        imageStoragePath: widget.imageStoragePath,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => FutureBuilder<String?>(
-    future: getIt.get<FirebaseService>().getMealImageDownloadUrl(
-      imageStoragePath: imageStoragePath,
-    ),
+    future: imageUrlFuture,
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done) {
-        return loadingWidget;
+        return widget.loadingWidget;
       }
 
       final imageUrl = snapshot.data;
       if (imageUrl == null) {
-        return errorWidget;
+        return widget.errorWidget;
       }
 
       return Image.network(
         imageUrl,
-        fit: fit,
-        height: height,
-        width: width,
-        errorBuilder: (context, error, stackTrace) => errorWidget,
+        fit: widget.fit,
+        height: widget.height,
+        width: widget.width,
+        errorBuilder: (context, error, stackTrace) => widget.errorWidget,
       );
     },
   );
