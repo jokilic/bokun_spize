@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
+import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
@@ -63,6 +65,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
     final state = watchIt<AddMealController>(
       instanceName: widget.mealId,
     ).value;
+    final speechToTextState = watchIt<SpeechToTextService>().value;
+
+    final available = speechToTextState.available;
+    final isListening = speechToTextState.isListening;
 
     final imageFile = state.imageFile;
     final mealDate = state.mealDate;
@@ -163,13 +169,16 @@ class _AddMealScreenState extends State<AddMealScreen> {
           ),
 
           ///
-          /// TEXT FIELD
+          /// TEXT FIELD & TITLE & ICON
           ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Stack(
                 children: [
+                  ///
+                  /// TEXT FIELD
+                  ///
                   TextFieldWidget(
                     enabled: !widget.isCopyingMeal,
                     controller: mealController.textEditingController,
@@ -241,6 +250,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       color: BokunSpizeColors.black,
                     ),
                   ),
+
+                  ///
+                  /// TEXT FIELD TITLE
+                  ///
                   Positioned(
                     top: 16,
                     left: 20,
@@ -253,6 +266,55 @@ class _AddMealScreenState extends State<AddMealScreen> {
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.6,
                           color: BokunSpizeColors.green,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  ///
+                  /// SPEECH TO TEXT ICON
+                  ///
+                  Positioned(
+                    bottom: 10,
+                    right: 10,
+                    child: Animate(
+                      onPlay: (controller) {
+                        if (isListening) {
+                          controller.loop(
+                            reverse: true,
+                            min: 0.6,
+                          );
+                        }
+                      },
+                      effects: [
+                        if (isListening)
+                          const FadeEffect(
+                            duration: BokunSpizeDurations.speechToTextShimmer,
+                            curve: Curves.easeIn,
+                          ),
+                      ],
+                      child: IconButton(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          mealController.onSpeechToTextPressed(
+                            locale: 'hr',
+                            speechToTextAvailable: available,
+                          );
+                        },
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.microphone,
+                          size: 22,
+                        ),
+                        style: IconButton.styleFrom(
+                          elevation: 0,
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                          foregroundColor: isListening ? BokunSpizeColors.white.withValues(alpha: 0.5) : BokunSpizeColors.red,
+                          disabledBackgroundColor: BokunSpizeColors.grey,
+                          disabledForegroundColor: BokunSpizeColors.black,
                         ),
                       ),
                     ),
