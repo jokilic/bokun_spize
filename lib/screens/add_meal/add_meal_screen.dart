@@ -69,6 +69,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
     final mealTime = state.mealTime;
     final textImageValid = state.textImageValid;
 
+    final copyingMealWithoutText = widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false);
+
     final date = getDateString(
       date: mealDate,
       dateFormat: 'dd.MM.yyyy.',
@@ -166,93 +168,96 @@ class _AddMealScreenState extends State<AddMealScreen> {
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
-              child: TextFieldWidget(
-                enabled: !widget.isCopyingMeal,
-                controller: mealController.textEditingController,
-                focusNode: mealController.textFocusNode,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                keyboardType: TextInputType.multiline,
-                textAlign: TextAlign.left,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.newline,
-                minLines: 5,
-                maxLines: null,
-                borderRadius: listTileRadius,
-                hintWidget: widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false)
-                    ? SizedBox(
-                        height: 128,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: HapticFeedback.lightImpact,
-                              icon: const PhosphorIcon(
-                                PhosphorIconsBold.pencilSlash,
-                                size: 32,
-                              ),
-                              style: IconButton.styleFrom(
-                                elevation: 0,
-                                padding: const EdgeInsets.all(16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100),
+              child: Stack(
+                children: [
+                  TextFieldWidget(
+                    enabled: !widget.isCopyingMeal,
+                    controller: mealController.textEditingController,
+                    focusNode: mealController.textFocusNode,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 40,
+                    ),
+                    onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                    keyboardType: TextInputType.multiline,
+                    textAlign: TextAlign.left,
+                    textAlignVertical: TextAlignVertical.top,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.newline,
+                    minLines: 3,
+                    maxLines: 3,
+                    borderRadius: listTileRadius,
+                    hintText: copyingMealWithoutText ? null : 'What did you eat?',
+                    hintWidget: copyingMealWithoutText
+                        ? SizedBox(
+                            height: 104,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: HapticFeedback.lightImpact,
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.pencilSlash,
+                                    size: 32,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    elevation: 0,
+                                    padding: const EdgeInsets.all(16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
+                                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                    disabledBackgroundColor: BokunSpizeColors.grey,
+                                    disabledForegroundColor: BokunSpizeColors.black,
+                                  ),
                                 ),
-                                backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-                                disabledBackgroundColor: BokunSpizeColors.grey,
-                                disabledForegroundColor: BokunSpizeColors.black,
-                              ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Meal has no text',
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.6,
+                                    color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              'Meal has no text',
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.6,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                              ),
-                            ),
-                          ],
+                          )
+                        : null,
+                    hintStyle: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                    ),
+                    textStyle: const TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: BokunSpizeColors.black,
+                    ),
+                  ),
+                  Positioned(
+                    top: 16,
+                    left: 20,
+                    child: IgnorePointer(
+                      child: Text(
+                        'Describe your meal'.toUpperCase(),
+                        style: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: BokunSpizeColors.green,
                         ),
-                      )
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Describe your meal'.toUpperCase(),
-                            style: const TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.6,
-                              color: BokunSpizeColors.green,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'What did you eat?',
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                            ),
-                          ),
-                        ],
                       ),
-                textStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.black,
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

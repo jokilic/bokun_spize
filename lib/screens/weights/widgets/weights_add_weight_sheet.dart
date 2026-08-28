@@ -278,9 +278,9 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 ///
                 ElevatedButton.icon(
                   onPressed: () => updateDateViaPicker(context),
-                  icon: const PhosphorIcon(
+                  icon: PhosphorIcon(
                     PhosphorIconsBold.calendarDot,
-                    color: BokunSpizeColors.black,
+                    color: BokunSpizeColors.black.withValues(alpha: 0.8),
                     size: 18,
                   ),
                   label: Text(date),
@@ -297,7 +297,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    backgroundColor: BokunSpizeColors.grey,
+                    backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
                     foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.8),
                   ),
                 ),
@@ -309,9 +309,9 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 ///
                 ElevatedButton.icon(
                   onPressed: () => updateTimeViaPicker(context),
-                  icon: const PhosphorIcon(
+                  icon: PhosphorIcon(
                     PhosphorIconsBold.clock,
-                    color: BokunSpizeColors.black,
+                    color: BokunSpizeColors.black.withValues(alpha: 0.8),
                     size: 18,
                   ),
                   label: Text(time),
@@ -328,7 +328,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    backgroundColor: BokunSpizeColors.grey,
+                    backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
                     foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.8),
                   ),
                 ),

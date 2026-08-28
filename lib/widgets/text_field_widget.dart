@@ -13,6 +13,7 @@ class TextFieldWidget extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final TextAlign textAlign;
+  final TextAlignVertical? textAlignVertical;
   final TextCapitalization textCapitalization;
   final TextInputAction textInputAction;
   final bool obscureText;
@@ -31,6 +32,7 @@ class TextFieldWidget extends StatelessWidget {
     required this.textAlign,
     required this.textCapitalization,
     required this.textInputAction,
+    this.textAlignVertical,
     this.hintText,
     this.hintWidget,
     this.focusNode,
@@ -130,6 +132,7 @@ class TextFieldWidget extends StatelessWidget {
           color: BokunSpizeColors.black,
         ),
     textAlign: textAlign,
+    textAlignVertical: textAlignVertical,
     textCapitalization: textCapitalization,
     textInputAction: textInputAction,
   );
