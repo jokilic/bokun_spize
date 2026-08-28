@@ -6,10 +6,12 @@
 - [ ] Update database permissions
 - [ ] Proper loading UIs
 - [ ] Refactor app init logic
-- [ ] Delete photo from [Storage] only if no meals use it
 - [ ] Entrance -> email & pressing keyboard Enter won't go to password
-- [ ] Find all `NumberFormat.decimalPattern`
+- [ ] Use `NumberFormat.decimalPattern` in all locations
+- [ ] Replace all hardcoded `en`
 - [ ] Blur background when opening sheets
+- [ ] Check if all buttons trigger vibration
+- [ ] Test all text overflows
 
 # Bokun spize 🥗
 

@@ -105,7 +105,7 @@ class _MealScreenState extends State<MealScreen> {
                       'Log meal',
                       style: TextStyle(
                         fontFamily: 'Epilogue',
-                        fontSize: 30,
+                        fontSize: 28,
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 1,
@@ -167,6 +167,7 @@ class _MealScreenState extends State<MealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: TextFieldWidget(
+                enabled: !widget.isCopyingMeal,
                 controller: mealController.textEditingController,
                 focusNode: mealController.textFocusNode,
                 contentPadding: const EdgeInsets.symmetric(
@@ -181,32 +182,71 @@ class _MealScreenState extends State<MealScreen> {
                 minLines: 5,
                 maxLines: null,
                 borderRadius: listTileRadius,
-                hintWidget: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Describe your meal'.toUpperCase(),
-                      style: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        color: BokunSpizeColors.green,
+                hintWidget: widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false)
+                    ? SizedBox(
+                        height: 128,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: HapticFeedback.lightImpact,
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.pencilSlash,
+                                size: 32,
+                              ),
+                              style: IconButton.styleFrom(
+                                elevation: 0,
+                                padding: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
+                                foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                disabledBackgroundColor: BokunSpizeColors.grey,
+                                disabledForegroundColor: BokunSpizeColors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Meal has no text',
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.6,
+                                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Describe your meal'.toUpperCase(),
+                            style: const TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.6,
+                              color: BokunSpizeColors.green,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'What did you eat?',
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'What did you eat?',
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                      ),
-                    ),
-                  ],
-                ),
                 textStyle: const TextStyle(
                   fontFamily: 'PlusJakartaSans',
                   fontSize: 18,
@@ -335,102 +375,141 @@ class _MealScreenState extends State<MealScreen> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Container(
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(listTileRadius),
-                    color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                    color: BokunSpizeColors.white.withValues(
+                      alpha: widget.isCopyingMeal ? 0.25 : 0.5,
+                    ),
                   ),
                   height: 160,
                   width: double.infinity,
-                  child: Row(
-                    spacing: 56,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ///
-                      /// CAMERA
-                      ///
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              mealController.onCameraPressed();
-                            },
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.cameraPlus,
-                              size: 32,
-                            ),
-                            style: IconButton.styleFrom(
-                              elevation: 0,
-                              padding: const EdgeInsets.all(16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
+                  child: widget.isCopyingMeal
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: HapticFeedback.lightImpact,
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.cameraSlash,
+                                size: 32,
                               ),
-                              backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                              foregroundColor: BokunSpizeColors.green,
-                              disabledBackgroundColor: BokunSpizeColors.grey,
-                              disabledForegroundColor: BokunSpizeColors.black,
+                              style: IconButton.styleFrom(
+                                elevation: 0,
+                                padding: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
+                                foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                disabledBackgroundColor: BokunSpizeColors.grey,
+                                disabledForegroundColor: BokunSpizeColors.black,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Camera',
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.6,
-                              color: BokunSpizeColors.black,
+                            const SizedBox(height: 10),
+                            Text(
+                              'Meal has no image',
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.6,
+                                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        )
+                      : Row(
+                          spacing: 56,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ///
+                            /// CAMERA
+                            ///
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    mealController.onCameraPressed();
+                                  },
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.cameraPlus,
+                                    size: 32,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    elevation: 0,
+                                    padding: const EdgeInsets.all(16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                    foregroundColor: BokunSpizeColors.green,
+                                    disabledBackgroundColor: BokunSpizeColors.grey,
+                                    disabledForegroundColor: BokunSpizeColors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  'Camera',
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.6,
+                                    color: BokunSpizeColors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
 
-                      ///
-                      /// GALLERY
-                      ///
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              mealController.onGalleryPressed();
-                            },
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.images,
-                              size: 32,
+                            ///
+                            /// GALLERY
+                            ///
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    mealController.onGalleryPressed();
+                                  },
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.images,
+                                    size: 32,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    elevation: 0,
+                                    padding: const EdgeInsets.all(16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                    foregroundColor: BokunSpizeColors.green,
+                                    disabledBackgroundColor: BokunSpizeColors.grey,
+                                    disabledForegroundColor: BokunSpizeColors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  'Gallery',
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.6,
+                                    color: BokunSpizeColors.black,
+                                  ),
+                                ),
+                              ],
                             ),
-                            style: IconButton.styleFrom(
-                              elevation: 0,
-                              padding: const EdgeInsets.all(16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                              foregroundColor: BokunSpizeColors.green,
-                              disabledBackgroundColor: BokunSpizeColors.grey,
-                              disabledForegroundColor: BokunSpizeColors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Gallery',
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.6,
-                              color: BokunSpizeColors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          ],
+                        ),
                 ),
               ),
             ),

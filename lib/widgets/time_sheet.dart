@@ -49,9 +49,10 @@ class _TimeSheetState extends State<TimeSheet> {
                   'Select time',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
-                    fontSize: 26,
+                    fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
+                    height: 1.2,
+                    letterSpacing: 1,
                     color: BokunSpizeColors.black,
                   ),
                 ),

@@ -23,6 +23,7 @@ class TextFieldWidget extends StatelessWidget {
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
   final EdgeInsets contentPadding;
+  final bool enabled;
 
   const TextFieldWidget({
     required this.controller,
@@ -45,10 +46,12 @@ class TextFieldWidget extends StatelessWidget {
     this.hintStyle,
     this.textStyle,
     this.contentPadding = const EdgeInsets.all(20),
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) => TextField(
+    enabled: enabled,
     autofillHints: autofillHints,
     onChanged: onChanged,
     onSubmitted: onSubmitted,
@@ -63,9 +66,30 @@ class TextFieldWidget extends StatelessWidget {
     cursorColor: BokunSpizeColors.green,
     decoration: InputDecoration(
       filled: true,
-      fillColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+      enabled: enabled,
+      fillColor: BokunSpizeColors.white.withValues(
+        alpha: enabled ? 0.5 : 0.25,
+      ),
       contentPadding: contentPadding,
       border: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Colors.transparent,
+        ),
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Colors.transparent,
+        ),
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Colors.transparent,
+        ),
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      disabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(
           color: Colors.transparent,
         ),
