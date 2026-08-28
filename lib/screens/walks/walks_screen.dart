@@ -99,7 +99,7 @@ class _WalksScreenState extends State<WalksScreen> {
               child: FloatingActionButton(
                 heroTag: const ValueKey('walks-fab'),
                 elevation: 0,
-                backgroundColor: BokunSpizeColors.orange,
+                backgroundColor: BokunSpizeColors.bordeaux,
                 foregroundColor: BokunSpizeColors.white,
                 splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                 hoverColor: Colors.transparent,
@@ -306,7 +306,7 @@ class _WalksScreenState extends State<WalksScreen> {
                     children: [
                       PhosphorIcon(
                         PhosphorIconsBold.personSimpleWalk,
-                        color: BokunSpizeColors.orange,
+                        color: BokunSpizeColors.bordeaux,
                         size: 96,
                       ),
                       SizedBox(height: 16),
@@ -352,7 +352,7 @@ class _WalksScreenState extends State<WalksScreen> {
                     children: [
                       PhosphorIcon(
                         PhosphorIconsBold.personSimpleWalk,
-                        color: BokunSpizeColors.orange,
+                        color: BokunSpizeColors.bordeaux,
                         size: 96,
                       ),
                       SizedBox(height: 16),
@@ -398,7 +398,7 @@ class _WalksScreenState extends State<WalksScreen> {
                     children: [
                       const PhosphorIcon(
                         PhosphorIconsBold.warningOctagon,
-                        color: BokunSpizeColors.orange,
+                        color: BokunSpizeColors.bordeaux,
                         size: 96,
                       ),
                       const SizedBox(height: 16),

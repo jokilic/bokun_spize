@@ -9,6 +9,7 @@ import '../../../widgets/text_field_widget.dart';
 class EntranceLogin extends StatelessWidget {
   final TextEditingController emailTextEditingController;
   final TextEditingController passwordTextEditingController;
+  final FocusNode passwordFocusNode;
   final bool validated;
   final bool emailValidated;
   final bool emailIsLoading;
@@ -18,6 +19,7 @@ class EntranceLogin extends StatelessWidget {
   const EntranceLogin({
     required this.emailTextEditingController,
     required this.passwordTextEditingController,
+    required this.passwordFocusNode,
     required this.validated,
     required this.emailValidated,
     required this.emailIsLoading,
@@ -57,6 +59,7 @@ class EntranceLogin extends StatelessWidget {
           autocorrect: false,
           controller: emailTextEditingController,
           hintText: 'name@example.com',
+          onSubmitted: (_) => passwordFocusNode.requestFocus(),
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
           textAlign: TextAlign.left,
@@ -128,6 +131,7 @@ class EntranceLogin extends StatelessWidget {
           autocorrect: false,
           obscureText: true,
           controller: passwordTextEditingController,
+          focusNode: passwordFocusNode,
           hintText: '•' * 8,
           onSubmitted: (_) {
             if (!validated || emailIsLoading) {

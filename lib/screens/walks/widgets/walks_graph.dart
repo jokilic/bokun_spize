@@ -122,8 +122,8 @@ class WalksGraph extends StatelessWidget {
     final chartMinY = (minimumSteps - stepsPadding).clamp(0.0, double.infinity).toDouble();
 
     final lineEndColor = Color.lerp(
-      BokunSpizeColors.orange,
-      BokunSpizeColors.orange.withValues(alpha: 0.25),
+      BokunSpizeColors.bordeaux,
+      BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
       0.75,
     )!;
 
@@ -143,7 +143,7 @@ class WalksGraph extends StatelessWidget {
             maxContentWidth: 160,
             fitInsideHorizontally: true,
             fitInsideVertically: true,
-            getTooltipColor: (touchedSpot) => BokunSpizeColors.orange,
+            getTooltipColor: (touchedSpot) => BokunSpizeColors.bordeaux,
             getTooltipItems: (touchedSpots) => touchedSpots.map(
               (touchedSpot) {
                 final stepWithDate = stepsWithDate[touchedSpot.spotIndex];
@@ -186,15 +186,15 @@ class WalksGraph extends StatelessWidget {
               .map(
                 (spotIndex) => TouchedSpotIndicatorData(
                   FlLine(
-                    color: BokunSpizeColors.orange.withValues(alpha: 0.25),
+                    color: BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
                     strokeWidth: 3.5,
                   ),
                   FlDotData(
                     getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                       radius: 4.5,
-                      color: BokunSpizeColors.orange,
+                      color: BokunSpizeColors.bordeaux,
                       strokeWidth: 6,
-                      strokeColor: BokunSpizeColors.orange.withValues(alpha: 0.25),
+                      strokeColor: BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
                     ),
                   ),
                 ),
@@ -234,7 +234,7 @@ class WalksGraph extends StatelessWidget {
             gradientArea: LineChartGradientArea.wholeChart,
             gradient: LinearGradient(
               colors: [
-                BokunSpizeColors.orange,
+                BokunSpizeColors.bordeaux,
                 lineEndColor,
               ],
             ),
@@ -244,8 +244,8 @@ class WalksGraph extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  BokunSpizeColors.orange.withValues(alpha: 0.16),
-                  BokunSpizeColors.orange.withValues(alpha: 0),
+                  BokunSpizeColors.bordeaux.withValues(alpha: 0.16),
+                  BokunSpizeColors.bordeaux.withValues(alpha: 0),
                 ],
               ),
             ),
@@ -256,9 +256,9 @@ class WalksGraph extends StatelessWidget {
               ),
               getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                 radius: 4.5,
-                color: BokunSpizeColors.orange,
+                color: BokunSpizeColors.bordeaux,
                 strokeWidth: 6,
-                strokeColor: BokunSpizeColors.orange.withValues(alpha: 0.25),
+                strokeColor: BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
               ),
             ),
           ),

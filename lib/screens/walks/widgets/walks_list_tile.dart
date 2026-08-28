@@ -58,7 +58,7 @@ class WalksListTile extends StatelessWidget {
                   color: BokunSpizeColors.grey,
                   child: const PhosphorIcon(
                     PhosphorIconsBold.personSimpleWalk,
-                    color: BokunSpizeColors.orange,
+                    color: BokunSpizeColors.bordeaux,
                     size: listTileIconRadius / 2,
                   ),
                 ),

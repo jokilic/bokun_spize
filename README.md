@@ -13,6 +13,7 @@
 - [ ] Check if all buttons trigger vibration
 - [ ] Test all text overflows
 - [ ] Animations
+- [ ] Add meal manual
 
 # Bokun spize 🥗
 

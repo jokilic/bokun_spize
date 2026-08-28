@@ -139,7 +139,7 @@ class NavigationBarWidget extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: BokunSpizeColors.orange,
+                color: BokunSpizeColors.bordeaux,
                 shape: BoxShape.circle,
               ),
               child: const PhosphorIcon(

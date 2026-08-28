@@ -197,6 +197,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                       ? EntranceLogin(
                           emailTextEditingController: entranceController.loginEmailTextEditingController,
                           passwordTextEditingController: entranceController.loginPasswordTextEditingController,
+                          passwordFocusNode: entranceController.loginPasswordFocusNode,
                           validated: loginValidated,
                           emailValidated: state.loginEmailValid,
                           emailIsLoading: emailIsLoading,
