@@ -235,6 +235,8 @@ class _MealScreenState extends State<MealScreen> {
                     width: double.infinity,
                     child: MealImage(
                       imageStoragePath: widget.passedMeal!.imageStoragePath!,
+                      height: 160,
+                      width: double.infinity,
                       errorWidget: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(listTileRadius),

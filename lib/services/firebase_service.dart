@@ -747,7 +747,7 @@ class FirebaseService {
     }
   }
 
-  /// Uploads the image used to create a meal and returns its Storage path
+  /// Uploads the image used to create a meal and returns its `Storage` path
   Future<String?> uploadMealImage({
     required File imageFile,
   }) async {
@@ -758,7 +758,7 @@ class FirebaseService {
         return null;
       }
 
-      final imageId = const Uuid().v4();
+      final imageId = const Uuid().v1();
       final ext = mealImageExtension(imageFile);
       final storagePath = 'users/${user.uid}/meal-images/$imageId.$ext';
       final imageReference = storage.ref(storagePath);

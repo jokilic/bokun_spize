@@ -154,6 +154,8 @@ class _MealsListTileState extends State<MealsListTile> {
                               child: widget.meal.imageStoragePath != null
                                   ? MealImage(
                                       imageStoragePath: widget.meal.imageStoragePath!,
+                                      height: 92,
+                                      width: 92,
                                       errorWidget: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius),

@@ -8,9 +8,13 @@ class MealImage extends StatelessWidget {
   final BoxFit fit;
   final Widget loadingWidget;
   final Widget errorWidget;
+  final double height;
+  final double width;
 
   const MealImage({
     required this.imageStoragePath,
+    required this.height,
+    required this.width,
     this.fit = BoxFit.cover,
     this.loadingWidget = const Center(
       child: CircularProgressIndicator(),
@@ -37,6 +41,8 @@ class MealImage extends StatelessWidget {
       return Image.network(
         imageUrl,
         fit: fit,
+        height: height,
+        width: width,
         errorBuilder: (context, error, stackTrace) => errorWidget,
       );
     },
