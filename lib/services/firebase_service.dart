@@ -12,6 +12,7 @@ import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
 import '../util/meal_image.dart';
+import '../util/typedefs.dart';
 
 enum AuthProvider {
   google,
@@ -330,34 +331,68 @@ class FirebaseService {
         return false;
       }
 
-      final isReauthenticated = switch (authProvider) {
-        AuthProvider.google => await reauthenticateWithGoogle(user),
-        AuthProvider.apple => await reauthenticateWithApple(user),
-        AuthProvider.email => await reauthenticateWithEmail(
-          user,
-          email: email,
-          password: password,
+      final provider = authProvider;
+
+      final reauthenticationResult = switch (provider) {
+        AuthProvider.google => (
+          success: await reauthenticateWithGoogle(user),
+          appleAuthorizationCode: null,
         ),
-        // Anonymous users have no external credentials to reauthenticate with.
-        AuthProvider.anonymous => true,
-        null => false,
+
+        AuthProvider.apple => await reauthenticateWithApple(user),
+
+        AuthProvider.email => (
+          success: await reauthenticateWithEmail(
+            user,
+            email: email,
+            password: password,
+          ),
+          appleAuthorizationCode: null,
+        ),
+
+        AuthProvider.anonymous => (
+          success: true,
+          appleAuthorizationCode: null,
+        ),
+        null => (
+          success: false,
+          appleAuthorizationCode: null,
+        ),
       };
 
-      if (!isReauthenticated) {
+      if (!reauthenticationResult.success) {
         return false;
       }
 
-      // TODO: Check if there are other documents to delete
       final userDocument = firestore.collection('users').doc(user.uid);
 
-      // TODO: Check if there are other collections to delete
+      /// Deletes images
+      await deleteStorageFolderPaged(
+        storage.ref('users/${user.uid}/meal-images'),
+      );
+
+      /// Deletes folders
       await deleteCollectionPaged(
         userDocument.collection('meals'),
       );
       await deleteCollectionPaged(
         userDocument.collection('weightTracks'),
       );
+
+      /// Deletes user document
       await userDocument.delete();
+
+      final appleAuthorizationCode = reauthenticationResult.appleAuthorizationCode;
+
+      if (appleAuthorizationCode != null) {
+        await auth.revokeTokenWithAuthorizationCode(
+          appleAuthorizationCode,
+        );
+      }
+
+      if (provider == AuthProvider.google) {
+        await googleSignIn.disconnect();
+      }
 
       await user.delete();
 
@@ -409,8 +444,8 @@ class FirebaseService {
     return userCredential.user != null;
   }
 
-  /// Reauthenticates an Apple user
-  Future<bool> reauthenticateWithApple(User user) async {
+  /// Reauthenticates an Apple user and returns Apple authorization code
+  Future<ReauthenticationResult> reauthenticateWithApple(User user) async {
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -420,7 +455,10 @@ class FirebaseService {
     final identityToken = appleCredential.identityToken;
 
     if (identityToken == null || identityToken.isEmpty) {
-      return false;
+      return (
+        success: false,
+        appleAuthorizationCode: null,
+      );
     }
 
     final credential = OAuthProvider('apple.com').credential(
@@ -429,10 +467,13 @@ class FirebaseService {
     );
     final userCredential = await user.reauthenticateWithCredential(credential);
 
-    return userCredential.user != null;
+    return (
+      success: userCredential.user != null,
+      appleAuthorizationCode: appleCredential.authorizationCode,
+    );
   }
 
-  /// Deletes a Firestore collection in batches
+  /// Deletes a [Firestore] collection in batches
   Future<void> deleteCollectionPaged(
     CollectionReference<Map<String, dynamic>> collection, {
     int batchSize = 300,
@@ -451,6 +492,33 @@ class FirebaseService {
       }
 
       await batch.commit();
+    }
+  }
+
+  /// Deletes all files and nested folders below a [Firebase Storage] reference
+  Future<void> deleteStorageFolderPaged(
+    Reference folder, {
+    int pageSize = 1000,
+  }) async {
+    while (true) {
+      final result = await folder.list(
+        ListOptions(maxResults: pageSize),
+      );
+
+      if (result.items.isEmpty && result.prefixes.isEmpty) {
+        return;
+      }
+
+      for (final item in result.items) {
+        await item.delete();
+      }
+
+      for (final prefix in result.prefixes) {
+        await deleteStorageFolderPaged(
+          prefix,
+          pageSize: pageSize,
+        );
+      }
     }
   }
 
