@@ -38,10 +38,10 @@ class WalksAppBar extends StatelessWidget {
             onPressed: null,
             icon: const PhosphorIcon(
               PhosphorIconsBold.footprints,
-              size: 26,
+              size: 24,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),

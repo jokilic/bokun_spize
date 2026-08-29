@@ -303,6 +303,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      SizedBox(height: 24),
                       PhosphorIcon(
                         PhosphorIconsBold.chartLine,
                         color: BokunSpizeColors.blue,
@@ -349,6 +350,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      SizedBox(height: 24),
                       PhosphorIcon(
                         PhosphorIconsBold.chartLine,
                         color: BokunSpizeColors.blue,
@@ -395,6 +397,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      const SizedBox(height: 24),
                       const PhosphorIcon(
                         PhosphorIconsBold.warningOctagon,
                         color: BokunSpizeColors.blue,

@@ -99,12 +99,39 @@ class _AddMealScreenState extends State<AddMealScreen> {
             child: SizedBox(height: 40),
           ),
 
+          ///
+          /// TITLE & CLOSE BUTTON
+          ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  ///
+                  /// PLACEHOLDER BUTTON
+                  ///
+                  Opacity(
+                    opacity: 0,
+                    child: IgnorePointer(
+                      child: IconButton(
+                        onPressed: null,
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.x,
+                          size: 22,
+                        ),
+                        style: IconButton.styleFrom(
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          foregroundColor: BokunSpizeColors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+
                   ///
                   /// TITLE
                   ///
@@ -113,12 +140,13 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       'Log meal',
                       style: TextStyle(
                         fontFamily: 'Epilogue',
-                        fontSize: 28,
+                        fontSize: 26,
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 0.6,
                         color: BokunSpizeColors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
 
@@ -138,8 +166,6 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       ),
                       backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                       foregroundColor: BokunSpizeColors.black,
-                      disabledBackgroundColor: BokunSpizeColors.grey,
-                      disabledForegroundColor: BokunSpizeColors.black,
                     ),
                   ),
                 ],
@@ -154,13 +180,14 @@ class _AddMealScreenState extends State<AddMealScreen> {
             padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Text(
-                'Add your meal in the diary',
+                'Add meal to your journal',
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: BokunSpizeColors.black,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -217,9 +244,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                       borderRadius: BorderRadius.circular(100),
                                     ),
                                     backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-                                    disabledBackgroundColor: BokunSpizeColors.grey,
-                                    disabledForegroundColor: BokunSpizeColors.black,
+                                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
                                   ),
                                 ),
                                 const SizedBox(height: 10),
@@ -228,9 +253,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 14,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     letterSpacing: 0.6,
-                                    color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                    color: BokunSpizeColors.black.withValues(alpha: 0.75),
                                   ),
                                 ),
                               ],
@@ -314,9 +339,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                            foregroundColor: isListening ? BokunSpizeColors.white.withValues(alpha: 0.5) : BokunSpizeColors.red,
-                            disabledBackgroundColor: BokunSpizeColors.grey,
-                            disabledForegroundColor: BokunSpizeColors.black,
+                            foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
                           ),
                         ),
                       ),
@@ -427,8 +450,6 @@ class _AddMealScreenState extends State<AddMealScreen> {
                           ),
                           backgroundColor: BokunSpizeColors.white,
                           foregroundColor: BokunSpizeColors.red,
-                          disabledBackgroundColor: BokunSpizeColors.grey,
-                          disabledForegroundColor: BokunSpizeColors.black,
                         ),
                       ),
                     ),
@@ -471,9 +492,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                   borderRadius: BorderRadius.circular(100),
                                 ),
                                 backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-                                disabledBackgroundColor: BokunSpizeColors.grey,
-                                disabledForegroundColor: BokunSpizeColors.black,
+                                foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -482,9 +501,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               style: TextStyle(
                                 fontFamily: 'Epilogue',
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                                 letterSpacing: 0.6,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                color: BokunSpizeColors.black.withValues(alpha: 0.75),
                               ),
                             ),
                           ],
@@ -518,8 +537,6 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                     ),
                                     backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                                     foregroundColor: BokunSpizeColors.green,
-                                    disabledBackgroundColor: BokunSpizeColors.grey,
-                                    disabledForegroundColor: BokunSpizeColors.black,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
@@ -560,8 +577,6 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                     ),
                                     backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                                     foregroundColor: BokunSpizeColors.green,
-                                    disabledBackgroundColor: BokunSpizeColors.grey,
-                                    disabledForegroundColor: BokunSpizeColors.black,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
@@ -788,6 +803,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
                     padding: const EdgeInsets.all(22),
                     backgroundColor: BokunSpizeColors.green,
                     foregroundColor: BokunSpizeColors.white,
+                    disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
+                    disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
                   ),
                   child: const Text('Log meal'),
                 ),

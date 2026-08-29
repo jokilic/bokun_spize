@@ -35,10 +35,10 @@ class MealsAppBar extends StatelessWidget {
             onPressed: null,
             icon: const PhosphorIcon(
               PhosphorIconsBold.bowlFood,
-              size: 26,
+              size: 24,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -73,13 +73,11 @@ class MealsAppBar extends StatelessWidget {
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-      title: currentCalories > 0
-          ? FadingFlexibleTitle(
-              dayString: dayString,
-              currentCalories: currentCalories,
-              dailyCalories: dailyCalories,
-            )
-          : null,
+      title: FadingFlexibleTitle(
+        dayString: dayString,
+        currentCalories: currentCalories,
+        dailyCalories: dailyCalories,
+      ),
     ),
   );
 }

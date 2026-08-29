@@ -186,6 +186,7 @@ class _MealsScreenState extends State<MealsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      SizedBox(height: 24),
                       PhosphorIcon(
                         PhosphorIconsBold.bowlFood,
                         color: BokunSpizeColors.green,
@@ -232,6 +233,7 @@ class _MealsScreenState extends State<MealsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      SizedBox(height: 24),
                       PhosphorIcon(
                         PhosphorIconsBold.bowlFood,
                         color: BokunSpizeColors.green,
@@ -278,6 +280,7 @@ class _MealsScreenState extends State<MealsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      const SizedBox(height: 24),
                       const PhosphorIcon(
                         PhosphorIconsBold.warningOctagon,
                         color: BokunSpizeColors.green,

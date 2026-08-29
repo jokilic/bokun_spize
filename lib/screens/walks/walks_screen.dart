@@ -304,6 +304,7 @@ class _WalksScreenState extends State<WalksScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      SizedBox(height: 24),
                       PhosphorIcon(
                         PhosphorIconsBold.personSimpleWalk,
                         color: BokunSpizeColors.bordeaux,
@@ -350,6 +351,7 @@ class _WalksScreenState extends State<WalksScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      SizedBox(height: 24),
                       PhosphorIcon(
                         PhosphorIconsBold.personSimpleWalk,
                         color: BokunSpizeColors.bordeaux,
@@ -396,6 +398,7 @@ class _WalksScreenState extends State<WalksScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
+                      const SizedBox(height: 24),
                       const PhosphorIcon(
                         PhosphorIconsBold.warningOctagon,
                         color: BokunSpizeColors.bordeaux,

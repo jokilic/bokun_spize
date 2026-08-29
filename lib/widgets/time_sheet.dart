@@ -38,9 +38,36 @@ class _TimeSheetState extends State<TimeSheet> {
         children: [
           const SizedBox(height: 40),
 
+          ///
+          /// TITLE & CLOSE BUTTON
+          ///
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              ///
+              /// PLACEHOLDER BUTTON
+              ///
+              Opacity(
+                opacity: 0,
+                child: IgnorePointer(
+                  child: IconButton(
+                    onPressed: null,
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.x,
+                      size: 22,
+                    ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                      foregroundColor: BokunSpizeColors.black,
+                    ),
+                  ),
+                ),
+              ),
+
               ///
               /// TITLE
               ///
@@ -49,12 +76,13 @@ class _TimeSheetState extends State<TimeSheet> {
                   'Select time',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: FontWeight.w800,
                     height: 1.2,
                     letterSpacing: 0.6,
                     color: BokunSpizeColors.black,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
 
@@ -74,8 +102,6 @@ class _TimeSheetState extends State<TimeSheet> {
                   ),
                   backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
                   foregroundColor: BokunSpizeColors.black,
-                  disabledBackgroundColor: BokunSpizeColors.white,
-                  disabledForegroundColor: BokunSpizeColors.black,
                 ),
               ),
             ],

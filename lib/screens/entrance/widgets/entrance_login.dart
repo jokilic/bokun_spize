@@ -104,6 +104,7 @@ class EntranceLogin extends StatelessWidget {
                 ),
                 textStyle: const TextStyle(
                   fontFamily: 'PlusJakartaSans',
+                  fontSize: 14,
                   fontWeight: FontWeight.w900,
                 ),
                 minimumSize: Size.zero,
@@ -111,6 +112,7 @@ class EntranceLogin extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 backgroundColor: Colors.transparent,
                 foregroundColor: BokunSpizeColors.green,
+                disabledBackgroundColor: Colors.transparent,
                 disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
               ),
               child: Text(
@@ -169,8 +171,8 @@ class EntranceLogin extends StatelessWidget {
               padding: const EdgeInsets.all(22),
               backgroundColor: BokunSpizeColors.green,
               foregroundColor: BokunSpizeColors.white,
-              disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.3),
-              disabledForegroundColor: BokunSpizeColors.white,
+              disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
+              disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
             ),
             child: const Text('Sign in'),
           ),
