@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../util/null_state.dart';
+import '../../util/snackbars.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
 class WeightsController
@@ -85,6 +87,7 @@ class WeightsController
     required String weightTrackId,
     required DateTime dateTime,
     required double weight,
+    required BuildContext context,
   }) async {
     final success = await firebase.writeWeightTrack(
       newWeightTrack: WeightTrack(
@@ -93,15 +96,34 @@ class WeightsController
         weight: weight,
       ),
     );
-    // TODO: Show snackbar if it fails
+
+    /// Adding failed, show error snackbar
+    if (!success) {
+      showSnackbar(
+        context,
+        text: 'Add failed',
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
   }
 
   /// Deletes [weightTrack] from Firebase
-  Future<void> deleteWeightTrack({required WeightTrack weightTrack}) async {
+  Future<void> deleteWeightTrack({
+    required WeightTrack weightTrack,
+    required BuildContext context,
+  }) async {
     final success = await firebase.deleteWeightTrack(
       weightTrack: weightTrack,
     );
-    // TODO: Show snackbar if it fails
+
+    /// Delete failed, show error snackbar
+    if (!success) {
+      showSnackbar(
+        context,
+        text: 'Delete failed',
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
   }
 
   /// Opens [WeightsAddWeightSheet] and adds new `weight`
@@ -123,15 +145,12 @@ class WeightsController
       key: ValueKey(weightTrackId),
       initialWeight: initialWeight,
       onSavePressed: ({required newWeight, required dateTime}) {
-        unawaited(
-          HapticFeedback.lightImpact(),
-        );
-        unawaited(
-          addWeightTrack(
-            weightTrackId: weightTrackId,
-            dateTime: dateTime,
-            weight: newWeight,
-          ),
+        HapticFeedback.lightImpact();
+        addWeightTrack(
+          weightTrackId: weightTrackId,
+          dateTime: dateTime,
+          weight: newWeight,
+          context: context,
         );
 
         if (context.mounted) {

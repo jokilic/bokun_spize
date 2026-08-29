@@ -282,6 +282,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                       HapticFeedback.lightImpact();
                       weightsController.deleteWeightTrack(
                         weightTrack: weightTrack,
+                        context: context,
                       );
                     },
                     weightTrack: weightTrack,

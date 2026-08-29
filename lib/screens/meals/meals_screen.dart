@@ -168,12 +168,14 @@ class _MealsScreenState extends State<MealsScreen> {
 
                   return MealsListTile(
                     onPressed: () {
+                      HapticFeedback.lightImpact();
                       // TODO: Open [MealScreen]
                     },
                     onDeletePressed: () {
                       HapticFeedback.lightImpact();
                       mealsController.deleteMeal(
                         meal: meal,
+                        context: context,
                       );
                     },
                     onCopyPressed: () {

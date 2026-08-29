@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
@@ -12,6 +13,7 @@ import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/null_state.dart';
+import '../../util/snackbars.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../add_meal/add_meal_screen.dart';
@@ -106,11 +108,22 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Deletes [meal] from Firebase
-  Future<void> deleteMeal({required Meal meal}) async {
+  Future<void> deleteMeal({
+    required Meal meal,
+    required BuildContext context,
+  }) async {
     final success = await firebase.deleteMeal(
       meal: meal,
     );
-    // TODO: Show snackbar if it fails
+
+    /// Delete failed, show error snackbar
+    if (!success) {
+      showSnackbar(
+        context,
+        text: 'Delete failed',
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`
@@ -165,7 +178,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     if (shouldEditExistingMeal) {
       /// User deleted `meal`
       if (result?.deleteMeal ?? false) {
-        await deleteMeal(meal: passedMeal);
+        await deleteMeal(
+          meal: passedMeal,
+          context: context,
+        );
       }
       /// User changed `dateTime`
       else if (result?.dateTime != null && result?.dateTime != passedMeal.createdAt) {
