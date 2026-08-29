@@ -151,7 +151,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text.rich(
                     TextSpan(
-                      text: currentSteps != null ? NumberFormat.decimalPattern('en').format(currentSteps) : '--',
+                      text: currentSteps != null ? currentSteps!.round().toStringAsFixed(0) : '--',
                       style: const TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 40,
@@ -203,7 +203,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ),
                       const SizedBox(width: 2),
                       Text(
-                        '${stepsChange! > 0 ? '+' : ''}${NumberFormat.decimalPattern('en').format(stepsChange!.round())}',
+                        '${stepsChange! > 0 ? '+' : ''}${stepsChange!.round().toStringAsFixed(0)}',
                         style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 12,

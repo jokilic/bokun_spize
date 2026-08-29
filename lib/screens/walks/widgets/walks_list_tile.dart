@@ -131,7 +131,7 @@ class WalksListTile extends StatelessWidget {
                   ///
                   Text.rich(
                     TextSpan(
-                      text: NumberFormat.decimalPattern('en').format(stepWithDate.steps),
+                      text: stepWithDate.steps.round().toStringAsFixed(0),
                       style: const TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 24,
@@ -177,7 +177,7 @@ class WalksListTile extends StatelessWidget {
                         ),
                         const SizedBox(width: 2),
                         Text(
-                          NumberFormat.decimalPattern('en').format(stepsChange.abs()),
+                          stepsChange.abs().round().toStringAsFixed(0),
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,

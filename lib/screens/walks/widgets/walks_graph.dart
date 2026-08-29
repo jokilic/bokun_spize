@@ -154,9 +154,7 @@ class WalksGraph extends StatelessWidget {
                   useTodayYesterdayTomorrow: false,
                 );
 
-                final steps = NumberFormat.decimalPattern('en').format(
-                  stepWithDate.steps,
-                );
+                final steps = stepWithDate.steps.round().toStringAsFixed(0);
 
                 return LineTooltipItem(
                   date,

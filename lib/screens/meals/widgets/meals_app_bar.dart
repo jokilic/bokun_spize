@@ -137,6 +137,34 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
 
+    final hasDailyProtein = dailyProtein != null && dailyProtein! > 0;
+    final hasDailyCarbs = dailyCarbs != null && dailyCarbs! > 0;
+    final hasDailyFat = dailyFat != null && dailyFat! > 0;
+
+    final proteinBarValue = hasDailyProtein ? dailyProtein! : currentProtein;
+    final carbsBarValue = hasDailyCarbs ? dailyCarbs! : currentCarbs;
+    final fatBarValue = hasDailyFat ? dailyFat! : currentFat;
+
+    final proteinFlex = proteinBarValue.round() > 0 ? proteinBarValue.round() : 1;
+    final carbsFlex = carbsBarValue.round() > 0 ? carbsBarValue.round() : 1;
+    final fatFlex = fatBarValue.round() > 0 ? fatBarValue.round() : 1;
+
+    final proteinProgress = hasDailyProtein
+        ? (currentProtein / dailyProtein!).clamp(0.0, 1.0).toDouble()
+        : currentProtein > 0
+        ? 1.0
+        : 0.0;
+    final carbsProgress = hasDailyCarbs
+        ? (currentCarbs / dailyCarbs!).clamp(0.0, 1.0).toDouble()
+        : currentCarbs > 0
+        ? 1.0
+        : 0.0;
+    final fatProgress = hasDailyFat
+        ? (currentFat / dailyFat!).clamp(0.0, 1.0).toDouble()
+        : currentFat > 0
+        ? 1.0
+        : 0.0;
+
     return Opacity(
       opacity: opacity,
       child: Transform.translate(
@@ -197,57 +225,98 @@ class FadingFlexibleTitle extends StatelessWidget {
             const SizedBox(height: 4),
 
             ///
-            /// NUTRITION
+            /// NUTRITION VALUES
             ///
-            Row(
-              children: [
-                ///
-                /// PROTEIN
-                ///
-                Expanded(
-                  flex: currentProtein.round(),
-                  child: Container(
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(100),
+            SizedBox(
+              height: nutritionValuesHeight,
+              child: Row(
+                spacing: 12,
+                children: [
+                  ///
+                  /// PROTEIN
+                  ///
+                  Expanded(
+                    flex: proteinFlex,
+                    child: Opacity(
+                      opacity: currentProtein.round() > 0 ? 1 : 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: ColoredBox(
+                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: proteinProgress,
+                              child: Container(
+                                height: nutritionValuesHeight,
+                                color: BokunSpizeColors.green,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      color: BokunSpizeColors.green,
                     ),
                   ),
-                ),
 
-                ///
-                /// CARBS
-                ///
-                Expanded(
-                  flex: currentCarbs.round(),
-                  child: Container(
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      color: BokunSpizeColors.blue,
-                    ),
-                  ),
-                ),
-
-                ///
-                /// FATS
-                ///
-                Expanded(
-                  flex: currentFat.round(),
-                  child: Container(
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.horizontal(
-                        right: Radius.circular(100),
+                  ///
+                  /// CARBS
+                  ///
+                  Expanded(
+                    flex: carbsFlex,
+                    child: Opacity(
+                      opacity: currentCarbs.round() > 0 ? 1 : 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: ColoredBox(
+                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: carbsProgress,
+                              child: Container(
+                                height: nutritionValuesHeight,
+                                color: BokunSpizeColors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      color: BokunSpizeColors.bordeaux,
                     ),
                   ),
-                ),
-              ],
+
+                  ///
+                  /// FATS
+                  ///
+                  Expanded(
+                    flex: fatFlex,
+                    child: Opacity(
+                      opacity: currentFat.round() > 0 ? 1 : 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: ColoredBox(
+                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: fatProgress,
+                              child: Container(
+                                height: nutritionValuesHeight,
+                                color: BokunSpizeColors.bordeaux,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 6),
+
+            ///
+            /// NUTRITION TEXT
+            ///
             Row(
               children: [
                 ///

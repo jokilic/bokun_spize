@@ -5,7 +5,6 @@
 - [ ] Update database permissions
 - [ ] Proper loading UIs
 - [ ] Refactor app init logic
-- [ ] Use `NumberFormat.decimalPattern` in all locations
 - [ ] Replace all hardcoded `en`
 - [ ] Blur background when opening sheets
 - [ ] Check if all buttons trigger vibration

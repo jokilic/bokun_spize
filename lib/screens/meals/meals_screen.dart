@@ -154,15 +154,10 @@ class _MealsScreenState extends State<MealsScreen> {
               currentProtein: currentProtein,
               currentCarbs: currentCarbs,
               currentFat: currentFat,
-              // dailyCalories: userMetrics?.dailyCalories,
-              // dailyProtein: userMetrics?.dailyProtein,
-              // dailyCarbs: userMetrics?.dailyCarbs,
-              // dailyFat: userMetrics?.dailyFat,
-              // TODO: Below are hardcoded values, used for testing
-              dailyCalories: 1800,
-              dailyProtein: 135,
-              dailyCarbs: 180,
-              dailyFat: 60,
+              dailyCalories: userMetrics?.dailyCalories,
+              dailyProtein: userMetrics?.dailyProtein,
+              dailyCarbs: userMetrics?.dailyCarbs,
+              dailyFat: userMetrics?.dailyFat,
             ),
 
             ///
