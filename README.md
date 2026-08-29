@@ -4,6 +4,7 @@
 - [ ] Replace all `TextStyle()`
 - [ ] Update database permissions
 - [ ] Proper loading UIs
+- [ ] Proper error UIs
 - [ ] Refactor app init logic
 - [ ] Replace all hardcoded `en`
 - [ ] Blur background when opening sheets
@@ -11,16 +12,21 @@
 - [ ] Test all text overflows
 - [ ] Animations
 - [ ] Add meal manual
+- [ ] Add meal edit
+- [ ] Add Account
+- [ ] Perhaps Search
 - [ ] Firebase App Check
 - [ ] Firebase Functions for AI
 - [ ] Perhaps anonymous sign-in
+- [ ] Make legacy build on GitHub
+- [ ] Make legacy build on GitHub
 
 # Bokun spize 🥗
 
-🥗 **Bokun spize** is a simple calorie tracker made in **Flutter**. 👨‍💻
+🥗 **Bokun spize** is a simple fitness app made in **Flutter**. 👨‍💻
 
-It gives you the ability to add your meals into a list. 💰\
-Meals are displayed using a minimalistic design which gives you all info at a glance. 📈\
+It gives you the ability to add your meals, weights and walks into a list. 🍂\
+Everything is displayed using a minimalistic design which gives you all info at a glance. 📈\
 You can see data by day and keep everything organized. 🗂️
 
 ### Bokun spize can be downloaded from [HERE](https://play.google.com/store/apps/details?id=com.josipkilic.bokun_spize).
@@ -33,14 +39,17 @@ You can see data by day and keep everything organized. 🗂️
 Shows a list of your meals.\
 It's grouped by day, so you can see everything properly structured.
 
-**New meal** 🧾
+**Weights** 🧾
 
-Add new meal here.\
-You need to write about your meal.\
-Be detailed, so the estimate can be as accurate as possible.\
-You can update date & time if necessary.
+Shows a list of your weights.\
+You can add your new weight when necessary.\
 
-**Calories** 📈
+**Walks** 🐾
+
+Shows a list of your walks.\
+Gets values from your phone data.\
+
+**Account** 📈
 
 Set your calorie goals here.\
 Add data about yourself and the app will calculate your daily calorie needs.

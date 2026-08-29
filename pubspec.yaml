@@ -1,5 +1,5 @@
 name: bokun_spize
-description: 'Calorie tracking application in Flutter.'
+description: 'Simple fitness app made with Flutter'
 publish_to: 'none'
 version: 0.3.5+305
 

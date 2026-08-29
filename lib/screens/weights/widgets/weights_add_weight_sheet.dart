@@ -147,282 +147,321 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
       useTodayYesterdayTomorrow: false,
     );
 
-    // TODO: Use CustomScrollView
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 40),
+      child: CustomScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        physics: const BouncingScrollPhysics(),
+        shrinkWrap: true,
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 40),
+          ),
 
-            ///
-            /// TITLE & CLOSE BUTTON
-            ///
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ///
-                /// PLACEHOLDER BUTTON
-                ///
-                Opacity(
-                  opacity: 0,
-                  child: IgnorePointer(
-                    child: IconButton(
-                      onPressed: null,
-                      icon: const PhosphorIcon(
-                        PhosphorIconsBold.x,
-                        size: 22,
-                      ),
-                      style: IconButton.styleFrom(
-                        padding: const EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
+          ///
+          /// TITLE & CLOSE BUTTON
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ///
+                  /// PLACEHOLDER BUTTON
+                  ///
+                  Opacity(
+                    opacity: 0,
+                    child: IgnorePointer(
+                      child: IconButton(
+                        onPressed: null,
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.x,
+                          size: 22,
                         ),
-                        backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                        foregroundColor: BokunSpizeColors.black,
+                        style: IconButton.styleFrom(
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                          foregroundColor: BokunSpizeColors.black,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                ///
-                /// TITLE
-                ///
-                const Expanded(
-                  child: Text(
-                    'Log weight',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                      height: 1.2,
-                      letterSpacing: 0.6,
-                      color: BokunSpizeColors.black,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-
-                ///
-                /// CLOSE BUTTON
-                ///
-                IconButton(
-                  onPressed: Navigator.of(context).pop,
-                  icon: const PhosphorIcon(
-                    PhosphorIconsBold.x,
-                    size: 22,
-                  ),
-                  style: IconButton.styleFrom(
-                    padding: const EdgeInsets.all(10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                    foregroundColor: BokunSpizeColors.black,
-                  ),
-                ),
-              ],
-            ),
-
-            ///
-            /// DATE
-            ///
-            Text(
-              '$date, $time',
-              style: const TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: BokunSpizeColors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-
-            ///
-            /// WEIGHT
-            ///
-            Center(
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: selectedWeight.toStringAsFixed(1),
-                    ),
-                    TextSpan(
-                      text: ' kg',
+                  ///
+                  /// TITLE
+                  ///
+                  const Expanded(
+                    child: Text(
+                      'Log weight',
                       style: TextStyle(
                         fontFamily: 'Epilogue',
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                        height: 1.2,
+                        letterSpacing: 0.6,
+                        color: BokunSpizeColors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                ),
+                  ),
+
+                  ///
+                  /// CLOSE BUTTON
+                  ///
+                  IconButton(
+                    onPressed: Navigator.of(context).pop,
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.x,
+                      size: 22,
+                    ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                      foregroundColor: BokunSpizeColors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          ///
+          /// DATE
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                '$date, $time',
                 style: const TextStyle(
                   fontFamily: 'Epilogue',
-                  fontSize: 56,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                   color: BokunSpizeColors.black,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 8),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
 
-            ///
-            /// WEIGHT PICKER
-            ///
-            SizedBox(
-              height: 120,
-              child: LayoutBuilder(
-                builder: (context, constraints) => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    NotificationListener<ScrollNotification>(
-                      onNotification: (notification) {
-                        if (notification is ScrollUpdateNotification) {
-                          updateSelectedWeight();
-                        }
-                        if (notification is ScrollEndNotification) {
-                          settleRuler();
-                        }
-                        return false;
-                      },
-                      child: ListView.builder(
-                        controller: rulerController,
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: (constraints.maxWidth - rulerItemExtent) / 2,
-                        ),
-                        itemExtent: rulerItemExtent,
-                        itemCount: rulerItemCount,
-                        itemBuilder: (context, index) => buildRulerMark(index),
+          ///
+          /// WEIGHT
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Center(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: selectedWeight.toStringAsFixed(1),
                       ),
-                    ),
-
-                    IgnorePointer(
-                      child: Container(
-                        width: 6,
-                        height: 96,
-                        decoration: BoxDecoration(
-                          color: BokunSpizeColors.blue,
-                          borderRadius: BorderRadius.circular(100),
+                      TextSpan(
+                        text: ' kg',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: BokunSpizeColors.black.withValues(alpha: 0.7),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 28),
-
-            ///
-            /// DATE & TIME
-            ///
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ///
-                /// DATE
-                ///
-                ElevatedButton.icon(
-                  onPressed: () => updateDateViaPicker(context),
-                  icon: PhosphorIcon(
-                    PhosphorIconsBold.calendarDot,
-                    color: BokunSpizeColors.black.withValues(alpha: 0.75),
-                    size: 18,
+                    ],
                   ),
-                  label: Text(date),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: const StadiumBorder(),
-                    textStyle: const TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
-                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
-                  ),
-                ),
-
-                const SizedBox(width: 16),
-
-                ///
-                /// TIME
-                ///
-                ElevatedButton.icon(
-                  onPressed: () => updateTimeViaPicker(context),
-                  icon: PhosphorIcon(
-                    PhosphorIconsBold.clock,
-                    color: BokunSpizeColors.black.withValues(alpha: 0.75),
-                    size: 18,
-                  ),
-                  label: Text(time),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: const StadiumBorder(),
-                    textStyle: const TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
-                    foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 28),
-
-            ///
-            /// SAVE BUTTON
-            ///
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => widget.onSavePressed(
-                  newWeight: selectedWeight,
-                  dateTime: selectedDateTime,
-                ),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  shape: const StadiumBorder(),
-                  textStyle: const TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Epilogue',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 56,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.black,
                   ),
-                  padding: const EdgeInsets.all(22),
-                  backgroundColor: BokunSpizeColors.blue,
-                  foregroundColor: BokunSpizeColors.white,
+                  textAlign: TextAlign.center,
                 ),
-                child: const Text('Save weight'),
               ),
             ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 8),
+          ),
 
-            ///
-            /// BOTTOM SPACING
-            ///
-            SizedBox(
+          ///
+          /// WEIGHT PICKER
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: SizedBox(
+                height: 120,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      NotificationListener<ScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification is ScrollUpdateNotification) {
+                            updateSelectedWeight();
+                          }
+                          if (notification is ScrollEndNotification) {
+                            settleRuler();
+                          }
+                          return false;
+                        },
+                        child: ListView.builder(
+                          controller: rulerController,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: (constraints.maxWidth - rulerItemExtent) / 2,
+                          ),
+                          itemExtent: rulerItemExtent,
+                          itemCount: rulerItemCount,
+                          itemBuilder: (context, index) => buildRulerMark(index),
+                        ),
+                      ),
+
+                      IgnorePointer(
+                        child: Container(
+                          width: 6,
+                          height: 96,
+                          decoration: BoxDecoration(
+                            color: BokunSpizeColors.blue,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 28),
+          ),
+
+          ///
+          /// DATE & TIME
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ///
+                  /// DATE
+                  ///
+                  ElevatedButton.icon(
+                    onPressed: () => updateDateViaPicker(context),
+                    icon: PhosphorIcon(
+                      PhosphorIconsBold.calendarDot,
+                      color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                      size: 18,
+                    ),
+                    label: Text(date),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      textStyle: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
+                      foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                    ),
+                  ),
+
+                  const SizedBox(width: 16),
+
+                  ///
+                  /// TIME
+                  ///
+                  ElevatedButton.icon(
+                    onPressed: () => updateTimeViaPicker(context),
+                    icon: PhosphorIcon(
+                      PhosphorIconsBold.clock,
+                      color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                      size: 18,
+                    ),
+                    label: Text(time),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      textStyle: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
+                      foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 28),
+          ),
+
+          ///
+          /// SAVE BUTTON
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => widget.onSavePressed(
+                    newWeight: selectedWeight,
+                    dateTime: selectedDateTime,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shape: const StadiumBorder(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    padding: const EdgeInsets.all(22),
+                    backgroundColor: BokunSpizeColors.blue,
+                    foregroundColor: BokunSpizeColors.white,
+                  ),
+                  child: const Text('Save weight'),
+                ),
+              ),
+            ),
+          ),
+
+          ///
+          /// BOTTOM SPACING
+          ///
+          SliverToBoxAdapter(
+            child: SizedBox(
               height: getBottomSpacing(context),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
