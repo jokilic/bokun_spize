@@ -8,19 +8,25 @@ class MealsAppBar extends StatelessWidget {
   final String? title;
   final String dayString;
   final double currentCalories;
-  final double? dailyCalories;
   final double currentProtein;
   final double currentCarbs;
   final double currentFat;
+  final double? dailyCalories;
+  final double? dailyProtein;
+  final double? dailyCarbs;
+  final double? dailyFat;
 
   const MealsAppBar({
     required this.title,
     required this.dayString,
     required this.currentCalories,
-    required this.dailyCalories,
     required this.currentProtein,
     required this.currentCarbs,
     required this.currentFat,
+    required this.dailyCalories,
+    required this.dailyProtein,
+    required this.dailyCarbs,
+    required this.dailyFat,
   });
 
   @override
@@ -86,6 +92,9 @@ class MealsAppBar extends StatelessWidget {
         currentCarbs: currentCarbs,
         currentFat: currentFat,
         dailyCalories: dailyCalories,
+        dailyProtein: dailyProtein,
+        dailyCarbs: dailyCarbs,
+        dailyFat: dailyFat,
       ),
     ),
   );
@@ -94,18 +103,24 @@ class MealsAppBar extends StatelessWidget {
 class FadingFlexibleTitle extends StatelessWidget {
   final String dayString;
   final double currentCalories;
-  final double? dailyCalories;
   final double currentProtein;
   final double currentCarbs;
   final double currentFat;
+  final double? dailyCalories;
+  final double? dailyProtein;
+  final double? dailyCarbs;
+  final double? dailyFat;
 
   const FadingFlexibleTitle({
     required this.dayString,
     required this.currentCalories,
-    required this.dailyCalories,
     required this.currentProtein,
     required this.currentCarbs,
     required this.currentFat,
+    required this.dailyCalories,
+    required this.dailyProtein,
+    required this.dailyCarbs,
+    required this.dailyFat,
   });
 
   @override
