@@ -2,11 +2,9 @@
 
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
-- [ ] Replace all `Icon()`
 - [ ] Update database permissions
 - [ ] Proper loading UIs
 - [ ] Refactor app init logic
-- [ ] Entrance -> email & pressing keyboard Enter won't go to password
 - [ ] Use `NumberFormat.decimalPattern` in all locations
 - [ ] Replace all hardcoded `en`
 - [ ] Blur background when opening sheets
@@ -14,6 +12,9 @@
 - [ ] Test all text overflows
 - [ ] Animations
 - [ ] Add meal manual
+- [ ] Firebase App Check
+- [ ] Firebase Functions for AI
+- [ ] Perhaps anonymous sign-in
 
 # Bokun spize 🥗
 

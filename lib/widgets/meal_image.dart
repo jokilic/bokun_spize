@@ -1,6 +1,7 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/durations.dart';
 import '../services/firebase_service.dart';
 import '../util/dependencies.dart';
 
@@ -66,12 +67,17 @@ class MealImageState extends State<MealImage> {
       }
 
       return CachedNetworkImage(
+        key: ValueKey(widget.imageStoragePath),
         imageUrl: imageUrl,
         fit: widget.fit,
         height: widget.height,
         width: widget.width,
         placeholder: (context, url) => widget.placeholderWidget,
         errorBuilder: (context, error, stackTrace) => widget.errorWidget,
+        fadeOutCurve: Curves.easeIn,
+        fadeInDuration: BokunSpizeDurations.animation,
+        fadeOutDuration: BokunSpizeDurations.animation,
+        placeholderFadeInDuration: BokunSpizeDurations.animation,
       );
     },
   );

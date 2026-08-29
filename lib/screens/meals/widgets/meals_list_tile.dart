@@ -7,6 +7,8 @@ import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/meal/meal.dart';
+import '../../../util/color.dart';
+import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 import '../../../widgets/meal_image.dart';
 
@@ -30,12 +32,11 @@ class MealsListTile extends StatelessWidget {
 
     final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? 'Erroro has happendo';
 
-    final subtitleText =
-        capitalizeFirstLetter(
-          meal.foods?.map((food) => food.name.toLowerCase()).join(', '),
-        ) ??
-        meal.errors?.map((error) => error).join(', ') ??
-        '';
+    final subtitleText = getDateString(
+      date: meal.createdAt,
+      dateFormat: 'HH:mm',
+      useTodayYesterdayTomorrow: false,
+    );
 
     final imageBackgroundColor = isLoading
         ? BokunSpizeColors.grey
@@ -123,8 +124,7 @@ class MealsListTile extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            // TODO: Randomize color
-                            color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                            color: getRandomPrimaryColor().withValues(alpha: 0.5),
                           ),
                           height: listTileIconRadius,
                           width: listTileIconRadius,
@@ -153,7 +153,7 @@ class MealsListTile extends StatelessWidget {
                                     ),
                                   ],
                                   child: Container(
-                                    color: BokunSpizeColors.grey,
+                                    color: getRandomPrimaryColor().withValues(alpha: 0.5),
                                     height: listTileIconRadius,
                                     width: listTileIconRadius,
                                   ),
@@ -261,8 +261,8 @@ class MealsListTile extends StatelessWidget {
                               ],
                               child: Container(
                                 color: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                                height: 16,
-                                width: 144,
+                                height: 12,
+                                width: 56,
                               ),
                             ),
                           ]
@@ -318,11 +318,13 @@ class MealsListTile extends StatelessWidget {
                                   meal.nutrition?.calories,
                                 ) ??
                                 '',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
-                              color: BokunSpizeColors.black,
+                              color: getCalorieValueColor(
+                                nutrition: meal.nutrition,
+                              ),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

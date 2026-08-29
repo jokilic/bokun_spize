@@ -130,8 +130,7 @@ class WalksController
       final stepsWithDate = <StepsWithDate>[];
 
       /// Get steps for today and the previous days
-      // TODO: Test max number of days to fetch
-      for (var dayOffset = 45; dayOffset >= 0; dayOffset--) {
+      for (var dayOffset = 30; dayOffset >= 0; dayOffset--) {
         final startOfDay = DateTime(
           now.year,
           now.month,

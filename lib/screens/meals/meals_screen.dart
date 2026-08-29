@@ -63,10 +63,22 @@ class _MealsScreenState extends State<MealsScreen> {
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
 
-    /// Calculates total calories for `List<Meals>`
+    /// Calculates total values for `List<Meals>`
     final currentCalories = meals.fold<double>(
       0,
       (total, meal) => total + (meal.nutrition?.calories ?? 0),
+    );
+    final currentProtein = meals.fold<double>(
+      0,
+      (total, meal) => total + (meal.nutrition?.protein ?? 0),
+    );
+    final currentCarbs = meals.fold<double>(
+      0,
+      (total, meal) => total + (meal.nutrition?.carbs ?? 0),
+    );
+    final currentFat = meals.fold<double>(
+      0,
+      (total, meal) => total + (meal.nutrition?.fat ?? 0),
     );
 
     return Scaffold(
@@ -138,8 +150,11 @@ class _MealsScreenState extends State<MealsScreen> {
                 date: activeDate,
                 dateFormat: 'EEEE, dd.MM.yyyy.',
               ),
-              currentCalories: currentCalories.round(),
-              dailyCalories: userMetrics?.dailyCalories.round(),
+              currentCalories: currentCalories,
+              currentProtein: currentProtein,
+              currentCarbs: currentCarbs,
+              currentFat: currentFat,
+              dailyCalories: userMetrics?.dailyCalories,
             ),
 
             ///
