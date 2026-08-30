@@ -551,14 +551,14 @@ class FirebaseService {
 
   /// Listens for real-time changes to `userMetrics` in the current user's document in [Firebase]
   Stream<UserMetrics?> listenToUserMetrics() async* {
+    final user = auth.currentUser;
+
+    if (user == null) {
+      yield null;
+      return;
+    }
+
     try {
-      final user = auth.currentUser;
-
-      if (user == null) {
-        yield null;
-        return;
-      }
-
       final document = firestore.collection('users').doc(user.uid);
 
       await for (final snapshot in document.snapshots()) {

@@ -368,6 +368,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                           onPressed: () {
                             HapticFeedback.lightImpact();
                             mealController.onSpeechToTextPressed(
+                              // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
                               locale: 'en',
                               speechToTextAvailable: available,
                             );

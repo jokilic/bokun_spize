@@ -8,8 +8,20 @@ import '../../constants/colors.dart';
 import '../../services/firebase_service.dart';
 import '../../util/dependencies.dart';
 import '../../widgets/navigation_bar_widget.dart';
+import '../meals/meals_controller.dart';
+import '../walks/walks_controller.dart';
+import '../weights/weights_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
+  /// Cancels user-specific listeners before Firebase sign-out
+  Future<void> handleLogOut() async {
+    unRegisterIfNotDisposed<MealsController>();
+    unRegisterIfNotDisposed<WeightsController>();
+    unRegisterIfNotDisposed<WalksController>();
+
+    await getIt.get<FirebaseService>().logOut();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: BokunSpizeColors.red,
@@ -27,12 +39,8 @@ class ProfileScreen extends StatelessWidget {
         focusColor: Colors.transparent,
         shape: const CircleBorder(),
         onPressed: () {
-          unawaited(
-            HapticFeedback.lightImpact(),
-          );
-          unawaited(
-            getIt.get<FirebaseService>().logOut(),
-          );
+          HapticFeedback.lightImpact();
+          handleLogOut();
         },
         child: const PhosphorIcon(
           PhosphorIconsBold.signOut,

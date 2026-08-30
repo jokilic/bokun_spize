@@ -62,8 +62,8 @@ class WeightsController
   ///
 
   @override
-  void onDispose() {
-    weightTracksSubscription?.cancel();
+  Future<void> onDispose() async {
+    await weightTracksSubscription?.cancel();
     super.dispose();
   }
 

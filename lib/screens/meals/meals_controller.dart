@@ -52,8 +52,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   ///
 
   @override
-  void onDispose() {
-    mealsSubscription?.cancel();
+  Future<void> onDispose() async {
+    await mealsSubscription?.cancel();
     super.dispose();
   }
 

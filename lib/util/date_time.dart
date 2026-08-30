@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 String getDateString({
   required DateTime date,
   required String dateFormat,
+  // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+  String languageCode = 'en',
   bool useTodayYesterdayTomorrow = true,
 }) {
   final now = DateTime.now();
@@ -26,7 +28,7 @@ String getDateString({
     }
   }
 
-  return DateFormat(dateFormat, 'en').format(date);
+  return DateFormat(dateFormat, languageCode).format(date);
 }
 
 /// Returns proper [DateTime] from passed `mealDate` and `mealTime`
