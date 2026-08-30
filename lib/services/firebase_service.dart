@@ -94,8 +94,8 @@ class FirebaseService {
       );
 
       return (user: user.user, error: null);
-    } on FirebaseAuthException catch (e) {
-      final error = switch (e.code) {
+    } on FirebaseAuthException catch (error) {
+      final errorMessage = switch (error.code) {
         'invalid-email' => 'errorEmailInvalid',
         'user-disabled' => 'errorAccountDisabled',
         'user-not-found' => 'errorUserNotFound',
@@ -103,15 +103,20 @@ class FirebaseService {
         'invalid-credential' => 'errorInvalidCredential',
         'too-many-requests' => 'errorTooManyRequests',
         'operation-not-allowed' => 'errorOperationNotAllowed',
-        _ => e.code,
+        _ => error.code,
       };
 
-      log(error);
-      return (user: null, error: error);
-    } catch (e) {
-      final error = 'Login error $e';
-      log(error);
-      return (user: null, error: error);
+      log(
+        'Email sign in failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } catch (error) {
+      log(
+        'Email sign in failed',
+        error: error,
+      );
+      return (user: null, error: 'Login error $error');
     }
   }
 
@@ -123,22 +128,27 @@ class FirebaseService {
       await auth.sendPasswordResetEmail(email: email);
 
       return (success: true, error: null);
-    } on FirebaseAuthException catch (e) {
-      final error = switch (e.code) {
+    } on FirebaseAuthException catch (error) {
+      final errorMessage = switch (error.code) {
         'invalid-email' => 'errorEmailInvalid',
         'user-disabled' => 'errorAccountDisabled',
         'user-not-found' => 'errorUserNotFound',
         'too-many-requests' => 'errorTooManyRequests',
         'operation-not-allowed' => 'errorOperationNotAllowed',
-        _ => e.code,
+        _ => error.code,
       };
 
-      log(error);
-      return (success: false, error: error);
-    } catch (e) {
-      final error = 'Password reset error $e';
-      log(error);
-      return (success: false, error: error);
+      log(
+        'Password reset email failed',
+        error: error,
+      );
+      return (success: false, error: errorMessage);
+    } catch (error) {
+      log(
+        'Password reset email failed',
+        error: error,
+      );
+      return (success: false, error: 'Password reset error $error');
     }
   }
 
@@ -166,8 +176,8 @@ class FirebaseService {
       final userCredential = await auth.signInWithCredential(credential);
 
       return (user: userCredential.user, error: null);
-    } on GoogleSignInException catch (e) {
-      final error = switch (e.code) {
+    } on GoogleSignInException catch (error) {
+      final errorMessage = switch (error.code) {
         GoogleSignInExceptionCode.unknownError => 'errorUnknown',
         GoogleSignInExceptionCode.canceled => 'errorGoogleCanceled',
         GoogleSignInExceptionCode.interrupted => 'errorGoogleInterrupted',
@@ -177,24 +187,32 @@ class FirebaseService {
         GoogleSignInExceptionCode.userMismatch => 'errorGoogleUserMismatch',
       };
 
-      log('GoogleSignInException ${e.code}: ${e.description}');
-      return (user: null, error: error);
-    } on FirebaseAuthException catch (e) {
-      final error = switch (e.code) {
+      log(
+        'Google sign in failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } on FirebaseAuthException catch (error) {
+      final errorMessage = switch (error.code) {
         'account-exists-with-different-credential' => 'errorInvalidCredential',
         'invalid-credential' => 'errorInvalidCredential',
         'user-disabled' => 'errorAccountDisabled',
         'operation-not-allowed' => 'errorOperationNotAllowed',
         'too-many-requests' => 'errorTooManyRequests',
-        _ => e.code,
+        _ => error.code,
       };
 
-      log(error);
-      return (user: null, error: error);
-    } catch (e) {
-      final error = 'Google sign-in error $e';
-      log(error);
-      return (user: null, error: error);
+      log(
+        'Google sign in failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } catch (error) {
+      log(
+        'Google sign in failed',
+        error: error,
+      );
+      return (user: null, error: 'Google sign-in error $error');
     }
   }
 
@@ -220,8 +238,8 @@ class FirebaseService {
       final userCredential = await auth.signInWithCredential(oauthCredential);
 
       return (user: userCredential.user, error: null);
-    } on SignInWithAppleAuthorizationException catch (e) {
-      final error = switch (e.code) {
+    } on SignInWithAppleAuthorizationException catch (error) {
+      final errorMessage = switch (error.code) {
         AuthorizationErrorCode.canceled => 'errorAppleCanceled',
         AuthorizationErrorCode.failed => 'errorAppleFailed',
         AuthorizationErrorCode.invalidResponse => 'errorAppleInvalidResponse',
@@ -233,24 +251,32 @@ class FirebaseService {
         AuthorizationErrorCode.matchedExcludedCredential => 'errorAppleMatchedExcludedCredential',
       };
 
-      log('AppleSignInException ${e.code}: ${e.message}');
-      return (user: null, error: error);
-    } on FirebaseAuthException catch (e) {
-      final error = switch (e.code) {
+      log(
+        'Apple sign in failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } on FirebaseAuthException catch (error) {
+      final errorMessage = switch (error.code) {
         'account-exists-with-different-credential' => 'errorInvalidCredential',
         'invalid-credential' => 'errorInvalidCredential',
         'user-disabled' => 'errorAccountDisabled',
         'operation-not-allowed' => 'errorOperationNotAllowed',
         'too-many-requests' => 'errorTooManyRequests',
-        _ => e.code,
+        _ => error.code,
       };
 
-      log(error);
-      return (user: null, error: error);
-    } catch (e) {
-      final error = 'Apple sign-in error $e';
-      log(error);
-      return (user: null, error: error);
+      log(
+        'Apple sign in failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } catch (error) {
+      log(
+        'Apple sign in failed',
+        error: error,
+      );
+      return (user: null, error: 'Apple sign-in error $error');
     }
   }
 
@@ -260,19 +286,24 @@ class FirebaseService {
       final userCredential = await auth.signInAnonymously();
 
       return (user: userCredential.user, error: null);
-    } on FirebaseAuthException catch (e) {
-      final error = switch (e.code) {
+    } on FirebaseAuthException catch (error) {
+      final errorMessage = switch (error.code) {
         'operation-not-allowed' => 'errorOperationNotAllowed',
         'too-many-requests' => 'errorTooManyRequests',
-        _ => e.code,
+        _ => error.code,
       };
 
-      log(error);
-      return (user: null, error: error);
-    } catch (e) {
-      final error = 'Anonymous sign-in error $e';
-      log(error);
-      return (user: null, error: error);
+      log(
+        'Anonymous sign in failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } catch (error) {
+      log(
+        'Anonymous sign in failed',
+        error: error,
+      );
+      return (user: null, error: 'Anonymous sign-in error $error');
     }
   }
 
@@ -299,22 +330,27 @@ class FirebaseService {
       });
 
       return (user: user, error: null);
-    } on FirebaseAuthException catch (e) {
-      final error = switch (e.code) {
+    } on FirebaseAuthException catch (error) {
+      final errorMessage = switch (error.code) {
         'email-already-in-use' => 'errorEmailInUse',
         'invalid-email' => 'errorEmailInvalid',
         'operation-not-allowed' => 'errorOperationNotAllowed',
         'weak-password' => 'errorWeakPassword',
         'too-many-requests' => 'errorTooManyRequests',
-        _ => e.code,
+        _ => error.code,
       };
 
-      log(error);
-      return (user: null, error: error);
-    } catch (e) {
-      final error = 'Register error $e';
-      log(error);
-      return (user: null, error: error);
+      log(
+        'Email registration failed',
+        error: error,
+      );
+      return (user: null, error: errorMessage);
+    } catch (error) {
+      log(
+        'Email registration failed',
+        error: error,
+      );
+      return (user: null, error: 'Register error $error');
     }
   }
 
@@ -397,8 +433,11 @@ class FirebaseService {
       await user.delete();
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> deleteUser() -> $e');
+    } catch (error) {
+      log(
+        'User deletion failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -410,7 +449,10 @@ class FirebaseService {
     required String? password,
   }) async {
     if (email == null || password == null) {
-      log('Email and password are required for email/password users');
+      log(
+        'Email reauthentication failed',
+        error: 'Email and password are required',
+      );
       return false;
     }
 
@@ -543,8 +585,11 @@ class FirebaseService {
       }
 
       return UserMetrics.fromMap(data);
-    } catch (e) {
-      log('FirebaseService -> getUserMetrics() -> $e');
+    } catch (error) {
+      log(
+        'Getting user metrics failed',
+        error: error,
+      );
       return null;
     }
   }
@@ -571,8 +616,11 @@ class FirebaseService {
 
         yield UserMetrics.fromMap(data);
       }
-    } catch (e) {
-      log('FirebaseService -> listenToUserMetrics() -> $e');
+    } catch (error) {
+      log(
+        'Listening to user metrics failed',
+        error: error,
+      );
       yield null;
     }
   }
@@ -591,8 +639,11 @@ class FirebaseService {
       await document.set(newUserMetrics.toMap());
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> writeUserMetrics() -> $e');
+    } catch (error) {
+      log(
+        'Writing user metrics failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -611,8 +662,11 @@ class FirebaseService {
       await document.set(newUserMetrics.toMap());
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> updateUserMetrics() -> $e');
+    } catch (error) {
+      log(
+        'Updating user metrics failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -631,8 +685,11 @@ class FirebaseService {
       await document.delete();
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> deleteUserMetrics() -> $e');
+    } catch (error) {
+      log(
+        'Deleting user metrics failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -670,8 +727,11 @@ class FirebaseService {
           imageStoragePath: data['imageStoragePath'] as String?,
         );
       }).toList();
-    } catch (e) {
-      log('FirebaseService -> getMeals() -> $e');
+    } catch (error) {
+      log(
+        'Getting meals failed',
+        error: error,
+      );
       return null;
     }
   }
@@ -718,8 +778,11 @@ class FirebaseService {
           );
         }).toList();
       }
-    } catch (e) {
-      log('FirebaseService -> listenToMeals() -> $e');
+    } catch (error) {
+      log(
+        'Listening to meals failed',
+        error: error,
+      );
       yield null;
     }
   }
@@ -738,8 +801,11 @@ class FirebaseService {
       await collection.doc(newMeal.id).set(newMeal.toMap());
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> writeMeal() -> $e');
+    } catch (error) {
+      log(
+        'Writing meal failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -758,8 +824,11 @@ class FirebaseService {
       await collection.doc(newMeal.id).set(newMeal.toMap());
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> updateMeal() -> $e');
+    } catch (error) {
+      log(
+        'Updating meal failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -795,8 +864,11 @@ class FirebaseService {
       }
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> deleteMeal() -> $e');
+    } catch (error) {
+      log(
+        'Deleting meal failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -809,8 +881,11 @@ class FirebaseService {
   Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
     try {
       return await storage.ref(imageStoragePath).getDownloadURL();
-    } catch (e) {
-      log('FirebaseService -> getMealImageDownloadUrl() -> $e');
+    } catch (error) {
+      log(
+        'Getting meal image download URL failed',
+        error: error,
+      );
       return null;
     }
   }
@@ -843,11 +918,17 @@ class FirebaseService {
       );
 
       return storagePath;
-    } on FirebaseException catch (e) {
-      log('FirebaseService -> uploadMealImage() -> ${e.code}: ${e.message}');
+    } on FirebaseException catch (error) {
+      log(
+        'Uploading meal image failed',
+        error: error,
+      );
       return null;
-    } catch (e) {
-      log('FirebaseService -> uploadMealImage() -> $e');
+    } catch (error) {
+      log(
+        'Uploading meal image failed',
+        error: error,
+      );
       return null;
     }
   }
@@ -857,15 +938,21 @@ class FirebaseService {
     try {
       await storage.ref(imageStoragePath).delete();
       return true;
-    } on FirebaseException catch (e) {
-      if (e.code == 'object-not-found') {
+    } on FirebaseException catch (error) {
+      if (error.code == 'object-not-found') {
         return true;
       }
 
-      log('FirebaseService -> deleteMealImage() -> ${e.code}: ${e.message}');
+      log(
+        'Deleting meal image failed',
+        error: error,
+      );
       return false;
-    } catch (e) {
-      log('FirebaseService -> deleteMealImage() -> $e');
+    } catch (error) {
+      log(
+        'Deleting meal image failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -897,8 +984,11 @@ class FirebaseService {
             ),
           )
           .toList();
-    } catch (e) {
-      log('FirebaseService -> getWeightTracks() -> $e');
+    } catch (error) {
+      log(
+        'Getting weight tracks failed',
+        error: error,
+      );
       return null;
     }
   }
@@ -927,8 +1017,11 @@ class FirebaseService {
             )
             .toList();
       }
-    } catch (e) {
-      log('FirebaseService -> listenToWeightTracks() -> $e');
+    } catch (error) {
+      log(
+        'Listening to weight tracks failed',
+        error: error,
+      );
       yield null;
     }
   }
@@ -947,8 +1040,11 @@ class FirebaseService {
       await collection.doc(newWeightTrack.id).set(newWeightTrack.toMap());
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> writeWeightTrack() -> $e');
+    } catch (error) {
+      log(
+        'Writing weight track failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -967,8 +1063,11 @@ class FirebaseService {
       await collection.doc(newWeightTrack.id).set(newWeightTrack.toMap());
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> updateWeightTrack() -> $e');
+    } catch (error) {
+      log(
+        'Updating weight track failed',
+        error: error,
+      );
       return false;
     }
   }
@@ -987,8 +1086,11 @@ class FirebaseService {
       await collection.doc(weightTrack.id).delete();
 
       return true;
-    } catch (e) {
-      log('FirebaseService -> deleteWeightTrack() -> $e');
+    } catch (error) {
+      log(
+        'Deleting weight track failed',
+        error: error,
+      );
       return false;
     }
   }
