@@ -8,13 +8,13 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/constants.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/null_state.dart';
 import '../../util/snackbars.dart';
 import '../../util/typedefs.dart';
+import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../add_meal/add_meal_screen.dart';
 
@@ -127,20 +127,12 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`
-  Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
+  Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(listTileRadius),
-      ),
-    ),
     builder: (context) => CalendarSheet(
+      primaryColor: BokunSpizeColors.green,
       dateValue: value.activeDate,
       onDateChanged: updateDate,
-      primaryColor: BokunSpizeColors.green,
     ),
   );
 
@@ -157,16 +149,9 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final newMealId = const Uuid().v1();
 
     /// Show [AddMealScreen] for adding or editing `meal`
-    final result = await showModalBottomSheet<MealSheetResult>(
+    final result = await showBlurredModalBottomSheet<MealSheetResult>(
       context: context,
-      isScrollControlled: true,
       backgroundColor: BokunSpizeColors.grey,
-      elevation: 0,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(listTileRadius),
-        ),
-      ),
       builder: (context) => AddMealScreen(
         mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,
         passedMeal: passedMeal,

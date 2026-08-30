@@ -6,6 +6,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../util/date_time.dart';
 import '../../../util/spacing.dart';
+import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../../widgets/calendar_sheet.dart';
 import '../../../widgets/time_sheet.dart';
 
@@ -83,17 +84,10 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`
-  Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
+  Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(listTileRadius),
-      ),
-    ),
     builder: (context) => CalendarSheet(
+      primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
       onDateChanged: (newDate) => setState(
         () => selectedDateTime = DateTime(
@@ -104,22 +98,14 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
           selectedDateTime.minute,
         ),
       ),
-      primaryColor: BokunSpizeColors.blue,
     ),
   );
 
   /// Opens [TimeSheet] and updates the selected `date`
-  Future<void> updateTimeViaPicker(BuildContext context) async => showModalBottomSheet(
+  Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(listTileRadius),
-      ),
-    ),
     builder: (context) => TimeSheet(
+      primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
       onDateChanged: (newDate) => setState(
         () => selectedDateTime = DateTime(
@@ -130,7 +116,6 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
           newDate.minute,
         ),
       ),
-      primaryColor: BokunSpizeColors.blue,
     ),
   );
 

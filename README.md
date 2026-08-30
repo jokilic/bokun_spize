@@ -7,7 +7,6 @@
 - [ ] Proper error UIs
 - [ ] Refactor app init logic
 - [ ] Replace all hardcoded `en`
-- [ ] Blur background when opening sheets
 - [ ] Check if all buttons trigger vibration
 - [ ] Test all text overflows
 - [ ] Animations
@@ -20,6 +19,9 @@
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
 - [ ] Make legacy build on GitHub
+- [ ] When copying meal into another day, open that day
+- [ ] Long-press text field to copy text
+- [ ] Dismiss keyboard when pressing buttons
 
 # Bokun spize 🥗
 

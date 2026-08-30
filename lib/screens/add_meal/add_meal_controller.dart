@@ -5,11 +5,11 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/constants.dart';
 import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/null_state.dart';
 import '../../util/path.dart';
+import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
@@ -224,42 +224,26 @@ class AddMealController extends ValueNotifier<({bool textImageValid, String? spe
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`
-  Future<void> updateDateViaPicker(BuildContext context) async => showModalBottomSheet(
+  Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(listTileRadius),
-      ),
-    ),
     builder: (context) => CalendarSheet(
+      primaryColor: BokunSpizeColors.green,
       dateValue: value.mealDate,
       onDateChanged: (newDate) => updateState(
         mealDate: newDate,
       ),
-      primaryColor: BokunSpizeColors.green,
     ),
   );
 
   /// Opens [TimeSheet] and updates the selected `date`
-  Future<void> updateTimeViaPicker(BuildContext context) async => showModalBottomSheet(
+  Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(listTileRadius),
-      ),
-    ),
     builder: (context) => TimeSheet(
+      primaryColor: BokunSpizeColors.green,
       dateValue: value.mealTime,
       onDateChanged: (newDate) => updateState(
         mealTime: newDate,
       ),
-      primaryColor: BokunSpizeColors.green,
     ),
   );
 

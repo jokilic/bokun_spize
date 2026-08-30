@@ -8,14 +8,14 @@ import '../constants/constants.dart';
 import '../util/spacing.dart';
 
 class CalendarSheet extends StatefulWidget {
+  final Color primaryColor;
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
-  final Color primaryColor;
 
   const CalendarSheet({
+    required this.primaryColor,
     required this.dateValue,
     required this.onDateChanged,
-    required this.primaryColor,
   });
 
   @override

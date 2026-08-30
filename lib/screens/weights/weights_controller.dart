@@ -5,12 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/constants.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../util/null_state.dart';
 import '../../util/snackbars.dart';
+import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
 class WeightsController
@@ -129,16 +128,8 @@ class WeightsController
     required BuildContext context,
     required double initialWeight,
     required String weightTrackId,
-  }) async => showModalBottomSheet(
+  }) async => showBlurredModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: BokunSpizeColors.white,
-    elevation: 0,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(listTileRadius),
-      ),
-    ),
     builder: (context) => WeightsAddWeightSheet(
       key: ValueKey(weightTrackId),
       initialWeight: initialWeight,
