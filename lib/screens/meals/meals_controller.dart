@@ -193,13 +193,20 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
     /// Copy the meal while keeping its shared image reference
     if (isCopyingMeal && passedMeal != null) {
-      await firebase.writeMeal(
+      final copiedMealWritten = await firebase.writeMeal(
         newMeal: passedMeal.copyWith(
           id: newMealId,
           createdAt: result!.dateTime,
           imageStoragePath: passedMeal.imageStoragePath,
         ),
       );
+
+      if (copiedMealWritten) {
+        updateDate(
+          result.dateTime!,
+        );
+      }
+
       return;
     }
 
@@ -239,6 +246,9 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     if (!loadingMealWritten) {
       return;
     }
+
+    /// Show the date where the newly saved meal belongs
+    updateDate(dateTime);
 
     /// Trigger AI
     final result = await ai.triggerAI(

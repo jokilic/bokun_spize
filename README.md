@@ -3,6 +3,7 @@
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Update database permissions
+- [ ] Icon & splash screen
 - [ ] Proper loading UIs
 - [ ] Proper error UIs
 - [ ] Refactor app init logic
@@ -19,7 +20,6 @@
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
 - [ ] Make legacy build on GitHub
-- [ ] When copying meal into another day, open that day
 - [ ] Long-press text field to copy text
 - [ ] Dismiss keyboard when pressing buttons
 
