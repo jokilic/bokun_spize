@@ -55,6 +55,18 @@ class _AddMealScreenState extends State<AddMealScreen> {
     super.dispose();
   }
 
+  void handleOnPressed({
+    required Function() onPressed,
+  }) {
+    /// Hide snackbars & keyboard
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    HapticFeedback.lightImpact();
+
+    onPressed();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mealController = getIt.get<AddMealController>(
@@ -456,16 +468,13 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       right: 8,
                       top: 8,
                       child: IconButton(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-
-                          /// Update `state` + trigger validation
-                          mealController
+                        onPressed: () => handleOnPressed(
+                          onPressed: () => mealController
                             ..updateState(
                               imageFile: null,
                             )
-                            ..triggerValidation();
-                        },
+                            ..triggerValidation(),
+                        ),
                         icon: const PhosphorIcon(
                           PhosphorIconsBold.trash,
                           size: 20,
@@ -549,10 +558,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: () {
-                                    HapticFeedback.lightImpact();
-                                    mealController.onCameraPressed();
-                                  },
+                                  onPressed: () => handleOnPressed(
+                                    onPressed: mealController.onCameraPressed,
+                                  ),
                                   icon: const PhosphorIcon(
                                     PhosphorIconsBold.cameraPlus,
                                     size: 32,
@@ -589,10 +597,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: () {
-                                    HapticFeedback.lightImpact();
-                                    mealController.onGalleryPressed();
-                                  },
+                                  onPressed: () => handleOnPressed(
+                                    onPressed: mealController.onGalleryPressed,
+                                  ),
                                   icon: const PhosphorIcon(
                                     PhosphorIconsBold.images,
                                     size: 32,
@@ -639,7 +646,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 color: BokunSpizeColors.white.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(listTileRadius),
                 child: InkWell(
-                  onTap: () => mealController.updateDateViaPicker(context),
+                  onTap: () => handleOnPressed(
+                    onPressed: () => mealController.updateDateViaPicker(context),
+                  ),
                   borderRadius: BorderRadius.circular(listTileRadius),
                   highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                   splashColor: Colors.transparent,
@@ -719,7 +728,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 color: BokunSpizeColors.white.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(listTileRadius),
                 child: InkWell(
-                  onTap: () => mealController.updateTimeViaPicker(context),
+                  onTap: () => handleOnPressed(
+                    onPressed: () => mealController.updateTimeViaPicker(context),
+                  ),
                   borderRadius: BorderRadius.circular(listTileRadius),
                   highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                   splashColor: Colors.transparent,
@@ -800,25 +811,25 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: textImageValid
-                      ? () {
-                          HapticFeedback.lightImpact();
+                      ? () => handleOnPressed(
+                          onPressed: () {
+                            /// Get `words` from [TextEditingController]
+                            final words = mealController.textEditingController.text.trim();
 
-                          /// Get `words` from [TextEditingController]
-                          final words = mealController.textEditingController.text.trim();
-
-                          /// Dismiss sheet
-                          Navigator.of(context).pop(
-                            (
-                              words: words,
-                              dateTime: getMealDateTime(
-                                mealDate: mealDate,
-                                mealTime: mealTime,
+                            /// Dismiss sheet
+                            Navigator.of(context).pop(
+                              (
+                                words: words,
+                                dateTime: getMealDateTime(
+                                  mealDate: mealDate,
+                                  mealTime: mealTime,
+                                ),
+                                imageFile: imageFile,
+                                deleteMeal: false,
                               ),
-                              imageFile: imageFile,
-                              deleteMeal: false,
-                            ),
-                          );
-                        }
+                            );
+                          },
+                        )
                       : null,
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
