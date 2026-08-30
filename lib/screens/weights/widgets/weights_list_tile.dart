@@ -9,11 +9,13 @@ import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 
 class WeightsListTile extends StatelessWidget {
+  final Function() onPressed;
   final Function() onDeletePressed;
   final WeightTrack weightTrack;
   final double? weightChange;
 
   const WeightsListTile({
+    required this.onPressed,
     required this.onDeletePressed,
     required this.weightTrack,
     required this.weightChange,
@@ -63,7 +65,7 @@ class WeightsListTile extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
-              onTap: () {},
+              onTap: onPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
               splashColor: Colors.transparent,

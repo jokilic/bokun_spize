@@ -8,10 +8,12 @@ import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 
 class WalksListTile extends StatelessWidget {
+  final Function() onPressed;
   final StepsWithDate stepWithDate;
   final StepsWithDate? previousStepsWithDate;
 
   const WalksListTile({
+    required this.onPressed,
     required this.stepWithDate,
     required this.previousStepsWithDate,
   });
@@ -41,7 +43,7 @@ class WalksListTile extends StatelessWidget {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(listTileRadius),
         child: InkWell(
-          onTap: () {},
+          onTap: onPressed,
           borderRadius: BorderRadius.circular(listTileRadius),
           highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
           splashColor: Colors.transparent,

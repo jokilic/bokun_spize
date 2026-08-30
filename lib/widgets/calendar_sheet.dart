@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -123,6 +124,8 @@ class _CalendarSheetState extends State<CalendarSheet> {
             child: CalendarDatePicker2(
               value: [widget.dateValue],
               onValueChanged: (newValue) {
+                HapticFeedback.lightImpact();
+
                 final chosenDate = newValue.firstOrNull;
 
                 if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
@@ -256,7 +259,10 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   backgroundColor: widget.primaryColor,
                   foregroundColor: BokunSpizeColors.white,
                 ),
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),

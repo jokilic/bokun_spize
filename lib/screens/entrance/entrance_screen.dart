@@ -45,9 +45,15 @@ class _EntranceScreenState extends State<EntranceScreen> {
     super.dispose();
   }
 
-  void toggleLoginRegister() => setState(
-    () => showLogin = !showLogin,
-  );
+  void toggleLoginRegister() {
+    /// Hide snackbars & keyboard
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    setState(
+      () => showLogin = !showLogin,
+    );
+  }
 
   Future<void> handleOnPressed({
     required BuildContext context,
@@ -293,7 +299,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
                             disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
                           ),
-                          label: const Text('Google'),
+                          label: const Text(
+                            'Google',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
 
@@ -332,7 +341,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
                             disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
                           ),
-                          label: const Text('Apple'),
+                          label: const Text(
+                            'Apple',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ],

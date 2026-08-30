@@ -182,7 +182,10 @@ class _WalksScreenState extends State<WalksScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        onSelected: storageService.setWalksCalendarDays,
+                        onSelected: (newWalksCalendarDays) {
+                          HapticFeedback.lightImpact();
+                          storageService.setWalksCalendarDays(newWalksCalendarDays);
+                        },
                         itemBuilder: (context) => walksController.graphCalendarDayOptions
                             .map(
                               (calendarDays) => PopupMenuItem<int>(
@@ -199,7 +202,7 @@ class _WalksScreenState extends State<WalksScreen> {
                               ),
                             )
                             .toList(),
-                        child: DecoratedBox(
+                        child: Container(
                           decoration: ShapeDecoration(
                             color: BokunSpizeColors.white.withValues(alpha: 0.5),
                             shape: const StadiumBorder(),
@@ -280,6 +283,7 @@ class _WalksScreenState extends State<WalksScreen> {
                   final previousStepsWithDate = index + 1 < stepsWithDate.length ? stepsWithDate[index + 1] : null;
 
                   return WalksListTile(
+                    onPressed: HapticFeedback.lightImpact,
                     stepWithDate: stepWithDate,
                     previousStepsWithDate: previousStepsWithDate,
                   );

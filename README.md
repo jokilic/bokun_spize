@@ -1,14 +1,13 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
+- [ ] Replace all hardcoded `en`
+- [ ] Refactor app init logic
+- [ ] Proper loading UIs
+- [ ] Proper error UIs
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Update database permissions
 - [ ] Icon & splash screen
-- [ ] Proper loading UIs
-- [ ] Proper error UIs
-- [ ] Refactor app init logic
-- [ ] Replace all hardcoded `en`
-- [ ] Check if all buttons trigger vibration
 - [ ] Animations
 - [ ] Add meal manual
 - [ ] Add meal edit

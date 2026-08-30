@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -229,9 +230,12 @@ class AddMealController extends ValueNotifier<({bool textImageValid, String? spe
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealDate,
-      onDateChanged: (newDate) => updateState(
-        mealDate: newDate,
-      ),
+      onDateChanged: (newDate) {
+        HapticFeedback.lightImpact();
+        updateState(
+          mealDate: newDate,
+        );
+      },
     ),
   );
 
@@ -241,9 +245,12 @@ class AddMealController extends ValueNotifier<({bool textImageValid, String? spe
     builder: (context) => TimeSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealTime,
-      onDateChanged: (newDate) => updateState(
-        mealTime: newDate,
-      ),
+      onTimeChanged: (newTime) {
+        HapticFeedback.lightImpact();
+        updateState(
+          mealTime: newTime,
+        );
+      },
     ),
   );
 

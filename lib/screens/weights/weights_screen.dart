@@ -170,7 +170,10 @@ class _WeightsScreenState extends State<WeightsScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        onSelected: storageService.setWeightsCalendarDays,
+                        onSelected: (newWeightsCalendarDays) {
+                          HapticFeedback.lightImpact();
+                          storageService.setWeightsCalendarDays(newWeightsCalendarDays);
+                        },
                         itemBuilder: (context) => weightsController.graphCalendarDayOptions
                             .map(
                               (calendarDays) => PopupMenuItem<int>(
@@ -187,7 +190,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                               ),
                             )
                             .toList(),
-                        child: DecoratedBox(
+                        child: Container(
                           decoration: ShapeDecoration(
                             color: BokunSpizeColors.white.withValues(alpha: 0.5),
                             shape: const StadiumBorder(),
@@ -273,6 +276,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   );
 
                   return WeightsListTile(
+                    onPressed: HapticFeedback.lightImpact,
                     onDeletePressed: () {
                       HapticFeedback.lightImpact();
                       weightsController.deleteWeightTrack(

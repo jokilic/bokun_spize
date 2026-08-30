@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
@@ -132,7 +133,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.activeDate,
-      onDateChanged: updateDate,
+      onDateChanged: (newDate) {
+        HapticFeedback.lightImpact();
+        updateDate(newDate);
+      },
     ),
   );
 

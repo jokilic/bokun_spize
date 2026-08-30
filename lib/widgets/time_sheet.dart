@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
@@ -10,12 +11,12 @@ import '../util/spacing.dart';
 class TimeSheet extends StatefulWidget {
   final Color primaryColor;
   final DateTime dateValue;
-  final Function(DateTime newDate) onDateChanged;
+  final Function(DateTime newTime) onTimeChanged;
 
   const TimeSheet({
     required this.primaryColor,
     required this.dateValue,
-    required this.onDateChanged,
+    required this.onTimeChanged,
   });
 
   @override
@@ -126,7 +127,10 @@ class _TimeSheetState extends State<TimeSheet> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ScrollDateTimePicker(
-                onChange: (newDateTime) => selectedDateTime = newDateTime,
+                onChange: (newDateTime) {
+                  HapticFeedback.lightImpact();
+                  selectedDateTime = newDateTime;
+                },
                 itemExtent: 64,
                 style: DateTimePickerStyle(
                   activeStyle: TextStyle(
@@ -189,7 +193,7 @@ class _TimeSheetState extends State<TimeSheet> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  widget.onDateChanged(selectedDateTime);
+                  widget.onTimeChanged(selectedDateTime);
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
@@ -204,7 +208,10 @@ class _TimeSheetState extends State<TimeSheet> {
                   backgroundColor: widget.primaryColor,
                   foregroundColor: BokunSpizeColors.white,
                 ),
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),

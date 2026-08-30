@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
@@ -89,15 +90,18 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
-      onDateChanged: (newDate) => setState(
-        () => selectedDateTime = DateTime(
-          newDate.year,
-          newDate.month,
-          newDate.day,
-          selectedDateTime.hour,
-          selectedDateTime.minute,
-        ),
-      ),
+      onDateChanged: (newDate) {
+        HapticFeedback.lightImpact();
+        setState(
+          () => selectedDateTime = DateTime(
+            newDate.year,
+            newDate.month,
+            newDate.day,
+            selectedDateTime.hour,
+            selectedDateTime.minute,
+          ),
+        );
+      },
     ),
   );
 
@@ -107,15 +111,18 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     builder: (context) => TimeSheet(
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
-      onDateChanged: (newDate) => setState(
-        () => selectedDateTime = DateTime(
-          selectedDateTime.year,
-          selectedDateTime.month,
-          selectedDateTime.day,
-          newDate.hour,
-          newDate.minute,
-        ),
-      ),
+      onTimeChanged: (newTime) {
+        HapticFeedback.lightImpact();
+        setState(
+          () => selectedDateTime = DateTime(
+            selectedDateTime.year,
+            selectedDateTime.month,
+            selectedDateTime.day,
+            newTime.hour,
+            newTime.minute,
+          ),
+        );
+      },
     ),
   );
 
@@ -292,6 +299,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                     children: [
                       NotificationListener<ScrollNotification>(
                         onNotification: (notification) {
+                          HapticFeedback.lightImpact();
+
                           if (notification is ScrollUpdateNotification) {
                             updateSelectedWeight();
                           }
@@ -340,63 +349,79 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Row(
+                spacing: 16,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   ///
                   /// DATE
                   ///
-                  ElevatedButton.icon(
-                    onPressed: () => updateDateViaPicker(context),
-                    icon: PhosphorIcon(
-                      PhosphorIconsBold.calendarDot,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.75),
-                      size: 18,
-                    ),
-                    label: Text(date),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        updateDateViaPicker(context);
+                      },
+                      icon: PhosphorIcon(
+                        PhosphorIconsBold.calendarDot,
+                        color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                        size: 18,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
+                        foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
                       ),
-                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
-                      foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                      label: Text(
+                        date,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-
-                  const SizedBox(width: 16),
 
                   ///
                   /// TIME
                   ///
-                  ElevatedButton.icon(
-                    onPressed: () => updateTimeViaPicker(context),
-                    icon: PhosphorIcon(
-                      PhosphorIconsBold.clock,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.75),
-                      size: 18,
-                    ),
-                    label: Text(time),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        updateTimeViaPicker(context);
+                      },
+                      icon: PhosphorIcon(
+                        PhosphorIconsBold.clock,
+                        color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                        size: 18,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
+                        foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
                       ),
-                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
-                      foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                      label: Text(
+                        time,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ],
@@ -432,7 +457,10 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                     backgroundColor: BokunSpizeColors.blue,
                     foregroundColor: BokunSpizeColors.white,
                   ),
-                  child: const Text('Save weight'),
+                  child: const Text(
+                    'Save weight',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),

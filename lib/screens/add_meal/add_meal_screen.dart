@@ -298,6 +298,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                         letterSpacing: 0.6,
                                         color: BokunSpizeColors.black.withValues(alpha: 0.75),
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ],
                                 ),
@@ -367,7 +368,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                           onPressed: () {
                             HapticFeedback.lightImpact();
                             mealController.onSpeechToTextPressed(
-                              locale: 'hr',
+                              locale: 'en',
                               speechToTextAvailable: available,
                             );
                           },
@@ -545,6 +546,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                                 letterSpacing: 0.6,
                                 color: BokunSpizeColors.black.withValues(alpha: 0.75),
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         )
@@ -556,79 +558,87 @@ class _AddMealScreenState extends State<AddMealScreen> {
                             ///
                             /// CAMERA
                             ///
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  onPressed: () => handleOnPressed(
-                                    onPressed: mealController.onCameraPressed,
-                                  ),
-                                  icon: const PhosphorIcon(
-                                    PhosphorIconsBold.cameraPlus,
-                                    size: 32,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    elevation: 0,
-                                    padding: const EdgeInsets.all(16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () => handleOnPressed(
+                                      onPressed: mealController.onCameraPressed,
                                     ),
-                                    backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                    foregroundColor: BokunSpizeColors.green,
+                                    icon: const PhosphorIcon(
+                                      PhosphorIconsBold.cameraPlus,
+                                      size: 32,
+                                    ),
+                                    style: IconButton.styleFrom(
+                                      elevation: 0,
+                                      padding: const EdgeInsets.all(16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                      backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                      foregroundColor: BokunSpizeColors.green,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                const Text(
-                                  'Camera',
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.6,
-                                    color: BokunSpizeColors.black,
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    'Camera',
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.6,
+                                      color: BokunSpizeColors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
 
                             ///
                             /// GALLERY
                             ///
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  onPressed: () => handleOnPressed(
-                                    onPressed: mealController.onGalleryPressed,
-                                  ),
-                                  icon: const PhosphorIcon(
-                                    PhosphorIconsBold.images,
-                                    size: 32,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    elevation: 0,
-                                    padding: const EdgeInsets.all(16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    onPressed: () => handleOnPressed(
+                                      onPressed: mealController.onGalleryPressed,
                                     ),
-                                    backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                    foregroundColor: BokunSpizeColors.green,
+                                    icon: const PhosphorIcon(
+                                      PhosphorIconsBold.images,
+                                      size: 32,
+                                    ),
+                                    style: IconButton.styleFrom(
+                                      elevation: 0,
+                                      padding: const EdgeInsets.all(16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                      backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                      foregroundColor: BokunSpizeColors.green,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                const Text(
-                                  'Gallery',
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.6,
-                                    color: BokunSpizeColors.black,
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    'Gallery',
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.6,
+                                      color: BokunSpizeColors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -668,38 +678,40 @@ class _AddMealScreenState extends State<AddMealScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ///
-                            /// TITLE
-                            ///
-                            Text(
-                              'Date'.toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///
+                              /// TITLE
+                              ///
+                              Text(
+                                'Date'.toUpperCase(),
+                                style: TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.2,
+                                  color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 6),
+                              const SizedBox(height: 6),
 
-                            ///
-                            /// DATE
-                            ///
-                            Text(
-                              date,
-                              style: const TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.6,
-                                color: BokunSpizeColors.black,
+                              ///
+                              /// DATE
+                              ///
+                              Text(
+                                date,
+                                style: const TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.6,
+                                  color: BokunSpizeColors.black,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
 
                         ///
@@ -750,38 +762,40 @@ class _AddMealScreenState extends State<AddMealScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ///
-                            /// TITLE
-                            ///
-                            Text(
-                              'Time'.toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///
+                              /// TITLE
+                              ///
+                              Text(
+                                'Time'.toUpperCase(),
+                                style: TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.2,
+                                  color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 6),
+                              const SizedBox(height: 6),
 
-                            ///
-                            /// TIME
-                            ///
-                            Text(
-                              time,
-                              style: const TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.6,
-                                color: BokunSpizeColors.black,
+                              ///
+                              /// TIME
+                              ///
+                              Text(
+                                time,
+                                style: const TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.6,
+                                  color: BokunSpizeColors.black,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
 
                         ///
@@ -848,7 +862,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
                     disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
                     disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
                   ),
-                  child: const Text('Log meal'),
+                  child: const Text(
+                    'Log meal',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),

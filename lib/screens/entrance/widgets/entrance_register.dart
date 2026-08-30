@@ -168,7 +168,10 @@ class EntranceRegister extends StatelessWidget {
               disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
               disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
             ),
-            child: const Text('Register'),
+            child: const Text(
+              'Register',
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),

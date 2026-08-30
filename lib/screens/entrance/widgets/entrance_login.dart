@@ -180,7 +180,10 @@ class EntranceLogin extends StatelessWidget {
               disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
               disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
             ),
-            child: const Text('Sign in'),
+            child: const Text(
+              'Sign in',
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),
