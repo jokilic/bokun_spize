@@ -152,7 +152,7 @@ class NavigationBarWidget extends WatchingWidget {
           ),
 
           ///
-          /// PROFILE
+          /// ACCOUNT
           ///
           NavigationDestination(
             icon: Column(

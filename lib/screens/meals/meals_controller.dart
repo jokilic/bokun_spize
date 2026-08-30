@@ -140,51 +140,67 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     ),
   );
 
-  /// Triggered when the user adds, edits, or copies a `meal`
-  Future<void> onMealPressed(
-    BuildContext context, {
-    Meal? passedMeal,
-    bool isCopyingMeal = false,
-  }) async {
-    /// Determine if user is editing existing `meal`
-    final shouldEditExistingMeal = passedMeal != null && !isCopyingMeal;
-
+  /// Triggered when the user presses `FAB` to add `AI meal`
+  Future<void> onAddAIMealPressed(BuildContext context) async {
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
 
-    /// Show [AIAddMealScreen] for adding or editing `meal`
+    /// Show [AIAddMealScreen] for adding `AI meal`
     final result = await showBlurredModalBottomSheet<MealSheetResult>(
       context: context,
       backgroundColor: BokunSpizeColors.grey,
       builder: (context) => AIAddMealScreen(
-        mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,
-        passedMeal: passedMeal,
-        isCopyingMeal: isCopyingMeal,
+        mealId: newMealId,
+        // TODO: Remove bottom values from [AIAddMealScreen]
+        passedMeal: null,
+        isCopyingMeal: false,
       ),
     );
 
-    /// User was editing existing `meal`
-    if (shouldEditExistingMeal) {
-      /// User deleted `meal`
-      if (result?.deleteMeal ?? false) {
-        await deleteMeal(
-          meal: passedMeal,
-          context: context,
-        );
-      }
-      /// User changed `dateTime`
-      else if (result?.dateTime != null && result?.dateTime != passedMeal.createdAt) {
-        /// Update `dateTime` in [Firebase]
-        await firebase.updateMeal(
-          newMeal: passedMeal.copyWith(
-            createdAt: result!.dateTime,
-          ),
-        );
-      }
+    /// Run `AI` logic
+    await validateAndRunAILogic(
+      result: result,
+      newMealId: newMealId,
+      passedMeal: null,
+      isCopyingMeal: false,
+    );
+  }
 
-      return;
-    }
+  /// Triggered when the user copies a `meal`
+  Future<void> onCopyMealPressed(
+    BuildContext context, {
+    required Meal passedMeal,
+  }) async {
+    /// Generate `newMealId`
+    final newMealId = const Uuid().v1();
 
+    /// Show [AIAddMealScreen] for copying `meal`
+    final result = await showBlurredModalBottomSheet<MealSheetResult>(
+      context: context,
+      backgroundColor: BokunSpizeColors.grey,
+      builder: (context) => AIAddMealScreen(
+        mealId: newMealId,
+        // TODO: Remove bottom values and use [ManualAddMealScreen]
+        passedMeal: passedMeal,
+        isCopyingMeal: true,
+      ),
+    );
+
+    /// Run `AI` logic
+    await validateAndRunAILogic(
+      result: result,
+      newMealId: newMealId,
+      passedMeal: passedMeal,
+      isCopyingMeal: true,
+    );
+  }
+
+  Future<void> validateAndRunAILogic({
+    required ({DateTime? dateTime, bool deleteMeal, File? imageFile, String? words})? result,
+    required String newMealId,
+    required Meal? passedMeal,
+    required bool isCopyingMeal,
+  }) async {
     /// Check if `words` and `image` exists
     final hasWords = result?.words?.trim().isNotEmpty ?? false;
     final hasImage = result?.imageFile != null;

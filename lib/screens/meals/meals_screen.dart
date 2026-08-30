@@ -109,12 +109,36 @@ class _MealsScreenState extends State<MealsScreen> {
               ),
             ),
           ),
+          // const SizedBox(height: 18),
+          // SizedBox(
+          //   height: 48,
+          //   width: 48,
+          //   child: FloatingActionButton(
+          //     heroTag: const ValueKey('meals-add-ai-meal-fab'),
+          //     elevation: 0,
+          //     backgroundColor: BokunSpizeColors.green,
+          //     foregroundColor: BokunSpizeColors.white,
+          //     splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+          //     hoverColor: Colors.transparent,
+          //     focusColor: Colors.transparent,
+          //     shape: const CircleBorder(),
+          //     onPressed: () {
+          //       HapticFeedback.lightImpact();
+          //       mealsController.onAddAIMealPressed(context);
+          //     },
+          //     child: const PhosphorIcon(
+          //       PhosphorIconsBold.cpu,
+          //       color: BokunSpizeColors.white,
+          //       size: 24,
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: 18),
           SizedBox(
             height: 68,
             width: 68,
             child: FloatingActionButton(
-              heroTag: const ValueKey('meals-fab'),
+              heroTag: const ValueKey('meals-add-manual-meal-fab'),
               elevation: 0,
               backgroundColor: BokunSpizeColors.green,
               foregroundColor: BokunSpizeColors.white,
@@ -124,7 +148,8 @@ class _MealsScreenState extends State<MealsScreen> {
               shape: const CircleBorder(),
               onPressed: () {
                 HapticFeedback.lightImpact();
-                mealsController.onMealPressed(context);
+                // TODO: Manual meal here
+                mealsController.onAddAIMealPressed(context);
               },
               child: const PhosphorIcon(
                 PhosphorIconsBold.plus,
@@ -183,10 +208,9 @@ class _MealsScreenState extends State<MealsScreen> {
                     },
                     onCopyPressed: () {
                       HapticFeedback.lightImpact();
-                      mealsController.onMealPressed(
+                      mealsController.onCopyMealPressed(
                         context,
                         passedMeal: meal,
-                        isCopyingMeal: true,
                       );
                     },
                     meal: meal,

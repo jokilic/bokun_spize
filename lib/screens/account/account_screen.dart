@@ -12,7 +12,7 @@ import '../meals/meals_controller.dart';
 import '../walks/walks_controller.dart';
 import '../weights/weights_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
+class AccountScreen extends StatelessWidget {
   /// Cancels user-specific listeners before Firebase sign-out
   Future<void> handleLogOut() async {
     unRegisterIfNotDisposed<MealsController>();
@@ -30,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
       height: 68,
       width: 68,
       child: FloatingActionButton(
-        heroTag: const ValueKey('profile-fab'),
+        heroTag: const ValueKey('account-fab'),
         elevation: 0,
         backgroundColor: BokunSpizeColors.green,
         foregroundColor: BokunSpizeColors.white,
