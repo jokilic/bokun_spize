@@ -14,7 +14,7 @@
 - [ ] Firebase Functions for AI
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
-- [ ] Handle login & register errors
+- [ ] Dark theme
 
 # Bokun spize 🥗
 

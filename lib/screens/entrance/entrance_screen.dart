@@ -98,6 +98,11 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
     /// Successful logic
     if (result.success && result.error == null) {
+      showSnackbar(
+        context,
+        text: 'Password reset email sent',
+        icon: PhosphorIconsBold.envelopeSimple,
+      );
       return;
     }
 
