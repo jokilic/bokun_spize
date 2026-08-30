@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -94,15 +92,11 @@ class _WeightsScreenState extends State<WeightsScreen> {
           focusColor: Colors.transparent,
           shape: const CircleBorder(),
           onPressed: () {
-            unawaited(
-              HapticFeedback.lightImpact(),
-            );
-            unawaited(
-              weightsController.onAddWeightPressed(
-                context: context,
-                initialWeight: lastWeightTrack?.weight ?? 75.0,
-                weightTrackId: const Uuid().v1(),
-              ),
+            HapticFeedback.lightImpact();
+            weightsController.onAddWeightPressed(
+              context: context,
+              initialWeight: lastWeightTrack?.weight ?? 75.0,
+              weightTrackId: const Uuid().v1(),
             );
           },
           child: const PhosphorIcon(

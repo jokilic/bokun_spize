@@ -90,7 +90,7 @@ class MealsListTile extends StatelessWidget {
             ),
           ],
           child: Material(
-            color: BokunSpizeColors.white,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
               onTap: isLoading || hasError ? null : onPressed,
@@ -102,6 +102,7 @@ class MealsListTile extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
+                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
                 ),
                 padding: const EdgeInsets.all(20),
                 child: Row(
@@ -278,7 +279,7 @@ class MealsListTile extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 color: BokunSpizeColors.black.withValues(alpha: 0.7),
                               ),
-                              maxLines: 2,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                         ],
@@ -328,6 +329,7 @@ class MealsListTile extends StatelessWidget {
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
                           ),
 
                         ///
@@ -363,6 +365,7 @@ class MealsListTile extends StatelessWidget {
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
                           ),
                       ],
                     ),

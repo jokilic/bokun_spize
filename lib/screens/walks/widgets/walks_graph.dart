@@ -34,8 +34,11 @@ class WalksGraph extends StatelessWidget {
           aspectRatio: 1.8,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(listTileRadius),
-            child: ColoredBox(
-              color: BokunSpizeColors.white,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(listTileRadius),
+                color: BokunSpizeColors.white.withValues(alpha: 0.5),
+              ),
               child: visibleStepsWithDate.isEmpty
                   ? Center(
                       child: Text(

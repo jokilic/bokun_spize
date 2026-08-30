@@ -82,41 +82,47 @@ class EntranceLogin extends StatelessWidget {
             ///
             /// PASSWORD TITLE
             ///
-            Text(
-              'Password'.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: BokunSpizeColors.black.withValues(alpha: 0.5),
+            Expanded(
+              child: Text(
+                'Password'.toUpperCase(),
+                style: TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                ),
               ),
             ),
 
             ///
             /// FORGET PASSWORD
             ///
-            TextButton(
-              onPressed: emailValidated ? onForgetPasswordPressed : null,
-              style: TextButton.styleFrom(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            Expanded(
+              child: TextButton(
+                onPressed: emailValidated ? onForgetPasswordPressed : null,
+                style: TextButton.styleFrom(
+                  alignment: Alignment.centerRight,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  textStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                  ),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: BokunSpizeColors.green,
+                  disabledBackgroundColor: Colors.transparent,
+                  disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
                 ),
-                textStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w900,
+                child: Text(
+                  'Forgot?'.toUpperCase(),
+                  textAlign: TextAlign.right,
                 ),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: EdgeInsets.zero,
-                backgroundColor: Colors.transparent,
-                foregroundColor: BokunSpizeColors.green,
-                disabledBackgroundColor: Colors.transparent,
-                disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-              ),
-              child: Text(
-                'Forgot?'.toUpperCase(),
               ),
             ),
           ],

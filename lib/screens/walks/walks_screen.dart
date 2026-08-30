@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:health/health.dart';
@@ -109,12 +107,8 @@ class _WalksScreenState extends State<WalksScreen> {
                 focusColor: Colors.transparent,
                 shape: const CircleBorder(),
                 onPressed: () {
-                  unawaited(
-                    HapticFeedback.lightImpact(),
-                  );
-                  unawaited(
-                    walksController.refreshSteps(),
-                  );
+                  HapticFeedback.lightImpact();
+                  walksController.refreshSteps();
                 },
                 child: const PhosphorIcon(
                   PhosphorIconsBold.arrowClockwise,

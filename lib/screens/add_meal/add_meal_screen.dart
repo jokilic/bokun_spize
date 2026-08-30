@@ -242,8 +242,11 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               );
                             }
                           : null,
-                      highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(listTileRadius),
+                      highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      splashColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
                       child: TextFieldWidget(
                         enabled: !widget.isCopyingMeal,
                         controller: mealController.textEditingController,

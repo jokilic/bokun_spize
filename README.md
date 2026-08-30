@@ -9,7 +9,6 @@
 - [ ] Refactor app init logic
 - [ ] Replace all hardcoded `en`
 - [ ] Check if all buttons trigger vibration
-- [ ] Test all text overflows
 - [ ] Animations
 - [ ] Add meal manual
 - [ ] Add meal edit
@@ -19,7 +18,7 @@
 - [ ] Firebase Functions for AI
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
-- [ ] Make legacy build on GitHub
+- [ ] Handle login & register errors
 
 # Bokun spize 🥗
 

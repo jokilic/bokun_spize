@@ -60,155 +60,164 @@ class WeightsListTile extends StatelessWidget {
             ),
           ],
           child: Material(
-            color: BokunSpizeColors.white,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(listTileRadius),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(listTileRadius),
-              ),
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  ///
-                  /// ICON
-                  ///
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Container(
-                      padding: const EdgeInsets.all(listTileIconRadius / 4),
-                      color: BokunSpizeColors.grey,
-                      child: const PhosphorIcon(
-                        PhosphorIconsBold.personSimple,
-                        color: BokunSpizeColors.blue,
-                        size: listTileIconRadius / 2,
+            child: InkWell(
+              onTap: () {},
+              borderRadius: BorderRadius.circular(listTileRadius),
+              highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    ///
+                    /// ICON
+                    ///
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Container(
+                        padding: const EdgeInsets.all(listTileIconRadius / 4),
+                        color: BokunSpizeColors.grey,
+                        child: const PhosphorIcon(
+                          PhosphorIconsBold.personSimple,
+                          color: BokunSpizeColors.blue,
+                          size: listTileIconRadius / 2,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 20),
+                    const SizedBox(width: 20),
 
-                  ///
-                  /// TEXT
-                  ///
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ///
+                    /// TEXT
+                    ///
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ///
+                          /// TITLE
+                          ///
+                          Text(
+                            capitalizeFirstLetter(
+                                  getDateString(
+                                    date: weightTrack.dateTime,
+                                    dateFormat: 'EEE, dd.MM.',
+                                  ),
+                                ) ??
+                                '--',
+                            style: const TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: BokunSpizeColors.black,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+
+                          ///
+                          /// SUBTITLE
+                          ///
+                          Text(
+                            getDateString(
+                              date: weightTrack.dateTime,
+                              dateFormat: 'HH:mm',
+                              useTodayYesterdayTomorrow: false,
+                            ),
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+
+                    ///
+                    /// WEIGHT & CHANGE
+                    ///
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         ///
-                        /// TITLE
+                        /// WEIGHT
                         ///
-                        Text(
-                          capitalizeFirstLetter(
-                                getDateString(
-                                  date: weightTrack.dateTime,
-                                  dateFormat: 'EEE, dd.MM.',
+                        Text.rich(
+                          TextSpan(
+                            text: weightTrack.weight.toStringAsFixed(1),
+                            style: const TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              color: BokunSpizeColors.black,
+                            ),
+                            children: [
+                              const WidgetSpan(
+                                child: SizedBox(width: 4),
+                              ),
+                              TextSpan(
+                                text: 'kg',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                  letterSpacing: 1.5,
+                                  color: BokunSpizeColors.black.withValues(alpha: 0.7),
                                 ),
-                              ) ??
-                              '--',
-                          style: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: BokunSpizeColors.black,
+                              ),
+                            ],
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
 
                         ///
-                        /// SUBTITLE
+                        /// CHANGE
                         ///
-                        Text(
-                          getDateString(
-                            date: weightTrack.dateTime,
-                            dateFormat: 'HH:mm',
-                            useTodayYesterdayTomorrow: false,
+                        if (weightChange != null)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              PhosphorIcon(
+                                switch (weightChange!) {
+                                  > 0 => PhosphorIconsBold.arrowUp,
+                                  < 0 => PhosphorIconsBold.arrowDown,
+                                  _ => PhosphorIconsBold.minus,
+                                },
+                                color: changeColor,
+                                size: 14,
+                              ),
+                              const SizedBox(width: 2),
+                              Text(
+                                '${weightChange!.abs().toStringAsFixed(1)}kg',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: changeColor,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
                           ),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
                       ],
                     ),
-                  ),
-                  const SizedBox(width: 20),
-
-                  ///
-                  /// WEIGHT & CHANGE
-                  ///
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      ///
-                      /// WEIGHT
-                      ///
-                      Text.rich(
-                        TextSpan(
-                          text: weightTrack.weight.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            color: BokunSpizeColors.black,
-                          ),
-                          children: [
-                            const WidgetSpan(
-                              child: SizedBox(width: 4),
-                            ),
-                            TextSpan(
-                              text: 'kg',
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                height: 1.2,
-                                letterSpacing: 1.5,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-
-                      ///
-                      /// CHANGE
-                      ///
-                      if (weightChange != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            PhosphorIcon(
-                              switch (weightChange!) {
-                                > 0 => PhosphorIconsBold.arrowUp,
-                                < 0 => PhosphorIconsBold.arrowDown,
-                                _ => PhosphorIconsBold.minus,
-                              },
-                              color: changeColor,
-                              size: 14,
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              '${weightChange!.abs().toStringAsFixed(1)}kg',
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: changeColor,
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

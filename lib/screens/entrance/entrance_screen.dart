@@ -278,7 +278,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             ),
                             size: 24,
                           ),
-                          label: const Text('Google'),
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             shape: const StadiumBorder(),
@@ -294,6 +293,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
                             disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
                           ),
+                          label: const Text('Google'),
                         ),
                       ),
 
@@ -317,7 +317,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             ),
                             size: 24,
                           ),
-                          label: const Text('Apple'),
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             shape: const StadiumBorder(),
@@ -333,6 +332,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
                             disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
                           ),
+                          label: const Text('Apple'),
                         ),
                       ),
                     ],
