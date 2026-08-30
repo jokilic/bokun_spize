@@ -188,9 +188,7 @@ class _WalksScreenState extends State<WalksScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        onSelected: (calendarDays) => storageService.updateState(
-                          walksCalendarDays: calendarDays,
-                        ),
+                        onSelected: storageService.setWalksCalendarDays,
                         itemBuilder: (context) => walksController.graphCalendarDayOptions
                             .map(
                               (calendarDays) => PopupMenuItem<int>(

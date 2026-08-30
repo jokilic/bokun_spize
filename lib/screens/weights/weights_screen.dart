@@ -176,9 +176,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        onSelected: (calendarDays) => storageService.updateState(
-                          weightsCalendarDays: calendarDays,
-                        ),
+                        onSelected: storageService.setWeightsCalendarDays,
                         itemBuilder: (context) => weightsController.graphCalendarDayOptions
                             .map(
                               (calendarDays) => PopupMenuItem<int>(
