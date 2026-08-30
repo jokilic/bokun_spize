@@ -25,7 +25,13 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   void init() {
+    if (initialized) {
+      return;
+    }
+
     initializeGemini();
+
+    initialized = value.isNotEmpty;
   }
 
   ///
@@ -39,6 +45,8 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
     'gemini-3.6-flash',
     'gemini-3.5-flash',
   ];
+
+  bool initialized = false;
 
   final systemInstruction = '''
 You will receive a text in Croatian and / or image describing what the user ate.
@@ -286,6 +294,9 @@ JSON structure to follow strictly:
       errors.add('Nema teksta ni slike');
       return (aiResult: null, imageStoragePath: null, errors: errors);
     }
+
+    /// Models are created only when the user makes the first valid AI request
+    init();
 
     /// Generate `contents` to pass into `AI`
     final contents = [

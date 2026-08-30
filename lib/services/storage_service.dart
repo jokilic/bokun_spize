@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,15 +21,26 @@ class StorageService extends ValueNotifier<({int weightsCalendarDays, int walksC
   /// INIT
   ///
 
-  /// Gets values from storage or falls back to defaults
+  /// Gets values from `Storage` or falls back to defaults
   Future<void> init() async {
-    final weightsCalendarDays = await sharedPreferences.getInt(weightsCalendarDaysKey);
-    final walksCalendarDays = await sharedPreferences.getInt(walksCalendarDaysKey);
+    try {
+      final calendarDays = await Future.wait(
+        [
+          sharedPreferences.getInt(weightsCalendarDaysKey),
+          sharedPreferences.getInt(walksCalendarDaysKey),
+        ],
+      );
 
-    updateState(
-      weightsCalendarDays: weightsCalendarDays ?? defaultCalendarDays,
-      walksCalendarDays: walksCalendarDays ?? defaultCalendarDays,
-    );
+      updateState(
+        weightsCalendarDays: calendarDays.firstOrNull ?? defaultCalendarDays,
+        walksCalendarDays: calendarDays.lastOrNull ?? defaultCalendarDays,
+      );
+    } catch (error) {
+      log(
+        'StorageService initialization failed',
+        error: error,
+      );
+    }
   }
 
   ///

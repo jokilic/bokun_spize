@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../firebase_options.dart';
 import '../services/ai_service.dart';
 import '../services/firebase_service.dart';
 import '../services/screen_service.dart';
@@ -46,13 +52,37 @@ void unRegisterIfNotDisposed<T extends Object>({
   }
 }
 
-Future<void> initializeServices() async {
+Future<void> initializeBeforeAppStart() async => await Future.wait(
+  [
+    SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp],
+    ),
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+    ),
+    initializeDateFormatting('en'),
+    initializeFirebase(),
+  ],
+);
+
+Future<void> initializeFirebase() async {
+  if (firebase_core.Firebase.apps.isNotEmpty) {
+    return;
+  }
+
+  await firebase_core.Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
+
+/// Registers app services without performing feature-specific startup work.
+void registerServices() {
   ///
   /// FIREBASE
   ///
   if (!getIt.isRegistered<FirebaseService>()) {
-    getIt.registerSingletonAsync(
-      () async => FirebaseService(
+    getIt.registerLazySingleton(
+      () => FirebaseService(
         auth: FirebaseAuth.instance,
         firestore: FirebaseFirestore.instance,
         storage: FirebaseStorage.instance,
@@ -65,14 +95,13 @@ Future<void> initializeServices() async {
   /// STORAGE
   ///
   if (!getIt.isRegistered<StorageService>()) {
-    getIt.registerSingletonAsync(
-      () async {
-        final storage = StorageService(
-          sharedPreferences: SharedPreferencesAsync(),
-        );
-        await storage.init();
-        return storage;
-      },
+    getIt.registerLazySingleton(
+      () => StorageService(
+        sharedPreferences: SharedPreferencesAsync(),
+      ),
+      onCreated: (storage) => unawaited(
+        storage.init(),
+      ),
     );
   }
 
@@ -80,8 +109,8 @@ Future<void> initializeServices() async {
   /// SPEECH TO TEXT
   ///
   if (!getIt.isRegistered<SpeechToTextService>()) {
-    getIt.registerSingletonAsync(
-      () async => SpeechToTextService(),
+    getIt.registerLazySingleton(
+      SpeechToTextService.new,
     );
   }
 
@@ -89,12 +118,11 @@ Future<void> initializeServices() async {
   /// AI
   ///
   if (!getIt.isRegistered<AIService>()) {
-    getIt.registerSingletonAsync(
-      () async => AIService(
+    getIt.registerLazySingleton(
+      () => AIService(
         ai: FirebaseAI.googleAI(),
         firebaseService: getIt.get<FirebaseService>(),
-      )..init(),
-      dependsOn: [FirebaseService],
+      ),
     );
   }
 
@@ -102,11 +130,8 @@ Future<void> initializeServices() async {
   /// SCREEN
   ///
   if (!getIt.isRegistered<ScreenService>()) {
-    getIt.registerSingletonAsync(
-      () async => ScreenService(),
+    getIt.registerLazySingleton(
+      ScreenService.new,
     );
   }
-
-  /// Wait for initialization to finish
-  await getIt.allReady();
 }

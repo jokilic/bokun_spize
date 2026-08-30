@@ -29,7 +29,7 @@ class _MealsScreenState extends State<MealsScreen> {
     registerIfNotInitialized<MealsController>(
       () => MealsController(
         firebase: getIt.get<FirebaseService>(),
-        ai: getIt.get<AIService>(),
+        aiProvider: () => getIt.get<AIService>(),
       ),
       afterRegister: (controller) => controller.init(),
     );

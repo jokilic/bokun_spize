@@ -1,16 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'constants/colors.dart';
-import 'firebase_options.dart';
 import 'screens/entrance/entrance_screen.dart';
 import 'services/screen_service.dart';
 import 'util/dependencies.dart';
@@ -20,47 +18,30 @@ Future<void> main() async {
   /// Initialize Flutter related tasks
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// Initialize everything before starting app
-  await initializeBeforeAppStart();
+  /// Enable high refresh rate
+  unawaited(
+    setDisplayMode(),
+  );
 
-  /// Run `Bokun spize`
-  runApp(
-    AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.transparent,
+  try {
+    await initializeBeforeAppStart();
+    registerServices();
+
+    runApp(
+      AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarColor: Colors.transparent,
+        ),
+        child: BokunSpizeApp(),
       ),
-      child: BokunSpizeApp(),
-    ),
-  );
-}
-
-/// Initialize all functionality before starting app
-Future<void> initializeBeforeAppStart() async {
-  /// Make sure the orientation is only `portrait`
-  await SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp],
-  );
-
-  /// Use `edge-to-edge` display
-  await SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-  );
-
-  /// Set refresh rate to high
-  await setDisplayMode();
-
-  /// Initialize date formatting
-  await initializeDateFormatting('en');
-  await initializeDateFormatting('hr');
-
-  /// Initialize [Firebase]
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  /// Initialize services
-  await initializeServices();
+    );
+  } catch (error) {
+    log(
+      'Bokun spize startup failed',
+      error: error,
+    );
+  }
 }
 
 class BokunSpizeApp extends StatelessWidget {

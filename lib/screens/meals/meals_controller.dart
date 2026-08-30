@@ -25,11 +25,11 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   ///
 
   final FirebaseService firebase;
-  final AIService ai;
+  final AIService Function() aiProvider;
 
   MealsController({
     required this.firebase,
-    required this.ai,
+    required this.aiProvider,
   }) : super((
          activeDate: DateUtils.dateOnly(
            DateTime.now(),
@@ -255,7 +255,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     updateDate(dateTime);
 
     /// Trigger AI
-    final result = await ai.triggerAI(
+    final result = await aiProvider().triggerAI(
       textPrompt: trimmedPrompt,
       imageFile: imageFile,
     );

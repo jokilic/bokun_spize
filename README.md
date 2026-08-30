@@ -1,6 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Refactor app init logic
 - [ ] Proper loading UIs
 - [ ] Proper error UIs
 - [ ] Replace all `Colors.xxx`
