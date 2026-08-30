@@ -17,7 +17,7 @@ import '../../util/snackbars.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
-import '../add_meal/add_meal_screen.dart';
+import '../ai_add_meal/ai_add_meal_screen.dart';
 
 class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
@@ -152,11 +152,11 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
 
-    /// Show [AddMealScreen] for adding or editing `meal`
+    /// Show [AIAddMealScreen] for adding or editing `meal`
     final result = await showBlurredModalBottomSheet<MealSheetResult>(
       context: context,
       backgroundColor: BokunSpizeColors.grey,
-      builder: (context) => AddMealScreen(
+      builder: (context) => AIAddMealScreen(
         mealId: shouldEditExistingMeal ? passedMeal.id : newMealId,
         passedMeal: passedMeal,
         isCopyingMeal: isCopyingMeal,

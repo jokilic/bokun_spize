@@ -14,30 +14,30 @@ import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_widget.dart';
-import 'add_meal_controller.dart';
+import 'ai_add_meal_controller.dart';
 
-class AddMealScreen extends WatchingStatefulWidget {
+class AIAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
   final bool isCopyingMeal;
 
-  const AddMealScreen({
+  const AIAddMealScreen({
     required this.mealId,
     required this.passedMeal,
     required this.isCopyingMeal,
   });
 
   @override
-  State<AddMealScreen> createState() => _AddMealScreenState();
+  State<AIAddMealScreen> createState() => _AIAddMealScreenState();
 }
 
-class _AddMealScreenState extends State<AddMealScreen> {
+class _AIAddMealScreenState extends State<AIAddMealScreen> {
   @override
   void initState() {
     super.initState();
 
-    registerIfNotInitialized<AddMealController>(
-      () => AddMealController(
+    registerIfNotInitialized<AIAddMealController>(
+      () => AIAddMealController(
         speechToText: getIt.get<SpeechToTextService>(),
         passedMeal: widget.passedMeal,
         isCopyingMeal: widget.isCopyingMeal,
@@ -49,7 +49,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<AddMealController>(
+    unRegisterIfNotDisposed<AIAddMealController>(
       instanceName: widget.mealId,
     );
     super.dispose();
@@ -69,12 +69,12 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mealController = getIt.get<AddMealController>(
+    final mealController = getIt.get<AIAddMealController>(
       instanceName: widget.mealId,
     );
 
     /// Reference to `state`
-    final state = watchIt<AddMealController>(
+    final state = watchIt<AIAddMealController>(
       instanceName: widget.mealId,
     ).value;
     final speechToTextState = watchIt<SpeechToTextService>().value;

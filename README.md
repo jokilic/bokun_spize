@@ -7,7 +7,6 @@
 - [ ] Update database permissions
 - [ ] Icon & splash screen
 - [ ] Animations
-- [ ] [AddMealScreen] should be [AIAddMealScreen]
 - [ ] [ManualAddMealScreen] (with ability to edit meal)
 - [ ] [AccountScreen]
 - [ ] [SearchMealScreen]

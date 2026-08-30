@@ -14,7 +14,7 @@ import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
-class AddMealController extends ValueNotifier<({bool textImageValid, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
+class AIAddMealController extends ValueNotifier<({bool textImageValid, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -23,7 +23,7 @@ class AddMealController extends ValueNotifier<({bool textImageValid, String? spe
   final Meal? passedMeal;
   final bool isCopyingMeal;
 
-  AddMealController({
+  AIAddMealController({
     required this.speechToText,
     required this.passedMeal,
     required this.isCopyingMeal,
