@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/ai_service.dart';
 import '../services/firebase_service.dart';
 import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
+import '../services/storage_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -56,6 +58,21 @@ Future<void> initializeServices() async {
         storage: FirebaseStorage.instance,
         googleSignIn: GoogleSignIn.instance,
       ),
+    );
+  }
+
+  ///
+  /// STORAGE
+  ///
+  if (!getIt.isRegistered<StorageService>()) {
+    getIt.registerSingletonAsync(
+      () async {
+        final storage = StorageService(
+          sharedPreferences: SharedPreferencesAsync(),
+        );
+        await storage.init();
+        return storage;
+      },
     );
   }
 

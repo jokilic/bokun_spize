@@ -10,7 +10,6 @@ class WalksController
         ValueNotifier<
           ({
             List<StepsWithDate>? stepsWithDate,
-            int graphCalendarDays,
             bool? permissionAuthorized,
             bool isLoading,
             String? error,
@@ -26,7 +25,6 @@ class WalksController
     required this.health,
   }) : super((
          stepsWithDate: null,
-         graphCalendarDays: 7,
          permissionAuthorized: null,
          isLoading: false,
          error: null,
@@ -181,16 +179,14 @@ class WalksController
     }
   }
 
-  /// Updates `state`.
+  /// Updates `state`
   void updateState({
     List<StepsWithDate>? stepsWithDate,
-    int? graphCalendarDays,
     bool? permissionAuthorized,
     bool? isLoading,
     Object? error = nullStateNoChange,
   }) => value = (
     stepsWithDate: stepsWithDate ?? value.stepsWithDate,
-    graphCalendarDays: graphCalendarDays ?? value.graphCalendarDays,
     permissionAuthorized: permissionAuthorized ?? value.permissionAuthorized,
     isLoading: isLoading ?? value.isLoading,
     error: identical(error, nullStateNoChange) ? value.error : error as String?,

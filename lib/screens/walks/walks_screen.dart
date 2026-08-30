@@ -9,6 +9,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
+import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -47,6 +48,7 @@ class _WalksScreenState extends State<WalksScreen> {
   Widget build(BuildContext context) {
     /// References to services & controllers
     final firebaseService = getIt.get<FirebaseService>();
+    final storageService = getIt.get<StorageService>();
     final walksController = getIt.get<WalksController>();
 
     /// User name
@@ -58,7 +60,8 @@ class _WalksScreenState extends State<WalksScreen> {
     final error = state.error;
     final isLoading = state.isLoading;
     final permissionAuthorized = state.permissionAuthorized;
-    final graphCalendarDays = state.graphCalendarDays;
+
+    final graphCalendarDays = watchIt<StorageService>().value.weightsCalendarDays;
 
     final stepsWithDate = [...?state.stepsWithDate]
       ..sort(
@@ -185,8 +188,8 @@ class _WalksScreenState extends State<WalksScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        onSelected: (calendarDays) => walksController.updateState(
-                          graphCalendarDays: calendarDays,
+                        onSelected: (calendarDays) => storageService.updateState(
+                          walksCalendarDays: calendarDays,
                         ),
                         itemBuilder: (context) => walksController.graphCalendarDayOptions
                             .map(

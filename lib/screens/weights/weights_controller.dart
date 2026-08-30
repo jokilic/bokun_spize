@@ -18,7 +18,6 @@ class WeightsController
         ValueNotifier<
           ({
             List<WeightTrack> weightTracks,
-            int graphCalendarDays,
             bool isLoading,
             String? error,
           })
@@ -34,7 +33,6 @@ class WeightsController
     required this.firebase,
   }) : super((
          weightTracks: const [],
-         graphCalendarDays: 7,
          isLoading: false,
          error: null,
        ));
@@ -163,12 +161,10 @@ class WeightsController
   /// Updates `state`.
   void updateState({
     List<WeightTrack>? weightTracks,
-    int? graphCalendarDays,
     bool? isLoading,
     Object? error = nullStateNoChange,
   }) => value = (
     weightTracks: weightTracks ?? value.weightTracks,
-    graphCalendarDays: graphCalendarDays ?? value.graphCalendarDays,
     isLoading: isLoading ?? value.isLoading,
     error: identical(error, nullStateNoChange) ? value.error : error as String?,
   );

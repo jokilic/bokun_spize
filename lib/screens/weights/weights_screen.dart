@@ -9,6 +9,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
+import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -47,6 +48,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
   Widget build(BuildContext context) {
     /// References to services & controllers
     final firebaseService = getIt.get<FirebaseService>();
+    final storageService = getIt.get<StorageService>();
     final weightsController = getIt.get<WeightsController>();
 
     /// User name
@@ -58,7 +60,8 @@ class _WeightsScreenState extends State<WeightsScreen> {
     final error = state.error;
     final isLoading = state.isLoading;
     final weightTracks = state.weightTracks;
-    final graphCalendarDays = state.graphCalendarDays;
+
+    final graphCalendarDays = watchIt<StorageService>().value.weightsCalendarDays;
 
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;
@@ -173,8 +176,8 @@ class _WeightsScreenState extends State<WeightsScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        onSelected: (calendarDays) => weightsController.updateState(
-                          graphCalendarDays: calendarDays,
+                        onSelected: (calendarDays) => storageService.updateState(
+                          weightsCalendarDays: calendarDays,
                         ),
                         itemBuilder: (context) => weightsController.graphCalendarDayOptions
                             .map(
