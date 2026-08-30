@@ -20,7 +20,6 @@
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
 - [ ] Make legacy build on GitHub
-- [ ] Long-press text field to copy text
 - [ ] Dismiss keyboard when pressing buttons
 
 # Bokun spize 🥗
