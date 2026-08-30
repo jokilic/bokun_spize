@@ -7,10 +7,10 @@
 - [ ] Update database permissions
 - [ ] Icon & splash screen
 - [ ] Animations
-- [ ] Add meal manual
-- [ ] Add meal edit
-- [ ] Add Account
-- [ ] Perhaps Search
+- [ ] [AddMealScreen] should be [AIAddMealScreen]
+- [ ] [ManualAddMealScreen] (with ability to edit meal)
+- [ ] [AccountScreen]
+- [ ] [SearchMealScreen]
 - [ ] Firebase App Check
 - [ ] Firebase Functions for AI
 - [ ] Perhaps anonymous sign-in

@@ -148,35 +148,31 @@ class EntranceController
 
       /// Successful login
       if (loginResult.user != null && loginResult.error == null) {
-        /// Store `isLoggedIn` into [Hive]
-        // await hive.writeSettings(
-        //   hive.getSettings().copyWith(
-        //     isLoggedIn: true,
-        //   ),
-        // );
-
-        /// Fetch all data from [Firebase] & store into [Hive]
-        // await getFirebaseDataIntoHive();
-
         updateState(
           emailIsLoading: false,
         );
       }
       /// Not successful login
       else {
-        log('EntranceController -> emailSignInPressed() -> user == null');
+        log(
+          'Email sign in failed',
+          error: loginResult.error ?? 'User is null',
+        );
         updateState(
           emailIsLoading: false,
         );
       }
 
       return loginResult;
-    } catch (e) {
-      log('EntranceController -> emailSignInPressed() -> $e');
+    } catch (error) {
+      log(
+        'Email sign in failed',
+        error: error,
+      );
       updateState(
         emailIsLoading: false,
       );
-      return (user: null, error: '$e');
+      return (user: null, error: '$error');
     }
   }
 
@@ -202,9 +198,12 @@ class EntranceController
       return await firebase.sendPasswordResetEmail(
         email: email,
       );
-    } catch (e) {
-      log('EntranceController -> forgetPasswordPressed() -> $e');
-      return (success: false, error: '$e');
+    } catch (error) {
+      log(
+        'Password reset email failed',
+        error: error,
+      );
+      return (success: false, error: '$error');
     } finally {
       updateState(
         emailIsLoading: false,
@@ -257,19 +256,25 @@ class EntranceController
       }
       /// Not successful registration
       else {
-        log('EntranceController -> emailRegisterPressed() -> user == null');
+        log(
+          'Email registration failed',
+          error: registerResult.error ?? 'User is null',
+        );
         updateState(
           emailIsLoading: false,
         );
       }
 
       return registerResult;
-    } catch (e) {
-      log('EntranceController -> emailRegisterPressed() -> $e');
+    } catch (error) {
+      log(
+        'Email registration failed',
+        error: error,
+      );
       updateState(
         emailIsLoading: false,
       );
-      return (user: null, error: '$e');
+      return (user: null, error: '$error');
     }
   }
 
@@ -309,19 +314,25 @@ class EntranceController
       }
       /// Not successful login
       else {
-        log('EntranceController -> googleSignInPressed() -> user == null');
+        log(
+          'Google sign in failed',
+          error: loginResult.error ?? 'User is null',
+        );
         updateState(
           googleIsLoading: false,
         );
       }
 
       return loginResult;
-    } catch (e) {
-      log('EntranceController -> googleSignInPressed() -> $e');
+    } catch (error) {
+      log(
+        'Google sign in failed',
+        error: error,
+      );
       updateState(
         googleIsLoading: false,
       );
-      return (user: null, error: '$e');
+      return (user: null, error: '$error');
     }
   }
 
@@ -345,35 +356,31 @@ class EntranceController
 
       /// Successful login
       if (loginResult.user != null && loginResult.error == null) {
-        /// Store `isLoggedIn` into [Hive]
-        // await hive.writeSettings(
-        //   hive.getSettings().copyWith(
-        //     isLoggedIn: true,
-        //   ),
-        // );
-
-        /// Fetch all data from [Firebase] & store into [Hive]
-        // await getFirebaseDataIntoHive();
-
         updateState(
           appleIsLoading: false,
         );
       }
       /// Not successful login
       else {
-        log('EntranceController -> appleSignInPressed() -> user == null');
+        log(
+          'Apple sign in failed',
+          error: loginResult.error ?? 'User is null',
+        );
         updateState(
           appleIsLoading: false,
         );
       }
 
       return loginResult;
-    } catch (e) {
-      log('EntranceController -> appleSignInPressed() -> $e');
+    } catch (error) {
+      log(
+        'Apple sign in failed',
+        error: error,
+      );
       updateState(
         appleIsLoading: false,
       );
-      return (user: null, error: '$e');
+      return (user: null, error: '$error');
     }
   }
 
