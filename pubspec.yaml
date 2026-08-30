@@ -52,6 +52,7 @@ dependencies:
   permission_handler: 13.0.1
   phosphor_icons: 3.0.1
   scroll_datetime_picker: 0.2.2
+  shared_preferences: 2.5.5
   sign_in_with_apple: 8.2.0
   speech_to_text: 7.4.0
   string_similarity: 2.2.0

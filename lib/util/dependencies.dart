@@ -45,6 +45,9 @@ void unRegisterIfNotDisposed<T extends Object>({
 }
 
 Future<void> initializeServices() async {
+  ///
+  /// FIREBASE
+  ///
   if (!getIt.isRegistered<FirebaseService>()) {
     getIt.registerSingletonAsync(
       () async => FirebaseService(
@@ -56,12 +59,18 @@ Future<void> initializeServices() async {
     );
   }
 
+  ///
+  /// SPEECH TO TEXT
+  ///
   if (!getIt.isRegistered<SpeechToTextService>()) {
     getIt.registerSingletonAsync(
       () async => SpeechToTextService(),
     );
   }
 
+  ///
+  /// AI
+  ///
   if (!getIt.isRegistered<AIService>()) {
     getIt.registerSingletonAsync(
       () async => AIService(
@@ -72,6 +81,9 @@ Future<void> initializeServices() async {
     );
   }
 
+  ///
+  /// SCREEN
+  ///
   if (!getIt.isRegistered<ScreenService>()) {
     getIt.registerSingletonAsync(
       () async => ScreenService(),
