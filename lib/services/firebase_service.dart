@@ -895,14 +895,16 @@ class FirebaseService {
     try {
       await storage.ref(imageStoragePath).delete();
 
-      cache.mealImageDownloadUrls.remove(imageStoragePath);
-      await cache.mealImageDownloadUrlRequests.remove(imageStoragePath);
+      await cache.removeMealImageDownloadUrl(
+        imageStoragePath: imageStoragePath,
+      );
 
       return true;
     } on FirebaseException catch (error) {
       if (error.code == 'object-not-found') {
-        cache.mealImageDownloadUrls.remove(imageStoragePath);
-        await cache.mealImageDownloadUrlRequests.remove(imageStoragePath);
+        await cache.removeMealImageDownloadUrl(
+          imageStoragePath: imageStoragePath,
+        );
 
         return true;
       }

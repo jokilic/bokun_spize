@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
-class CacheService {
+class CacheService extends ValueNotifier<({Map<String, String> mealImageDownloadUrls, Map<String, Future<String>> mealImageDownloadUrlRequests})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -11,41 +12,50 @@ class CacheService {
 
   CacheService({
     required this.storage,
-  });
-
-  ///
-  /// VARIABLES
-  ///
-
-  /// Keeps meal image URLs available while the app is running
-  final Map<String, String> mealImageDownloadUrls = {};
-
-  /// Prevents duplicate requests for the same image
-  final Map<String, Future<String>> mealImageDownloadUrlRequests = {};
+  }) : super((
+         mealImageDownloadUrls: {},
+         mealImageDownloadUrlRequests: {},
+       ));
 
   ///
   /// METHODS
   ///
 
   /// Returns a previously resolved image URL without starting a new request
-  String? getCachedMealImageDownloadUrl({required String imageStoragePath}) => mealImageDownloadUrls[imageStoragePath];
+  String? getCachedMealImageDownloadUrl({required String imageStoragePath}) => value.mealImageDownloadUrls[imageStoragePath];
 
   /// Returns the cached image URL or resolves it from [Firebase Storage]
   Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
-    final cachedUrl = mealImageDownloadUrls[imageStoragePath];
+    final cachedUrl = value.mealImageDownloadUrls[imageStoragePath];
 
     if (cachedUrl != null) {
       return cachedUrl;
     }
 
+    Future<String>? request;
+
     try {
-      final request = mealImageDownloadUrlRequests.putIfAbsent(
-        imageStoragePath,
-        () => storage.ref(imageStoragePath).getDownloadURL(),
-      );
+      request = value.mealImageDownloadUrlRequests[imageStoragePath];
+
+      if (request == null) {
+        request = storage.ref(imageStoragePath).getDownloadURL();
+
+        updateState(
+          mealImageDownloadUrlRequests: {
+            ...value.mealImageDownloadUrlRequests,
+            imageStoragePath: request,
+          },
+        );
+      }
+
       final imageUrl = await request;
 
-      mealImageDownloadUrls[imageStoragePath] = imageUrl;
+      updateState(
+        mealImageDownloadUrls: {
+          ...value.mealImageDownloadUrls,
+          imageStoragePath: imageUrl,
+        },
+      );
       return imageUrl;
     } catch (error) {
       log(
@@ -54,7 +64,54 @@ class CacheService {
       );
       return null;
     } finally {
-      await mealImageDownloadUrlRequests.remove(imageStoragePath);
+      if (identical(value.mealImageDownloadUrlRequests[imageStoragePath], request)) {
+        final mealImageDownloadUrlRequests = Map<String, Future<String>>.from(
+          value.mealImageDownloadUrlRequests,
+        )..remove(imageStoragePath);
+
+        updateState(
+          mealImageDownloadUrlRequests: mealImageDownloadUrlRequests,
+        );
+      }
     }
   }
+
+  /// Removes a meal image URL and any request associated with it from the cache.
+  Future<void> removeMealImageDownloadUrl({required String imageStoragePath}) async {
+    final request = value.mealImageDownloadUrlRequests[imageStoragePath];
+    final mealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);
+
+    updateState(
+      mealImageDownloadUrls: mealImageDownloadUrls,
+    );
+
+    if (request != null) {
+      try {
+        await request;
+      } catch (_) {
+        /// The original request handles its own error; the cache still needs cleanup.
+      }
+    }
+
+    final completedMealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);
+    final mealImageDownloadUrlRequests = Map<String, Future<String>>.from(value.mealImageDownloadUrlRequests);
+
+    if (identical(mealImageDownloadUrlRequests[imageStoragePath], request)) {
+      await mealImageDownloadUrlRequests.remove(imageStoragePath);
+    }
+
+    updateState(
+      mealImageDownloadUrls: completedMealImageDownloadUrls,
+      mealImageDownloadUrlRequests: mealImageDownloadUrlRequests,
+    );
+  }
+
+  /// Updates `state`.
+  void updateState({
+    Map<String, String>? mealImageDownloadUrls,
+    Map<String, Future<String>>? mealImageDownloadUrlRequests,
+  }) => value = (
+    mealImageDownloadUrls: mealImageDownloadUrls ?? value.mealImageDownloadUrls,
+    mealImageDownloadUrlRequests: mealImageDownloadUrlRequests ?? value.mealImageDownloadUrlRequests,
+  );
 }
