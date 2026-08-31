@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../firebase_options.dart';
 import '../services/ai_service.dart';
+import '../services/cache_service.dart';
 import '../services/firebase_service.dart';
 import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
@@ -75,8 +76,19 @@ Future<void> initializeFirebase() async {
   );
 }
 
-/// Registers app services without performing feature-specific startup work.
+/// Registers app services without performing feature-specific startup work
 void registerServices() {
+  ///
+  /// CACHE
+  ///
+  if (!getIt.isRegistered<CacheService>()) {
+    getIt.registerLazySingleton(
+      () => CacheService(
+        storage: FirebaseStorage.instance,
+      ),
+    );
+  }
+
   ///
   /// FIREBASE
   ///
@@ -87,6 +99,7 @@ void registerServices() {
         firestore: FirebaseFirestore.instance,
         storage: FirebaseStorage.instance,
         googleSignIn: GoogleSignIn.instance,
+        cache: getIt.get<CacheService>(),
       ),
     );
   }

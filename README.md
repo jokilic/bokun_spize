@@ -1,6 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Somehow cache [Firebase Storage] download `URLs` with [FlutterCacheManager]
 - [ ] Proper loading UIs
 - [ ] Proper error UIs
 - [ ] Replace all `Colors.xxx`

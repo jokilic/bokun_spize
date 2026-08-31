@@ -2,7 +2,7 @@ import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/durations.dart';
-import '../services/firebase_service.dart';
+import '../services/cache_service.dart';
 import '../util/dependencies.dart';
 
 class MealImage extends StatefulWidget {
@@ -31,14 +31,12 @@ class MealImage extends StatefulWidget {
 
 class MealImageState extends State<MealImage> {
   late Future<String?> imageUrlFuture;
+  String? cachedImageUrl;
 
   @override
   void initState() {
     super.initState();
-
-    imageUrlFuture = getIt.get<FirebaseService>().getMealImageDownloadUrl(
-      imageStoragePath: widget.imageStoragePath,
-    );
+    getDownloadUrl();
   }
 
   @override
@@ -46,39 +44,46 @@ class MealImageState extends State<MealImage> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.imageStoragePath != widget.imageStoragePath) {
-      imageUrlFuture = getIt.get<FirebaseService>().getMealImageDownloadUrl(
-        imageStoragePath: widget.imageStoragePath,
-      );
+      getDownloadUrl();
     }
+  }
+
+  void getDownloadUrl() {
+    final cacheService = getIt.get<CacheService>();
+
+    cachedImageUrl = cacheService.getCachedMealImageDownloadUrl(
+      imageStoragePath: widget.imageStoragePath,
+    );
+    imageUrlFuture = cacheService.getMealImageDownloadUrl(
+      imageStoragePath: widget.imageStoragePath,
+    );
   }
 
   @override
   Widget build(BuildContext context) => FutureBuilder<String?>(
     future: imageUrlFuture,
+    initialData: cachedImageUrl,
     builder: (context, snapshot) {
-      if (snapshot.connectionState != ConnectionState.done) {
-        return widget.placeholderWidget;
-      }
-
       final imageUrl = snapshot.data;
 
-      if (imageUrl == null) {
-        return widget.errorWidget;
+      if (imageUrl != null) {
+        return CachedNetworkImage(
+          key: ValueKey(widget.imageStoragePath),
+          imageUrl: imageUrl,
+          cacheKey: widget.imageStoragePath,
+          fit: widget.fit,
+          height: widget.height,
+          width: widget.width,
+          placeholder: (context, url) => widget.placeholderWidget,
+          errorBuilder: (context, error, stackTrace) => widget.errorWidget,
+          fadeOutCurve: Curves.easeIn,
+          fadeInDuration: BokunSpizeDurations.animation,
+          fadeOutDuration: BokunSpizeDurations.animation,
+          placeholderFadeInDuration: BokunSpizeDurations.animation,
+        );
       }
 
-      return CachedNetworkImage(
-        key: ValueKey(widget.imageStoragePath),
-        imageUrl: imageUrl,
-        fit: widget.fit,
-        height: widget.height,
-        width: widget.width,
-        placeholder: (context, url) => widget.placeholderWidget,
-        errorBuilder: (context, error, stackTrace) => widget.errorWidget,
-        fadeOutCurve: Curves.easeIn,
-        fadeInDuration: BokunSpizeDurations.animation,
-        fadeOutDuration: BokunSpizeDurations.animation,
-        placeholderFadeInDuration: BokunSpizeDurations.animation,
-      );
+      return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : widget.placeholderWidget;
     },
   );
 }

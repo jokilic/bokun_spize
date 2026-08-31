@@ -15,6 +15,7 @@ import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
 import '../util/typedefs.dart';
 import '../util/weight_track_parse.dart';
+import 'cache_service.dart';
 
 enum AuthProvider {
   google,
@@ -32,12 +33,14 @@ class FirebaseService {
   final FirebaseFirestore firestore;
   final FirebaseStorage storage;
   final GoogleSignIn googleSignIn;
+  final CacheService cache;
 
   FirebaseService({
     required this.auth,
     required this.firestore,
     required this.storage,
     required this.googleSignIn,
+    required this.cache,
   });
 
   ///
@@ -844,19 +847,6 @@ class FirebaseService {
   /// MEAL IMAGE
   ///
 
-  /// Returns image URL
-  Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
-    try {
-      return await storage.ref(imageStoragePath).getDownloadURL();
-    } catch (error) {
-      log(
-        'Getting meal image download URL failed',
-        error: error,
-      );
-      return null;
-    }
-  }
-
   /// Uploads the image used to create a meal and returns its `Storage` path
   Future<String?> uploadMealImage({
     required File imageFile,
@@ -904,9 +894,16 @@ class FirebaseService {
   Future<bool> deleteMealImage({required String imageStoragePath}) async {
     try {
       await storage.ref(imageStoragePath).delete();
+
+      cache.mealImageDownloadUrls.remove(imageStoragePath);
+      await cache.mealImageDownloadUrlRequests.remove(imageStoragePath);
+
       return true;
     } on FirebaseException catch (error) {
       if (error.code == 'object-not-found') {
+        cache.mealImageDownloadUrls.remove(imageStoragePath);
+        await cache.mealImageDownloadUrlRequests.remove(imageStoragePath);
+
         return true;
       }
 
