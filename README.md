@@ -1,6 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Use https://pub.dev/packages/adaptive_image_picker
 - [ ] Animate number changes in [AppBars] to start from 0 and go to value
 - [ ] Somehow cache [Firebase Storage] download `URLs` with [FlutterCacheManager]
 - [ ] Proper loading UIs
