@@ -94,8 +94,18 @@ class WeightsController
       ),
     );
 
-    /// Adding failed, show error snackbar
-    if (!success) {
+    /// Add success, show snackbar
+    if (success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'Add successful',
+        icon: PhosphorIconsBold.checkCircle,
+      );
+      return;
+    }
+
+    /// Add failed, show error snackbar
+    if (context.mounted) {
       showSnackbar(
         context,
         text: 'Add failed',
@@ -113,8 +123,18 @@ class WeightsController
       weightTrack: weightTrack,
     );
 
+    /// Delete success, show snackbar
+    if (success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'Delete successful',
+        icon: PhosphorIconsBold.checkCircle,
+      );
+      return;
+    }
+
     /// Delete failed, show error snackbar
-    if (!success) {
+    if (context.mounted) {
       showSnackbar(
         context,
         text: 'Delete failed',
@@ -130,7 +150,7 @@ class WeightsController
     required String weightTrackId,
   }) async => showBlurredModalBottomSheet(
     context: context,
-    builder: (context) => WeightsAddWeightSheet(
+    builder: (sheetContext) => WeightsAddWeightSheet(
       key: ValueKey(weightTrackId),
       initialWeight: initialWeight,
       onSavePressed: ({required newWeight, required dateTime}) {
@@ -142,8 +162,8 @@ class WeightsController
           context: context,
         );
 
-        if (context.mounted) {
-          Navigator.of(context).pop();
+        if (sheetContext.mounted) {
+          Navigator.of(sheetContext).pop();
         }
       },
     ),

@@ -143,7 +143,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     if (success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Deleting successful',
+        text: 'Delete successful',
         icon: PhosphorIconsBold.checkCircle,
       );
       return;
@@ -201,21 +201,21 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       isCopyingMeal: false,
     );
 
-    /// Adding success, show snackbar
+    /// Add success, show snackbar
     if (success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Adding successful',
+        text: 'Add successful',
         icon: PhosphorIconsBold.checkCircle,
       );
       return;
     }
 
-    /// Adding failed, show error snackbar
+    /// Add failed, show error snackbar
     if (context.mounted) {
       showSnackbar(
         context,
-        text: 'Adding failed',
+        text: 'Add failed',
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -253,21 +253,21 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       isCopyingMeal: true,
     );
 
-    /// Copying success, show snackbar
+    /// Copy success, show snackbar
     if (success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Copying successful',
+        text: 'Copy successful',
         icon: PhosphorIconsBold.checkCircle,
       );
       return;
     }
 
-    /// Copying failed, show error snackbar
+    /// Copy failed, show error snackbar
     if (context.mounted) {
       showSnackbar(
         context,
-        text: 'Copying failed',
+        text: 'Copy failed',
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

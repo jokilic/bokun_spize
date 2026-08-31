@@ -14,6 +14,7 @@ import '../models/weight_track/weight_track.dart';
 import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
 import '../util/typedefs.dart';
+import '../util/weight_track_parse.dart';
 
 enum AuthProvider {
   google,
@@ -942,14 +943,7 @@ class FirebaseService {
 
       final snapshot = await query.get();
 
-      return snapshot.docs
-          .map(
-            (document) => WeightTrack.fromMap(
-              document.data(),
-              id: document.id,
-            ),
-          )
-          .toList();
+      return snapshot.docs.map(parseWeightTrackDocument).whereType<WeightTrack>().toList();
     } catch (error) {
       log(
         'Getting weight tracks failed',
@@ -974,14 +968,7 @@ class FirebaseService {
       query = query.orderBy('dateTime', descending: true);
 
       await for (final snapshot in query.snapshots()) {
-        yield snapshot.docs
-            .map(
-              (document) => WeightTrack.fromMap(
-                document.data(),
-                id: document.id,
-              ),
-            )
-            .toList();
+        yield snapshot.docs.map(parseWeightTrackDocument).whereType<WeightTrack>().toList();
       }
     } catch (error) {
       log(
