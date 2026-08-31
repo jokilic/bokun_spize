@@ -1,8 +1,10 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
 
 class WalksAppBar extends StatelessWidget {
   final String? title;
@@ -148,36 +150,36 @@ class FadingFlexibleTitle extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text.rich(
-                    TextSpan(
-                      text: currentSteps != null ? currentSteps!.round().toStringAsFixed(0) : '--',
-                      style: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2,
-                        letterSpacing: 1.5,
-                        color: BokunSpizeColors.bordeaux,
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    spacing: 4,
+                    children: [
+                      AnimatedDigitWidget(
+                        value: currentSteps ?? 0,
+                        loop: false,
+                        curve: Curves.easeIn,
+                        duration: BokunSpizeDurations.animation,
+                        textStyle: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 40,
+                          fontWeight: FontWeight.w800,
+                          height: 1.2,
+                          letterSpacing: 1.5,
+                          color: BokunSpizeColors.bordeaux,
+                        ),
                       ),
-                      children: [
-                        const WidgetSpan(
-                          child: SizedBox(width: 4),
+                      Text(
+                        'steps',
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                          letterSpacing: 1.5,
+                          color: BokunSpizeColors.black.withValues(alpha: 0.7),
                         ),
-                        TextSpan(
-                          text: 'steps',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            height: 1.2,
-                            letterSpacing: 1.5,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                 ],

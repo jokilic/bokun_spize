@@ -109,30 +109,6 @@ class _MealsScreenState extends State<MealsScreen> {
               ),
             ),
           ),
-          // const SizedBox(height: 18),
-          // SizedBox(
-          //   height: 48,
-          //   width: 48,
-          //   child: FloatingActionButton(
-          //     heroTag: const ValueKey('meals-add-ai-meal-fab'),
-          //     elevation: 0,
-          //     backgroundColor: BokunSpizeColors.green,
-          //     foregroundColor: BokunSpizeColors.white,
-          //     splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-          //     hoverColor: Colors.transparent,
-          //     focusColor: Colors.transparent,
-          //     shape: const CircleBorder(),
-          //     onPressed: () {
-          //       HapticFeedback.lightImpact();
-          //       mealsController.onAddAIMealPressed(context);
-          //     },
-          //     child: const PhosphorIcon(
-          //       PhosphorIconsBold.cpu,
-          //       color: BokunSpizeColors.white,
-          //       size: 24,
-          //     ),
-          //   ),
-          // ),
           const SizedBox(height: 18),
           SizedBox(
             height: 68,
@@ -179,7 +155,8 @@ class _MealsScreenState extends State<MealsScreen> {
               currentProtein: currentProtein,
               currentCarbs: currentCarbs,
               currentFat: currentFat,
-              dailyCalories: userMetrics?.dailyCalories,
+              // dailyCalories: userMetrics?.dailyCalories,
+              dailyCalories: 1800,
               dailyProtein: userMetrics?.dailyProtein,
               dailyCarbs: userMetrics?.dailyCarbs,
               dailyFat: userMetrics?.dailyFat,

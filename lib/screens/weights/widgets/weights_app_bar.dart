@@ -1,8 +1,10 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
 
 class WeightsAppBar extends StatelessWidget {
   final String? title;
@@ -155,36 +157,37 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   /// WEIGHT
                   ///
-                  Text.rich(
-                    TextSpan(
-                      text: currentWeight?.toStringAsFixed(1) ?? '--.-',
-                      style: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2,
-                        letterSpacing: 1.5,
-                        color: BokunSpizeColors.blue,
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    spacing: 4,
+                    children: [
+                      AnimatedDigitWidget(
+                        value: currentWeight,
+                        fractionDigits: 1,
+                        loop: false,
+                        curve: Curves.easeIn,
+                        duration: BokunSpizeDurations.animation,
+                        textStyle: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 40,
+                          fontWeight: FontWeight.w800,
+                          height: 1.2,
+                          letterSpacing: 1.5,
+                          color: BokunSpizeColors.blue,
+                        ),
                       ),
-                      children: [
-                        const WidgetSpan(
-                          child: SizedBox(width: 4),
+                      Text(
+                        'kg',
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                          letterSpacing: 1.5,
+                          color: BokunSpizeColors.black.withValues(alpha: 0.7),
                         ),
-                        TextSpan(
-                          text: 'kg',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            height: 1.2,
-                            letterSpacing: 1.5,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                 ],
