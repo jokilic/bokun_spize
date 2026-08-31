@@ -354,6 +354,23 @@ class _MealsScreenState extends State<MealsScreen> {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 12),
+                      TextButton.icon(
+                        onPressed: mealsController.retryMeals,
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.arrowClockwise,
+                          size: 20,
+                        ),
+                        label: const Text('Retry'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: BokunSpizeColors.green,
+                          textStyle: const TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

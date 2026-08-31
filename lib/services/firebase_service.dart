@@ -12,6 +12,7 @@ import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
 import '../util/meal_image.dart';
+import '../util/meal_parse.dart';
 import '../util/typedefs.dart';
 
 enum AuthProvider {
@@ -713,20 +714,7 @@ class FirebaseService {
 
       final snapshot = await query.get();
 
-      return snapshot.docs.map((document) {
-        final data = document.data();
-        final createdAt = data['createdAt'];
-
-        return Meal.fromMap(
-          data,
-          id: document.id,
-          createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
-          originalText: data['originalText'] as String?,
-          isLoading: data['isLoading'] as bool? ?? false,
-          errors: (data['errors'] as List?)?.cast<String>(),
-          imageStoragePath: data['imageStoragePath'] as String?,
-        );
-      }).toList();
+      return snapshot.docs.map(parseMealDocument).whereType<Meal>().toList();
     } catch (error) {
       log(
         'Getting meals failed',
@@ -737,53 +725,31 @@ class FirebaseService {
   }
 
   /// Listens for real-time changes to `meals` created on [date] in [Firebase]
-  Stream<List<Meal>?> listenToMeals({required DateTime date}) async* {
-    try {
-      final user = auth.currentUser;
+  Stream<List<Meal>> listenToMeals({required DateTime date}) async* {
+    final user = auth.currentUser;
 
-      if (user == null) {
-        yield null;
-        return;
-      }
+    if (user == null) {
+      throw StateError('User is not authenticated');
+    }
 
-      final startOfDay = DateTime(date.year, date.month, date.day);
-      final startOfNextDay = DateTime(date.year, date.month, date.day + 1);
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final startOfNextDay = DateTime(date.year, date.month, date.day + 1);
 
-      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('meals');
+    Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('meals');
 
-      query = query
-          .where(
-            'createdAt',
-            isGreaterThanOrEqualTo: startOfDay.toIso8601String(),
-          )
-          .where(
-            'createdAt',
-            isLessThan: startOfNextDay.toIso8601String(),
-          )
-          .orderBy('createdAt', descending: true);
+    query = query
+        .where(
+          'createdAt',
+          isGreaterThanOrEqualTo: startOfDay.toIso8601String(),
+        )
+        .where(
+          'createdAt',
+          isLessThan: startOfNextDay.toIso8601String(),
+        )
+        .orderBy('createdAt', descending: true);
 
-      await for (final snapshot in query.snapshots()) {
-        yield snapshot.docs.map((document) {
-          final data = document.data();
-          final createdAt = data['createdAt'];
-
-          return Meal.fromMap(
-            data,
-            id: document.id,
-            createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
-            originalText: data['originalText'] as String?,
-            isLoading: data['isLoading'] as bool? ?? false,
-            errors: (data['errors'] as List?)?.cast<String>(),
-            imageStoragePath: data['imageStoragePath'] as String?,
-          );
-        }).toList();
-      }
-    } catch (error) {
-      log(
-        'Listening to meals failed',
-        error: error,
-      );
-      yield null;
+    await for (final snapshot in query.snapshots()) {
+      yield snapshot.docs.map(parseMealDocument).whereType<Meal>().toList();
     }
   }
 

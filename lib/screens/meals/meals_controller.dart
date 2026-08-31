@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -61,7 +62,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   /// VARIABLES
   ///
 
-  StreamSubscription<List<Meal>?>? mealsSubscription;
+  StreamSubscription<List<Meal>>? mealsSubscription;
 
   ///
   /// METHODS
@@ -100,13 +101,33 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         }
 
         updateState(
-          meals: meals ?? const [],
+          meals: meals,
           isLoading: false,
-          error: meals == null ? 'Meals could not be loaded.' : null,
+          error: null,
+        );
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        if (!DateUtils.isSameDay(value.activeDate, date)) {
+          return;
+        }
+
+        log(
+          'Listening to meals failed',
+          error: error,
+          stackTrace: stackTrace,
+        );
+
+        updateState(
+          meals: const [],
+          isLoading: false,
+          error: 'Meals could not be loaded.',
         );
       },
     );
   }
+
+  /// Restarts the listener after an error.
+  void retryMeals() => listenToMeals(date: value.activeDate);
 
   /// Deletes [meal] from Firebase
   Future<void> deleteMeal({
