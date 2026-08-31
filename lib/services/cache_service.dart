@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,9 +10,11 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
   ///
 
   final FirebaseStorage storage;
+  final BaseCacheManager imageCacheManager;
 
   CacheService({
     required this.storage,
+    required this.imageCacheManager,
   }) : super((
          mealImageDownloadUrls: {},
          mealImageDownloadUrlRequests: {},
@@ -30,6 +33,25 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
 
     if (cachedUrl != null) {
       return cachedUrl;
+    }
+
+    try {
+      final cachedImage = await imageCacheManager.getFileFromCache(imageStoragePath);
+
+      if (cachedImage != null) {
+        updateState(
+          mealImageDownloadUrls: {
+            ...value.mealImageDownloadUrls,
+            imageStoragePath: cachedImage.originalUrl,
+          },
+        );
+        return cachedImage.originalUrl;
+      }
+    } catch (error) {
+      log(
+        'Getting meal image from the disk cache failed',
+        error: error,
+      );
     }
 
     Future<String>? request;
@@ -65,9 +87,11 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
       return null;
     } finally {
       if (identical(value.mealImageDownloadUrlRequests[imageStoragePath], request)) {
+        await value.mealImageDownloadUrlRequests.remove(imageStoragePath);
+
         final mealImageDownloadUrlRequests = Map<String, Future<String>>.from(
           value.mealImageDownloadUrlRequests,
-        )..remove(imageStoragePath);
+        );
 
         updateState(
           mealImageDownloadUrlRequests: mealImageDownloadUrlRequests,
@@ -76,7 +100,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
     }
   }
 
-  /// Removes a meal image URL and any request associated with it from the cache.
+  /// Removes a meal image URL and any request associated with it from the cache
   Future<void> removeMealImageDownloadUrl({required String imageStoragePath}) async {
     final request = value.mealImageDownloadUrlRequests[imageStoragePath];
     final mealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);
@@ -88,9 +112,33 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
     if (request != null) {
       try {
         await request;
-      } catch (_) {
-        /// The original request handles its own error; the cache still needs cleanup.
-      }
+      } catch (_) {}
+    }
+
+    final imageUrl = value.mealImageDownloadUrls[imageStoragePath];
+
+    /// Remove the image bytes cached on disk
+    try {
+      await imageCacheManager.removeFile(imageStoragePath);
+    } catch (error) {
+      log(
+        'Removing meal image from the disk cache failed',
+        error: error,
+      );
+    }
+
+    /// Remove the decoded image held by Flutter's in-memory image cache
+    try {
+      await CachedNetworkImageProvider(
+        imageUrl ?? imageStoragePath,
+        cacheKey: imageStoragePath,
+        cacheManager: imageCacheManager,
+      ).evict();
+    } catch (error) {
+      log(
+        'Removing meal image from the memory cache failed',
+        error: error,
+      );
     }
 
     final completedMealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);

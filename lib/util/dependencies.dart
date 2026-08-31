@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,6 +86,7 @@ void registerServices() {
     getIt.registerLazySingleton(
       () => CacheService(
         storage: FirebaseStorage.instance,
+        imageCacheManager: CachedNetworkImageProvider.defaultCacheManager,
       ),
     );
   }

@@ -64,6 +64,7 @@ class MealImageState extends State<MealImage> {
     future: imageUrlFuture,
     initialData: cachedImageUrl,
     builder: (context, snapshot) {
+      final cacheManager = getIt.get<CacheService>().imageCacheManager;
       final imageUrl = snapshot.data;
 
       if (imageUrl != null) {
@@ -71,6 +72,7 @@ class MealImageState extends State<MealImage> {
           key: ValueKey(widget.imageStoragePath),
           imageUrl: imageUrl,
           cacheKey: widget.imageStoragePath,
+          cacheManager: cacheManager,
           fit: widget.fit,
           height: widget.height,
           width: widget.width,
