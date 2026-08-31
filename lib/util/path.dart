@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,7 +20,6 @@ Future<Directory?> getProperDirectory() async {
 /// Copies image into app storage so it's paths remain valid later
 Future<File> persistImage({
   required String imagePath,
-  Uint8List? imageBytes,
 }) async {
   final appDirectory = await getProperDirectory();
 
@@ -30,12 +28,8 @@ Future<File> persistImage({
   }
 
   final persistedImage = File(
-    '${appDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.webp',
+    '${appDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.jpg',
   );
-
-  if (imageBytes != null) {
-    return persistedImage.writeAsBytes(imageBytes);
-  }
 
   return File(imagePath).copy(persistedImage.path);
 }

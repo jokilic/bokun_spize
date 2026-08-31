@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:adaptive_image_picker/adaptive_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../constants/colors.dart';
 import '../../models/meal/meal.dart';
@@ -94,6 +94,7 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
 
   late final textEditingController = TextEditingController();
   late final textFocusNode = FocusNode();
+  late final imagePicker = ImagePicker();
 
   ///
   /// METHODS
@@ -170,37 +171,20 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
   }
 
   /// Triggered when the user presses [Camera] button
-  Future<void> onCameraPressed(BuildContext context) async {
-    final image = await AdaptiveImagePicker.pickImage(
-      context: context,
+  Future<void> onCameraPressed() async {
+    /// Trigger `imagePicker`
+    final image = await imagePicker.pickImage(
       source: ImageSource.camera,
-      cropOptions: const CropOptions(
-        activeHandleColor: Colors.red,
-        aspectRatio: CropAspectRatio.ratio1x1,
-        availableAspectRatios: [
-          CropAspectRatio.ratio1x1,
-        ],
-        backgroundColor: Colors.yellow,
-        cancelButtonText: 'Nope',
-        doneButtonText: 'Yeah',
-        title: '16:9 Banner Crop',
-        aspectRatioPreset: CropAspectRatio.ratio16x9,
-        lockAspectRatio: true,
-      ),
-      compressionOptions: const CompressionOptions(
-        quality: 50,
-        maxHeight: 1000,
-        maxWidth: 1000,
-        format: OutputFormat.webp,
-      ),
+      imageQuality: 50,
+      maxHeight: 1000,
+      maxWidth: 1000,
     );
 
     /// Image is taken, update `state`
     if (image != null) {
       /// Copy image into app storage
       final imageFile = await persistImage(
-        imagePath: image.path!,
-        imageBytes: await image.readAsBytes(),
+        imagePath: image.path,
       );
 
       /// Update `state` with new image
@@ -214,37 +198,20 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
   }
 
   /// Triggered when the user presses [Gallery] button
-  Future<void> onGalleryPressed(BuildContext context) async {
-    /// Trigger the adaptive image picker
-    final image = await AdaptiveImagePicker.pickImage(
-      context: context,
-      cropOptions: const CropOptions(
-        activeHandleColor: Colors.red,
-        aspectRatio: CropAspectRatio.ratio1x1,
-        availableAspectRatios: [
-          CropAspectRatio.ratio1x1,
-        ],
-        backgroundColor: Colors.yellow,
-        cancelButtonText: 'Nope',
-        doneButtonText: 'Yeah',
-        title: '16:9 Banner Crop',
-        aspectRatioPreset: CropAspectRatio.ratio16x9,
-        lockAspectRatio: true,
-      ),
-      compressionOptions: const CompressionOptions(
-        quality: 50,
-        maxHeight: 1000,
-        maxWidth: 1000,
-        format: OutputFormat.webp,
-      ),
+  Future<void> onGalleryPressed() async {
+    /// Trigger `imagePicker`
+    final image = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 1000,
+      maxWidth: 1000,
     );
 
     /// Image is picked, update `state`
     if (image != null) {
       /// Copy image into app storage
       final imageFile = await persistImage(
-        imagePath: image.path!,
-        imageBytes: await image.readAsBytes(),
+        imagePath: image.path,
       );
 
       /// Update `state` with new image

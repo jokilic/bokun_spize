@@ -1,25 +1,21 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Use https://pub.dev/packages/adaptive_image_picker
-- [ ] Animate number changes in [AppBars] to start from 0 and go to value
-- [ ] Somehow cache [Firebase Storage] download `URLs` with [FlutterCacheManager]
 - [ ] Proper loading UIs
 - [ ] Proper error UIs
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Update database permissions
 - [ ] Icon & splash screen
-- [ ] Dark theme
 - [ ] Animations
 - [ ] [ManualAddMealScreen] (with ability to edit meal)
 - [ ] [AccountScreen]
 - [ ] [SearchMealScreen]
 - [ ] Firebase App Check
 - [ ] Firebase Functions for AI
-- [ ] Notifications reminding to weight
-- [ ] Notifications analyzing previous meal day
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
+- [ ] Dark theme
+- [ ] Somehow cache Firebase Storage download URLs with FlutterCacheManager
 
 # Bokun spize 🥗
 
