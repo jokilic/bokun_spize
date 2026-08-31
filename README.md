@@ -15,6 +15,7 @@
 - [ ] Perhaps anonymous sign-in
 - [ ] Make legacy build on GitHub
 - [ ] Dark theme
+- [ ] Somehow cache Firebase Storage download URLs with FlutterCacheManager
 
 # Bokun spize 🥗
 

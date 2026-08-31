@@ -94,36 +94,37 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       mealsSubscription?.cancel(),
     );
 
-    mealsSubscription = firebase.listenToMeals(date: date).listen(
-      (meals) {
-        if (!DateUtils.isSameDay(value.activeDate, date)) {
-          return;
-        }
+    mealsSubscription = firebase
+        .listenToMeals(date: date)
+        .listen(
+          (meals) {
+            if (!DateUtils.isSameDay(value.activeDate, date)) {
+              return;
+            }
 
-        updateState(
-          meals: meals,
-          isLoading: false,
-          error: null,
-        );
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        if (!DateUtils.isSameDay(value.activeDate, date)) {
-          return;
-        }
+            updateState(
+              meals: meals,
+              isLoading: false,
+              error: null,
+            );
+          },
+          onError: (error) {
+            if (!DateUtils.isSameDay(value.activeDate, date)) {
+              return;
+            }
 
-        log(
-          'Listening to meals failed',
-          error: error,
-          stackTrace: stackTrace,
-        );
+            log(
+              'Listening to meals failed',
+              error: error,
+            );
 
-        updateState(
-          meals: const [],
-          isLoading: false,
-          error: 'Meals could not be loaded.',
+            updateState(
+              meals: const [],
+              isLoading: false,
+              error: 'Meals could not be loaded.',
+            );
+          },
         );
-      },
-    );
   }
 
   /// Restarts the listener after an error.
@@ -178,13 +179,25 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       ),
     );
 
+    if (result == null) {
+      return;
+    }
+
     /// Run `AI` logic
-    await validateAndRunAILogic(
+    final success = await validateAndRunAILogic(
       result: result,
       newMealId: newMealId,
       passedMeal: null,
       isCopyingMeal: false,
     );
+
+    if (!success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'Adding failed',
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
   }
 
   /// Triggered when the user copies a `meal`
@@ -207,29 +220,41 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       ),
     );
 
+    if (result == null) {
+      return;
+    }
+
     /// Run `AI` logic
-    await validateAndRunAILogic(
+    final success = await validateAndRunAILogic(
       result: result,
       newMealId: newMealId,
       passedMeal: passedMeal,
       isCopyingMeal: true,
     );
+
+    if (!success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'Copying failed',
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
   }
 
-  Future<void> validateAndRunAILogic({
-    required ({DateTime? dateTime, bool deleteMeal, File? imageFile, String? words})? result,
+  Future<bool> validateAndRunAILogic({
+    required MealSheetResult result,
     required String newMealId,
     required Meal? passedMeal,
     required bool isCopyingMeal,
   }) async {
     /// Check if `words` and `image` exists
-    final hasWords = result?.words?.trim().isNotEmpty ?? false;
-    final hasImage = result?.imageFile != null;
+    final hasWords = result.words?.trim().isNotEmpty ?? false;
+    final hasImage = result.imageFile != null;
     final hasPersistedImage = isCopyingMeal && passedMeal?.imageStoragePath != null;
 
     /// Data missing, return
-    if ((!hasWords && !hasImage && !hasPersistedImage) || result?.dateTime == null) {
-      return;
+    if ((!hasWords && !hasImage && !hasPersistedImage) || result.dateTime == null) {
+      return false;
     }
 
     /// Copy the meal while keeping its shared image reference
@@ -237,7 +262,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       final copiedMealWritten = await firebase.writeMeal(
         newMeal: passedMeal.copyWith(
           id: newMealId,
-          createdAt: result!.dateTime,
+          createdAt: result.dateTime,
           imageStoragePath: passedMeal.imageStoragePath,
         ),
       );
@@ -248,20 +273,20 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         );
       }
 
-      return;
+      return copiedMealWritten;
     }
 
     /// Trigger AI which generates a new `meal` and stores into [Firebase]
-    await triggerAI(
+    return triggerAI(
       newMealId: newMealId,
-      textPrompt: result?.words,
-      imageFile: result?.imageFile,
-      dateTime: result!.dateTime!,
+      textPrompt: result.words,
+      imageFile: result.imageFile,
+      dateTime: result.dateTime!,
     );
   }
 
   /// Creates a loading `meal`, processes it with AI, and persists the result in [Firebase]
-  Future<void> triggerAI({
+  Future<bool> triggerAI({
     required String newMealId,
     required String? textPrompt,
     required File? imageFile,
@@ -278,62 +303,70 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       isLoading: true,
     );
 
-    /// Write `loadingMeal` to [Firebase]
-    final loadingMealWritten = await firebase.writeMeal(
-      newMeal: loadingMeal,
-    );
+    try {
+      /// Write `loadingMeal` to [Firebase]
+      final loadingMealWritten = await firebase.writeMeal(
+        newMeal: loadingMeal,
+      );
 
-    /// Return if `meal` isn't written to [Firebase]
-    if (!loadingMealWritten) {
-      return;
-    }
+      /// Return if `meal` isn't written to [Firebase]
+      if (!loadingMealWritten) {
+        return false;
+      }
 
-    /// Show the date where the newly saved meal belongs
-    updateDate(dateTime);
+      /// Show the date where the newly saved meal belongs
+      updateDate(dateTime);
 
-    /// Trigger AI
-    final result = await aiProvider().triggerAI(
-      textPrompt: trimmedPrompt,
-      imageFile: imageFile,
-    );
+      /// Trigger AI
+      final result = await aiProvider().triggerAI(
+        textPrompt: trimmedPrompt,
+        imageFile: imageFile,
+      );
 
-    /// There is no proper result, update `meal` with `errors` in [Firebase]
-    if (result.aiResult == null) {
+      /// There is no proper result, update `meal` with `errors` in [Firebase]
+      if (result.aiResult == null) {
+        await firebase.updateMeal(
+          newMeal: loadingMeal.copyWith(
+            errors: result.errors,
+            imageStoragePath: result.imageStoragePath,
+            isLoading: false,
+          ),
+        );
+        return false;
+      }
+
+      /// Parse AI response into [Meal] model
+      final meal = parseAIResultToMeal(
+        aiResult: result.aiResult!,
+        id: loadingMeal.id,
+        createdAt: loadingMeal.createdAt,
+        originalText: trimmedPrompt,
+        imageStoragePath: result.imageStoragePath,
+      );
+
+      /// Result exists, update `meal` with newly parsed values in [Firebase]
+      if (meal != null) {
+        return firebase.updateMeal(
+          newMeal: meal,
+        );
+      }
+
+      /// Some weird error happened, update `meal` with `error`
       await firebase.updateMeal(
         newMeal: loadingMeal.copyWith(
-          errors: result.errors,
+          errors: ['Obrok nije dekodiran'],
           imageStoragePath: result.imageStoragePath,
           isLoading: false,
         ),
       );
-      return;
-    }
-
-    /// Parse AI response into [Meal] model
-    final meal = parseAIResultToMeal(
-      aiResult: result.aiResult!,
-      id: loadingMeal.id,
-      createdAt: loadingMeal.createdAt,
-      originalText: trimmedPrompt,
-      imageStoragePath: result.imageStoragePath,
-    );
-
-    /// Result exists, update `meal` with newly parsed values in [Firebase]
-    if (meal != null) {
-      await firebase.updateMeal(
-        newMeal: meal,
+      return false;
+    } catch (error) {
+      log(
+        'Adding meal failed',
+        error: error,
       );
-      return;
+      return false;
     }
-
-    /// Some weird error happened, update `meal` with `error`
-    await firebase.updateMeal(
-      newMeal: loadingMeal.copyWith(
-        errors: ['Obrok nije dekodiran'],
-        imageStoragePath: result.imageStoragePath,
-        isLoading: false,
-      ),
-    );
   }
 
   /// Parses the AI response into `meal` for [Firebase]
