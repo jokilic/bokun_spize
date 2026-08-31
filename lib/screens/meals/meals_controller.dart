@@ -378,7 +378,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
       /// Result exists, update `meal` with newly parsed values in [Firebase]
       if (meal != null) {
-        return firebase.updateMeal(
+        return await firebase.updateMeal(
           newMeal: meal,
         );
       }
