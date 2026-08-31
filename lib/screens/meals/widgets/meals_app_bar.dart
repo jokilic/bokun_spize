@@ -197,6 +197,9 @@ class FadingFlexibleTitle extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: [
+                ///
+                /// VALUE
+                ///
                 AnimatedDigitWidget(
                   value: currentCalories.round(),
                   loop: false,
@@ -212,16 +215,21 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ),
                 ),
 
-                // TODO: I would like to lower this widget a bit
-                Text(
-                  dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
-                  style: TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    height: 1.2,
-                    letterSpacing: 1.5,
-                    color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                ///
+                /// DAILY VALUE & UNIT
+                ///
+                Transform.translate(
+                  offset: const Offset(0, 5),
+                  child: Text(
+                    dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                      letterSpacing: 1.5,
+                      color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                    ),
                   ),
                 ),
               ],

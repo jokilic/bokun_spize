@@ -8,14 +8,14 @@ import '../../../constants/durations.dart';
 
 class WeightsAppBar extends StatelessWidget {
   final String? title;
-  final String timeString;
+  final String dayString;
   final double? currentWeight;
   final double? weightChange;
   final int? weightChangeWithinDays;
 
   const WeightsAppBar({
     required this.title,
-    required this.timeString,
+    required this.dayString,
     required this.currentWeight,
     required this.weightChange,
     required this.weightChangeWithinDays,
@@ -79,7 +79,7 @@ class WeightsAppBar extends StatelessWidget {
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: currentWeight != null
           ? FadingFlexibleTitle(
-              timeString: timeString,
+              dayString: dayString,
               currentWeight: currentWeight,
               weightChange: weightChange,
               weightChangeWithinDays: weightChangeWithinDays,
@@ -90,13 +90,13 @@ class WeightsAppBar extends StatelessWidget {
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
-  final String timeString;
+  final String dayString;
   final double? currentWeight;
   final double? weightChange;
   final int? weightChangeWithinDays;
 
   const FadingFlexibleTitle({
-    required this.timeString,
+    required this.dayString,
     required this.currentWeight,
     required this.weightChange,
     required this.weightChangeWithinDays,
@@ -140,10 +140,10 @@ class FadingFlexibleTitle extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ///
-                  /// TITLE
+                  /// DAY
                   ///
                   Text(
-                    timeString.toUpperCase(),
+                    dayString.toUpperCase(),
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 10,
@@ -158,9 +158,12 @@ class FadingFlexibleTitle extends StatelessWidget {
                   /// WEIGHT
                   ///
                   Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 4,
                     children: [
+                      ///
+                      /// VALUE
+                      ///
                       AnimatedDigitWidget(
                         value: currentWeight,
                         fractionDigits: 1,
@@ -176,15 +179,22 @@ class FadingFlexibleTitle extends StatelessWidget {
                           color: BokunSpizeColors.blue,
                         ),
                       ),
-                      Text(
-                        'kg',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                          letterSpacing: 1.5,
-                          color: BokunSpizeColors.black.withValues(alpha: 0.7),
+
+                      ///
+                      /// UNIT
+                      ///
+                      Transform.translate(
+                        offset: const Offset(0, 5),
+                        child: Text(
+                          'kg',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            letterSpacing: 1.5,
+                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                          ),
                         ),
                       ),
                     ],

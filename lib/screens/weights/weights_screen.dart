@@ -117,7 +117,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             ///
             WeightsAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              timeString: lastWeightTrack != null
+              dayString: lastWeightTrack != null
                   ? getDateString(
                       date: lastWeightTrack.dateTime,
                       dateFormat: 'EEEE, dd.MM.yyyy.',

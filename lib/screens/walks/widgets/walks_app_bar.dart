@@ -8,14 +8,14 @@ import '../../../constants/durations.dart';
 
 class WalksAppBar extends StatelessWidget {
   final String? title;
-  final String timeString;
+  final String dayString;
   final int? currentSteps;
   final double? stepsChange;
   final int? stepsChangeWithinDays;
 
   const WalksAppBar({
     required this.title,
-    required this.timeString,
+    required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
     required this.stepsChangeWithinDays,
@@ -79,7 +79,7 @@ class WalksAppBar extends StatelessWidget {
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: currentSteps != null
           ? FadingFlexibleTitle(
-              timeString: timeString,
+              dayString: dayString,
               currentSteps: currentSteps,
               stepsChange: stepsChange,
               stepsChangeWithinDays: stepsChangeWithinDays,
@@ -90,13 +90,13 @@ class WalksAppBar extends StatelessWidget {
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
-  final String timeString;
+  final String dayString;
   final int? currentSteps;
   final double? stepsChange;
   final int? stepsChangeWithinDays;
 
   const FadingFlexibleTitle({
-    required this.timeString,
+    required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
     required this.stepsChangeWithinDays,
@@ -139,8 +139,11 @@ class FadingFlexibleTitle extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  ///
+                  /// DAY
+                  ///
                   Text(
-                    timeString.toUpperCase(),
+                    dayString.toUpperCase(),
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 10,
@@ -150,10 +153,17 @@ class FadingFlexibleTitle extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
+
+                  ///
+                  /// STEPS
+                  ///
                   Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 4,
                     children: [
+                      ///
+                      /// VALUE
+                      ///
                       AnimatedDigitWidget(
                         value: currentSteps ?? 0,
                         loop: false,
@@ -168,15 +178,22 @@ class FadingFlexibleTitle extends StatelessWidget {
                           color: BokunSpizeColors.bordeaux,
                         ),
                       ),
-                      Text(
-                        'steps',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                          letterSpacing: 1.5,
-                          color: BokunSpizeColors.black.withValues(alpha: 0.7),
+
+                      ///
+                      /// UNIT
+                      ///
+                      Transform.translate(
+                        offset: const Offset(0, 5),
+                        child: Text(
+                          'steps',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            letterSpacing: 1.5,
+                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                          ),
                         ),
                       ),
                     ],

@@ -129,7 +129,7 @@ class _WalksScreenState extends State<WalksScreen> {
             ///
             WalksAppBar(
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              timeString: latestStepsWithDate != null
+              dayString: latestStepsWithDate != null
                   ? getDateString(
                       date: latestStepsWithDate.dateTime,
                       dateFormat: 'EEEE, dd.MM.yyyy.',
