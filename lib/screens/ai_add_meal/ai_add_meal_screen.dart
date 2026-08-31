@@ -567,7 +567,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 children: [
                                   IconButton(
                                     onPressed: () => handleOnPressed(
-                                      onPressed: mealController.onCameraPressed,
+                                      onPressed: () => mealController.onCameraPressed(context),
                                     ),
                                     icon: const PhosphorIcon(
                                       PhosphorIconsBold.cameraPlus,
@@ -610,7 +610,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 children: [
                                   IconButton(
                                     onPressed: () => handleOnPressed(
-                                      onPressed: mealController.onGalleryPressed,
+                                      onPressed: () => mealController.onGalleryPressed(context),
                                     ),
                                     icon: const PhosphorIcon(
                                       PhosphorIconsBold.images,
