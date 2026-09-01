@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
@@ -9,10 +10,134 @@ import '../../../util/date_time.dart';
 import '../../../util/steps_with_date.dart';
 
 class WalksGraph extends StatelessWidget {
+  final Function(int newDays) onSelectedDays;
+  final List<int> dayEntries;
   final List<StepsWithDate> stepsWithDate;
   final int calendarDays;
 
   const WalksGraph({
+    required this.onSelectedDays,
+    required this.dayEntries,
+    required this.stepsWithDate,
+    required this.calendarDays,
+  });
+
+  @override
+  Widget build(BuildContext context) => SliverMainAxisGroup(
+    slivers: [
+      SliverPadding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal,
+          vertical: 12,
+        ),
+        sliver: SliverToBoxAdapter(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ///
+              /// GRAPH TITLE
+              ///
+              const Expanded(
+                child: Text(
+                  'Recent progress',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
+                ),
+              ),
+
+              ///
+              /// GRAPH BUTTON
+              ///
+              PopupMenuButton<int>(
+                menuPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                position: PopupMenuPosition.under,
+                offset: const Offset(0, 8),
+                elevation: 0,
+                color: BokunSpizeColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                onSelected: onSelectedDays,
+                itemBuilder: (context) => dayEntries
+                    .map(
+                      (calendarDays) => PopupMenuItem<int>(
+                        value: calendarDays,
+                        child: Text(
+                          '$calendarDays days',
+                          style: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: BokunSpizeColors.black,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                    shape: const StadiumBorder(),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const PhosphorIcon(
+                          PhosphorIconsBold.caretDown,
+                          color: BokunSpizeColors.black,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '$calendarDays days',
+                          style: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 16,
+                            height: 1.6,
+                            fontWeight: FontWeight.w600,
+                            color: BokunSpizeColors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      ///
+      /// GRAPH
+      ///
+      WalksGraphWidget(
+        stepsWithDate: stepsWithDate,
+        calendarDays: calendarDays,
+      ),
+      const SliverToBoxAdapter(
+        child: SizedBox(height: 20),
+      ),
+    ],
+  );
+}
+
+class WalksGraphWidget extends StatelessWidget {
+  final List<StepsWithDate> stepsWithDate;
+  final int calendarDays;
+
+  const WalksGraphWidget({
     required this.stepsWithDate,
     required this.calendarDays,
   });
