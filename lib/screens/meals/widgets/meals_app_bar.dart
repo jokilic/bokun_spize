@@ -1,5 +1,6 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
@@ -7,6 +8,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 
 class MealsAppBar extends StatelessWidget {
+  final bool isLoading;
   final String? title;
   final String dayString;
   final double currentCalories;
@@ -19,6 +21,7 @@ class MealsAppBar extends StatelessWidget {
   final double? dailyFat;
 
   const MealsAppBar({
+    required this.isLoading,
     required this.title,
     required this.dayString,
     required this.currentCalories,
@@ -88,6 +91,7 @@ class MealsAppBar extends StatelessWidget {
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: FadingFlexibleTitle(
+        isLoading: isLoading,
         dayString: dayString,
         currentCalories: currentCalories,
         currentProtein: currentProtein,
@@ -103,6 +107,7 @@ class MealsAppBar extends StatelessWidget {
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
+  final bool isLoading;
   final String dayString;
   final double currentCalories;
   final double currentProtein;
@@ -114,6 +119,7 @@ class FadingFlexibleTitle extends StatelessWidget {
   final double? dailyFat;
 
   const FadingFlexibleTitle({
+    required this.isLoading,
     required this.dayString,
     required this.currentCalories,
     required this.currentProtein,
@@ -167,6 +173,8 @@ class FadingFlexibleTitle extends StatelessWidget {
         ? 1.0
         : 0.0;
 
+    // TODO: Can we animate the changes in this widget, so it doesn't just jump when changed?
+
     return Opacity(
       opacity: opacity,
       child: Transform.translate(
@@ -176,81 +184,173 @@ class FadingFlexibleTitle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///
+            /// DAY LOADING
+            ///
+            if (isLoading)
+              Animate(
+                onPlay: (controller) => controller.loop(
+                  reverse: true,
+                  min: 0.6,
+                ),
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.shimmer,
+                    curve: Curves.easeIn,
+                  ),
+                ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  ),
+                  height: 10,
+                  width: 64,
+                ),
+              )
+            ///
             /// DAY
             ///
-            Text(
-              dayString.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.6,
-                color: BokunSpizeColors.black.withValues(alpha: 0.7),
+            else
+              Text(
+                dayString.toUpperCase(),
+                style: TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.6,
+                  color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
+            SizedBox(height: isLoading ? 10 : 2),
 
             ///
             /// CALORIES
             ///
             Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
+              crossAxisAlignment: isLoading ? WrapCrossAlignment.end : WrapCrossAlignment.center,
               spacing: 4,
               children: [
                 ///
+                /// VALUE LOADING
+                ///
+                if (isLoading)
+                  Animate(
+                    onPlay: (controller) => controller.loop(
+                      reverse: true,
+                      min: 0.6,
+                    ),
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.shimmer,
+                        curve: Curves.easeIn,
+                      ),
+                    ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: BokunSpizeColors.green.withValues(alpha: 0.5),
+                      ),
+                      height: 34,
+                      width: 28,
+                    ),
+                  )
+                ///
                 /// VALUE
                 ///
-                AnimatedDigitWidget(
-                  value: currentCalories.round(),
-                  loop: false,
-                  curve: Curves.easeIn,
-                  duration: BokunSpizeDurations.animation,
-                  textStyle: const TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 40,
-                    fontWeight: FontWeight.w800,
-                    height: 1.2,
-                    letterSpacing: 1.5,
-                    color: BokunSpizeColors.green,
+                else
+                  AnimatedDigitWidget(
+                    value: currentCalories.round(),
+                    loop: false,
+                    curve: Curves.easeIn,
+                    duration: BokunSpizeDurations.animation,
+                    textStyle: const TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 40,
+                      fontWeight: FontWeight.w800,
+                      height: 1.2,
+                      letterSpacing: 1.5,
+                      color: BokunSpizeColors.green,
+                    ),
                   ),
-                ),
 
+                ///
+                /// DAILY VALUE & UNIT LOADING
+                ///
+                if (isLoading)
+                  Animate(
+                    onPlay: (controller) => controller.loop(
+                      reverse: true,
+                      min: 0.6,
+                    ),
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.shimmer,
+                        curve: Curves.easeIn,
+                      ),
+                    ],
+                    child: Transform.translate(
+                      offset: const Offset(0, -2),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                        ),
+                        height: 10,
+                        width: 32,
+                      ),
+                    ),
+                  )
                 ///
                 /// DAILY VALUE & UNIT
                 ///
-                Transform.translate(
-                  offset: const Offset(0, 5),
-                  child: Text(
-                    dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      height: 1.2,
-                      letterSpacing: 1.5,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                else
+                  Transform.translate(
+                    offset: const Offset(0, 5),
+                    child: Text(
+                      dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        height: 1.2,
+                        letterSpacing: 1.5,
+                        color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: isLoading ? 14 : 4),
 
             ///
             /// NUTRITION VALUES
             ///
-            SizedBox(
-              height: nutritionValuesHeight,
-              child: Row(
-                spacing: 12,
-                children: [
-                  ///
-                  /// PROTEIN
-                  ///
-                  Expanded(
-                    flex: proteinFlex,
-                    child: Opacity(
-                      opacity: currentProtein.round() > 0 ? 1 : 0,
+            Animate(
+              onPlay: (controller) {
+                if (isLoading) {
+                  controller.loop(
+                    reverse: true,
+                    min: 0.6,
+                  );
+                }
+              },
+              effects: [
+                if (isLoading)
+                  const FadeEffect(
+                    duration: BokunSpizeDurations.shimmer,
+                    curve: Curves.easeIn,
+                  ),
+              ],
+              child: SizedBox(
+                height: nutritionValuesHeight,
+                child: Row(
+                  spacing: 12,
+                  children: [
+                    ///
+                    /// PROTEIN
+                    ///
+                    Expanded(
+                      flex: proteinFlex,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: ColoredBox(
@@ -268,15 +368,12 @@ class FadingFlexibleTitle extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
 
-                  ///
-                  /// CARBS
-                  ///
-                  Expanded(
-                    flex: carbsFlex,
-                    child: Opacity(
-                      opacity: currentCarbs.round() > 0 ? 1 : 0,
+                    ///
+                    /// CARBS
+                    ///
+                    Expanded(
+                      flex: carbsFlex,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: ColoredBox(
@@ -294,15 +391,12 @@ class FadingFlexibleTitle extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
 
-                  ///
-                  /// FATS
-                  ///
-                  Expanded(
-                    flex: fatFlex,
-                    child: Opacity(
-                      opacity: currentFat.round() > 0 ? 1 : 0,
+                    ///
+                    /// FATS
+                    ///
+                    Expanded(
+                      flex: fatFlex,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: ColoredBox(
@@ -320,8 +414,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 6),
@@ -329,14 +423,28 @@ class FadingFlexibleTitle extends StatelessWidget {
             ///
             /// NUTRITION TEXT
             ///
-            Row(
-              children: [
-                ///
-                /// PROTEIN
-                ///
-                Expanded(
-                  child: Opacity(
-                    opacity: currentProtein.round() > 0 ? 1 : 0,
+            Animate(
+              onPlay: (controller) {
+                if (isLoading) {
+                  controller.loop(
+                    reverse: true,
+                    min: 0.6,
+                  );
+                }
+              },
+              effects: [
+                if (isLoading)
+                  const FadeEffect(
+                    duration: BokunSpizeDurations.shimmer,
+                    curve: Curves.easeIn,
+                  ),
+              ],
+              child: Row(
+                children: [
+                  ///
+                  /// PROTEIN
+                  ///
+                  Expanded(
                     child: Row(
                       children: [
                         Container(
@@ -364,14 +472,11 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
 
-                ///
-                /// CARBS
-                ///
-                Expanded(
-                  child: Opacity(
-                    opacity: currentCarbs.round() > 0 ? 1 : 0,
+                  ///
+                  /// CARBS
+                  ///
+                  Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -400,14 +505,11 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
 
-                ///
-                /// FATS
-                ///
-                Expanded(
-                  child: Opacity(
-                    opacity: currentFat.round() > 0 ? 1 : 0,
+                  ///
+                  /// FATS
+                  ///
+                  Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -436,8 +538,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 8),
           ],

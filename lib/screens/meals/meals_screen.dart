@@ -4,7 +4,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
@@ -57,14 +56,9 @@ class _MealsScreenState extends State<MealsScreen> {
     final state = watchIt<MealsController>().value;
 
     final activeDate = state.activeDate;
-    // final error = state.error;
-    // final isLoading = state.isLoading;
-    // final meals = state.meals;
-
-    // TODO: Remove these hardcoded values
-    final error = 'Erroro has happendo';
+    final error = state.error;
     final isLoading = state.isLoading;
-    final meals = <Meal>[];
+    final meals = state.meals;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
@@ -154,6 +148,7 @@ class _MealsScreenState extends State<MealsScreen> {
             /// APP BAR
             ///
             MealsAppBar(
+              isLoading: isLoading,
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               dayString: getDateString(
                 date: activeDate,
