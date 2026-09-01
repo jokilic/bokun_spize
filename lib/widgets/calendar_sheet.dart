@@ -6,6 +6,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../constants/durations.dart';
 import '../util/spacing.dart';
 
 class CalendarSheet extends StatefulWidget {
@@ -121,110 +122,115 @@ class _CalendarSheetState extends State<CalendarSheet> {
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
-            child: CalendarDatePicker2(
-              value: [widget.dateValue],
-              onValueChanged: (newValue) {
-                HapticFeedback.lightImpact();
+            child: AnimatedSize(
+              alignment: Alignment.topCenter,
+              duration: BokunSpizeDurations.animation,
+              curve: Curves.easeInOutCubic,
+              child: CalendarDatePicker2(
+                value: [widget.dateValue],
+                onValueChanged: (newValue) {
+                  HapticFeedback.lightImpact();
 
-                final chosenDate = newValue.firstOrNull;
+                  final chosenDate = newValue.firstOrNull;
 
-                if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
-                  selectedDateTime = chosenDate;
-                }
-              },
-              config: CalendarDatePicker2Config(
-                calendarViewScrollPhysics: const BouncingScrollPhysics(),
-                calendarType: CalendarDatePicker2Type.single,
-                dynamicCalendarRows: true,
-                customModePickerIcon: const SizedBox.shrink(),
-                weekdayLabelTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.black,
-                ),
-                controlsTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.black,
-                ),
-                todayTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.black,
-                ),
-                dayTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.black,
-                ),
-                selectedDayTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.white,
-                ),
-                monthTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: BokunSpizeColors.black,
-                ),
-                selectedMonthTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.white,
-                ),
-                yearTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: BokunSpizeColors.black,
-                ),
-                selectedYearTextStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: BokunSpizeColors.white,
-                ),
-                selectedDayHighlightColor: widget.primaryColor,
-                daySplashColor: widget.primaryColor,
-                dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
-                  var currentDecoration = decoration;
-
-                  if ((isToday ?? false) && !(isSelected ?? false)) {
-                    currentDecoration = BoxDecoration(
-                      border: Border.all(
-                        color: BokunSpizeColors.black,
-                        width: 2,
-                      ),
-                      shape: BoxShape.circle,
-                    );
+                  if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
+                    selectedDateTime = chosenDate;
                   }
-
-                  return Container(
-                    alignment: Alignment.center,
-                    decoration: currentDecoration,
-                    child: Text(
-                      DateFormat.d().format(date),
-                      style: textStyle,
-                    ),
-                  );
                 },
-                firstDayOfWeek: DateTime.monday,
-                lastMonthIcon: const PhosphorIcon(
-                  PhosphorIconsBold.caretLeft,
-                  color: BokunSpizeColors.black,
-                  size: 22,
-                ),
-                nextMonthIcon: const PhosphorIcon(
-                  PhosphorIconsBold.caretRight,
-                  color: BokunSpizeColors.black,
-                  size: 22,
+                config: CalendarDatePicker2Config(
+                  calendarViewScrollPhysics: const BouncingScrollPhysics(),
+                  calendarType: CalendarDatePicker2Type.single,
+                  dynamicCalendarRows: true,
+                  customModePickerIcon: const SizedBox.shrink(),
+                  weekdayLabelTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.black,
+                  ),
+                  controlsTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.black,
+                  ),
+                  todayTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.black,
+                  ),
+                  dayTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: BokunSpizeColors.black,
+                  ),
+                  selectedDayTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.white,
+                  ),
+                  monthTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: BokunSpizeColors.black,
+                  ),
+                  selectedMonthTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.white,
+                  ),
+                  yearTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: BokunSpizeColors.black,
+                  ),
+                  selectedYearTextStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: BokunSpizeColors.white,
+                  ),
+                  selectedDayHighlightColor: widget.primaryColor,
+                  daySplashColor: widget.primaryColor,
+                  dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
+                    var currentDecoration = decoration;
+
+                    if ((isToday ?? false) && !(isSelected ?? false)) {
+                      currentDecoration = BoxDecoration(
+                        border: Border.all(
+                          color: BokunSpizeColors.black,
+                          width: 2,
+                        ),
+                        shape: BoxShape.circle,
+                      );
+                    }
+
+                    return Container(
+                      alignment: Alignment.center,
+                      decoration: currentDecoration,
+                      child: Text(
+                        DateFormat.d().format(date),
+                        style: textStyle,
+                      ),
+                    );
+                  },
+                  firstDayOfWeek: DateTime.monday,
+                  lastMonthIcon: const PhosphorIcon(
+                    PhosphorIconsBold.caretLeft,
+                    color: BokunSpizeColors.black,
+                    size: 22,
+                  ),
+                  nextMonthIcon: const PhosphorIcon(
+                    PhosphorIconsBold.caretRight,
+                    color: BokunSpizeColors.black,
+                    size: 22,
+                  ),
                 ),
               ),
             ),

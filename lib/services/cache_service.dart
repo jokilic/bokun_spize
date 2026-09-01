@@ -29,15 +29,21 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
 
   /// Returns the cached image URL or resolves it from [Firebase Storage]
   Future<String?> getMealImageDownloadUrl({required String imageStoragePath}) async {
-    final cachedUrl = value.mealImageDownloadUrls[imageStoragePath];
+    /// Get cached URL
+    final cachedUrl = getCachedMealImageDownloadUrl(
+      imageStoragePath: imageStoragePath,
+    );
 
+    /// Cached URL exists, return it
     if (cachedUrl != null) {
       return cachedUrl;
     }
 
     try {
+      /// Try to get file from `cache`
       final cachedImage = await imageCacheManager.getFileFromCache(imageStoragePath);
 
+      /// Cached URL exists, update `state` and return it
       if (cachedImage != null) {
         updateState(
           mealImageDownloadUrls: {
@@ -45,6 +51,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
             imageStoragePath: cachedImage.originalUrl,
           },
         );
+
         return cachedImage.originalUrl;
       }
     } catch (error) {
@@ -56,6 +63,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
 
     Future<String>? request;
 
+    /// Cached URL or file don't exist, trigger a request from [Firebase Storage]
     try {
       request = value.mealImageDownloadUrlRequests[imageStoragePath];
 
@@ -78,6 +86,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
           imageStoragePath: imageUrl,
         },
       );
+
       return imageUrl;
     } catch (error) {
       log(
@@ -86,6 +95,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
       );
       return null;
     } finally {
+      /// This avoids accidentally deleting a newer request that might have started for the same path
       if (identical(value.mealImageDownloadUrlRequests[imageStoragePath], request)) {
         await value.mealImageDownloadUrlRequests.remove(imageStoragePath);
 
@@ -100,7 +110,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
     }
   }
 
-  /// Removes a meal image URL and any request associated with it from the cache
+  /// Remove meal image URL and any request from cache
   Future<void> removeMealImageDownloadUrl({required String imageStoragePath}) async {
     final request = value.mealImageDownloadUrlRequests[imageStoragePath];
     final mealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);
@@ -127,7 +137,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
       );
     }
 
-    /// Remove the decoded image held by Flutter's in-memory image cache
+    /// Remove the decoded image
     try {
       await CachedNetworkImageProvider(
         imageUrl ?? imageStoragePath,
@@ -144,6 +154,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
     final completedMealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);
     final mealImageDownloadUrlRequests = Map<String, Future<String>>.from(value.mealImageDownloadUrlRequests);
 
+    /// This avoids accidentally deleting a newer request that might have started for the same path
     if (identical(mealImageDownloadUrlRequests[imageStoragePath], request)) {
       await mealImageDownloadUrlRequests.remove(imageStoragePath);
     }
