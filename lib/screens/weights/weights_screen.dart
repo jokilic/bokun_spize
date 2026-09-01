@@ -173,7 +173,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             ///
             /// ERROR
             ///
-            if (error != null)
+            if (!isLoading && error != null)
               WeightsError(
                 error: error,
                 onRetryPressed: weightsController.retryWeightTracks,

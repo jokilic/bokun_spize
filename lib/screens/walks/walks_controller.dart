@@ -99,6 +99,8 @@ class WalksController
   /// Requests permission and fetches the total steps recorded
   Future<void> refreshSteps() async {
     updateState(
+      stepsWithDate: const [],
+      permissionAuthorized: null,
       isLoading: true,
       error: null,
     );
@@ -179,15 +181,18 @@ class WalksController
     }
   }
 
+  /// Fetches step data again after an error
+  Future<void> retrySteps() => refreshSteps();
+
   /// Updates `state`
   void updateState({
     List<StepsWithDate>? stepsWithDate,
-    bool? permissionAuthorized,
+    Object? permissionAuthorized = nullStateNoChange,
     bool? isLoading,
     Object? error = nullStateNoChange,
   }) => value = (
     stepsWithDate: stepsWithDate ?? value.stepsWithDate,
-    permissionAuthorized: permissionAuthorized ?? value.permissionAuthorized,
+    permissionAuthorized: identical(permissionAuthorized, nullStateNoChange) ? value.permissionAuthorized : permissionAuthorized as bool?,
     isLoading: isLoading ?? value.isLoading,
     error: identical(error, nullStateNoChange) ? value.error : error as String?,
   );

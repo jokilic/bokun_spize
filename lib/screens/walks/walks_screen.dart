@@ -5,7 +5,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
@@ -18,7 +17,6 @@ import 'widgets/walks_app_bar.dart';
 import 'widgets/walks_empty.dart';
 import 'widgets/walks_error.dart';
 import 'widgets/walks_graph.dart';
-import 'widgets/walks_list_tile.dart';
 import 'widgets/walks_loading.dart';
 import 'widgets/walks_success.dart';
 
@@ -180,11 +178,11 @@ class _WalksScreenState extends State<WalksScreen> {
             ///
             /// ERROR
             ///
-            if (error != null || (permissionAuthorized != null && !permissionAuthorized))
+            if (!isLoading && (error != null || (permissionAuthorized != null && !permissionAuthorized)))
               WalksError(
                 error: error ?? 'Proper permission was not granted',
                 permissionAuthorized: permissionAuthorized,
-                onRetryPressed: () {},
+                onRetryPressed: walksController.retrySteps,
               ),
 
             ///

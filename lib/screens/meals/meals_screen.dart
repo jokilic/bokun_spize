@@ -206,7 +206,7 @@ class _MealsScreenState extends State<MealsScreen> {
             ///
             /// ERROR
             ///
-            if (error != null)
+            if (!isLoading && error != null)
               MealsError(
                 error: error,
                 onRetryPressed: mealsController.retryMeals,
