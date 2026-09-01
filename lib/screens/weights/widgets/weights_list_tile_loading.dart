@@ -4,7 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
-import '../../../util/color.dart';
 
 class WeightsListTileLoading extends StatelessWidget {
   @override
