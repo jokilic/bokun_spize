@@ -216,15 +216,20 @@ class WeightsGraphWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(listTileRadius),
             child: Animate(
-              onPlay: (controller) => controller.loop(
-                reverse: true,
-                min: 0.6,
-              ),
-              effects: const [
-                FadeEffect(
-                  duration: BokunSpizeDurations.shimmer,
-                  curve: Curves.easeIn,
-                ),
+              onPlay: (controller) {
+                if (isLoading) {
+                  controller.loop(
+                    reverse: true,
+                    min: 0.6,
+                  );
+                }
+              },
+              effects: [
+                if (isLoading)
+                  const FadeEffect(
+                    duration: BokunSpizeDurations.shimmer,
+                    curve: Curves.easeIn,
+                  ),
               ],
               child: Container(
                 decoration: BoxDecoration(

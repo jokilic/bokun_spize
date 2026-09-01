@@ -130,6 +130,7 @@ class _WalksScreenState extends State<WalksScreen> {
             /// APP BAR
             ///
             WalksAppBar(
+              isLoading: isLoading,
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               dayString: latestStepsWithDate != null
                   ? getDateString(
@@ -145,8 +146,9 @@ class _WalksScreenState extends State<WalksScreen> {
             ///
             /// GRAPH
             ///
-            if (completedStepsWithDate.length >= 2)
+            if (completedStepsWithDate.length >= 2 || isLoading)
               WalksGraph(
+                isLoading: isLoading,
                 onSelectedDays: (newWalksCalendarDays) {
                   HapticFeedback.lightImpact();
                   storageService.setWalksCalendarDays(newWalksCalendarDays);

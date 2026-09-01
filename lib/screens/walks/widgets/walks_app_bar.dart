@@ -1,5 +1,6 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
@@ -7,6 +8,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 
 class WalksAppBar extends StatelessWidget {
+  final bool isLoading;
   final String? title;
   final String dayString;
   final int? currentSteps;
@@ -14,6 +16,7 @@ class WalksAppBar extends StatelessWidget {
   final int? stepsChangeWithinDays;
 
   const WalksAppBar({
+    required this.isLoading,
     required this.title,
     required this.dayString,
     required this.currentSteps,
@@ -77,25 +80,26 @@ class WalksAppBar extends StatelessWidget {
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-      title: currentSteps != null
-          ? FadingFlexibleTitle(
-              dayString: dayString,
-              currentSteps: currentSteps,
-              stepsChange: stepsChange,
-              stepsChangeWithinDays: stepsChangeWithinDays,
-            )
-          : null,
+      title: FadingFlexibleTitle(
+        isLoading: isLoading,
+        dayString: dayString,
+        currentSteps: currentSteps,
+        stepsChange: stepsChange,
+        stepsChangeWithinDays: stepsChangeWithinDays,
+      ),
     ),
   );
 }
 
 class FadingFlexibleTitle extends StatelessWidget {
+  final bool isLoading;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
   final int? stepsChangeWithinDays;
 
   const FadingFlexibleTitle({
+    required this.isLoading,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -140,65 +144,143 @@ class FadingFlexibleTitle extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ///
+                  /// DAY LOADING
+                  ///
+                  if (isLoading)
+                    Animate(
+                      onPlay: (controller) => controller.loop(
+                        reverse: true,
+                        min: 0.6,
+                      ),
+                      effects: const [
+                        FadeEffect(
+                          duration: BokunSpizeDurations.shimmer,
+                          curve: Curves.easeIn,
+                        ),
+                      ],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                        ),
+                        height: 10,
+                        width: 64,
+                      ),
+                    )
+                  ///
                   /// DAY
                   ///
-                  Text(
-                    dayString.toUpperCase(),
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.6,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                  else
+                    Text(
+                      dayString.toUpperCase(),
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.6,
+                        color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: isLoading ? 10 : 2),
 
                   ///
                   /// STEPS
                   ///
                   Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                    crossAxisAlignment: isLoading ? WrapCrossAlignment.end : WrapCrossAlignment.center,
                     spacing: 4,
                     children: [
                       ///
+                      /// VALUE LOADING
+                      ///
+                      if (isLoading)
+                        Animate(
+                          onPlay: (controller) => controller.loop(
+                            reverse: true,
+                            min: 0.6,
+                          ),
+                          effects: const [
+                            FadeEffect(
+                              duration: BokunSpizeDurations.shimmer,
+                              curve: Curves.easeIn,
+                            ),
+                          ],
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: BokunSpizeColors.bordeaux.withValues(alpha: 0.5),
+                            ),
+                            height: 34,
+                            width: 28,
+                          ),
+                        )
+                      ///
                       /// VALUE
                       ///
-                      AnimatedDigitWidget(
-                        value: currentSteps ?? 0,
-                        loop: false,
-                        curve: Curves.easeIn,
-                        duration: BokunSpizeDurations.animation,
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 40,
-                          fontWeight: FontWeight.w800,
-                          height: 1.2,
-                          letterSpacing: 1.5,
-                          color: BokunSpizeColors.bordeaux,
+                      else
+                        AnimatedDigitWidget(
+                          value: currentSteps ?? 0,
+                          loop: false,
+                          curve: Curves.easeIn,
+                          duration: BokunSpizeDurations.animation,
+                          textStyle: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 40,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2,
+                            letterSpacing: 1.5,
+                            color: BokunSpizeColors.bordeaux,
+                          ),
                         ),
-                      ),
 
+                      ///
+                      /// UNIT LOADING
+                      ///
+                      if (isLoading)
+                        Animate(
+                          onPlay: (controller) => controller.loop(
+                            reverse: true,
+                            min: 0.6,
+                          ),
+                          effects: const [
+                            FadeEffect(
+                              duration: BokunSpizeDurations.shimmer,
+                              curve: Curves.easeIn,
+                            ),
+                          ],
+                          child: Transform.translate(
+                            offset: const Offset(0, -2),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                              ),
+                              height: 10,
+                              width: 32,
+                            ),
+                          ),
+                        )
                       ///
                       /// UNIT
                       ///
-                      Transform.translate(
-                        offset: const Offset(0, 5),
-                        child: Text(
-                          'steps',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            height: 1.2,
-                            letterSpacing: 1.5,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                      else
+                        Transform.translate(
+                          offset: const Offset(0, 5),
+                          child: Text(
+                            'steps',
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              height: 1.2,
+                              letterSpacing: 1.5,
+                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: isLoading ? 14 : 4),
                 ],
               ),
             ),
@@ -206,7 +288,7 @@ class FadingFlexibleTitle extends StatelessWidget {
             ///
             /// CHANGE WITHIN LAST X DAYS
             ///
-            if (stepsChange != null)
+            if (stepsChange != null && !isLoading)
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
@@ -10,12 +11,14 @@ import '../../../util/date_time.dart';
 import '../../../util/steps_with_date.dart';
 
 class WalksGraph extends StatelessWidget {
+  final bool isLoading;
   final Function(int newDays) onSelectedDays;
   final List<int> dayEntries;
   final List<StepsWithDate> stepsWithDate;
   final int calendarDays;
 
   const WalksGraph({
+    required this.isLoading,
     required this.onSelectedDays,
     required this.dayEntries,
     required this.stepsWithDate,
@@ -36,84 +39,134 @@ class WalksGraph extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               ///
+              /// GRAPH TITLE LOADING
+              ///
+              if (isLoading)
+                Animate(
+                  onPlay: (controller) => controller.loop(
+                    reverse: true,
+                    min: 0.6,
+                  ),
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.shimmer,
+                      curve: Curves.easeIn,
+                    ),
+                  ],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                    ),
+                    height: 30,
+                    width: 144,
+                  ),
+                )
+              ///
               /// GRAPH TITLE
               ///
-              const Expanded(
-                child: Text(
-                  'Recent progress',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
-                    color: BokunSpizeColors.black,
-                  ),
-                ),
-              ),
-
-              ///
-              /// GRAPH BUTTON
-              ///
-              PopupMenuButton<int>(
-                menuPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                position: PopupMenuPosition.under,
-                offset: const Offset(0, 8),
-                elevation: 0,
-                color: BokunSpizeColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                onSelected: onSelectedDays,
-                itemBuilder: (context) => dayEntries
-                    .map(
-                      (calendarDays) => PopupMenuItem<int>(
-                        value: calendarDays,
-                        child: Text(
-                          '$calendarDays days',
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: BokunSpizeColors.black,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                child: Container(
-                  decoration: ShapeDecoration(
-                    color: BokunSpizeColors.white.withValues(alpha: 0.5),
-                    shape: const StadiumBorder(),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const PhosphorIcon(
-                          PhosphorIconsBold.caretDown,
-                          color: BokunSpizeColors.black,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '$calendarDays days',
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 16,
-                            height: 1.6,
-                            fontWeight: FontWeight.w600,
-                            color: BokunSpizeColors.black,
-                          ),
-                        ),
-                      ],
+              else
+                const Expanded(
+                  child: Text(
+                    'Recent progress',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.black,
                     ),
                   ),
                 ),
-              ),
+
+              ///
+              /// GRAPH BUTTON LOADING
+              ///
+              if (isLoading)
+                Animate(
+                  onPlay: (controller) => controller.loop(
+                    reverse: true,
+                    min: 0.6,
+                  ),
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.shimmer,
+                      curve: Curves.easeIn,
+                    ),
+                  ],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                    ),
+                    height: 30,
+                    width: 104,
+                  ),
+                )
+              ///
+              /// GRAPH BUTTON
+              ///
+              else
+                PopupMenuButton<int>(
+                  menuPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  position: PopupMenuPosition.under,
+                  offset: const Offset(0, 8),
+                  elevation: 0,
+                  color: BokunSpizeColors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  onSelected: onSelectedDays,
+                  itemBuilder: (context) => dayEntries
+                      .map(
+                        (calendarDays) => PopupMenuItem<int>(
+                          value: calendarDays,
+                          child: Text(
+                            '$calendarDays days',
+                            style: const TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: BokunSpizeColors.black,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  child: Container(
+                    decoration: ShapeDecoration(
+                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      shape: const StadiumBorder(),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const PhosphorIcon(
+                            PhosphorIconsBold.caretDown,
+                            color: BokunSpizeColors.black,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '$calendarDays days',
+                            style: const TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 16,
+                              height: 1.6,
+                              fontWeight: FontWeight.w600,
+                              color: BokunSpizeColors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -123,6 +176,7 @@ class WalksGraph extends StatelessWidget {
       /// GRAPH
       ///
       WalksGraphWidget(
+        isLoading: isLoading,
         stepsWithDate: stepsWithDate,
         calendarDays: calendarDays,
       ),
@@ -134,10 +188,12 @@ class WalksGraph extends StatelessWidget {
 }
 
 class WalksGraphWidget extends StatelessWidget {
+  final bool isLoading;
   final List<StepsWithDate> stepsWithDate;
   final int calendarDays;
 
   const WalksGraphWidget({
+    required this.isLoading,
     required this.stepsWithDate,
     required this.calendarDays,
   });
@@ -159,30 +215,49 @@ class WalksGraphWidget extends StatelessWidget {
           aspectRatio: 1.8,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(listTileRadius),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(listTileRadius),
-                color: BokunSpizeColors.white.withValues(alpha: 0.5),
-              ),
-              child: visibleStepsWithDate.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No step data for the graph',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: BokunSpizeColors.black.withValues(alpha: 0.4),
+            child: Animate(
+              onPlay: (controller) {
+                if (isLoading) {
+                  controller.loop(
+                    reverse: true,
+                    min: 0.6,
+                  );
+                }
+              },
+              effects: [
+                if (isLoading)
+                  const FadeEffect(
+                    duration: BokunSpizeDurations.shimmer,
+                    curve: Curves.easeIn,
+                  ),
+              ],
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                ),
+                child: isLoading
+                    ? const SizedBox.shrink()
+                    : visibleStepsWithDate.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No step data for the graph',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: BokunSpizeColors.black.withValues(alpha: 0.4),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: buildLineChart(
+                          stepsWithDate: visibleStepsWithDate,
+                          calendarDays: calendarDays,
                         ),
                       ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                      child: buildLineChart(
-                        stepsWithDate: visibleStepsWithDate,
-                        calendarDays: calendarDays,
-                      ),
-                    ),
+              ),
             ),
           ),
         ),
