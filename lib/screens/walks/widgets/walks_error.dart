@@ -7,67 +7,50 @@ import '../../../constants/constants.dart';
 class WalksError extends StatelessWidget {
   final String error;
   final bool? permissionAuthorized;
-  final Function() onRetryPressed;
 
   const WalksError({
     required this.error,
     required this.permissionAuthorized,
-    required this.onRetryPressed,
   });
 
   @override
   Widget build(BuildContext context) => SliverPadding(
     padding: const EdgeInsets.symmetric(
-      horizontal: marginHorizontal,
+      horizontal: marginHorizontal * 4,
       vertical: 12,
     ),
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
+          const SizedBox(height: 24),
           const PhosphorIcon(
             PhosphorIconsBold.warningOctagon,
             color: BokunSpizeColors.bordeaux,
-            size: 96,
+            size: 88,
           ),
           const SizedBox(height: 16),
           Text(
-            (permissionAuthorized != null && !permissionAuthorized!) ? 'Permission error' : 'Error',
+            (permissionAuthorized != null && !permissionAuthorized!) ? 'Permissiono erroro has happendo' : 'Erroro has happendo',
             style: const TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 28,
+              fontSize: 20,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
               color: BokunSpizeColors.black,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 6),
           Text(
             error,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
               letterSpacing: 0.6,
-              color: BokunSpizeColors.black,
+              color: BokunSpizeColors.black.withValues(alpha: 0.75),
             ),
             textAlign: TextAlign.center,
-          ),
-          TextButton.icon(
-            onPressed: onRetryPressed,
-            icon: const PhosphorIcon(
-              PhosphorIconsBold.arrowClockwise,
-              size: 20,
-            ),
-            label: const Text('Retry'),
-            style: TextButton.styleFrom(
-              foregroundColor: BokunSpizeColors.blue,
-              textStyle: const TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
           ),
         ],
       ),

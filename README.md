@@ -1,12 +1,12 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Proper error UIs
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Update database permissions
 - [ ] Icon & splash screen
 - [ ] Dark theme
 - [ ] Animations
+- [ ] [MealScreen]
 - [ ] [ManualAddMealScreen] (with ability to edit meal)
 - [ ] [AccountScreen]
 - [ ] [SearchMealScreen]

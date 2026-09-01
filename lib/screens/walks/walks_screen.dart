@@ -184,7 +184,6 @@ class _WalksScreenState extends State<WalksScreen> {
               WalksError(
                 error: error ?? 'Proper permission was not granted',
                 permissionAuthorized: permissionAuthorized,
-                onRetryPressed: walksController.retrySteps,
               ),
 
             ///

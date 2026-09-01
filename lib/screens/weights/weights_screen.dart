@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
