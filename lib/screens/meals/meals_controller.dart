@@ -90,9 +90,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       error: null,
     );
 
-    // TODO: Remove this
-    await Future.delayed(const Duration(seconds: 5));
-
     await mealsSubscription?.cancel();
 
     mealsSubscription = firebase

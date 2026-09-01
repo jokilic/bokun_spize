@@ -64,9 +64,6 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       error: null,
     );
 
-    // TODO: Remove this
-    await Future.delayed(const Duration(seconds: 5));
-
     await weightTracksSubscription?.cancel();
 
     weightTracksSubscription = firebase.listenToWeightTracks().listen(
