@@ -6,7 +6,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../util/color.dart';
 
-class MealsListTileLoading extends StatelessWidget {
+class WeightsListTileLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(
@@ -50,7 +50,7 @@ class MealsListTileLoading extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      color: getRandomPrimaryColor().withValues(alpha: 0.5),
+                      color: BokunSpizeColors.blue.withValues(alpha: 0.5),
                     ),
                     height: listTileIconRadius,
                     width: listTileIconRadius,

@@ -247,7 +247,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                     ],
                     child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                         color: BokunSpizeColors.green.withValues(alpha: 0.5),
                       ),
                       height: 34,

@@ -222,7 +222,10 @@ class MealsListTile extends StatelessWidget {
                                 ),
                               ],
                               child: Container(
-                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                ),
                                 height: 20,
                                 width: 112,
                               ),
@@ -261,7 +264,10 @@ class MealsListTile extends StatelessWidget {
                                 ),
                               ],
                               child: Container(
-                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                ),
                                 height: 12,
                                 width: 56,
                               ),
@@ -308,7 +314,10 @@ class MealsListTile extends StatelessWidget {
                               ),
                             ],
                             child: Container(
-                              color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                              ),
                               height: 28,
                               width: 48,
                             ),
@@ -349,7 +358,10 @@ class MealsListTile extends StatelessWidget {
                               ),
                             ],
                             child: Container(
-                              color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                              ),
                               height: 12,
                               width: 32,
                             ),

@@ -90,9 +90,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       error: null,
     );
 
-    unawaited(
-      mealsSubscription?.cancel(),
-    );
+    mealsSubscription?.cancel();
 
     mealsSubscription = firebase
         .listenToMeals(date: date)

@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
@@ -81,33 +82,35 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
-      floatingActionButton: SizedBox(
-        height: 68,
-        width: 68,
-        child: FloatingActionButton(
-          heroTag: const ValueKey('weights-fab'),
-          elevation: 0,
-          backgroundColor: BokunSpizeColors.blue,
-          foregroundColor: BokunSpizeColors.white,
-          splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          shape: const CircleBorder(),
-          onPressed: () {
-            HapticFeedback.lightImpact();
-            weightsController.onAddWeightPressed(
-              context: context,
-              initialWeight: lastWeightTrack?.weight ?? 75.0,
-              weightTrackId: const Uuid().v1(),
-            );
-          },
-          child: const PhosphorIcon(
-            PhosphorIconsBold.plus,
-            color: BokunSpizeColors.white,
-            size: 32,
-          ),
-        ),
-      ),
+      floatingActionButton: !isLoading
+          ? SizedBox(
+              height: 68,
+              width: 68,
+              child: FloatingActionButton(
+                heroTag: const ValueKey('weights-fab'),
+                elevation: 0,
+                backgroundColor: BokunSpizeColors.blue,
+                foregroundColor: BokunSpizeColors.white,
+                splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                shape: const CircleBorder(),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  weightsController.onAddWeightPressed(
+                    context: context,
+                    initialWeight: lastWeightTrack?.weight ?? 75.0,
+                    weightTrackId: const Uuid().v1(),
+                  );
+                },
+                child: const PhosphorIcon(
+                  PhosphorIconsBold.plus,
+                  color: BokunSpizeColors.white,
+                  size: 32,
+                ),
+              ),
+            )
+          : null,
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -118,6 +121,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
             /// APP BAR
             ///
             WeightsAppBar(
+              isLoading: isLoading,
               title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
               dayString: lastWeightTrack != null
                   ? getDateString(
@@ -133,8 +137,9 @@ class _WeightsScreenState extends State<WeightsScreen> {
             ///
             /// GRAPH
             ///
-            if (weightTracks.length >= 2)
+            if (weightTracks.length >= 2 || isLoading)
               WeightsGraph(
+                isLoading: isLoading,
                 onSelectedDays: (newWeightsCalendarDays) {
                   HapticFeedback.lightImpact();
                   storageService.setWeightsCalendarDays(newWeightsCalendarDays);
