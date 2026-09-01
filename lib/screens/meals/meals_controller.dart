@@ -81,7 +81,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     );
   }
 
-  /// Listens to meals from [date] and updates the loading and error state.
+  /// Listens to meals from [date] and updates the loading and error state
   void listenToMeals({required DateTime date}) {
     updateState(
       activeDate: date,
@@ -127,7 +127,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         );
   }
 
-  /// Restarts the listener after an error.
+  /// Restarts the listener after an error
   void retryMeals() => listenToMeals(date: value.activeDate);
 
   /// Deletes [meal] from Firebase

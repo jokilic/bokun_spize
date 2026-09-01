@@ -12,16 +12,7 @@ import '../../util/snackbars.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
-class WeightsController
-    extends
-        ValueNotifier<
-          ({
-            List<WeightTrack> weightTracks,
-            bool isLoading,
-            String? error,
-          })
-        >
-    implements Disposable {
+class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, bool isLoading, String? error})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -46,6 +37,7 @@ class WeightsController
       error: null,
     );
 
+    // TODO: Check MealsController and implement listening the same as there (with retryWeightTracks() also)
     weightTracksSubscription = firebase.listenToWeightTracks().listen(
       (weightTracks) {
         updateState(

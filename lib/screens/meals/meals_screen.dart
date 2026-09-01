@@ -4,7 +4,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
@@ -169,7 +168,7 @@ class _MealsScreenState extends State<MealsScreen> {
             ),
 
             ///
-            /// MEALS
+            /// SUCCESS
             ///
             if (meals.isNotEmpty)
               MealsSuccess(
@@ -195,7 +194,7 @@ class _MealsScreenState extends State<MealsScreen> {
               ),
 
             ///
-            /// NO MEALS
+            /// EMPTY
             ///
             if (!isLoading && meals.isEmpty && error == null) MealsEmpty(),
 

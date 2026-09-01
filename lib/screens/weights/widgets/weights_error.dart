@@ -1,0 +1,57 @@
+import 'package:flutter/material.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
+
+import '../../../constants/colors.dart';
+import '../../../constants/constants.dart';
+
+class WeightsError extends StatelessWidget {
+  final String error;
+
+  const WeightsError({
+    required this.error,
+  });
+
+  @override
+  Widget build(BuildContext context) => SliverPadding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: marginHorizontal,
+      vertical: 12,
+    ),
+    sliver: SliverToBoxAdapter(
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          const PhosphorIcon(
+            PhosphorIconsBold.warningOctagon,
+            color: BokunSpizeColors.blue,
+            size: 96,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Error',
+            style: TextStyle(
+              fontFamily: 'Epilogue',
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.6,
+              color: BokunSpizeColors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            error,
+            style: const TextStyle(
+              fontFamily: 'Epilogue',
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.6,
+              color: BokunSpizeColors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+  );
+}
