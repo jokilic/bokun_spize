@@ -6,9 +6,11 @@ import '../../../constants/constants.dart';
 
 class WeightsError extends StatelessWidget {
   final String error;
+  final Function() onRetryPressed;
 
   const WeightsError({
     required this.error,
+    required this.onRetryPressed,
   });
 
   @override
@@ -49,6 +51,24 @@ class WeightsError extends StatelessWidget {
               color: BokunSpizeColors.black,
             ),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          // TODO: Check this
+          TextButton.icon(
+            onPressed: onRetryPressed,
+            icon: const PhosphorIcon(
+              PhosphorIconsBold.arrowClockwise,
+              size: 20,
+            ),
+            label: const Text('Retry'),
+            style: TextButton.styleFrom(
+              foregroundColor: BokunSpizeColors.blue,
+              textStyle: const TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ],
       ),

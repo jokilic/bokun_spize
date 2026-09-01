@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,23 +32,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   /// INIT
   ///
 
-  void init() {
-    updateState(
-      isLoading: true,
-      error: null,
-    );
-
-    // TODO: Check MealsController and implement listening the same as there (with retryWeightTracks() also)
-    weightTracksSubscription = firebase.listenToWeightTracks().listen(
-      (weightTracks) {
-        updateState(
-          weightTracks: weightTracks ?? const [],
-          isLoading: false,
-          error: weightTracks == null ? 'Weight tracks could not be loaded.' : null,
-        );
-      },
-    );
-  }
+  void init() => listenToWeightTracks();
 
   ///
   /// DISPOSE
@@ -70,6 +55,44 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
   /// METHODS
   ///
+
+  /// Listens to weight tracks and updates the loading and error state
+  void listenToWeightTracks() {
+    updateState(
+      weightTracks: const [],
+      isLoading: true,
+      error: null,
+    );
+
+    unawaited(
+      weightTracksSubscription?.cancel(),
+    );
+
+    weightTracksSubscription = firebase.listenToWeightTracks().listen(
+      (weightTracks) {
+        updateState(
+          weightTracks: weightTracks ?? const [],
+          isLoading: false,
+          error: weightTracks == null ? 'Weight tracks could not be loaded.' : null,
+        );
+      },
+      onError: (error) {
+        log(
+          'Listening to weight tracks failed',
+          error: error,
+        );
+
+        updateState(
+          weightTracks: const [],
+          isLoading: false,
+          error: 'Weight tracks could not be loaded.',
+        );
+      },
+    );
+  }
+
+  /// Restarts the listener after an error
+  void retryWeightTracks() => listenToWeightTracks();
 
   /// Adds [weightTrack] to Firebase
   Future<void> addWeightTrack({
