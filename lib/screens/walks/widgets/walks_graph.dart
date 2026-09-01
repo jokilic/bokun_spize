@@ -265,7 +265,7 @@ class WalksGraph extends StatelessWidget {
         ],
       ),
       duration: BokunSpizeDurations.animation,
-      curve: Curves.easeOutCubic,
+      curve: Curves.easeIn,
     );
   }
 

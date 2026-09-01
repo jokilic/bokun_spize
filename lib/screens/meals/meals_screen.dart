@@ -4,7 +4,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/constants.dart';
+import '../../models/meal/meal.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
@@ -14,7 +14,10 @@ import '../../util/spacing.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import 'meals_controller.dart';
 import 'widgets/meals_app_bar.dart';
-import 'widgets/meals_list_tile.dart';
+import 'widgets/meals_empty.dart';
+import 'widgets/meals_error.dart';
+import 'widgets/meals_loading.dart';
+import 'widgets/meals_success.dart';
 
 class MealsScreen extends WatchingStatefulWidget {
   @override
@@ -57,6 +60,10 @@ class _MealsScreenState extends State<MealsScreen> {
     final error = state.error;
     final isLoading = state.isLoading;
     final meals = state.meals;
+
+    // TODO: Remove these hardcoded values
+    // final isLoading = !state.isLoading;
+    // final meals = <Meal>[];
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
@@ -165,31 +172,24 @@ class _MealsScreenState extends State<MealsScreen> {
             /// MEALS
             ///
             if (meals.isNotEmpty)
-              SliverList.builder(
-                itemCount: meals.length,
-                itemBuilder: (context, index) {
-                  final meal = meals[index];
-
-                  return MealsListTile(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      // TODO: Open [MealScreen]
-                    },
-                    onDeletePressed: () {
-                      HapticFeedback.lightImpact();
-                      mealsController.deleteMeal(
-                        meal: meal,
-                        context: context,
-                      );
-                    },
-                    onCopyPressed: () {
-                      HapticFeedback.lightImpact();
-                      mealsController.onCopyMealPressed(
-                        context,
-                        passedMeal: meal,
-                      );
-                    },
+              MealsSuccess(
+                meals: meals,
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  // TODO: Open [MealScreen]
+                },
+                onDeletePressed: (meal) {
+                  HapticFeedback.lightImpact();
+                  mealsController.deleteMeal(
                     meal: meal,
+                    context: context,
+                  );
+                },
+                onCopyPressed: (meal) {
+                  HapticFeedback.lightImpact();
+                  mealsController.onCopyMealPressed(
+                    context,
+                    passedMeal: meal,
                   );
                 },
               ),
@@ -197,159 +197,20 @@ class _MealsScreenState extends State<MealsScreen> {
             ///
             /// NO MEALS
             ///
-            if (!isLoading && meals.isEmpty && error == null)
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: marginHorizontal,
-                  vertical: 12,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 24),
-                      PhosphorIcon(
-                        PhosphorIconsBold.bowlFood,
-                        color: BokunSpizeColors.green,
-                        size: 96,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Meal journal',
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'No logs at this time',
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            if (!isLoading && meals.isEmpty && error == null) MealsEmpty(),
 
             ///
             /// LOADING
             ///
-            if (isLoading)
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: marginHorizontal,
-                  vertical: 12,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 24),
-                      PhosphorIcon(
-                        PhosphorIconsBold.bowlFood,
-                        color: BokunSpizeColors.green,
-                        size: 96,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Meal journal',
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Loading...',
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            if (isLoading) MealsLoading(),
 
             ///
             /// ERROR
             ///
             if (error != null)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: marginHorizontal,
-                  vertical: 12,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 24),
-                      const PhosphorIcon(
-                        PhosphorIconsBold.warningOctagon,
-                        color: BokunSpizeColors.green,
-                        size: 96,
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Error',
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        error,
-                        style: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      TextButton.icon(
-                        onPressed: mealsController.retryMeals,
-                        icon: const PhosphorIcon(
-                          PhosphorIconsBold.arrowClockwise,
-                          size: 20,
-                        ),
-                        label: const Text('Retry'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: BokunSpizeColors.green,
-                          textStyle: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              MealsError(
+                error: error,
+                onRetryPressed: mealsController.retryMeals,
               ),
 
             ///

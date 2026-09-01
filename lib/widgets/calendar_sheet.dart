@@ -125,7 +125,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
             child: AnimatedSize(
               alignment: Alignment.topCenter,
               duration: BokunSpizeDurations.animation,
-              curve: Curves.easeInOutCubic,
+              curve: Curves.easeIn,
               child: CalendarDatePicker2(
                 value: [widget.dateValue],
                 onValueChanged: (newValue) {

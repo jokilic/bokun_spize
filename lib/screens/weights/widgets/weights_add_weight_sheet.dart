@@ -80,7 +80,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     rulerController.animateTo(
       targetOffset,
       duration: BokunSpizeDurations.animation,
-      curve: Curves.easeOut,
+      curve: Curves.easeIn,
     );
   }
 
