@@ -129,7 +129,9 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Restarts the listener after an error
-  void retryMeals() => listenToMeals(date: value.activeDate);
+  void retryMeals() => listenToMeals(
+    date: value.activeDate,
+  );
 
   /// Deletes [meal] from Firebase
   Future<void> deleteMeal({

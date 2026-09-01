@@ -184,6 +184,9 @@ class WalksController
     }
   }
 
+  /// Fetches step data again after an error
+  Future<void> retrySteps() => refreshSteps();
+
   /// Updates `state`
   void updateState({
     List<StepsWithDate>? stepsWithDate,

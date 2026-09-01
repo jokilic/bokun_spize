@@ -6,11 +6,9 @@ import '../../../constants/constants.dart';
 
 class MealsError extends StatelessWidget {
   final String error;
-  final Function() onRetryPressed;
 
   const MealsError({
     required this.error,
-    required this.onRetryPressed,
   });
 
   @override
@@ -51,22 +49,6 @@ class MealsError extends StatelessWidget {
               color: BokunSpizeColors.black.withValues(alpha: 0.75),
             ),
             textAlign: TextAlign.center,
-          ),
-          TextButton.icon(
-            onPressed: onRetryPressed,
-            icon: const PhosphorIcon(
-              PhosphorIconsBold.arrowClockwise,
-              size: 20,
-            ),
-            label: const Text('Retry'),
-            style: TextButton.styleFrom(
-              foregroundColor: BokunSpizeColors.green,
-              textStyle: const TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
           ),
         ],
       ),

@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
-import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
@@ -82,8 +81,33 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
-      floatingActionButton: !isLoading
+      floatingActionButton: isLoading
+          ? null
+          : error != null
           ? SizedBox(
+              height: 68,
+              width: 68,
+              child: FloatingActionButton(
+                heroTag: const ValueKey('meals-retry-fab'),
+                elevation: 0,
+                backgroundColor: BokunSpizeColors.blue,
+                foregroundColor: BokunSpizeColors.white,
+                splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                shape: const CircleBorder(),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  weightsController.retryWeightTracks();
+                },
+                child: const PhosphorIcon(
+                  PhosphorIconsBold.arrowClockwise,
+                  color: BokunSpizeColors.white,
+                  size: 32,
+                ),
+              ),
+            )
+          : SizedBox(
               height: 68,
               width: 68,
               child: FloatingActionButton(
@@ -109,8 +133,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   size: 32,
                 ),
               ),
-            )
-          : null,
+            ),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -181,7 +204,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
             if (!isLoading && error != null)
               WeightsError(
                 error: error,
-                onRetryPressed: weightsController.retryWeightTracks,
               ),
 
             ///

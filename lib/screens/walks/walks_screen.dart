@@ -110,7 +110,7 @@ class _WalksScreenState extends State<WalksScreen> {
                 shape: const CircleBorder(),
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  walksController.refreshSteps();
+                  walksController.retrySteps();
                 },
                 child: const PhosphorIcon(
                   PhosphorIconsBold.arrowClockwise,

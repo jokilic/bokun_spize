@@ -85,8 +85,33 @@ class _MealsScreenState extends State<MealsScreen> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBarWidget(),
-      floatingActionButton: !isLoading
-          ? Column(
+      floatingActionButton: isLoading
+          ? null
+          : error != null
+          ? SizedBox(
+              height: 68,
+              width: 68,
+              child: FloatingActionButton(
+                heroTag: const ValueKey('meals-retry-fab'),
+                elevation: 0,
+                backgroundColor: BokunSpizeColors.green,
+                foregroundColor: BokunSpizeColors.white,
+                splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                shape: const CircleBorder(),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  mealsController.retryMeals();
+                },
+                child: const PhosphorIcon(
+                  PhosphorIconsBold.arrowClockwise,
+                  color: BokunSpizeColors.white,
+                  size: 32,
+                ),
+              ),
+            )
+          : Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
@@ -138,8 +163,7 @@ class _MealsScreenState extends State<MealsScreen> {
                   ),
                 ),
               ],
-            )
-          : null,
+            ),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -208,7 +232,6 @@ class _MealsScreenState extends State<MealsScreen> {
             if (!isLoading && error != null)
               MealsError(
                 error: error,
-                onRetryPressed: mealsController.retryMeals,
               ),
 
             ///
