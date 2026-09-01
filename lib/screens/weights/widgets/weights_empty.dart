@@ -14,7 +14,6 @@ class WeightsEmpty extends StatelessWidget {
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
-          SizedBox(height: 24),
           PhosphorIcon(
             PhosphorIconsBold.chartLine,
             color: BokunSpizeColors.blue,

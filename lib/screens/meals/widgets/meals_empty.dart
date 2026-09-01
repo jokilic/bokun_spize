@@ -14,7 +14,6 @@ class MealsEmpty extends StatelessWidget {
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
-          SizedBox(height: 24),
           PhosphorIcon(
             PhosphorIconsBold.bowlFood,
             color: BokunSpizeColors.green,

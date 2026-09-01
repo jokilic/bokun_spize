@@ -24,7 +24,6 @@ class WalksError extends StatelessWidget {
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
-          const SizedBox(height: 24),
           const PhosphorIcon(
             PhosphorIconsBold.warningOctagon,
             color: BokunSpizeColors.bordeaux,
@@ -54,8 +53,6 @@ class WalksError extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
-          // TODO: Check this
           TextButton.icon(
             onPressed: onRetryPressed,
             icon: const PhosphorIcon(
@@ -67,8 +64,8 @@ class WalksError extends StatelessWidget {
               foregroundColor: BokunSpizeColors.blue,
               textStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),

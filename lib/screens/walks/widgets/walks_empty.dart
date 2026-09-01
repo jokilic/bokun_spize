@@ -14,7 +14,6 @@ class WalksEmpty extends StatelessWidget {
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
-          SizedBox(height: 24),
           PhosphorIcon(
             PhosphorIconsBold.personSimpleWalk,
             color: BokunSpizeColors.bordeaux,

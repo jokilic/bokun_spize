@@ -22,7 +22,6 @@ class MealsError extends StatelessWidget {
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
-          const SizedBox(height: 24),
           const PhosphorIcon(
             PhosphorIconsBold.warningOctagon,
             color: BokunSpizeColors.green,
@@ -52,8 +51,6 @@ class MealsError extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
-          // TODO: Check this
           TextButton.icon(
             onPressed: onRetryPressed,
             icon: const PhosphorIcon(
@@ -65,8 +62,8 @@ class MealsError extends StatelessWidget {
               foregroundColor: BokunSpizeColors.green,
               textStyle: const TextStyle(
                 fontFamily: 'PlusJakartaSans',
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),
