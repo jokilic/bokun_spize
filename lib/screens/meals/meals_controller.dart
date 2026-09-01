@@ -82,7 +82,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Listens to meals from [date] and updates the loading and error state
-  void listenToMeals({required DateTime date}) {
+  Future<void> listenToMeals({required DateTime date}) async {
     updateState(
       activeDate: date,
       meals: const [],
@@ -90,7 +90,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       error: null,
     );
 
-    mealsSubscription?.cancel();
+    // TODO: Remove this
+    await Future.delayed(const Duration(seconds: 5));
+
+    await mealsSubscription?.cancel();
 
     mealsSubscription = firebase
         .listenToMeals(date: date)
@@ -167,6 +170,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         HapticFeedback.lightImpact();
         updateDate(newDate);
       },
+      showConfirmButton: false,
     ),
   );
 

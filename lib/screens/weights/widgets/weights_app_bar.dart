@@ -217,7 +217,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ///
                       /// VALUE
                       ///
-                      else
+                      else if (currentWeight != null)
                         AnimatedDigitWidget(
                           value: currentWeight,
                           fractionDigits: 1,
@@ -225,6 +225,21 @@ class FadingFlexibleTitle extends StatelessWidget {
                           curve: Curves.easeIn,
                           duration: BokunSpizeDurations.animation,
                           textStyle: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 40,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2,
+                            letterSpacing: 1.5,
+                            color: BokunSpizeColors.blue,
+                          ),
+                        )
+                      ///
+                      /// NO VALUE
+                      ///
+                      else
+                        const Text(
+                          '--',
+                          style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 40,
                             fontWeight: FontWeight.w800,

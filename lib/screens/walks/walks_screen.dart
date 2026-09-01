@@ -80,7 +80,7 @@ class _WalksScreenState extends State<WalksScreen> {
         .toList();
     final latestCompletedStepsWithDate = completedStepsWithDate.firstOrNull;
 
-    final showRefreshButton = !isLoading && stepsWithDate.isEmpty && (error != null || permissionAuthorized == false);
+    final showRefreshButton = !isLoading && (stepsWithDate.isEmpty || (error != null || permissionAuthorized == false));
 
     final stepsChange = getStepsChange(
       stepsWithDate: completedStepsWithDate,

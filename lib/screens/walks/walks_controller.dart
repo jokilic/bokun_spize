@@ -105,6 +105,9 @@ class WalksController
       error: null,
     );
 
+    // TODO: Remove this
+    await Future.delayed(const Duration(seconds: 5));
+
     try {
       /// Configure `Health` plugin
       await health.configure();

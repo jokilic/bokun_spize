@@ -13,11 +13,13 @@ class CalendarSheet extends StatefulWidget {
   final Color primaryColor;
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
+  final bool showConfirmButton;
 
   const CalendarSheet({
     required this.primaryColor,
     required this.dateValue,
     required this.onDateChanged,
+    this.showConfirmButton = true,
   });
 
   @override
@@ -135,6 +137,11 @@ class _CalendarSheetState extends State<CalendarSheet> {
 
                   if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
                     selectedDateTime = chosenDate;
+
+                    if (!widget.showConfirmButton) {
+                      widget.onDateChanged(selectedDateTime);
+                      Navigator.of(context).pop();
+                    }
                   }
                 },
                 config: CalendarDatePicker2Config(
@@ -236,43 +243,45 @@ class _CalendarSheetState extends State<CalendarSheet> {
             ),
           ),
         ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
-        ),
 
         ///
         /// SAVE BUTTON
         ///
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-          sliver: SliverToBoxAdapter(
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  widget.onDateChanged(selectedDateTime);
-                  Navigator.of(context).pop();
-                },
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  shape: const StadiumBorder(),
-                  textStyle: const TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
+        if (widget.showConfirmButton) ...[
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    widget.onDateChanged(selectedDateTime);
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shape: const StadiumBorder(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    padding: const EdgeInsets.all(22),
+                    backgroundColor: widget.primaryColor,
+                    foregroundColor: BokunSpizeColors.white,
                   ),
-                  padding: const EdgeInsets.all(22),
-                  backgroundColor: widget.primaryColor,
-                  foregroundColor: BokunSpizeColors.white,
-                ),
-                child: const Text(
-                  'Confirm',
-                  textAlign: TextAlign.center,
+                  child: const Text(
+                    'Confirm',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
 
         ///
         /// BOTTOM SPACING

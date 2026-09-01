@@ -57,14 +57,17 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
 
   /// Listens to weight tracks and updates the loading and error state
-  void listenToWeightTracks() {
+  Future<void> listenToWeightTracks() async {
     updateState(
       weightTracks: const [],
       isLoading: true,
       error: null,
     );
 
-    weightTracksSubscription?.cancel();
+    // TODO: Remove this
+    await Future.delayed(const Duration(seconds: 5));
+
+    await weightTracksSubscription?.cancel();
 
     weightTracksSubscription = firebase.listenToWeightTracks().listen(
       (weightTracks) {

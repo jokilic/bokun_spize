@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/colors.dart';
@@ -6,40 +6,41 @@ import '../../../constants/constants.dart';
 
 class MealsEmpty extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => const SliverPadding(
-    padding: EdgeInsets.symmetric(
-      horizontal: marginHorizontal,
+  Widget build(BuildContext context) => SliverPadding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: marginHorizontal * 4,
       vertical: 12,
     ),
     sliver: SliverToBoxAdapter(
       child: Column(
         children: [
-          PhosphorIcon(
+          const SizedBox(height: 24),
+          const PhosphorIcon(
             PhosphorIconsBold.bowlFood,
             color: BokunSpizeColors.green,
-            size: 96,
+            size: 88,
           ),
-          SizedBox(height: 16),
-          Text(
-            'Meal journal',
+          const SizedBox(height: 16),
+          const Text(
+            'Meal journal for today is empty',
             style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 28,
+              fontSize: 20,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
               color: BokunSpizeColors.black,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 2),
+          const SizedBox(height: 6),
           Text(
-            'No logs at this time',
+            'Add your first meal by pressing the corner icon',
             style: TextStyle(
               fontFamily: 'Epilogue',
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
               letterSpacing: 0.6,
-              color: BokunSpizeColors.black,
+              color: BokunSpizeColors.black.withValues(alpha: 0.75),
             ),
             textAlign: TextAlign.center,
           ),
