@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:health/health.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../util/date_time.dart';
@@ -93,108 +95,129 @@ class _WalksScreenState extends State<WalksScreen> {
       calendarDays: graphCalendarDays,
     );
 
-    return Scaffold(
-      bottomNavigationBar: NavigationBarWidget(),
-      floatingActionButton: showRefreshButton
-          ? SizedBox(
-              height: 68,
-              width: 68,
-              child: FloatingActionButton(
-                heroTag: const ValueKey('walks-fab'),
-                elevation: 0,
-                backgroundColor: BokunSpizeColors.bordeaux,
-                foregroundColor: BokunSpizeColors.white,
-                splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                hoverColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                shape: const CircleBorder(),
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  walksController.retrySteps();
-                },
-                child: const PhosphorIcon(
-                  PhosphorIconsBold.arrowClockwise,
-                  color: BokunSpizeColors.white,
-                  size: 32,
+    return Animate(
+      effects: const [
+        FadeEffect(
+          duration: BokunSpizeDurations.stateTransition,
+          curve: Curves.easeOut,
+        ),
+        MoveEffect(
+          begin: Offset(0, 18),
+          end: Offset.zero,
+          duration: BokunSpizeDurations.stateTransition,
+          curve: Curves.easeOutCubic,
+        ),
+        ScaleEffect(
+          begin: Offset(0.985, 0.985),
+          end: Offset(1, 1),
+          alignment: Alignment.topCenter,
+          duration: BokunSpizeDurations.stateTransition,
+          curve: Curves.easeOutCubic,
+        ),
+      ],
+      child: Scaffold(
+        bottomNavigationBar: NavigationBarWidget(),
+        floatingActionButton: showRefreshButton
+            ? SizedBox(
+                height: 68,
+                width: 68,
+                child: FloatingActionButton(
+                  heroTag: const ValueKey('walks-fab'),
+                  elevation: 0,
+                  backgroundColor: BokunSpizeColors.bordeaux,
+                  foregroundColor: BokunSpizeColors.white,
+                  splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  shape: const CircleBorder(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    walksController.retrySteps();
+                  },
+                  child: const PhosphorIcon(
+                    PhosphorIconsBold.arrowClockwise,
+                    color: BokunSpizeColors.white,
+                    size: 32,
+                  ),
+                ),
+              )
+            : null,
+        body: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              ///
+              /// APP BAR
+              ///
+              WalksAppBar(
+                isLoading: isLoading,
+                title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
+                dayString: latestStepsWithDate != null
+                    ? getDateString(
+                        date: latestStepsWithDate.dateTime,
+                        dateFormat: 'EEEE, dd.MM.yyyy.',
+                      )
+                    : 'Vrijeme ne postoji',
+                currentSteps: latestStepsWithDate?.steps,
+                stepsChange: stepsChange,
+                stepsChangeWithinDays: stepsChangeWithinDays,
+              ),
+
+              ///
+              /// GRAPH
+              ///
+              if (completedStepsWithDate.length >= 2 || isLoading)
+                WalksGraph(
+                  isLoading: isLoading,
+                  onSelectedDays: (newWalksCalendarDays) {
+                    HapticFeedback.lightImpact();
+                    storageService.setWalksCalendarDays(newWalksCalendarDays);
+                  },
+                  dayEntries: walksController.graphCalendarDayOptions,
+                  stepsWithDate: stepsWithDate,
+                  calendarDays: graphCalendarDays,
+                ),
+
+              ///
+              /// SUCCESS
+              ///
+              if (stepsWithDate.isNotEmpty)
+                WalksSuccess(
+                  stepsWithDate: stepsWithDate,
+                  calendarDays: graphCalendarDays,
+                ),
+
+              ///
+              /// EMPTY
+              ///
+              if (!isLoading && stepsWithDate.isEmpty && error == null) WalksEmpty(),
+
+              ///
+              /// LOADING
+              ///
+              if (isLoading) WalksLoading(),
+
+              ///
+              /// ERROR
+              ///
+              if (!isLoading && (error != null || (permissionAuthorized != null && !permissionAuthorized)))
+                WalksError(
+                  error: error ?? 'Proper permission was not granted',
+                  permissionAuthorized: permissionAuthorized,
+                ),
+
+              ///
+              /// BOTTOM SPACING
+              ///
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: getBottomSpacing(context),
                 ),
               ),
-            )
-          : null,
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            ///
-            /// APP BAR
-            ///
-            WalksAppBar(
-              isLoading: isLoading,
-              title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-              dayString: latestStepsWithDate != null
-                  ? getDateString(
-                      date: latestStepsWithDate.dateTime,
-                      dateFormat: 'EEEE, dd.MM.yyyy.',
-                    )
-                  : 'Vrijeme ne postoji',
-              currentSteps: latestStepsWithDate?.steps,
-              stepsChange: stepsChange,
-              stepsChangeWithinDays: stepsChangeWithinDays,
-            ),
-
-            ///
-            /// GRAPH
-            ///
-            if (completedStepsWithDate.length >= 2 || isLoading)
-              WalksGraph(
-                isLoading: isLoading,
-                onSelectedDays: (newWalksCalendarDays) {
-                  HapticFeedback.lightImpact();
-                  storageService.setWalksCalendarDays(newWalksCalendarDays);
-                },
-                dayEntries: walksController.graphCalendarDayOptions,
-                stepsWithDate: stepsWithDate,
-                calendarDays: graphCalendarDays,
-              ),
-
-            ///
-            /// SUCCESS
-            ///
-            if (stepsWithDate.isNotEmpty)
-              WalksSuccess(
-                stepsWithDate: stepsWithDate,
-                calendarDays: graphCalendarDays,
-              ),
-
-            ///
-            /// EMPTY
-            ///
-            if (!isLoading && stepsWithDate.isEmpty && error == null) WalksEmpty(),
-
-            ///
-            /// LOADING
-            ///
-            if (isLoading) WalksLoading(),
-
-            ///
-            /// ERROR
-            ///
-            if (!isLoading && (error != null || (permissionAuthorized != null && !permissionAuthorized)))
-              WalksError(
-                error: error ?? 'Proper permission was not granted',
-                permissionAuthorized: permissionAuthorized,
-              ),
-
-            ///
-            /// BOTTOM SPACING
-            ///
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: getBottomSpacing(context),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
