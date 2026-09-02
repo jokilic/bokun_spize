@@ -162,8 +162,6 @@ class _CalendarSheetState extends State<CalendarSheet> {
                 child: CalendarDatePicker2(
                   value: [widget.dateValue],
                   onValueChanged: (newValue) {
-                    HapticFeedback.lightImpact();
-
                     final chosenDate = newValue.firstOrNull;
 
                     if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {

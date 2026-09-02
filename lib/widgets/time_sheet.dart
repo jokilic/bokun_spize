@@ -159,10 +159,7 @@ class _TimeSheetState extends State<TimeSheet> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ScrollDateTimePicker(
-                  onChange: (newDateTime) {
-                    HapticFeedback.lightImpact();
-                    selectedDateTime = newDateTime;
-                  },
+                  onChange: (newDateTime) => selectedDateTime = newDateTime,
                   itemExtent: 64,
                   style: DateTimePickerStyle(
                     activeStyle: TextStyle(

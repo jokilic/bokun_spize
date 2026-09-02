@@ -51,6 +51,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     FocusManager.instance.primaryFocus?.unfocus();
 
+    HapticFeedback.lightImpact();
+
     setState(
       () => showLogin = !showLogin,
     );

@@ -1,5 +1,6 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -30,9 +31,12 @@ class NavigationBarWidget extends WatchingWidget {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         animationDuration: BokunSpizeDurations.animation,
         selectedIndex: navigationBarItem.index,
-        onDestinationSelected: (newIndex) => screen.changeNavigationBarItem(
-          NavigationBarItem.values[newIndex],
-        ),
+        onDestinationSelected: (newIndex) {
+          HapticFeedback.lightImpact();
+          screen.changeNavigationBarItem(
+            NavigationBarItem.values[newIndex],
+          );
+        },
         destinations: [
           ///
           /// MEALS

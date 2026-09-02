@@ -93,18 +93,15 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
-      onDateChanged: (newDate) {
-        HapticFeedback.lightImpact();
-        setState(
-          () => selectedDateTime = DateTime(
-            newDate.year,
-            newDate.month,
-            newDate.day,
-            selectedDateTime.hour,
-            selectedDateTime.minute,
-          ),
-        );
-      },
+      onDateChanged: (newDate) => setState(
+        () => selectedDateTime = DateTime(
+          newDate.year,
+          newDate.month,
+          newDate.day,
+          selectedDateTime.hour,
+          selectedDateTime.minute,
+        ),
+      ),
     ),
   );
 
@@ -114,18 +111,15 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     builder: (context) => TimeSheet(
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
-      onTimeChanged: (newTime) {
-        HapticFeedback.lightImpact();
-        setState(
-          () => selectedDateTime = DateTime(
-            selectedDateTime.year,
-            selectedDateTime.month,
-            selectedDateTime.day,
-            newTime.hour,
-            newTime.minute,
-          ),
-        );
-      },
+      onTimeChanged: (newTime) => setState(
+        () => selectedDateTime = DateTime(
+          selectedDateTime.year,
+          selectedDateTime.month,
+          selectedDateTime.day,
+          newTime.hour,
+          newTime.minute,
+        ),
+      ),
     ),
   );
 
@@ -369,8 +363,6 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       children: [
                         NotificationListener<ScrollNotification>(
                           onNotification: (notification) {
-                            HapticFeedback.lightImpact();
-
                             if (notification is ScrollUpdateNotification) {
                               updateSelectedWeight();
                             }
