@@ -200,38 +200,85 @@ class _EntranceScreenState extends State<EntranceScreen> {
               /// LOGIN / REGISTER
               ///
               SliverToBoxAdapter(
-                child: AnimatedSwitcher(
-                  duration: BokunSpizeDurations.animation,
-                  switchInCurve: Curves.easeIn,
-                  switchOutCurve: Curves.easeIn,
-                  child: showLogin
-                      ? EntranceLogin(
-                          emailTextEditingController: entranceController.loginEmailTextEditingController,
-                          passwordTextEditingController: entranceController.loginPasswordTextEditingController,
-                          passwordFocusNode: entranceController.loginPasswordFocusNode,
-                          validated: loginValidated,
-                          emailValidated: state.loginEmailValid,
-                          emailIsLoading: emailIsLoading,
-                          onLoginPressed: () => handleOnPressed(
-                            context: context,
-                            onPressed: entranceController.emailSignInPressed,
+                child: AnimatedSize(
+                  duration: BokunSpizeDurations.stateTransition,
+                  curve: Curves.easeOutCubic,
+                  alignment: Alignment.topCenter,
+                  clipBehavior: Clip.none,
+                  child: AnimatedSwitcher(
+                    duration: BokunSpizeDurations.stateTransition,
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    layoutBuilder: (currentChild, previousChildren) => Stack(
+                      alignment: Alignment.topCenter,
+                      clipBehavior: Clip.none,
+                      children: [
+                        for (final previousChild in previousChildren)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            child: previousChild,
                           ),
-                          onForgetPasswordPressed: () => handleOnPressedForgetPassword(
-                            context: context,
-                            onPressed: entranceController.forgetPasswordPressed,
-                          ),
-                        )
-                      : EntranceRegister(
-                          emailTextEditingController: entranceController.registerEmailTextEditingController,
-                          passwordTextEditingController: entranceController.registerPasswordTextEditingController,
-                          nameTextEditingController: entranceController.registerNameTextEditingController,
-                          validated: registerValidated,
-                          emailIsLoading: emailIsLoading,
-                          onRegisterPressed: () => handleOnPressed(
-                            context: context,
-                            onPressed: entranceController.emailRegisterPressed,
+                        if (currentChild != null) currentChild,
+                      ],
+                    ),
+                    transitionBuilder: (child, animation) {
+                      final isLoginChild = child.key == const ValueKey('entrance-login');
+
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: Offset(isLoginChild ? -0.06 : 0.06, 0),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: ScaleTransition(
+                            scale: Tween<double>(
+                              begin: 0.98,
+                              end: 1,
+                            ).animate(animation),
+                            alignment: Alignment.topCenter,
+                            child: child,
                           ),
                         ),
+                      );
+                    },
+                    child: showLogin
+                        ? KeyedSubtree(
+                            key: const ValueKey('entrance-login'),
+                            child: EntranceLogin(
+                              emailTextEditingController: entranceController.loginEmailTextEditingController,
+                              passwordTextEditingController: entranceController.loginPasswordTextEditingController,
+                              passwordFocusNode: entranceController.loginPasswordFocusNode,
+                              validated: loginValidated,
+                              emailValidated: state.loginEmailValid,
+                              emailIsLoading: emailIsLoading,
+                              onLoginPressed: () => handleOnPressed(
+                                context: context,
+                                onPressed: entranceController.emailSignInPressed,
+                              ),
+                              onForgetPasswordPressed: () => handleOnPressedForgetPassword(
+                                context: context,
+                                onPressed: entranceController.forgetPasswordPressed,
+                              ),
+                            ),
+                          )
+                        : KeyedSubtree(
+                            key: const ValueKey('entrance-register'),
+                            child: EntranceRegister(
+                              emailTextEditingController: entranceController.registerEmailTextEditingController,
+                              passwordTextEditingController: entranceController.registerPasswordTextEditingController,
+                              nameTextEditingController: entranceController.registerNameTextEditingController,
+                              validated: registerValidated,
+                              emailIsLoading: emailIsLoading,
+                              onRegisterPressed: () => handleOnPressed(
+                                context: context,
+                                onPressed: entranceController.emailRegisterPressed,
+                              ),
+                            ),
+                          ),
+                  ),
                 ),
               ),
 
@@ -366,32 +413,48 @@ class _EntranceScreenState extends State<EntranceScreen> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
-                  child: Text.rich(
-                    TextSpan(
-                      text: showLogin ? 'New to Bokun spize?' : 'You have an account?',
-                      children: [
-                        const WidgetSpan(
-                          child: SizedBox(width: 4),
-                        ),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
-                          text: showLogin ? 'Create an account' : 'Sign in',
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: BokunSpizeColors.green,
+                  child: AnimatedSwitcher(
+                    duration: BokunSpizeDurations.stateTransition,
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.25),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      ),
+                    ),
+                    child: Text.rich(
+                      key: ValueKey(showLogin),
+                      TextSpan(
+                        text: showLogin ? 'New to Bokun spize?' : 'You have an account?',
+                        children: [
+                          const WidgetSpan(
+                            child: SizedBox(width: 4),
                           ),
-                        ),
-                      ],
+                          TextSpan(
+                            recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
+                            text: showLogin ? 'Create an account' : 'Sign in',
+                            style: const TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: BokunSpizeColors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      style: const TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: BokunSpizeColors.black,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    style: const TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: BokunSpizeColors.black,
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
