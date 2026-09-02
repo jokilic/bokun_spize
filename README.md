@@ -1,6 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] New meal and weight have time in increments of 5
 - [ ] Replace all `Colors.xxx`
 - [ ] Replace all `TextStyle()`
 - [ ] Update database permissions

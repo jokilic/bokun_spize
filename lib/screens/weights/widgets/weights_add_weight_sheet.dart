@@ -36,7 +36,9 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   static const weightStep = 0.1;
   static const rulerItemExtent = 16.0;
 
-  var selectedDateTime = DateTime.now();
+  var selectedDateTime = roundUpToFiveMinuteInterval(
+    DateTime.now(),
+  );
 
   late final ScrollController rulerController;
   late var selectedWeight = widget.initialWeight;

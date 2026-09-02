@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../constants/colors.dart';
 import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/path.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
@@ -44,13 +45,15 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
   ///
 
   void init() {
-    final now = DateTime.now();
+    final newMealTime = roundUpToFiveMinuteInterval(
+      DateTime.now(),
+    );
 
     /// Update `state` with proper values
     updateState(
       textImageValid: (passedMeal?.originalText?.isNotEmpty ?? false) || passedMeal?.imageStoragePath != null,
-      mealDate: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
-      mealTime: isCopyingMeal ? now : passedMeal?.createdAt ?? now,
+      mealDate: isCopyingMeal ? newMealTime : passedMeal?.createdAt ?? newMealTime,
+      mealTime: isCopyingMeal ? newMealTime : passedMeal?.createdAt ?? newMealTime,
     );
 
     /// Update [TextEditingController] text

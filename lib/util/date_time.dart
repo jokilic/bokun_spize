@@ -1,5 +1,18 @@
 import 'package:intl/intl.dart';
 
+/// Rounds a date and time up to the next five-minute interval
+DateTime roundUpToFiveMinuteInterval(DateTime dateTime) {
+  final minutesToAdd = (5 - dateTime.minute % 5) % 5;
+
+  return DateTime(
+    dateTime.year,
+    dateTime.month,
+    dateTime.day,
+    dateTime.hour,
+    dateTime.minute + minutesToAdd,
+  );
+}
+
 String getDateString({
   required DateTime date,
   required String dateFormat,
