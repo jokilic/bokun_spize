@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
 import '../../constants/colors.dart';
@@ -175,13 +177,42 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
     /// Trigger `imagePicker`
     final image = await imagePicker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 50,
+      imageQuality: 100,
       maxHeight: 1000,
       maxWidth: 1000,
     );
 
     /// Image is taken, update `state`
     if (image != null) {
+      /// Center the camera image to a `1:1 aspect ratio`
+      final imageBytes = await image.readAsBytes();
+      final decodedImage = img.decodeImage(imageBytes);
+
+      if (decodedImage == null) {
+        return;
+      }
+
+      final orientedImage = img.bakeOrientation(decodedImage);
+      final squareSize = min(
+        orientedImage.width,
+        orientedImage.height,
+      );
+
+      final squareImage = img.copyCrop(
+        orientedImage,
+        x: (orientedImage.width - squareSize) ~/ 2,
+        y: (orientedImage.height - squareSize) ~/ 2,
+        width: squareSize,
+        height: squareSize,
+      );
+
+      await File(image.path).writeAsBytes(
+        img.encodeJpg(
+          squareImage,
+          quality: 50,
+        ),
+      );
+
       /// Copy image into app storage
       final imageFile = await persistImage(
         imagePath: image.path,
