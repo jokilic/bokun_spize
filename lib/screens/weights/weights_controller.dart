@@ -39,8 +39,8 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
 
   @override
-  Future<void> onDispose() async {
-    await weightTracksSubscription?.cancel();
+  void onDispose() {
+    weightTracksSubscription?.cancel();
     super.dispose();
   }
 
@@ -57,14 +57,14 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
 
   /// Listens to weight tracks and updates the loading and error state
-  Future<void> listenToWeightTracks() async {
+  void listenToWeightTracks() {
     updateState(
       weightTracks: const [],
       isLoading: true,
       error: null,
     );
 
-    await weightTracksSubscription?.cancel();
+    weightTracksSubscription?.cancel();
 
     weightTracksSubscription = firebase.listenToWeightTracks().listen(
       (weightTracks) {
@@ -107,18 +107,8 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       ),
     );
 
-    /// Add success, show snackbar
-    if (success && context.mounted) {
-      showSnackbar(
-        context,
-        text: 'Add successful',
-        icon: PhosphorIconsBold.checkCircle,
-      );
-      return;
-    }
-
     /// Add failed, show error snackbar
-    if (context.mounted) {
+    if (!success && context.mounted) {
       showSnackbar(
         context,
         text: 'Add failed',
@@ -136,18 +126,8 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       weightTrack: weightTrack,
     );
 
-    /// Delete success, show snackbar
-    if (success && context.mounted) {
-      showSnackbar(
-        context,
-        text: 'Delete successful',
-        icon: PhosphorIconsBold.checkCircle,
-      );
-      return;
-    }
-
     /// Delete failed, show error snackbar
-    if (context.mounted) {
+    if (!success && context.mounted) {
       showSnackbar(
         context,
         text: 'Delete failed',

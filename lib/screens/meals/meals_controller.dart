@@ -53,8 +53,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   ///
 
   @override
-  Future<void> onDispose() async {
-    await mealsSubscription?.cancel();
+  void onDispose() {
+    mealsSubscription?.cancel();
     super.dispose();
   }
 
@@ -82,7 +82,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Listens to meals from [date] and updates the loading and error state
-  Future<void> listenToMeals({required DateTime date}) async {
+  void listenToMeals({required DateTime date}) {
     updateState(
       activeDate: date,
       meals: const [],
@@ -90,7 +90,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       error: null,
     );
 
-    await mealsSubscription?.cancel();
+    mealsSubscription?.cancel();
 
     mealsSubscription = firebase
         .listenToMeals(date: date)
@@ -139,18 +139,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       meal: meal,
     );
 
-    /// Delete success, show snackbar
-    if (success && context.mounted) {
-      showSnackbar(
-        context,
-        text: 'Delete successful',
-        icon: PhosphorIconsBold.checkCircle,
-      );
-      return;
-    }
-
     /// Delete failed, show error snackbar
-    if (context.mounted) {
+    if (!success && context.mounted) {
       showSnackbar(
         context,
         text: 'Delete failed',
@@ -202,18 +192,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       isCopyingMeal: false,
     );
 
-    /// Add success, show snackbar
-    if (success && context.mounted) {
-      showSnackbar(
-        context,
-        text: 'Add successful',
-        icon: PhosphorIconsBold.checkCircle,
-      );
-      return;
-    }
-
     /// Add failed, show error snackbar
-    if (context.mounted) {
+    if (!success && context.mounted) {
       showSnackbar(
         context,
         text: 'Add failed',
@@ -254,18 +234,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       isCopyingMeal: true,
     );
 
-    /// Copy success, show snackbar
-    if (success && context.mounted) {
-      showSnackbar(
-        context,
-        text: 'Copy successful',
-        icon: PhosphorIconsBold.checkCircle,
-      );
-      return;
-    }
-
     /// Copy failed, show error snackbar
-    if (context.mounted) {
+    if (!success && context.mounted) {
       showSnackbar(
         context,
         text: 'Copy failed',
