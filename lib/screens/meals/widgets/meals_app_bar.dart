@@ -154,6 +154,11 @@ class FadingFlexibleTitle extends StatelessWidget {
     final carbsBarValue = hasDailyCarbs ? dailyCarbs! : currentCarbs;
     final fatBarValue = hasDailyFat ? dailyFat! : currentFat;
 
+    final proteinBarWeight = proteinBarValue.round() > 0 ? proteinBarValue.round() : 1;
+    final carbsBarWeight = carbsBarValue.round() > 0 ? carbsBarValue.round() : 1;
+    final fatBarWeight = fatBarValue.round() > 0 ? fatBarValue.round() : 1;
+    final totalBarWeight = proteinBarWeight + carbsBarWeight + fatBarWeight;
+
     final proteinProgress = hasDailyProtein
         ? (currentProtein / dailyProtein!).clamp(0.0, 1.0).toDouble()
         : currentProtein > 0
@@ -338,36 +343,43 @@ class FadingFlexibleTitle extends StatelessWidget {
               ],
               child: SizedBox(
                 height: nutritionValuesHeight,
-                child: Row(
-                  spacing: 12,
-                  children: [
-                    ///
-                    /// PROTEIN
-                    ///
-                    AnimatedNutritionBar(
-                      value: proteinBarValue,
-                      progress: proteinProgress,
-                      color: BokunSpizeColors.green,
-                    ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    const spacing = 12.0;
+                    final availableWidth = (constraints.maxWidth - (spacing * 2)).clamp(0.0, constraints.maxWidth).toDouble();
 
-                    ///
-                    /// CARBS
-                    ///
-                    AnimatedNutritionBar(
-                      value: carbsBarValue,
-                      progress: carbsProgress,
-                      color: BokunSpizeColors.blue,
-                    ),
+                    return Row(
+                      spacing: spacing,
+                      children: [
+                        ///
+                        /// PROTEIN
+                        ///
+                        AnimatedNutritionBar(
+                          width: availableWidth * proteinBarWeight / totalBarWeight,
+                          progress: proteinProgress,
+                          color: BokunSpizeColors.green,
+                        ),
 
-                    ///
-                    /// FATS
-                    ///
-                    AnimatedNutritionBar(
-                      value: fatBarValue,
-                      progress: fatProgress,
-                      color: BokunSpizeColors.bordeaux,
-                    ),
-                  ],
+                        ///
+                        /// CARBS
+                        ///
+                        AnimatedNutritionBar(
+                          width: availableWidth * carbsBarWeight / totalBarWeight,
+                          progress: carbsProgress,
+                          color: BokunSpizeColors.blue,
+                        ),
+
+                        ///
+                        /// FATS
+                        ///
+                        AnimatedNutritionBar(
+                          width: availableWidth * fatBarWeight / totalBarWeight,
+                          progress: fatProgress,
+                          color: BokunSpizeColors.bordeaux,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

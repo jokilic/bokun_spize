@@ -5,24 +5,24 @@ import '../constants/constants.dart';
 import '../constants/durations.dart';
 
 class AnimatedNutritionBar extends StatelessWidget {
-  final double value;
+  final double width;
   final double progress;
   final Color color;
 
   const AnimatedNutritionBar({
-    required this.value,
+    required this.width,
     required this.progress,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
-    tween: Tween(end: value),
+    tween: Tween(end: width),
     duration: BokunSpizeDurations.animation,
     curve: Curves.easeIn,
-    builder: (context, animatedValue, child) => Expanded(
-      flex: animatedValue.round() > 0 ? animatedValue.round() : 1,
-      child: child!,
+    builder: (context, animatedWidth, child) => SizedBox(
+      width: animatedWidth,
+      child: child,
     ),
     child: ClipRRect(
       borderRadius: BorderRadius.circular(100),
@@ -40,7 +40,7 @@ class AnimatedNutritionBar extends StatelessWidget {
             ),
             child: SizedBox(
               height: nutritionValuesHeight,
-              child: Container(
+              child: ColoredBox(
                 color: color,
               ),
             ),
