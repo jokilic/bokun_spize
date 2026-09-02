@@ -6,6 +6,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../widgets/animated_nutrition_bar.dart';
 
 class MealsAppBar extends StatelessWidget {
   final bool isLoading;
@@ -153,10 +154,6 @@ class FadingFlexibleTitle extends StatelessWidget {
     final carbsBarValue = hasDailyCarbs ? dailyCarbs! : currentCarbs;
     final fatBarValue = hasDailyFat ? dailyFat! : currentFat;
 
-    final proteinFlex = proteinBarValue.round() > 0 ? proteinBarValue.round() : 1;
-    final carbsFlex = carbsBarValue.round() > 0 ? carbsBarValue.round() : 1;
-    final fatFlex = fatBarValue.round() > 0 ? fatBarValue.round() : 1;
-
     final proteinProgress = hasDailyProtein
         ? (currentProtein / dailyProtein!).clamp(0.0, 1.0).toDouble()
         : currentProtein > 0
@@ -172,8 +169,6 @@ class FadingFlexibleTitle extends StatelessWidget {
         : currentFat > 0
         ? 1.0
         : 0.0;
-
-    // TODO: Can we animate the changes in this widget, so it doesn't just jump when changed?
 
     return Opacity(
       opacity: opacity,
@@ -349,70 +344,28 @@ class FadingFlexibleTitle extends StatelessWidget {
                     ///
                     /// PROTEIN
                     ///
-                    Expanded(
-                      flex: proteinFlex,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: ColoredBox(
-                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FractionallySizedBox(
-                              widthFactor: proteinProgress,
-                              child: Container(
-                                height: nutritionValuesHeight,
-                                color: BokunSpizeColors.green,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    AnimatedNutritionBar(
+                      value: proteinBarValue,
+                      progress: proteinProgress,
+                      color: BokunSpizeColors.green,
                     ),
 
                     ///
                     /// CARBS
                     ///
-                    Expanded(
-                      flex: carbsFlex,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: ColoredBox(
-                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FractionallySizedBox(
-                              widthFactor: carbsProgress,
-                              child: Container(
-                                height: nutritionValuesHeight,
-                                color: BokunSpizeColors.blue,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    AnimatedNutritionBar(
+                      value: carbsBarValue,
+                      progress: carbsProgress,
+                      color: BokunSpizeColors.blue,
                     ),
 
                     ///
                     /// FATS
                     ///
-                    Expanded(
-                      flex: fatFlex,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: ColoredBox(
-                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FractionallySizedBox(
-                              widthFactor: fatProgress,
-                              child: Container(
-                                height: nutritionValuesHeight,
-                                color: BokunSpizeColors.bordeaux,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    AnimatedNutritionBar(
+                      value: fatBarValue,
+                      progress: fatProgress,
+                      color: BokunSpizeColors.bordeaux,
                     ),
                   ],
                 ),
