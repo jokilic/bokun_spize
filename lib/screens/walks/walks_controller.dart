@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../constants/durations.dart';
 import '../../models/steps_with_date/steps_with_date.dart';
 import '../../util/null_state.dart';
 
@@ -14,7 +20,8 @@ class WalksController
             bool isLoading,
             String? error,
           })
-        > {
+        >
+    implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -34,7 +41,21 @@ class WalksController
   /// INIT
   ///
 
-  Future<void> init() async => refreshSteps();
+  void init() {
+    resumeStepsRefresh();
+    refreshSteps();
+  }
+
+  ///
+  /// DISPOSE
+  ///
+
+  @override
+  void onDispose() {
+    isDisposed = true;
+    pauseStepsRefresh();
+    super.dispose();
+  }
 
   ///
   /// VARIABLES
@@ -42,9 +63,94 @@ class WalksController
 
   final graphCalendarDayOptions = [3, 7, 14, 30];
 
+  Timer? stepsRefreshTimer;
+
+  bool isDisposed = false;
+  bool isStepsRefreshActive = false;
+  bool isRefreshingCurrentDaySteps = false;
+
   ///
   /// METHODS
   ///
+
+  /// Starts refreshing today's steps while [WalksScreen] is visible
+  void resumeStepsRefresh() {
+    if (isDisposed || isStepsRefreshActive) {
+      return;
+    }
+
+    isStepsRefreshActive = true;
+
+    /// Refresh immediately when returning to an already loaded [WalksScreen]
+    if (value.stepsWithDate != null && value.permissionAuthorized == true && !value.isLoading) {
+      refreshCurrentDaySteps();
+    }
+
+    stepsRefreshTimer = Timer.periodic(
+      BokunSpizeDurations.stepsRefreshInterval,
+      (_) {
+        if (value.permissionAuthorized == true && !value.isLoading) {
+          refreshCurrentDaySteps();
+        }
+      },
+    );
+  }
+
+  /// Stops refreshing steps while [WalksScreen] is not visible
+  void pauseStepsRefresh() {
+    isStepsRefreshActive = false;
+    stepsRefreshTimer?.cancel();
+    stepsRefreshTimer = null;
+  }
+
+  /// Fetches and updates only the current day steps
+  Future<void> refreshCurrentDaySteps() async {
+    if (isDisposed || !isStepsRefreshActive || isRefreshingCurrentDaySteps) {
+      return;
+    }
+
+    isRefreshingCurrentDaySteps = true;
+
+    try {
+      final now = DateTime.now();
+      final startOfDay = DateUtils.dateOnly(now);
+
+      final steps = await health.getTotalStepsInInterval(
+        startOfDay,
+        now,
+      );
+
+      /// Ignore a result completed after leaving [WalksScreen]
+      if (isDisposed || !isStepsRefreshActive) {
+        return;
+      }
+
+      final stepsWithDate = [...?value.stepsWithDate]
+        ..removeWhere(
+          (stepWithDate) => DateUtils.isSameDay(
+            stepWithDate.dateTime,
+            startOfDay,
+          ),
+        )
+        ..add(
+          StepsWithDate(
+            dateTime: startOfDay,
+            steps: steps ?? 0,
+          ),
+        );
+
+      updateState(
+        stepsWithDate: stepsWithDate,
+      );
+    } catch (error) {
+      log(
+        'Refreshing today steps failed',
+        error: error,
+      );
+    } finally {
+      isRefreshingCurrentDaySteps = false;
+    }
+  }
 
   /// Requests read access to step data from `Apple Health` or `Health Connect`
   Future<({bool granted, String? error})> requestStepPermission() async {
@@ -190,10 +296,16 @@ class WalksController
     Object? permissionAuthorized = nullStateNoChange,
     bool? isLoading,
     Object? error = nullStateNoChange,
-  }) => value = (
-    stepsWithDate: stepsWithDate ?? value.stepsWithDate,
-    permissionAuthorized: identical(permissionAuthorized, nullStateNoChange) ? value.permissionAuthorized : permissionAuthorized as bool?,
-    isLoading: isLoading ?? value.isLoading,
-    error: identical(error, nullStateNoChange) ? value.error : error as String?,
-  );
+  }) {
+    if (isDisposed) {
+      return;
+    }
+
+    value = (
+      stepsWithDate: stepsWithDate ?? value.stepsWithDate,
+      permissionAuthorized: identical(permissionAuthorized, nullStateNoChange) ? value.permissionAuthorized : permissionAuthorized as bool?,
+      isLoading: isLoading ?? value.isLoading,
+      error: identical(error, nullStateNoChange) ? value.error : error as String?,
+    );
+  }
 }

@@ -114,9 +114,7 @@ void registerServices() {
       () => StorageService(
         sharedPreferences: SharedPreferencesAsync(),
       ),
-      onCreated: (storage) => unawaited(
-        storage.init(),
-      ),
+      onCreated: (storage) => storage.init(),
     );
   }
 

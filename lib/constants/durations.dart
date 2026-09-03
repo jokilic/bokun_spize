@@ -4,4 +4,5 @@ class BokunSpizeDurations {
   static const stateTransitionStagger = Duration(milliseconds: 35);
   static const shimmer = Duration(milliseconds: 1500);
   static const speechToTextShimmer = Duration(milliseconds: 1250);
+  static const stepsRefreshInterval = Duration(seconds: 10);
 }
