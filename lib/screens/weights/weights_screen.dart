@@ -83,82 +83,82 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
     return ColoredBox(
       color: BokunSpizeColors.grey,
-      child: Animate(
-        effects: const [
-          FadeEffect(
-            duration: BokunSpizeDurations.stateTransition,
-            curve: Curves.easeOut,
-          ),
-          MoveEffect(
-            begin: Offset(0, 18),
-            end: Offset.zero,
-            duration: BokunSpizeDurations.stateTransition,
-            curve: Curves.easeOutCubic,
-          ),
-          ScaleEffect(
-            begin: Offset(0.985, 0.985),
-            end: Offset(1, 1),
-            alignment: Alignment.topCenter,
-            duration: BokunSpizeDurations.stateTransition,
-            curve: Curves.easeOutCubic,
-          ),
-        ],
-        child: Scaffold(
-          bottomNavigationBar: NavigationBarWidget(),
-          floatingActionButton: isLoading
-              ? null
-              : error != null
-              ? SizedBox(
-                  height: 68,
-                  width: 68,
-                  child: FloatingActionButton(
-                    heroTag: const ValueKey('meals-retry-fab'),
-                    elevation: 0,
-                    backgroundColor: BokunSpizeColors.blue,
-                    foregroundColor: BokunSpizeColors.white,
-                    splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    shape: const CircleBorder(),
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      weightsController.retryWeightTracks();
-                    },
-                    child: const PhosphorIcon(
-                      PhosphorIconsBold.arrowClockwise,
-                      color: BokunSpizeColors.white,
-                      size: 32,
-                    ),
-                  ),
-                )
-              : SizedBox(
-                  height: 68,
-                  width: 68,
-                  child: FloatingActionButton(
-                    heroTag: const ValueKey('weights-fab'),
-                    elevation: 0,
-                    backgroundColor: BokunSpizeColors.blue,
-                    foregroundColor: BokunSpizeColors.white,
-                    splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    shape: const CircleBorder(),
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      weightsController.onAddWeightPressed(
-                        context: context,
-                        initialWeight: lastWeightTrack?.weight ?? 75.0,
-                        weightTrackId: const Uuid().v1(),
-                      );
-                    },
-                    child: const PhosphorIcon(
-                      PhosphorIconsBold.plus,
-                      color: BokunSpizeColors.white,
-                      size: 32,
-                    ),
+      child: Scaffold(
+        bottomNavigationBar: NavigationBarWidget(),
+        floatingActionButton: isLoading
+            ? null
+            : error != null
+            ? SizedBox(
+                height: 68,
+                width: 68,
+                child: FloatingActionButton(
+                  heroTag: const ValueKey('meals-retry-fab'),
+                  elevation: 0,
+                  backgroundColor: BokunSpizeColors.blue,
+                  foregroundColor: BokunSpizeColors.white,
+                  splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  shape: const CircleBorder(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    weightsController.retryWeightTracks();
+                  },
+                  child: const PhosphorIcon(
+                    PhosphorIconsBold.arrowClockwise,
+                    color: BokunSpizeColors.white,
+                    size: 32,
                   ),
                 ),
-          body: SafeArea(
+              )
+            : SizedBox(
+                height: 68,
+                width: 68,
+                child: FloatingActionButton(
+                  heroTag: const ValueKey('weights-fab'),
+                  elevation: 0,
+                  backgroundColor: BokunSpizeColors.blue,
+                  foregroundColor: BokunSpizeColors.white,
+                  splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  shape: const CircleBorder(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    weightsController.onAddWeightPressed(
+                      context: context,
+                      initialWeight: lastWeightTrack?.weight ?? 75.0,
+                      weightTrackId: const Uuid().v1(),
+                    );
+                  },
+                  child: const PhosphorIcon(
+                    PhosphorIconsBold.plus,
+                    color: BokunSpizeColors.white,
+                    size: 32,
+                  ),
+                ),
+              ),
+        body: Animate(
+          effects: const [
+            FadeEffect(
+              duration: BokunSpizeDurations.stateTransition,
+              curve: Curves.easeOut,
+            ),
+            MoveEffect(
+              begin: Offset(0, 18),
+              end: Offset.zero,
+              duration: BokunSpizeDurations.stateTransition,
+              curve: Curves.easeOutCubic,
+            ),
+            ScaleEffect(
+              begin: Offset(0.985, 0.985),
+              end: Offset(1, 1),
+              alignment: Alignment.topCenter,
+              duration: BokunSpizeDurations.stateTransition,
+              curve: Curves.easeOutCubic,
+            ),
+          ],
+          child: SafeArea(
             bottom: false,
             child: CustomScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

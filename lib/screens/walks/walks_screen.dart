@@ -113,54 +113,54 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
 
     return ColoredBox(
       color: BokunSpizeColors.grey,
-      child: Animate(
-        effects: const [
-          FadeEffect(
-            duration: BokunSpizeDurations.stateTransition,
-            curve: Curves.easeOut,
-          ),
-          MoveEffect(
-            begin: Offset(0, 18),
-            end: Offset.zero,
-            duration: BokunSpizeDurations.stateTransition,
-            curve: Curves.easeOutCubic,
-          ),
-          ScaleEffect(
-            begin: Offset(0.985, 0.985),
-            end: Offset(1, 1),
-            alignment: Alignment.topCenter,
-            duration: BokunSpizeDurations.stateTransition,
-            curve: Curves.easeOutCubic,
-          ),
-        ],
-        child: Scaffold(
-          bottomNavigationBar: NavigationBarWidget(),
-          floatingActionButton: showRefreshButton
-              ? SizedBox(
-                  height: 68,
-                  width: 68,
-                  child: FloatingActionButton(
-                    heroTag: const ValueKey('walks-fab'),
-                    elevation: 0,
-                    backgroundColor: BokunSpizeColors.bordeaux,
-                    foregroundColor: BokunSpizeColors.white,
-                    splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    shape: const CircleBorder(),
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      walksController.retrySteps();
-                    },
-                    child: const PhosphorIcon(
-                      PhosphorIconsBold.arrowClockwise,
-                      color: BokunSpizeColors.white,
-                      size: 32,
-                    ),
+      child: Scaffold(
+        bottomNavigationBar: NavigationBarWidget(),
+        floatingActionButton: showRefreshButton
+            ? SizedBox(
+                height: 68,
+                width: 68,
+                child: FloatingActionButton(
+                  heroTag: const ValueKey('walks-fab'),
+                  elevation: 0,
+                  backgroundColor: BokunSpizeColors.bordeaux,
+                  foregroundColor: BokunSpizeColors.white,
+                  splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  shape: const CircleBorder(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    walksController.retrySteps();
+                  },
+                  child: const PhosphorIcon(
+                    PhosphorIconsBold.arrowClockwise,
+                    color: BokunSpizeColors.white,
+                    size: 32,
                   ),
-                )
-              : null,
-          body: SafeArea(
+                ),
+              )
+            : null,
+        body: Animate(
+          effects: const [
+            FadeEffect(
+              duration: BokunSpizeDurations.stateTransition,
+              curve: Curves.easeOut,
+            ),
+            MoveEffect(
+              begin: Offset(0, 18),
+              end: Offset.zero,
+              duration: BokunSpizeDurations.stateTransition,
+              curve: Curves.easeOutCubic,
+            ),
+            ScaleEffect(
+              begin: Offset(0.985, 0.985),
+              end: Offset(1, 1),
+              alignment: Alignment.topCenter,
+              duration: BokunSpizeDurations.stateTransition,
+              curve: Curves.easeOutCubic,
+            ),
+          ],
+          child: SafeArea(
             bottom: false,
             child: CustomScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
