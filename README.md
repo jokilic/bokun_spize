@@ -15,7 +15,6 @@
 - [ ] Notifications reminding to weight
 - [ ] Notifications analyzing previous meal day
 - [ ] Perhaps anonymous sign-in
-- [ ] Make legacy build on GitHub
 
 # Bokun spize 🥗
 
