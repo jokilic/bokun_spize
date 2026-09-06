@@ -75,7 +75,12 @@ JSON structure to follow strictly:
       "name": "string",
       "quantity": number,
       "unit": "string",
-      "calories": number,
+      "nutrition": {
+        "calories": number,
+        "protein": number,
+        "carbs": number,
+        "fat": number
+      }
     }
   ]
 }
@@ -311,7 +316,7 @@ JSON structure to follow strictly:
     if (value.isEmpty) {
       errors.add('Nema dostupnih modela');
       final uploadResult = await imageUpload;
-      if (uploadResult == null) {
+      if (imageFile != null && uploadResult == null) {
         errors.add('Slika nije spremljena');
       }
 
@@ -342,7 +347,7 @@ JSON structure to follow strictly:
     }
 
     final uploadResult = await imageUpload;
-    if (uploadResult == null) {
+    if (imageFile != null && uploadResult == null) {
       errors.add('Slika nije spremljena');
     }
 
