@@ -14,33 +14,30 @@ import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_widget.dart';
-import 'ai_add_meal_controller.dart';
+import 'manual_add_meal_controller.dart';
 
-class AIAddMealScreen extends WatchingStatefulWidget {
+class ManualAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
-  final bool isCopyingMeal;
 
-  const AIAddMealScreen({
+  const ManualAddMealScreen({
     required this.mealId,
     required this.passedMeal,
-    required this.isCopyingMeal,
   });
 
   @override
-  State<AIAddMealScreen> createState() => _AIAddMealScreenState();
+  State<ManualAddMealScreen> createState() => _ManualAddMealScreenState();
 }
 
-class _AIAddMealScreenState extends State<AIAddMealScreen> {
+class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
   @override
   void initState() {
     super.initState();
 
-    registerIfNotInitialized<AIAddMealController>(
-      () => AIAddMealController(
+    registerIfNotInitialized<ManualAddMealController>(
+      () => ManualAddMealController(
         speechToText: getIt.get<SpeechToTextService>(),
         passedMeal: widget.passedMeal,
-        isCopyingMeal: widget.isCopyingMeal,
       ),
       instanceName: widget.mealId,
       afterRegister: (controller) => controller.init(),
@@ -49,7 +46,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
 
   @override
   void dispose() {
-    unRegisterIfNotDisposed<AIAddMealController>(
+    unRegisterIfNotDisposed<ManualAddMealController>(
       instanceName: widget.mealId,
     );
     super.dispose();
@@ -69,12 +66,12 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mealController = getIt.get<AIAddMealController>(
+    final mealController = getIt.get<ManualAddMealController>(
       instanceName: widget.mealId,
     );
 
     /// Reference to `state`
-    final state = watchIt<AIAddMealController>(
+    final state = watchIt<ManualAddMealController>(
       instanceName: widget.mealId,
     ).value;
     final speechToTextState = watchIt<SpeechToTextService>().value;
@@ -85,7 +82,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
     final imageFile = state.imageFile;
     final mealDate = state.mealDate;
     final mealTime = state.mealTime;
-    final validation = state.validation;
+    final textImageValid = state.textImageValid;
 
     final copyingMealWithoutText = widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false);
 
@@ -991,7 +988,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: validation
+                    onPressed: textImageValid
                         ? () => handleOnPressed(
                             onPressed: () {
                               /// Get `words` from [TextEditingController]

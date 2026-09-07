@@ -17,7 +17,7 @@ import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
-class AIAddMealController extends ValueNotifier<({bool textImageValid, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
+class AIAddMealController extends ValueNotifier<({bool validation, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -32,7 +32,7 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
     required this.isCopyingMeal,
   }) : super(
          (
-           textImageValid: false,
+           validation: false,
            speechToTextWords: null,
            mealDate: DateTime.now(),
            mealTime: DateTime.now(),
@@ -51,7 +51,7 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
 
     /// Update `state` with proper values
     updateState(
-      textImageValid: (passedMeal?.originalText?.isNotEmpty ?? false) || passedMeal?.imageStoragePath != null,
+      validation: (passedMeal?.originalText?.isNotEmpty ?? false) || passedMeal?.imageStoragePath != null,
       mealDate: isCopyingMeal ? newMealTime : passedMeal?.createdAt ?? newMealTime,
       mealTime: isCopyingMeal ? newMealTime : passedMeal?.createdAt ?? newMealTime,
     );
@@ -111,7 +111,7 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
     final isImageValidated = value.imageFile != null || passedMeal?.imageStoragePath != null;
 
     updateState(
-      textImageValid: isTextValidated || isImageValidated,
+      validation: isTextValidated || isImageValidated,
     );
   }
 
@@ -290,7 +290,7 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
 
   /// Updates `state`
   void updateState({
-    bool? textImageValid,
+    bool? validation,
     Object? speechToTextWords = nullStateNoChange,
     bool? dateEditMode,
     bool? timeEditMode,
@@ -298,7 +298,7 @@ class AIAddMealController extends ValueNotifier<({bool textImageValid, String? s
     DateTime? mealTime,
     Object? imageFile = nullStateNoChange,
   }) => value = (
-    textImageValid: textImageValid ?? value.textImageValid,
+    validation: validation ?? value.validation,
     speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
     mealDate: mealDate ?? value.mealDate,
     mealTime: mealTime ?? value.mealTime,
