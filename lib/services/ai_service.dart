@@ -30,13 +30,14 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
     }
 
     initializeGemini();
-
     initialized = value.isNotEmpty;
   }
 
   ///
   /// VARIABLES
   ///
+
+  var initialized = false;
 
   final modelNames = [
     'gemini-3.5-flash-lite',
@@ -46,8 +47,7 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
     'gemini-3.5-flash',
   ];
 
-  bool initialized = false;
-
+  // TODO: Think about this and update
   final systemInstruction = '''
 You will receive a text in Croatian and / or image describing what the user ate.
 Estimate nutrition and extract foods.

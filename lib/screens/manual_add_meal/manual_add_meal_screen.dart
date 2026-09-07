@@ -16,6 +16,8 @@ import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_widget.dart';
 import 'manual_add_meal_controller.dart';
 
+// TODO: Implement `isCopyingMeal`
+
 class ManualAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
@@ -80,11 +82,12 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     final isListening = speechToTextState.isListening;
 
     final imageFile = state.imageFile;
+    final foods = state.foods;
     final mealDate = state.mealDate;
     final mealTime = state.mealTime;
-    final textImageValid = state.textImageValid;
+    final validation = state.validation;
 
-    final copyingMealWithoutText = widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false);
+    // final copyingMealWithoutText = widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false);
 
     final date = getDateString(
       date: mealDate,
@@ -988,7 +991,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: textImageValid
+                    onPressed: validation
                         ? () => handleOnPressed(
                             onPressed: () {
                               /// Get `words` from [TextEditingController]
