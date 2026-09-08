@@ -8,10 +8,13 @@ import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
+import '../../models/meal/nutrition.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/parse.dart';
 import '../../util/spacing.dart';
+import '../../util/typedefs.dart';
 import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_title_widget.dart';
 import 'manual_add_meal_controller.dart';
@@ -1099,19 +1102,32 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     onPressed: validation
                         ? () => handleOnPressed(
                             onPressed: () {
-                              /// Get `words` from [TextEditingController]
-                              final words = mealController.nameTextEditingController.text.trim();
-
-                              /// Dismiss sheet
-                              Navigator.of(context).pop(
+                              /// Dismiss sheet with the complete manual meal result
+                              Navigator.of(context).pop<ManualMealResult>(
                                 (
-                                  words: words,
+                                  name: mealController.nameTextEditingController.text.trim(),
                                   dateTime: getMealDateTime(
                                     mealDate: mealDate,
                                     mealTime: mealTime,
                                   ),
+                                  nutrition: Nutrition(
+                                    calories: parseNumberForFood(
+                                      mealController.caloriesTextEditingController.text.trim(),
+                                    ),
+                                    protein: parseNumberForFood(
+                                      mealController.proteinTextEditingController.text.trim(),
+                                    ),
+                                    carbs: parseNumberForFood(
+                                      mealController.carbsTextEditingController.text.trim(),
+                                    ),
+                                    fat: parseNumberForFood(
+                                      mealController.fatsTextEditingController.text.trim(),
+                                    ),
+                                  ),
+                                  foods: List.from(
+                                    foods ?? [],
+                                  ),
                                   imageFile: imageFile,
-                                  deleteMeal: false,
                                 ),
                               );
                             },

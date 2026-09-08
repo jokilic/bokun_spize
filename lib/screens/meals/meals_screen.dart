@@ -180,7 +180,10 @@ class _MealsScreenState extends State<MealsScreen> {
                       shape: const CircleBorder(),
                       onPressed: () {
                         HapticFeedback.lightImpact();
-                        mealsController.onAddManualMealPressed(context);
+                        mealsController.onAddManualMealPressed(
+                          context,
+                          passedMeal: null,
+                        );
                       },
                       child: const PhosphorIcon(
                         PhosphorIconsBold.plus,
@@ -256,7 +259,7 @@ class _MealsScreenState extends State<MealsScreen> {
                     },
                     onCopyPressed: (meal) {
                       HapticFeedback.lightImpact();
-                      mealsController.onCopyMealPressed(
+                      mealsController.onAddManualMealPressed(
                         context,
                         passedMeal: meal,
                       );

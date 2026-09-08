@@ -203,17 +203,20 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Triggered when the user presses `FAB` to add `manual meal`
-  Future<void> onAddManualMealPressed(BuildContext context) async {
+  Future<void> onAddManualMealPressed(
+    BuildContext context, {
+    required Meal? passedMeal,
+  }) async {
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
 
-    /// Show [ManualAddMealScreen] for adding `AI meal`
+    /// Show [ManualAddMealScreen] for adding `manual meal`
     final result = await showBlurredModalBottomSheet<ManualMealResult>(
       context: context,
       backgroundColor: BokunSpizeColors.grey,
       builder: (context) => ManualAddMealScreen(
         mealId: newMealId,
-        passedMeal: null,
+        passedMeal: passedMeal,
         isCopyingMeal: false,
       ),
     );
@@ -222,63 +225,63 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       return;
     }
 
-    // TODO: Instead of `validateAndRunAILogic`, we should generate `Meal` model from result, upload image if it exists and just store that Meal into Firebase
+    var success = false;
+    final dateTime = result.dateTime;
+    final imageFile = result.imageFile;
 
-    /// Run `AI` logic
-    final success = await validateAndRunAILogic(
-      result: result,
-      newMealId: newMealId,
-      passedMeal: null,
-      isCopyingMeal: false,
-    );
+    if (dateTime != null) {
+      /// Save a loading meal so it appears while the image uploads
+      final loadingMeal = Meal(
+        id: newMealId,
+        createdAt: dateTime,
+        isLoading: true,
+      );
+
+      try {
+        final loadingMealWritten = await firebase.writeMeal(
+          newMeal: loadingMeal,
+        );
+
+        if (loadingMealWritten) {
+          updateDate(dateTime);
+
+          final imageStoragePath = imageFile != null
+              ? await firebase.uploadMealImage(
+                  imageFile: imageFile,
+                )
+              : null;
+          final imageUploadFailed = imageFile != null && imageStoragePath == null;
+
+          /// Finish loading and preserve the meal data even if the image upload fails
+          final meal = loadingMeal.copyWith(
+            name: result.name,
+            nutrition: result.nutrition,
+            foods: result.foods,
+            imageStoragePath: imageStoragePath,
+            isLoading: false,
+            errors: imageUploadFailed ? ['Image upload failed'] : null,
+          );
+
+          final mealUpdated = await firebase.updateMeal(
+            newMeal: meal,
+          );
+
+          success = mealUpdated && !imageUploadFailed;
+        }
+      } catch (error) {
+        log(
+          'Adding manual meal failed',
+          error: error,
+        );
+        success = false;
+      }
+    }
 
     /// Add failed, show error snackbar
     if (!success && context.mounted) {
       showSnackbar(
         context,
         text: 'Add failed',
-        icon: PhosphorIconsBold.warningOctagon,
-      );
-    }
-  }
-
-  /// Triggered when the user copies a `meal`
-  Future<void> onCopyMealPressed(
-    BuildContext context, {
-    required Meal passedMeal,
-  }) async {
-    /// Generate `newMealId`
-    final newMealId = const Uuid().v1();
-
-    /// Show [AIAddMealScreen] for copying `meal`
-    final result = await showBlurredModalBottomSheet<AIMealResult>(
-      context: context,
-      backgroundColor: BokunSpizeColors.grey,
-      builder: (context) => AIAddMealScreen(
-        mealId: newMealId,
-        // TODO: Remove bottom values and use [ManualAddMealScreen]
-        passedMeal: passedMeal,
-        isCopyingMeal: true,
-      ),
-    );
-
-    if (result == null) {
-      return;
-    }
-
-    /// Run `AI` logic
-    final success = await validateAndRunAILogic(
-      result: result,
-      newMealId: newMealId,
-      passedMeal: passedMeal,
-      isCopyingMeal: true,
-    );
-
-    /// Copy failed, show error snackbar
-    if (!success && context.mounted) {
-      showSnackbar(
-        context,
-        text: 'Copy failed',
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -405,7 +408,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       return false;
     } catch (error) {
       log(
-        'Adding meal failed',
+        'Adding AI meal failed',
         error: error,
       );
       return false;
