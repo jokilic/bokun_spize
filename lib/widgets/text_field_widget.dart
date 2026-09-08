@@ -25,6 +25,7 @@ class TextFieldWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final EdgeInsets contentPadding;
   final bool enabled;
+  final bool filled;
 
   const TextFieldWidget({
     required this.controller,
@@ -49,6 +50,7 @@ class TextFieldWidget extends StatelessWidget {
     this.textStyle,
     this.contentPadding = const EdgeInsets.all(20),
     this.enabled = true,
+    this.filled = true,
   });
 
   @override
@@ -67,7 +69,7 @@ class TextFieldWidget extends StatelessWidget {
     cursorWidth: 1.5,
     cursorColor: BokunSpizeColors.green,
     decoration: InputDecoration(
-      filled: true,
+      filled: filled,
       enabled: enabled,
       fillColor: BokunSpizeColors.white.withValues(
         alpha: enabled ? 0.5 : 0.25,

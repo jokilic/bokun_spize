@@ -15,16 +15,17 @@ import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_widget.dart';
 import 'manual_add_meal_controller.dart';
-
-// TODO: Implement `isCopyingMeal`
+import 'widgets/manual_add_meal_nutrition_text_field.dart';
 
 class ManualAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
+  final bool isCopyingMeal;
 
   const ManualAddMealScreen({
     required this.mealId,
     required this.passedMeal,
+    required this.isCopyingMeal,
   });
 
   @override
@@ -40,6 +41,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
       () => ManualAddMealController(
         speechToText: getIt.get<SpeechToTextService>(),
         passedMeal: widget.passedMeal,
+        isCopyingMeal: widget.isCopyingMeal,
       ),
       instanceName: widget.mealId,
       afterRegister: (controller) => controller.init(),
@@ -273,88 +275,51 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       child: InkWell(
-                        onLongPress: widget.isCopyingMeal
-                            ? () {
-                                HapticFeedback.lightImpact();
+                        // onLongPress: widget.isCopyingMeal
+                        //     ? () {
+                        //         HapticFeedback.lightImpact();
 
-                                /// Get text from [TextEditingController]
-                                final text = mealController.textEditingController.text.trim();
+                        //         /// Get text from [TextEditingController]
+                        //         final text = mealController.textEditingController.text.trim();
 
-                                /// No text, return
-                                if (text.isEmpty) {
-                                  return;
-                                }
+                        //         /// No text, return
+                        //         if (text.isEmpty) {
+                        //           return;
+                        //         }
 
-                                /// Copy text to clipboard
-                                Clipboard.setData(
-                                  ClipboardData(
-                                    text: text,
-                                  ),
-                                );
-                              }
-                            : null,
+                        //         /// Copy text to clipboard
+                        //         Clipboard.setData(
+                        //           ClipboardData(
+                        //             text: text,
+                        //           ),
+                        //         );
+                        //       }
+                        //     : null,
                         borderRadius: BorderRadius.circular(listTileRadius),
                         highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                         splashColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         child: TextFieldWidget(
-                          enabled: !widget.isCopyingMeal,
-                          controller: mealController.textEditingController,
-                          focusNode: mealController.textFocusNode,
+                          controller: mealController.nameTextEditingController,
+                          focusNode: mealController.nameFocusNode,
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 40,
                           ),
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                          onSubmitted: (_) {
+                            // TODO: Go to next TextField (calories)
+                          },
                           keyboardType: TextInputType.multiline,
                           textAlign: TextAlign.left,
                           textAlignVertical: TextAlignVertical.top,
                           textCapitalization: TextCapitalization.sentences,
                           textInputAction: TextInputAction.newline,
-                          minLines: 3,
-                          maxLines: 3,
+                          minLines: 2,
+                          maxLines: 2,
                           borderRadius: listTileRadius,
-                          hintText: copyingMealWithoutText ? null : 'What did you eat?',
-                          hintWidget: copyingMealWithoutText
-                              ? SizedBox(
-                                  height: 104,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: HapticFeedback.lightImpact,
-                                        icon: const PhosphorIcon(
-                                          PhosphorIconsBold.pencilSlash,
-                                          size: 32,
-                                        ),
-                                        style: IconButton.styleFrom(
-                                          elevation: 0,
-                                          padding: const EdgeInsets.all(16),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(100),
-                                          ),
-                                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                          foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        'Meal has no text',
-                                        style: TextStyle(
-                                          fontFamily: 'Epilogue',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 0.6,
-                                          color: BokunSpizeColors.black.withValues(alpha: 0.75),
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : null,
+                          hintText: 'What did you eat?',
                           hintStyle: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 18,
@@ -374,72 +339,70 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ///
                     /// TEXT FIELD TITLE
                     ///
-                    if (!copyingMealWithoutText)
-                      Positioned(
-                        top: 16,
-                        left: 20,
-                        child: IgnorePointer(
-                          child: Text(
-                            'Describe your meal'.toUpperCase(),
-                            style: const TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.6,
-                              color: BokunSpizeColors.green,
-                            ),
+                    Positioned(
+                      top: 16,
+                      left: 20,
+                      child: IgnorePointer(
+                        child: Text(
+                          'Title of your meal'.toUpperCase(),
+                          style: const TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.6,
+                            color: BokunSpizeColors.green,
                           ),
                         ),
                       ),
+                    ),
 
                     ///
                     /// SPEECH TO TEXT ICON
                     ///
-                    if (!copyingMealWithoutText && !widget.isCopyingMeal)
-                      Positioned(
-                        bottom: 10,
-                        right: 10,
-                        child: Animate(
-                          onPlay: (controller) {
-                            if (isListening) {
-                              controller.loop(
-                                reverse: true,
-                                min: 0.6,
-                              );
-                            }
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: Animate(
+                        onPlay: (controller) {
+                          if (isListening) {
+                            controller.loop(
+                              reverse: true,
+                              min: 0.6,
+                            );
+                          }
+                        },
+                        effects: [
+                          if (isListening)
+                            const FadeEffect(
+                              duration: BokunSpizeDurations.speechToTextShimmer,
+                              curve: Curves.easeIn,
+                            ),
+                        ],
+                        child: IconButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            mealController.onSpeechToTextPressed(
+                              // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+                              locale: 'en',
+                              speechToTextAvailable: available,
+                            );
                           },
-                          effects: [
-                            if (isListening)
-                              const FadeEffect(
-                                duration: BokunSpizeDurations.speechToTextShimmer,
-                                curve: Curves.easeIn,
-                              ),
-                          ],
-                          child: IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              mealController.onSpeechToTextPressed(
-                                // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
-                                locale: 'en',
-                                speechToTextAvailable: available,
-                              );
-                            },
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.microphone,
-                              size: 22,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.microphone,
+                            size: 22,
+                          ),
+                          style: IconButton.styleFrom(
+                            elevation: 0,
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                            style: IconButton.styleFrom(
-                              elevation: 0,
-                              padding: const EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                              foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
-                            ),
+                            backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                            foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
                           ),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),
@@ -628,21 +591,30 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(listTileRadius),
-                      color: BokunSpizeColors.white.withValues(
-                        alpha: widget.isCopyingMeal ? 0.25 : 0.5,
-                      ),
+                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
                     ),
                     height: 160,
                     width: double.infinity,
-                    child: widget.isCopyingMeal
-                        ? Column(
+                    child: Row(
+                      spacing: 56,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ///
+                        /// CAMERA
+                        ///
+                        Expanded(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               IconButton(
-                                onPressed: HapticFeedback.lightImpact,
+                                onPressed: () => handleOnPressed(
+                                  onPressed: mealController.onCameraPressed,
+                                ),
                                 icon: const PhosphorIcon(
-                                  PhosphorIconsBold.cameraSlash,
+                                  PhosphorIconsBold.cameraPlus,
                                   size: 32,
                                 ),
                                 style: IconButton.styleFrom(
@@ -651,120 +623,190 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(100),
                                   ),
-                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                  foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                  foregroundColor: BokunSpizeColors.green,
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Text(
-                                'Meal has no image',
+                              const Text(
+                                'Camera',
                                 style: TextStyle(
                                   fontFamily: 'Epilogue',
                                   fontSize: 14,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   letterSpacing: 0.6,
-                                  color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                                  color: BokunSpizeColors.black,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
-                          )
-                        : Row(
-                            spacing: 56,
+                          ),
+                        ),
+
+                        ///
+                        /// GALLERY
+                        ///
+                        Expanded(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ///
-                              /// CAMERA
-                              ///
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () => handleOnPressed(
-                                        onPressed: mealController.onCameraPressed,
-                                      ),
-                                      icon: const PhosphorIcon(
-                                        PhosphorIconsBold.cameraPlus,
-                                        size: 32,
-                                      ),
-                                      style: IconButton.styleFrom(
-                                        elevation: 0,
-                                        padding: const EdgeInsets.all(16),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(100),
-                                        ),
-                                        backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                        foregroundColor: BokunSpizeColors.green,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text(
-                                      'Camera',
-                                      style: TextStyle(
-                                        fontFamily: 'Epilogue',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.6,
-                                        color: BokunSpizeColors.black,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                              IconButton(
+                                onPressed: () => handleOnPressed(
+                                  onPressed: mealController.onGalleryPressed,
+                                ),
+                                icon: const PhosphorIcon(
+                                  PhosphorIconsBold.images,
+                                  size: 32,
+                                ),
+                                style: IconButton.styleFrom(
+                                  elevation: 0,
+                                  padding: const EdgeInsets.all(16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                  foregroundColor: BokunSpizeColors.green,
                                 ),
                               ),
-
-                              ///
-                              /// GALLERY
-                              ///
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () => handleOnPressed(
-                                        onPressed: mealController.onGalleryPressed,
-                                      ),
-                                      icon: const PhosphorIcon(
-                                        PhosphorIconsBold.images,
-                                        size: 32,
-                                      ),
-                                      style: IconButton.styleFrom(
-                                        elevation: 0,
-                                        padding: const EdgeInsets.all(16),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(100),
-                                        ),
-                                        backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                        foregroundColor: BokunSpizeColors.green,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text(
-                                      'Gallery',
-                                      style: TextStyle(
-                                        fontFamily: 'Epilogue',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.6,
-                                        color: BokunSpizeColors.black,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Gallery',
+                                style: TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.6,
+                                  color: BokunSpizeColors.black,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
+
+          ///
+          /// CALORIES
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 12),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: ManualAddMealNutritionTextField(
+                  textEditingController: mealController.caloriesTextEditingController,
+                  focusNode: mealController.caloriesFocusNode,
+                  onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                  onSubmitted: (_) {
+                    // TODO: Go to next TextField (protein)
+                  },
+                  title: 'Calories',
+                  hintText: 'kcal',
+                  textColor: BokunSpizeColors.green,
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
+
+          ///
+          /// NUTRITION
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 12),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Row(
+                  spacing: 16,
+                  children: [
+                    ///
+                    /// PROTEIN
+                    ///
+                    Expanded(
+                      child: ManualAddMealNutritionTextField(
+                        textEditingController: mealController.proteinTextEditingController,
+                        focusNode: mealController.proteinFocusNode,
+                        onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                        onSubmitted: (_) {
+                          // TODO: Go to next TextField (carbs)
+                        },
+                        title: 'Protein',
+                        hintText: 'g',
+                        textColor: BokunSpizeColors.green,
+                      ),
+                    ),
+
+                    ///
+                    /// CARBS
+                    ///
+                    Expanded(
+                      child: ManualAddMealNutritionTextField(
+                        textEditingController: mealController.carbsTextEditingController,
+                        focusNode: mealController.carbsFocusNode,
+                        onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                        onSubmitted: (_) {
+                          // TODO: Go to next TextField (fats)
+                        },
+                        title: 'Carbs',
+                        hintText: 'g',
+                        textColor: BokunSpizeColors.blue,
+                      ),
+                    ),
+
+                    ///
+                    /// FAT
+                    ///
+                    Expanded(
+                      child: ManualAddMealNutritionTextField(
+                        textEditingController: mealController.fatsTextEditingController,
+                        focusNode: mealController.fatsFocusNode,
+                        title: 'Fats',
+                        hintText: 'g',
+                        textColor: BokunSpizeColors.bordeaux,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           const SliverToBoxAdapter(
             child: SizedBox(height: 20),
           ),
@@ -995,7 +1037,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         ? () => handleOnPressed(
                             onPressed: () {
                               /// Get `words` from [TextEditingController]
-                              final words = mealController.textEditingController.text.trim();
+                              final words = mealController.nameTextEditingController.text.trim();
 
                               /// Dismiss sheet
                               Navigator.of(context).pop(

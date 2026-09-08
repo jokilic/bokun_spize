@@ -19,6 +19,7 @@ import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../ai_add_meal/ai_add_meal_screen.dart';
+import '../manual_add_meal/manual_add_meal_screen.dart';
 
 class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
@@ -172,12 +173,17 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final result = await showBlurredModalBottomSheet<MealSheetResult>(
       context: context,
       backgroundColor: BokunSpizeColors.grey,
-      builder: (context) => AIAddMealScreen(
+      builder: (context) => ManualAddMealScreen(
         mealId: newMealId,
-        // TODO: Remove bottom values from [AIAddMealScreen]
         passedMeal: null,
         isCopyingMeal: false,
       ),
+      // AIAddMealScreen(
+      //   mealId: newMealId,
+      //   // TODO: Remove bottom values from [AIAddMealScreen]
+      //   passedMeal: null,
+      //   isCopyingMeal: false,
+      // ),
     );
 
     if (result == null) {

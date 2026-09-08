@@ -26,10 +26,13 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
 
   final SpeechToTextService speechToText;
   final Meal? passedMeal;
+  // TODO: Implement logic for copying meal
+  final bool isCopyingMeal;
 
   ManualAddMealController({
     required this.speechToText,
     required this.passedMeal,
+    required this.isCopyingMeal,
   }) : super(
          (
            validation: false,
@@ -58,11 +61,11 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     );
 
     /// Update [TextEditingController] text
-    textEditingController.text = passedMeal?.name ?? '';
+    nameTextEditingController.text = passedMeal?.name ?? '';
 
     /// Add validation listener to [TextEditingController]
-    textEditingController.addListener(triggerValidation);
-    textFocusNode.addListener(stopSpeechToTextIfTextFieldFocused);
+    nameTextEditingController.addListener(triggerValidation);
+    nameFocusNode.addListener(stopSpeechToTextIfTextFieldFocused);
 
     /// Trigger validation
     triggerValidation();
@@ -84,22 +87,45 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     );
 
     /// Dispose [TextEditingController]
-    textEditingController
+    nameTextEditingController
       ..removeListener(triggerValidation)
       ..dispose();
 
     /// Dispose [FocusNode]
-    textFocusNode
+    nameFocusNode
       ..removeListener(stopSpeechToTextIfTextFieldFocused)
       ..dispose();
+
+    /// Dispose other [TextEditingControllers]
+    caloriesTextEditingController.dispose();
+    proteinTextEditingController.dispose();
+    carbsTextEditingController.dispose();
+    fatsTextEditingController.dispose();
+
+    /// Dispose other [FocusNodes]
+    caloriesFocusNode.dispose();
+    proteinFocusNode.dispose();
+    carbsFocusNode.dispose();
+    fatsFocusNode.dispose();
   }
 
   ///
   /// VARIABLES
   ///
 
-  late final textEditingController = TextEditingController();
-  late final textFocusNode = FocusNode();
+  late final nameTextEditingController = TextEditingController();
+  late final nameFocusNode = FocusNode();
+
+  late final caloriesTextEditingController = TextEditingController();
+  late final caloriesFocusNode = FocusNode();
+
+  late final proteinTextEditingController = TextEditingController();
+  late final proteinFocusNode = FocusNode();
+  late final carbsTextEditingController = TextEditingController();
+  late final carbsFocusNode = FocusNode();
+  late final fatsTextEditingController = TextEditingController();
+  late final fatsFocusNode = FocusNode();
+
   late final imagePicker = ImagePicker();
 
   ///
@@ -108,7 +134,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
 
   /// Checks if validation passed
   void triggerValidation() {
-    final isTextValidated = textEditingController.text.trim().isNotEmpty;
+    final isTextValidated = nameTextEditingController.text.trim().isNotEmpty;
     final isImageValidated = value.imageFile != null || passedMeal?.imageStoragePath != null;
 
     updateState(
@@ -152,7 +178,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
 
   /// Stop speech recognition if [TextField] becomes active
   Future<void> stopSpeechToTextIfTextFieldFocused() async {
-    if (!textFocusNode.hasFocus) {
+    if (!nameFocusNode.hasFocus) {
       return;
     }
 
@@ -178,7 +204,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     }
 
     /// Save current [TextEditingController] text
-    final currentText = textEditingController.text;
+    final currentText = nameTextEditingController.text;
 
     /// [SpeechToText] was disabled, start listening
     if (!speechToText.value.isListening) {
@@ -196,9 +222,9 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
 
           /// Add new `words` to [TextEditingController]
           if (currentText.isNotEmpty) {
-            textEditingController.text = '$currentText $words';
+            nameTextEditingController.text = '$currentText $words';
           } else {
-            textEditingController.text = words;
+            nameTextEditingController.text = words;
           }
         },
         locale: locale,
