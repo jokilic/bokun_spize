@@ -338,22 +338,10 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
       return;
     }
 
-    /// Run `AI` logic
-    // final success = await validateAndRunAILogic(
-    //   result: result,
-    //   newMealId: newMealId,
-    //   passedMeal: null,
-    //   isCopyingMeal: false,
-    // );
-
-    /// Add failed, show error snackbar
-    // if (!success && context.mounted) {
-    //   showSnackbar(
-    //     context,
-    //     text: 'Add failed',
-    //     icon: PhosphorIconsBold.warningOctagon,
-    //   );
-    // }
+    /// Add `food` to `state`
+    addFood(
+      food: result,
+    );
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`

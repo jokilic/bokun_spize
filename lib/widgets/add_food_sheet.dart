@@ -46,7 +46,12 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
 
     /// Update [TextEditingController] text
     nameTextEditingController.text = widget.passedFood?.name ?? '';
-    // TODO: `passedFood` can exist in the scenario of modifying that Food, can you fill out other [TextEditingControllers] with those values, like name is filled above
+    quantityTextEditingController.text = widget.passedFood?.quantity.toString() ?? '';
+    unitTextEditingController.text = widget.passedFood?.unit ?? '';
+    caloriesTextEditingController.text = widget.passedFood?.nutrition.calories.toString() ?? '';
+    proteinTextEditingController.text = widget.passedFood?.nutrition.protein.toString() ?? '';
+    carbsTextEditingController.text = widget.passedFood?.nutrition.carbs.toString() ?? '';
+    fatsTextEditingController.text = widget.passedFood?.nutrition.fat.toString() ?? '';
 
     /// Add validation listener to [TextEditingController]
     nameTextEditingController.addListener(triggerValidation);
@@ -85,7 +90,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
       shrinkWrap: true,
       slivers: [
         const SliverToBoxAdapter(
-          child: SizedBox(height: 40),
+          child: SizedBox(height: 24),
         ),
 
         ///
@@ -176,8 +181,42 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
             ),
           ),
         ),
+
+        ///
+        /// SUBTITLE
+        ///
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+          sliver: SliverToBoxAdapter(
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 2,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
+                ),
+                MoveEffect(
+                  begin: Offset(0, 8),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ],
+              child: const Text(
+                'Add food to your meal',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: BokunSpizeColors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
+          child: SizedBox(height: 28),
         ),
 
         ///
@@ -209,18 +248,6 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 textColor: BokunSpizeColors.black,
                 autocorrect: true,
                 hintText: 'Chocolate',
-                hintStyle: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                ),
-                textStyle: const TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: BokunSpizeColors.black,
-                ),
               ),
             ),
           ),
@@ -274,18 +301,6 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     hintText: '0',
                     textColor: BokunSpizeColors.black,
                     keyboardType: TextInputType.number,
-                    hintStyle: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                    ),
-                    textStyle: const TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.black,
-                    ),
                   ),
                 ),
 
@@ -302,18 +317,6 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     title: 'Unit',
                     hintText: 'grams',
                     textColor: BokunSpizeColors.black,
-                    hintStyle: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                    ),
-                    textStyle: const TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: BokunSpizeColors.black,
-                    ),
                   ),
                 ),
               ],

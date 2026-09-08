@@ -10,6 +10,7 @@ class TextFieldTitleWidget extends StatelessWidget {
   final String title;
   final String? hintText;
   final String? rightText;
+  final Widget? rightWidget;
   final Color textColor;
   final Function(String value)? onChanged;
   final Function(String value)? onSubmitted;
@@ -31,6 +32,7 @@ class TextFieldTitleWidget extends StatelessWidget {
     this.autocorrect = false,
     this.hintText,
     this.rightText,
+    this.rightWidget,
     this.onChanged,
     this.onSubmitted,
     this.hintStyle,
@@ -73,7 +75,6 @@ class TextFieldTitleWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 4),
 
             ///
             /// TEXT FIELD & HINT
@@ -101,7 +102,7 @@ class TextFieldTitleWidget extends StatelessWidget {
                         hintStyle ??
                         TextStyle(
                           fontFamily: 'PlusJakartaSans',
-                          fontSize: 28,
+                          fontSize: 26,
                           fontWeight: FontWeight.w700,
                           color: textColor.withValues(alpha: 0.5),
                         ),
@@ -109,7 +110,7 @@ class TextFieldTitleWidget extends StatelessWidget {
                         textStyle ??
                         TextStyle(
                           fontFamily: 'PlusJakartaSans',
-                          fontSize: 28,
+                          fontSize: 26,
                           fontWeight: FontWeight.w700,
                           color: textColor,
                         ),
@@ -117,7 +118,7 @@ class TextFieldTitleWidget extends StatelessWidget {
                 ),
 
                 ///
-                /// HINT
+                /// RIGHT TEXT
                 ///
                 if (rightText?.isNotEmpty ?? false)
                   Padding(
@@ -130,8 +131,14 @@ class TextFieldTitleWidget extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                         color: textColor,
                       ),
+                      textAlign: TextAlign.right,
                     ),
                   ),
+
+                ///
+                /// RIGHT WIDGET
+                ///
+                ?rightWidget,
               ],
             ),
           ],

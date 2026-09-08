@@ -15,6 +15,7 @@
 - [ ] Notifications reminding to weight
 - [ ] Notifications analyzing previous meal day
 - [ ] Perhaps anonymous sign-in
+- [ ] Recheck all animations in sheets and [ManualAddMealScreen]
 
 # Bokun spize 🥗
 

@@ -111,7 +111,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
         shrinkWrap: true,
         slivers: [
           const SliverToBoxAdapter(
-            child: SizedBox(height: 40),
+            child: SizedBox(height: 24),
           ),
 
           ///
@@ -237,152 +237,78 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 32),
           ),
 
           ///
-          /// TEXT FIELD & TITLE & ICON
+          /// TEXT FIELD
           ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOut,
                   ),
                   MoveEffect(
-                    begin: Offset(0, 14),
+                    begin: Offset(0, 12),
                     end: Offset.zero,
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOutCubic,
                   ),
-                  ScaleEffect(
-                    begin: Offset(0.98, 0.98),
-                    end: Offset(1, 1),
-                    alignment: Alignment.topCenter,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
                 ],
-                child: Stack(
-                  children: [
-                    ///
-                    /// TEXT FIELD
-                    ///
-                    Material(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(listTileRadius),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                        highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        child: TextFieldWidget(
-                          controller: mealController.nameTextEditingController,
-                          focusNode: mealController.nameFocusNode,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 40,
-                          ),
-                          onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                          onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
-                          keyboardType: TextInputType.text,
-                          textAlign: TextAlign.left,
-                          textAlignVertical: TextAlignVertical.top,
-                          textCapitalization: TextCapitalization.sentences,
-                          textInputAction: TextInputAction.next,
-                          minLines: 2,
-                          maxLines: 2,
-                          borderRadius: listTileRadius,
-                          hintText: 'What did you eat?',
-                          hintStyle: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                          ),
-                          textStyle: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.black,
-                          ),
+                child: TextFieldTitleWidget(
+                  textEditingController: mealController.nameTextEditingController,
+                  focusNode: mealController.nameFocusNode,
+                  onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                  onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
+                  title: 'Meal name',
+                  hintText: 'Chocolate cake',
+                  rightWidget: Animate(
+                    onPlay: (controller) {
+                      if (isListening) {
+                        controller.loop(
+                          reverse: true,
+                          min: 0.6,
+                        );
+                      }
+                    },
+                    effects: [
+                      if (isListening)
+                        const FadeEffect(
+                          duration: BokunSpizeDurations.speechToTextShimmer,
+                          curve: Curves.easeIn,
                         ),
+                    ],
+                    child: IconButton(
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        mealController.onSpeechToTextPressed(
+                          // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+                          locale: 'en',
+                          speechToTextAvailable: available,
+                        );
+                      },
+                      icon: const PhosphorIcon(
+                        PhosphorIconsBold.microphone,
+                        size: 22,
+                      ),
+                      style: IconButton.styleFrom(
+                        elevation: 0,
+                        padding: const EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                        foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
                       ),
                     ),
-
-                    ///
-                    /// TEXT FIELD TITLE
-                    ///
-                    Positioned(
-                      top: 16,
-                      left: 20,
-                      child: IgnorePointer(
-                        child: Text(
-                          'Title of your meal'.toUpperCase(),
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                            color: BokunSpizeColors.green,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    ///
-                    /// SPEECH TO TEXT ICON
-                    ///
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: Animate(
-                        onPlay: (controller) {
-                          if (isListening) {
-                            controller.loop(
-                              reverse: true,
-                              min: 0.6,
-                            );
-                          }
-                        },
-                        effects: [
-                          if (isListening)
-                            const FadeEffect(
-                              duration: BokunSpizeDurations.speechToTextShimmer,
-                              curve: Curves.easeIn,
-                            ),
-                        ],
-                        child: IconButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            mealController.onSpeechToTextPressed(
-                              // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
-                              locale: 'en',
-                              speechToTextAvailable: available,
-                            );
-                          },
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.microphone,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            elevation: 0,
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                            foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                  textColor: BokunSpizeColors.black,
+                  keyboardType: TextInputType.number,
                 ),
               ),
             ),
@@ -671,7 +597,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
             ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+            child: SizedBox(height: 32),
           ),
 
           ///
@@ -693,7 +619,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 12),
+            child: SizedBox(height: 16),
           ),
 
           ///
@@ -811,7 +737,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+            child: SizedBox(height: 32),
           ),
 
           ///
@@ -833,7 +759,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 12),
+            child: SizedBox(height: 16),
           ),
 
           ///
@@ -906,7 +832,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+            child: SizedBox(height: 32),
           ),
 
           ///
@@ -928,7 +854,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 12),
+            child: SizedBox(height: 16),
           ),
 
           ///
@@ -1125,9 +1051,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
             ),
           ),
-
           const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+            child: SizedBox(height: 32),
           ),
 
           ///
