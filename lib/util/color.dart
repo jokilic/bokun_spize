@@ -26,7 +26,7 @@ Color colorFromHex(String hex) {
 String colorToHex(Color color) => '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
 
 Color getCalorieValueColor({required Nutrition? nutrition}) {
-  if (nutrition == null) {
+  if (nutrition == null || (nutrition.protein == 0 && nutrition.carbs == 0 && nutrition.fat == 0)) {
     return BokunSpizeColors.black;
   }
 

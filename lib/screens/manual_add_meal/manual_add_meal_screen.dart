@@ -14,7 +14,6 @@ import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
 import '../../widgets/text_field_title_widget.dart';
-import '../../widgets/text_field_widget.dart';
 import 'manual_add_meal_controller.dart';
 import 'widgets/manual_add_meal_food_list_tile.dart';
 
@@ -765,7 +764,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
           ///
           /// FOODS
           ///
-          if (foods?.isNotEmpty ?? false)
+          if (foods?.isNotEmpty ?? false) ...[
             SliverList.builder(
               itemCount: foods!.length,
               itemBuilder: (context, index) {
@@ -787,11 +786,16 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ],
                   child: ManualAddMealFoodListTile(
+                    onPressed: () {},
                     food: food,
                   ),
                 );
               },
             ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 8),
+            ),
+          ],
 
           ///
           /// ADD FOOD BUTTON
