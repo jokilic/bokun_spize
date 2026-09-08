@@ -38,11 +38,15 @@ class MealsListTile extends StatelessWidget {
       useTodayYesterdayTomorrow: false,
     );
 
+    final primaryColor = getCalorieValueColor(
+      nutrition: meal.nutrition,
+    );
+
     final imageBackgroundColor = isLoading
         ? BokunSpizeColors.grey
         : hasError
         ? BokunSpizeColors.red
-        : meal.color ?? BokunSpizeColors.grey;
+        : meal.color ?? primaryColor;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -183,10 +187,11 @@ class MealsListTile extends StatelessWidget {
                                         color: BokunSpizeColors.white,
                                         size: 24,
                                       )
-                                    : FittedBox(
+                                    : meal.emoji != null
+                                    ? FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: Text(
-                                          meal.emoji ?? '',
+                                          meal.emoji!,
                                           style: const TextStyle(
                                             fontFamily: 'PlusJakartaSans',
                                             fontSize: 24,
@@ -194,6 +199,11 @@ class MealsListTile extends StatelessWidget {
                                           maxLines: 1,
                                           softWrap: false,
                                         ),
+                                      )
+                                    : const PhosphorIcon(
+                                        PhosphorIconsBold.bowlFood,
+                                        color: BokunSpizeColors.white,
+                                        size: 24,
                                       ),
                               ),
                       ),
@@ -332,9 +342,7 @@ class MealsListTile extends StatelessWidget {
                               fontFamily: 'Epilogue',
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
-                              color: getCalorieValueColor(
-                                nutrition: meal.nutrition,
-                              ),
+                              color: primaryColor,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

@@ -1006,7 +1006,6 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                     mealTime: mealTime,
                                   ),
                                   imageFile: imageFile,
-                                  deleteMeal: false,
                                 ),
                               );
                             },
