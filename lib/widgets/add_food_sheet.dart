@@ -6,6 +6,8 @@ import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/durations.dart';
 import '../models/meal/food.dart';
+import '../models/meal/nutrition.dart';
+import '../util/parse.dart';
 import '../util/spacing.dart';
 import 'text_field_title_widget.dart';
 
@@ -44,7 +46,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
 
     /// Update [TextEditingController] text
     nameTextEditingController.text = widget.passedFood?.name ?? '';
-    // TODO: Fill out other [TextEditingControllers]
+    // TODO: `passedFood` can exist in the scenario of modifying that Food, can you fill out other [TextEditingControllers] with those values, like name is filled above
 
     /// Add validation listener to [TextEditingController]
     nameTextEditingController.addListener(triggerValidation);
@@ -345,6 +347,126 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
         ),
 
         ///
+        /// CALORIES
+        ///
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+          sliver: SliverToBoxAdapter(
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 5,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
+                ),
+                MoveEffect(
+                  begin: Offset(0, 12),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ],
+              child: TextFieldTitleWidget(
+                textEditingController: caloriesTextEditingController,
+                focusNode: FocusNode(),
+                // focusNode: mealController.caloriesFocusNode,
+                // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                title: 'Calories',
+                hintText: '0',
+                rightText: 'kcal',
+                textColor: BokunSpizeColors.green,
+                keyboardType: TextInputType.number,
+              ),
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 20),
+        ),
+
+        ///
+        /// NUTRITION
+        ///
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+          sliver: SliverToBoxAdapter(
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 5,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
+                ),
+                MoveEffect(
+                  begin: Offset(0, 12),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ],
+              child: Row(
+                spacing: 20,
+                children: [
+                  ///
+                  /// PROTEIN
+                  ///
+                  Expanded(
+                    child: TextFieldTitleWidget(
+                      textEditingController: proteinTextEditingController,
+                      focusNode: FocusNode(),
+                      // focusNode: mealController.caloriesFocusNode,
+                      // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                      title: 'Protein',
+                      hintText: '0',
+                      rightText: 'g',
+                      textColor: BokunSpizeColors.green,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+
+                  ///
+                  /// CARBS
+                  ///
+                  Expanded(
+                    child: TextFieldTitleWidget(
+                      textEditingController: carbsTextEditingController,
+                      focusNode: FocusNode(),
+                      // focusNode: mealController.caloriesFocusNode,
+                      // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                      title: 'Carbs',
+                      hintText: '0',
+                      rightText: 'g',
+                      textColor: BokunSpizeColors.blue,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+
+                  ///
+                  /// FAT
+                  ///
+                  Expanded(
+                    child: TextFieldTitleWidget(
+                      textEditingController: fatsTextEditingController,
+                      focusNode: FocusNode(),
+                      // focusNode: mealController.caloriesFocusNode,
+                      // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                      title: 'Fats',
+                      hintText: '0',
+                      rightText: 'g',
+                      textColor: BokunSpizeColors.bordeaux,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 40),
+        ),
+
+        ///
         /// SAVE BUTTON
         ///
         SliverPadding(
@@ -367,10 +489,33 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // TODO: Save here
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: validation
+                      ? () {
+                          final food = Food(
+                            name: nameTextEditingController.text.trim(),
+                            quantity: parseNumberForFood(
+                              quantityTextEditingController.text.trim(),
+                            ),
+                            unit: unitTextEditingController.text.trim(),
+                            nutrition: Nutrition(
+                              calories: parseNumberForFood(
+                                caloriesTextEditingController.text.trim(),
+                              ),
+                              protein: parseNumberForFood(
+                                proteinTextEditingController.text.trim(),
+                              ),
+                              carbs: parseNumberForFood(
+                                carbsTextEditingController.text.trim(),
+                              ),
+                              fat: parseNumberForFood(
+                                fatsTextEditingController.text.trim(),
+                              ),
+                            ),
+                          );
+
+                          Navigator.of(context).pop(food);
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     shape: const StadiumBorder(),
@@ -384,7 +529,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     foregroundColor: BokunSpizeColors.white,
                   ),
                   child: const Text(
-                    'Confirm',
+                    'Add to meal',
                     textAlign: TextAlign.center,
                   ),
                 ),
