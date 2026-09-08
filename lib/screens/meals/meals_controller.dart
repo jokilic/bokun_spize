@@ -178,12 +178,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         passedMeal: null,
         isCopyingMeal: false,
       ),
-      // AIAddMealScreen(
-      //   mealId: newMealId,
-      //   // TODO: Remove bottom values from [AIAddMealScreen]
-      //   passedMeal: null,
-      //   isCopyingMeal: false,
-      // ),
     );
 
     if (result == null) {

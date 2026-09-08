@@ -14,6 +14,7 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/path.dart';
+import '../../widgets/add_food_sheet.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
@@ -317,6 +318,42 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
       /// Trigger validation
       triggerValidation();
     }
+  }
+
+  /// Triggered when the user presses `Add food` button
+  Future<void> onAddFoodPressed(
+    BuildContext context, {
+    required Food? passedFood,
+  }) async {
+    /// Show [AddFoodSheet] for adding `food`
+    final result = await showBlurredModalBottomSheet<Food>(
+      context: context,
+      backgroundColor: BokunSpizeColors.grey,
+      builder: (context) => AddFoodSheet(
+        passedFood: passedFood,
+      ),
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    /// Run `AI` logic
+    // final success = await validateAndRunAILogic(
+    //   result: result,
+    //   newMealId: newMealId,
+    //   passedMeal: null,
+    //   isCopyingMeal: false,
+    // );
+
+    /// Add failed, show error snackbar
+    // if (!success && context.mounted) {
+    //   showSnackbar(
+    //     context,
+    //     text: 'Add failed',
+    //     icon: PhosphorIconsBold.warningOctagon,
+    //   );
+    // }
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`

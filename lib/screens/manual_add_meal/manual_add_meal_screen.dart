@@ -13,9 +13,12 @@ import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
+import '../../widgets/text_field_title_widget.dart';
 import '../../widgets/text_field_widget.dart';
 import 'manual_add_meal_controller.dart';
-import 'widgets/manual_add_meal_nutrition_text_field.dart';
+import 'widgets/manual_add_meal_food_list_tile.dart';
+
+// TODO: I've added some new widgets (nutrition, titles, foods, etc.). Can you check and rework the staggered animations if necessary?
 
 class ManualAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
@@ -88,8 +91,6 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     final mealDate = state.mealDate;
     final mealTime = state.mealTime;
     final validation = state.validation;
-
-    // final copyingMealWithoutText = widget.isCopyingMeal && (widget.passedMeal?.originalText?.isEmpty ?? false);
 
     final date = getDateString(
       date: mealDate,
@@ -275,26 +276,6 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       child: InkWell(
-                        // onLongPress: widget.isCopyingMeal
-                        //     ? () {
-                        //         HapticFeedback.lightImpact();
-
-                        //         /// Get text from [TextEditingController]
-                        //         final text = mealController.textEditingController.text.trim();
-
-                        //         /// No text, return
-                        //         if (text.isEmpty) {
-                        //           return;
-                        //         }
-
-                        //         /// Copy text to clipboard
-                        //         Clipboard.setData(
-                        //           ClipboardData(
-                        //             text: text,
-                        //           ),
-                        //         );
-                        //       }
-                        //     : null,
                         borderRadius: BorderRadius.circular(listTileRadius),
                         highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
                         splashColor: Colors.transparent,
@@ -308,14 +289,12 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             vertical: 40,
                           ),
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                          onSubmitted: (_) {
-                            // TODO: Go to next TextField (calories)
-                          },
-                          keyboardType: TextInputType.multiline,
+                          onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
+                          keyboardType: TextInputType.text,
                           textAlign: TextAlign.left,
                           textAlignVertical: TextAlignVertical.top,
                           textCapitalization: TextCapitalization.sentences,
-                          textInputAction: TextInputAction.newline,
+                          textInputAction: TextInputAction.next,
                           minLines: 2,
                           maxLines: 2,
                           borderRadius: listTileRadius,
@@ -692,7 +671,29 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
             ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 28),
+          ),
+
+          ///
+          /// NUTRITION TITLE
+          ///
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'Nutritional values',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: BokunSpizeColors.black,
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 12),
           ),
 
           ///
@@ -715,16 +716,16 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: ManualAddMealNutritionTextField(
+                child: TextFieldTitleWidget(
                   textEditingController: mealController.caloriesTextEditingController,
                   focusNode: mealController.caloriesFocusNode,
                   onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                  onSubmitted: (_) {
-                    // TODO: Go to next TextField (protein)
-                  },
+                  onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
                   title: 'Calories',
-                  hintText: 'kcal',
+                  hintText: '0',
+                  rightText: 'kcal',
                   textColor: BokunSpizeColors.green,
+                  keyboardType: TextInputType.number,
                 ),
               ),
             ),
@@ -754,22 +755,22 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ),
                 ],
                 child: Row(
-                  spacing: 16,
+                  spacing: 20,
                   children: [
                     ///
                     /// PROTEIN
                     ///
                     Expanded(
-                      child: ManualAddMealNutritionTextField(
+                      child: TextFieldTitleWidget(
                         textEditingController: mealController.proteinTextEditingController,
                         focusNode: mealController.proteinFocusNode,
                         onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                        onSubmitted: (_) {
-                          // TODO: Go to next TextField (carbs)
-                        },
+                        onSubmitted: (_) => mealController.carbsFocusNode.requestFocus(),
                         title: 'Protein',
-                        hintText: 'g',
+                        hintText: '0',
+                        rightText: 'g',
                         textColor: BokunSpizeColors.green,
+                        keyboardType: TextInputType.number,
                       ),
                     ),
 
@@ -777,16 +778,16 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     /// CARBS
                     ///
                     Expanded(
-                      child: ManualAddMealNutritionTextField(
+                      child: TextFieldTitleWidget(
                         textEditingController: mealController.carbsTextEditingController,
                         focusNode: mealController.carbsFocusNode,
                         onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                        onSubmitted: (_) {
-                          // TODO: Go to next TextField (fats)
-                        },
+                        onSubmitted: (_) => mealController.fatsFocusNode.requestFocus(),
                         title: 'Carbs',
-                        hintText: 'g',
+                        hintText: '0',
+                        rightText: 'g',
                         textColor: BokunSpizeColors.blue,
+                        keyboardType: TextInputType.number,
                       ),
                     ),
 
@@ -794,12 +795,14 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     /// FAT
                     ///
                     Expanded(
-                      child: ManualAddMealNutritionTextField(
+                      child: TextFieldTitleWidget(
                         textEditingController: mealController.fatsTextEditingController,
                         focusNode: mealController.fatsFocusNode,
                         title: 'Fats',
-                        hintText: 'g',
+                        hintText: '0',
+                        rightText: 'g',
                         textColor: BokunSpizeColors.bordeaux,
+                        keyboardType: TextInputType.number,
                       ),
                     ),
                   ],
@@ -808,7 +811,124 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 28),
+          ),
+
+          ///
+          /// FOODS TITLE
+          ///
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'Foods',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: BokunSpizeColors.black,
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 12),
+          ),
+
+          ///
+          /// FOODS
+          ///
+          if (foods?.isNotEmpty ?? false)
+            SliverList.builder(
+              itemCount: foods!.length,
+              itemBuilder: (context, index) {
+                final food = foods[index];
+
+                return Animate(
+                  key: ValueKey('${food.name}-$index'),
+                  delay: BokunSpizeDurations.stateTransitionStagger * index,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.stateTransition,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 18),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.stateTransition,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: ManualAddMealFoodListTile(
+                    food: food,
+                  ),
+                );
+              },
+            ),
+
+          ///
+          /// ADD FOOD BUTTON
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: ElevatedButton.icon(
+                onPressed: () => mealController.onAddFoodPressed(
+                  context,
+                  passedFood: null,
+                ),
+                icon: const PhosphorIcon(
+                  PhosphorIconsBold.plus,
+                  color: BokunSpizeColors.black,
+                  size: 20,
+                ),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  shape: const StadiumBorder(),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 16,
+                    height: 1.6,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  foregroundColor: BokunSpizeColors.black,
+                  disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
+                  disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                ),
+                label: const Text(
+                  'Add food',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 28),
+          ),
+
+          ///
+          /// DATE & TIME TITLE
+          ///
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'Date & Time',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: BokunSpizeColors.black,
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 12),
           ),
 
           ///
