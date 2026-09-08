@@ -146,6 +146,30 @@ class _MealsScreenState extends State<MealsScreen> {
                     height: 68,
                     width: 68,
                     child: FloatingActionButton(
+                      heroTag: const ValueKey('meals-add-ai-meal-fab'),
+                      elevation: 0,
+                      backgroundColor: BokunSpizeColors.green,
+                      foregroundColor: BokunSpizeColors.white,
+                      splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      shape: const CircleBorder(),
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        mealsController.onAddAIMealPressed(context);
+                      },
+                      child: const PhosphorIcon(
+                        PhosphorIconsBold.cpu,
+                        color: BokunSpizeColors.white,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    height: 68,
+                    width: 68,
+                    child: FloatingActionButton(
                       heroTag: const ValueKey('meals-add-manual-meal-fab'),
                       elevation: 0,
                       backgroundColor: BokunSpizeColors.green,
@@ -156,8 +180,7 @@ class _MealsScreenState extends State<MealsScreen> {
                       shape: const CircleBorder(),
                       onPressed: () {
                         HapticFeedback.lightImpact();
-                        // TODO: Manual meal here
-                        mealsController.onAddAIMealPressed(context);
+                        mealsController.onAddManualMealPressed(context);
                       },
                       child: const PhosphorIcon(
                         PhosphorIconsBold.plus,

@@ -265,7 +265,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                   onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
                   title: 'Meal name',
-                  hintText: 'Chocolate cake',
+                  hintText: 'Write here...',
                   rightWidget: Animate(
                     onPlay: (controller) {
                       if (isListening) {
@@ -786,13 +786,12 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ],
                   child: ManualAddMealFoodListTile(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      mealController.onAddFoodPressed(
+                    onPressed: () => handleOnPressed(
+                      onPressed: () => mealController.onAddFoodPressed(
                         context,
                         passedFood: food,
-                      );
-                    },
+                      ),
+                    ),
                     onDeletePressed: () {
                       HapticFeedback.lightImpact();
                       mealController.deleteFood(
@@ -817,9 +816,11 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: ElevatedButton.icon(
-                onPressed: () => mealController.onAddFoodPressed(
-                  context,
-                  passedFood: null,
+                onPressed: () => handleOnPressed(
+                  onPressed: () => mealController.onAddFoodPressed(
+                    context,
+                    passedFood: null,
+                  ),
                 ),
                 icon: const PhosphorIcon(
                   PhosphorIconsBold.plus,

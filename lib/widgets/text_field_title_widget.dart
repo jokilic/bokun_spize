@@ -102,7 +102,7 @@ class TextFieldTitleWidget extends StatelessWidget {
                         hintStyle ??
                         TextStyle(
                           fontFamily: 'PlusJakartaSans',
-                          fontSize: 26,
+                          fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: textColor.withValues(alpha: 0.5),
                         ),
@@ -110,7 +110,7 @@ class TextFieldTitleWidget extends StatelessWidget {
                         textStyle ??
                         TextStyle(
                           fontFamily: 'PlusJakartaSans',
-                          fontSize: 26,
+                          fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: textColor,
                         ),

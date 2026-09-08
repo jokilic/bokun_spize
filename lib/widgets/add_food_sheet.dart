@@ -7,6 +7,7 @@ import '../constants/constants.dart';
 import '../constants/durations.dart';
 import '../models/meal/food.dart';
 import '../models/meal/nutrition.dart';
+import '../util/format.dart';
 import '../util/parse.dart';
 import '../util/spacing.dart';
 import 'text_field_title_widget.dart';
@@ -46,12 +47,48 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
 
     /// Update [TextEditingController] text
     nameTextEditingController.text = widget.passedFood?.name ?? '';
-    quantityTextEditingController.text = widget.passedFood?.quantity.toString() ?? '';
+
+    if ((widget.passedFood?.quantity ?? 0) > 0) {
+      quantityTextEditingController.text =
+          formatNutritionValue(
+            widget.passedFood?.quantity,
+          ) ??
+          '';
+    }
+
     unitTextEditingController.text = widget.passedFood?.unit ?? '';
-    caloriesTextEditingController.text = widget.passedFood?.nutrition.calories.toString() ?? '';
-    proteinTextEditingController.text = widget.passedFood?.nutrition.protein.toString() ?? '';
-    carbsTextEditingController.text = widget.passedFood?.nutrition.carbs.toString() ?? '';
-    fatsTextEditingController.text = widget.passedFood?.nutrition.fat.toString() ?? '';
+
+    if ((widget.passedFood?.nutrition.calories ?? 0) > 0) {
+      caloriesTextEditingController.text =
+          formatNutritionValue(
+            widget.passedFood!.nutrition.calories,
+          ) ??
+          '';
+    }
+
+    if ((widget.passedFood?.nutrition.protein ?? 0) > 0) {
+      proteinTextEditingController.text =
+          formatNutritionValue(
+            widget.passedFood?.nutrition.protein,
+          ) ??
+          '';
+    }
+
+    if ((widget.passedFood?.nutrition.carbs ?? 0) > 0) {
+      carbsTextEditingController.text =
+          formatNutritionValue(
+            widget.passedFood?.nutrition.carbs,
+          ) ??
+          '';
+    }
+
+    if ((widget.passedFood?.nutrition.fat ?? 0) > 0) {
+      fatsTextEditingController.text =
+          formatNutritionValue(
+            widget.passedFood?.nutrition.fat,
+          ) ??
+          '';
+    }
 
     /// Add validation listener to [TextEditingController]
     nameTextEditingController.addListener(triggerValidation);
@@ -245,9 +282,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 // focusNode: mealController.caloriesFocusNode,
                 // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
                 title: 'Food name',
+                hintText: 'Write here...',
                 textColor: BokunSpizeColors.black,
                 autocorrect: true,
-                hintText: 'Chocolate',
               ),
             ),
           ),
@@ -495,6 +532,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 child: ElevatedButton(
                   onPressed: validation
                       ? () {
+                          /// Generate instance of [Food]
                           final food = Food(
                             name: nameTextEditingController.text.trim(),
                             quantity: parseNumberForFood(
@@ -517,9 +555,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                             ),
                           );
 
-                          Navigator.of(context).pop((
-                            food: food,
-                          ));
+                          /// Dismiss sheet and return `food`
+                          Navigator.of(context).pop(food);
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

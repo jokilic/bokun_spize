@@ -170,10 +170,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final newMealId = const Uuid().v1();
 
     /// Show [AIAddMealScreen] for adding `AI meal`
-    final result = await showBlurredModalBottomSheet<MealSheetResult>(
+    final result = await showBlurredModalBottomSheet<AIMealResult>(
       context: context,
       backgroundColor: BokunSpizeColors.grey,
-      builder: (context) => ManualAddMealScreen(
+      builder: (context) => AIAddMealScreen(
         mealId: newMealId,
         passedMeal: null,
         isCopyingMeal: false,
@@ -202,6 +202,46 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     }
   }
 
+  /// Triggered when the user presses `FAB` to add `manual meal`
+  Future<void> onAddManualMealPressed(BuildContext context) async {
+    /// Generate `newMealId`
+    final newMealId = const Uuid().v1();
+
+    /// Show [ManualAddMealScreen] for adding `AI meal`
+    final result = await showBlurredModalBottomSheet<ManualMealResult>(
+      context: context,
+      backgroundColor: BokunSpizeColors.grey,
+      builder: (context) => ManualAddMealScreen(
+        mealId: newMealId,
+        passedMeal: null,
+        isCopyingMeal: false,
+      ),
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    // TODO: Instead of `validateAndRunAILogic`, we should generate `Meal` model from result, upload image if it exists and just store that Meal into Firebase
+
+    /// Run `AI` logic
+    final success = await validateAndRunAILogic(
+      result: result,
+      newMealId: newMealId,
+      passedMeal: null,
+      isCopyingMeal: false,
+    );
+
+    /// Add failed, show error snackbar
+    if (!success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'Add failed',
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
+  }
+
   /// Triggered when the user copies a `meal`
   Future<void> onCopyMealPressed(
     BuildContext context, {
@@ -211,7 +251,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final newMealId = const Uuid().v1();
 
     /// Show [AIAddMealScreen] for copying `meal`
-    final result = await showBlurredModalBottomSheet<MealSheetResult>(
+    final result = await showBlurredModalBottomSheet<AIMealResult>(
       context: context,
       backgroundColor: BokunSpizeColors.grey,
       builder: (context) => AIAddMealScreen(
@@ -245,7 +285,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   Future<bool> validateAndRunAILogic({
-    required MealSheetResult result,
+    required AIMealResult result,
     required String newMealId,
     required Meal? passedMeal,
     required bool isCopyingMeal,
