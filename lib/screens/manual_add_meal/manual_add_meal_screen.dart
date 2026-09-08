@@ -786,8 +786,21 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ],
                   child: ManualAddMealFoodListTile(
-                    onPressed: () {},
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      mealController.onAddFoodPressed(
+                        context,
+                        passedFood: food,
+                      );
+                    },
+                    onDeletePressed: () {
+                      HapticFeedback.lightImpact();
+                      mealController.deleteFood(
+                        index: index,
+                      );
+                    },
                     food: food,
+                    index: index,
                   ),
                 );
               },

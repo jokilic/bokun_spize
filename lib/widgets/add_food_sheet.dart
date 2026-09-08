@@ -317,6 +317,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     title: 'Unit',
                     hintText: 'grams',
                     textColor: BokunSpizeColors.black,
+                    textCapitalization: TextCapitalization.none,
                   ),
                 ),
               ],
@@ -516,7 +517,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                             ),
                           );
 
-                          Navigator.of(context).pop(food);
+                          Navigator.of(context).pop((
+                            food: food,
+                          ));
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

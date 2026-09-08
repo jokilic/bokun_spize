@@ -338,6 +338,8 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
       return;
     }
 
+    // TODO: If `passedFood` exists, that means we modified it. Then don't add new, modify existing one instead
+
     /// Add `food` to `state`
     addFood(
       food: result,
