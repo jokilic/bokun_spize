@@ -338,7 +338,25 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
       return;
     }
 
-    // TODO: If `passedFood` exists, that means we modified it. Then don't add new, modify existing one instead
+    /// `passedFood` exists, update it
+    if (passedFood != null) {
+      /// Find proper `index`
+      final index =
+          value.foods?.indexWhere(
+            (food) => identical(food, passedFood),
+          ) ??
+          -1;
+
+      /// Update proper `food`
+      if (index != -1) {
+        updateFood(
+          index: index,
+          food: result,
+        );
+      }
+
+      return;
+    }
 
     /// Add `food` to `state`
     addFood(
