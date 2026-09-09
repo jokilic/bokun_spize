@@ -188,8 +188,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final success = await validateAndRunAILogic(
       result: result,
       newMealId: newMealId,
-      passedMeal: null,
-      isCopyingMeal: false,
     );
 
     /// Add failed, show error snackbar
@@ -288,40 +286,17 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     }
   }
 
-  // TODO: We're removing logic for copying meals from this AI logic and placing it into manual logic. Can you first remove it from this method?
   Future<bool> validateAndRunAILogic({
     required AIMealResult result,
     required String newMealId,
-    required Meal? passedMeal,
-    required bool isCopyingMeal,
   }) async {
     /// Check if `words` and `image` exists
     final hasWords = result.words?.trim().isNotEmpty ?? false;
     final hasImage = result.imageFile != null;
-    final hasPersistedImage = isCopyingMeal && passedMeal?.imageStoragePath != null;
 
     /// Data missing, return
-    if ((!hasWords && !hasImage && !hasPersistedImage) || result.dateTime == null) {
+    if ((!hasWords && !hasImage) || result.dateTime == null) {
       return false;
-    }
-
-    /// Copy the meal while keeping its shared image reference
-    if (isCopyingMeal && passedMeal != null) {
-      final copiedMealWritten = await firebase.writeMeal(
-        newMeal: passedMeal.copyWith(
-          id: newMealId,
-          createdAt: result.dateTime,
-          imageStoragePath: passedMeal.imageStoragePath,
-        ),
-      );
-
-      if (copiedMealWritten) {
-        updateDate(
-          result.dateTime!,
-        );
-      }
-
-      return copiedMealWritten;
     }
 
     /// Trigger AI which generates a new `meal` and stores into [Firebase]
