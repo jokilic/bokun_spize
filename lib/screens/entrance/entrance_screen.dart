@@ -297,6 +297,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                   emailTextEditingController: entranceController.registerEmailTextEditingController,
                                   passwordTextEditingController: entranceController.registerPasswordTextEditingController,
                                   nameTextEditingController: entranceController.registerNameTextEditingController,
+                                  emailFocusNode: entranceController.registerEmailFocusNode,
+                                  passwordFocusNode: entranceController.registerPasswordFocusNode,
+                                  nameFocusNode: entranceController.registerNameFocusNode,
                                   validated: registerValidated,
                                   emailIsLoading: emailIsLoading,
                                   onRegisterPressed: () => handleOnPressed(

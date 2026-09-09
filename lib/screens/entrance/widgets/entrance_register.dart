@@ -6,20 +6,25 @@ import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../widgets/text_field_title_widget.dart';
 
-// TODO: `FocusNodes` here and logic, like in `EntranceRegister`
-
 class EntranceRegister extends StatelessWidget {
   final TextEditingController emailTextEditingController;
   final TextEditingController passwordTextEditingController;
   final TextEditingController nameTextEditingController;
+  final FocusNode emailFocusNode;
+  final FocusNode passwordFocusNode;
+  final FocusNode nameFocusNode;
   final bool validated;
   final bool emailIsLoading;
   final Function onRegisterPressed;
 
+  // Creates the registration form with focus nodes owned by the entrance controller
   const EntranceRegister({
     required this.emailTextEditingController,
     required this.passwordTextEditingController,
     required this.nameTextEditingController,
+    required this.emailFocusNode,
+    required this.passwordFocusNode,
+    required this.nameFocusNode,
     required this.validated,
     required this.emailIsLoading,
     required this.onRegisterPressed,
@@ -36,9 +41,10 @@ class EntranceRegister extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldTitleWidget(
           controller: emailTextEditingController,
-          focusNode: FocusNode(),
+          focusNode: emailFocusNode,
           title: 'Email address',
           hintText: 'name@example.com',
+          onSubmitted: (_) => passwordFocusNode.requestFocus(),
           textColor: BokunSpizeColors.black,
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
@@ -55,9 +61,10 @@ class EntranceRegister extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldTitleWidget(
           controller: passwordTextEditingController,
-          focusNode: FocusNode(),
+          focusNode: passwordFocusNode,
           title: 'Password',
           hintText: '•' * 8,
+          onSubmitted: (_) => nameFocusNode.requestFocus(),
           textColor: BokunSpizeColors.black,
           autofillHints: const [AutofillHints.password],
           keyboardType: TextInputType.visiblePassword,
@@ -74,7 +81,7 @@ class EntranceRegister extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldTitleWidget(
           controller: nameTextEditingController,
-          focusNode: FocusNode(),
+          focusNode: nameFocusNode,
           title: 'Name',
           hintText: 'Jack',
           onSubmitted: (_) {
