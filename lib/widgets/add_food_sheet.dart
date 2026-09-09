@@ -267,11 +267,11 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 28),
+          child: SizedBox(height: 32),
         ),
 
         ///
-        /// TITLE
+        /// TEXT FIELD
         ///
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -303,7 +303,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 28),
+          child: SizedBox(height: 32),
         ),
 
         ///
@@ -340,7 +340,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 12),
+          child: SizedBox(height: 16),
         ),
 
         ///
@@ -403,7 +403,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 28),
+          child: SizedBox(height: 32),
         ),
 
         ///
@@ -440,7 +440,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 12),
+          child: SizedBox(height: 16),
         ),
 
         ///
@@ -477,7 +477,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
+          child: SizedBox(height: 32),
         ),
 
         ///
@@ -555,7 +555,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 40),
+          child: SizedBox(height: 32),
         ),
 
         ///

@@ -36,7 +36,7 @@ class _TimeSheetState extends State<TimeSheet> {
       shrinkWrap: true,
       slivers: [
         const SliverToBoxAdapter(
-          child: SizedBox(height: 40),
+          child: SizedBox(height: 24),
         ),
 
         ///
@@ -127,8 +127,42 @@ class _TimeSheetState extends State<TimeSheet> {
             ),
           ),
         ),
+
+        ///
+        /// SUBTITLE
+        ///
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+          sliver: SliverToBoxAdapter(
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 2,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
+                ),
+                MoveEffect(
+                  begin: Offset(0, 8),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ],
+              child: const Text(
+                'Add meal to your journal',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: BokunSpizeColors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
+          child: SizedBox(height: 32),
         ),
 
         ///
@@ -209,7 +243,7 @@ class _TimeSheetState extends State<TimeSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
+          child: SizedBox(height: 32),
         ),
 
         ///

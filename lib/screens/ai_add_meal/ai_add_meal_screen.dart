@@ -100,7 +100,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
         shrinkWrap: true,
         slivers: [
           const SliverToBoxAdapter(
-            child: SizedBox(height: 40),
+            child: SizedBox(height: 24),
           ),
 
           ///
@@ -226,9 +226,12 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 32),
           ),
 
+          ///
+          /// TEXT FIELD
+          ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
@@ -760,9 +763,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
             ),
           ),
-
           const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+            child: SizedBox(height: 32),
           ),
 
           ///
