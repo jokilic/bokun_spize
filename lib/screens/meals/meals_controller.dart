@@ -229,43 +229,58 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final imageFile = result.imageFile;
 
     if (dateTime != null) {
-      /// Save a loading meal so it appears while the image uploads
-      final loadingMeal = Meal(
-        id: newMealId,
-        createdAt: dateTime,
-        isLoading: true,
-      );
-
       try {
-        final loadingMealWritten = await firebase.writeMeal(
-          newMeal: loadingMeal,
-        );
-
-        if (loadingMealWritten) {
-          updateDate(dateTime);
-
-          final imageStoragePath = imageFile != null
-              ? await firebase.uploadMealImage(
-                  imageFile: imageFile,
-                )
-              : null;
-          final imageUploadFailed = imageFile != null && imageStoragePath == null;
-
-          /// Finish loading and preserve the meal data even if the image upload fails
-          final meal = loadingMeal.copyWith(
-            name: result.name,
-            nutrition: result.nutrition,
-            foods: result.foods,
-            imageStoragePath: imageStoragePath,
-            isLoading: false,
-            errors: imageUploadFailed ? ['Image upload failed'] : null,
+        if (isCopyingMeal && passedMeal != null) {
+          /// Copy the meal while keeping its shared image reference
+          success = await firebase.writeMeal(
+            newMeal: passedMeal.copyWith(
+              id: newMealId,
+              createdAt: dateTime,
+              imageStoragePath: passedMeal.imageStoragePath,
+            ),
           );
 
-          final mealUpdated = await firebase.updateMeal(
-            newMeal: meal,
+          if (success) {
+            updateDate(dateTime);
+          }
+        } else {
+          /// Save a loading meal so it appears while the image uploads
+          final loadingMeal = Meal(
+            id: newMealId,
+            createdAt: dateTime,
+            isLoading: true,
           );
 
-          success = mealUpdated && !imageUploadFailed;
+          final loadingMealWritten = await firebase.writeMeal(
+            newMeal: loadingMeal,
+          );
+
+          if (loadingMealWritten) {
+            updateDate(dateTime);
+
+            final imageStoragePath = imageFile != null
+                ? await firebase.uploadMealImage(
+                    imageFile: imageFile,
+                  )
+                : null;
+            final imageUploadFailed = imageFile != null && imageStoragePath == null;
+
+            /// Finish loading and preserve the meal data even if the image upload fails
+            final meal = loadingMeal.copyWith(
+              name: result.name,
+              nutrition: result.nutrition,
+              foods: result.foods,
+              imageStoragePath: imageStoragePath,
+              isLoading: false,
+              errors: imageUploadFailed ? ['Image upload failed'] : null,
+            );
+
+            final mealUpdated = await firebase.updateMeal(
+              newMeal: meal,
+            );
+
+            success = mealUpdated && !imageUploadFailed;
+          }
         }
       } catch (error) {
         log(
