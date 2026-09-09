@@ -258,23 +258,28 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     required Meal loadingMeal,
     required File? imageFile,
   }) async {
-    /// Upload the image through Firebase while AI processes the meal
-    final imageUpload = imageFile != null
-        ? firebase.uploadMealImage(
+    /// Start both operations and wait for them to finish before processing their results
+    final results = await Future.wait(
+      [
+        /// AI logic
+        aiProvider().triggerAI(
+          textPrompt: loadingMeal.originalText,
+          imageFile: imageFile,
+        ),
+
+        /// Image uploading logic
+        if (imageFile != null)
+          firebase.uploadMealImage(
             imageFile: imageFile,
           )
-        : null;
-
-    final result = await aiProvider().triggerAI(
-      textPrompt: loadingMeal.originalText,
-      imageFile: imageFile,
+        else
+          Future<String?>.value(),
+      ],
     );
 
-    final imageStoragePath = await imageUpload;
-    final errors = [
-      ...?result.errors,
-      if (imageFile != null && imageStoragePath == null) 'Image failed to save',
-    ];
+    final result = results.first! as ({String? aiResult, List<String>? errors});
+    final imageStoragePath = results.last as String?;
+
     final aiResult = result.aiResult;
 
     /// Parse result to proper [Meal] instance
@@ -288,15 +293,20 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
             imageStoragePath: imageStoragePath,
           );
 
+    /// Keep errors while allowing fallback AI model to recover
+    final errors = [
+      if (aiResult == null) ...?result.errors,
+      if (aiResult != null && meal == null) 'Meal failed decoding',
+      if (imageFile != null && imageStoragePath == null) 'Image failed to save',
+    ];
+
     return (
-      meal:
-          meal ??
-          loadingMeal.copyWith(
-            errors: aiResult == null ? errors : ['Meal failed decoding'],
-            imageStoragePath: imageStoragePath,
-            isLoading: false,
-          ),
-      success: meal != null,
+      meal: (meal ?? loadingMeal).copyWith(
+        errors: errors.isEmpty ? null : errors,
+        imageStoragePath: imageStoragePath,
+        isLoading: false,
+      ),
+      success: meal != null && errors.isEmpty,
     );
   }
 
