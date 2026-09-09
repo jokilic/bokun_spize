@@ -14,8 +14,6 @@ import '../../util/spacing.dart';
 import '../../widgets/text_field_title_widget.dart';
 import 'ai_add_meal_controller.dart';
 
-// TODO: Added `Date & Time` title, update staggered animations to include it properly
-
 class AIAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
 
@@ -539,7 +537,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger,
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -576,7 +574,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                delay: BokunSpizeDurations.stateTransitionStagger * 6,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -675,7 +673,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                delay: BokunSpizeDurations.stateTransitionStagger * 7,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -774,7 +772,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                delay: BokunSpizeDurations.stateTransitionStagger * 8,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
