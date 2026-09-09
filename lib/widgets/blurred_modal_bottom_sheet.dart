@@ -9,6 +9,7 @@ import '../constants/constants.dart';
 Future<T?> showBlurredModalBottomSheet<T>({
   required BuildContext context,
   required Widget Function(BuildContext context) builder,
+  double? sheetHeight,
   double elevation = 0,
   double blurSigma = 8,
   bool isScrollControlled = true,
@@ -39,7 +40,12 @@ Future<T?> showBlurredModalBottomSheet<T>({
       backgroundColor: backgroundColor,
       modalBarrierColor: modalBarrierColor,
       shape: shape,
-      builder: (context) => builder(context),
+      builder: (context) => ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: sheetHeight ?? MediaQuery.sizeOf(context).height * 0.9,
+        ),
+        child: builder(context),
+      ),
     ),
   );
 
