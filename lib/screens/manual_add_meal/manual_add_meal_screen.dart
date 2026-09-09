@@ -107,6 +107,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
 
     final isCopyingMeal = widget.isCopyingMeal;
 
+    final showText = !isCopyingMeal || mealController.nameTextEditingController.text.trim().isNotEmpty;
+    final showImage = !isCopyingMeal || widget.passedMeal?.imageStoragePath != null || imageFile != null;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
       child: CustomScrollView(
@@ -247,81 +250,84 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
           ///
           /// TEXT FIELD
           ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 12),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: TextFieldTitleWidget(
-                  enabled: !isCopyingMeal,
-                  textEditingController: mealController.nameTextEditingController,
-                  focusNode: mealController.nameFocusNode,
-                  onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                  onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
-                  title: 'Meal name',
-                  hintText: isCopyingMeal ? 'Meal has no text' : null,
-                  textColor: BokunSpizeColors.black,
-                  rightWidget: isCopyingMeal
-                      ? null
-                      : Animate(
-                          onPlay: (controller) {
-                            if (isListening) {
-                              controller.loop(
-                                reverse: true,
-                                min: 0.6,
-                              );
-                            }
-                          },
-                          effects: [
-                            if (isListening)
-                              const FadeEffect(
-                                duration: BokunSpizeDurations.speechToTextShimmer,
-                                curve: Curves.easeIn,
-                              ),
-                          ],
-                          child: IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              mealController.onSpeechToTextPressed(
-                                // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
-                                locale: 'en',
-                                speechToTextAvailable: available,
-                              );
+          if (showText) ...[
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: TextFieldTitleWidget(
+                    enabled: !isCopyingMeal,
+                    textEditingController: mealController.nameTextEditingController,
+                    focusNode: mealController.nameFocusNode,
+                    onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                    onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
+                    title: 'Meal name',
+                    hintText: isCopyingMeal ? 'Meal has no text' : null,
+                    textColor: BokunSpizeColors.black,
+                    rightWidget: isCopyingMeal
+                        ? null
+                        : Animate(
+                            onPlay: (controller) {
+                              if (isListening) {
+                                controller.loop(
+                                  reverse: true,
+                                  min: 0.6,
+                                );
+                              }
                             },
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.microphone,
-                              size: 22,
-                            ),
-                            style: IconButton.styleFrom(
-                              elevation: 0,
-                              padding: const EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
+                            effects: [
+                              if (isListening)
+                                const FadeEffect(
+                                  duration: BokunSpizeDurations.speechToTextShimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                            ],
+                            child: IconButton(
+                              onPressed: () {
+                                HapticFeedback.lightImpact();
+                                mealController.onSpeechToTextPressed(
+                                  // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+                                  locale: 'en',
+                                  speechToTextAvailable: available,
+                                );
+                              },
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.microphone,
+                                size: 22,
                               ),
-                              backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                              foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
+                              style: IconButton.styleFrom(
+                                elevation: 0,
+                                padding: const EdgeInsets.all(10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                                foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
+                              ),
                             ),
                           ),
-                        ),
+                  ),
                 ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
+            if (showImage)
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+          ],
 
           ///
           /// NETWORK IMAGE
@@ -472,7 +478,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
           ///
           /// EMPTY IMAGE
           ///
-          else
+          else if (!isCopyingMeal)
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
@@ -643,268 +649,270 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             child: SizedBox(height: 32),
           ),
 
-          ///
-          /// NUTRITION TITLE
-          ///
-          const SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Nutritional values',
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  color: BokunSpizeColors.black,
+          if (!isCopyingMeal) ...[
+            ///
+            /// NUTRITION TITLE
+            ///
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Nutritional values',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
-
-          ///
-          /// CALORIES
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 12),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: TextFieldTitleWidget(
-                  enabled: !isCopyingMeal,
-                  textEditingController: mealController.caloriesTextEditingController,
-                  focusNode: mealController.caloriesFocusNode,
-                  onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                  onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
-                  title: 'Calories',
-                  hintText: '0',
-                  rightText: 'kcal',
-                  textColor: BokunSpizeColors.green,
-                  keyboardType: TextInputType.number,
-                ),
-              ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
 
-          ///
-          /// NUTRITION
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 12),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Row(
-                  spacing: 20,
-                  children: [
-                    ///
-                    /// PROTEIN
-                    ///
-                    Expanded(
-                      child: TextFieldTitleWidget(
-                        enabled: !isCopyingMeal,
-                        textEditingController: mealController.proteinTextEditingController,
-                        focusNode: mealController.proteinFocusNode,
-                        onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                        onSubmitted: (_) => mealController.carbsFocusNode.requestFocus(),
-                        title: 'Protein',
-                        hintText: '0',
-                        rightText: 'g',
-                        textColor: BokunSpizeColors.green,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-
-                    ///
-                    /// CARBS
-                    ///
-                    Expanded(
-                      child: TextFieldTitleWidget(
-                        enabled: !isCopyingMeal,
-                        textEditingController: mealController.carbsTextEditingController,
-                        focusNode: mealController.carbsFocusNode,
-                        onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                        onSubmitted: (_) => mealController.fatsFocusNode.requestFocus(),
-                        title: 'Carbs',
-                        hintText: '0',
-                        rightText: 'g',
-                        textColor: BokunSpizeColors.blue,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-
-                    ///
-                    /// FAT
-                    ///
-                    Expanded(
-                      child: TextFieldTitleWidget(
-                        enabled: !isCopyingMeal,
-                        textEditingController: mealController.fatsTextEditingController,
-                        focusNode: mealController.fatsFocusNode,
-                        title: 'Fats',
-                        hintText: '0',
-                        rightText: 'g',
-                        textColor: BokunSpizeColors.bordeaux,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
-
-          ///
-          /// FOODS TITLE
-          ///
-          const SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Foods',
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  color: BokunSpizeColors.black,
-                ),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
-
-          ///
-          /// FOODS
-          ///
-          if (foods?.isNotEmpty ?? false) ...[
-            SliverList.builder(
-              itemCount: foods!.length,
-              itemBuilder: (context, index) {
-                final food = foods[index];
-
-                return Animate(
-                  key: ValueKey('${food.name}-$index'),
-                  delay: BokunSpizeDurations.stateTransitionStagger * index,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.stateTransition,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 18),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.stateTransition,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: ManualAddMealFoodListTile(
-                    enabled: !isCopyingMeal,
-                    onPressed: isCopyingMeal
-                        ? () {}
-                        : () => handleOnPressed(
-                            onPressed: () => mealController.onAddFoodPressed(
-                              context,
-                              passedFood: food,
-                            ),
-                          ),
-                    onDeletePressed: () {
-                      HapticFeedback.lightImpact();
-                      mealController.deleteFood(
-                        index: index,
-                      );
-                    },
-                    food: food,
-                    index: index,
-                  ),
-                );
-              },
-            ),
-            if (!isCopyingMeal)
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 8),
-              ),
-          ],
-
-          ///
-          /// ADD FOOD BUTTON
-          ///
-          if (!isCopyingMeal)
+            ///
+            /// CALORIES
+            ///
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
-                child: ElevatedButton.icon(
-                  onPressed: () => handleOnPressed(
-                    onPressed: () => mealController.onAddFoodPressed(
-                      context,
-                      passedFood: null,
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
                     ),
-                  ),
-                  icon: const PhosphorIcon(
-                    PhosphorIconsBold.plus,
-                    color: BokunSpizeColors.black,
-                    size: 20,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: const StadiumBorder(),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 16,
-                      height: 1.6,
-                      fontWeight: FontWeight.w600,
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
                     ),
-                    padding: const EdgeInsets.all(16),
-                    backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                    foregroundColor: BokunSpizeColors.black,
-                    disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                    disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-                  ),
-                  label: const Text(
-                    'Add food',
-                    textAlign: TextAlign.center,
+                  ],
+                  child: TextFieldTitleWidget(
+                    enabled: !isCopyingMeal,
+                    textEditingController: mealController.caloriesTextEditingController,
+                    focusNode: mealController.caloriesFocusNode,
+                    onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                    onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                    title: 'Calories',
+                    hintText: '0',
+                    rightText: 'kcal',
+                    textColor: BokunSpizeColors.green,
+                    keyboardType: TextInputType.number,
                   ),
                 ),
               ),
             ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 20),
+            ),
+
+            ///
+            /// NUTRITION
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Row(
+                    spacing: 20,
+                    children: [
+                      ///
+                      /// PROTEIN
+                      ///
+                      Expanded(
+                        child: TextFieldTitleWidget(
+                          enabled: !isCopyingMeal,
+                          textEditingController: mealController.proteinTextEditingController,
+                          focusNode: mealController.proteinFocusNode,
+                          onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                          onSubmitted: (_) => mealController.carbsFocusNode.requestFocus(),
+                          title: 'Protein',
+                          hintText: '0',
+                          rightText: 'g',
+                          textColor: BokunSpizeColors.green,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+
+                      ///
+                      /// CARBS
+                      ///
+                      Expanded(
+                        child: TextFieldTitleWidget(
+                          enabled: !isCopyingMeal,
+                          textEditingController: mealController.carbsTextEditingController,
+                          focusNode: mealController.carbsFocusNode,
+                          onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                          onSubmitted: (_) => mealController.fatsFocusNode.requestFocus(),
+                          title: 'Carbs',
+                          hintText: '0',
+                          rightText: 'g',
+                          textColor: BokunSpizeColors.blue,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+
+                      ///
+                      /// FAT
+                      ///
+                      Expanded(
+                        child: TextFieldTitleWidget(
+                          enabled: !isCopyingMeal,
+                          textEditingController: mealController.fatsTextEditingController,
+                          focusNode: mealController.fatsFocusNode,
+                          title: 'Fats',
+                          hintText: '0',
+                          rightText: 'g',
+                          textColor: BokunSpizeColors.bordeaux,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+
+            ///
+            /// FOODS TITLE
+            ///
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Foods',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            ),
+
+            ///
+            /// FOODS
+            ///
+            if (foods?.isNotEmpty ?? false) ...[
+              SliverList.builder(
+                itemCount: foods!.length,
+                itemBuilder: (context, index) {
+                  final food = foods[index];
+
+                  return Animate(
+                    key: ValueKey('${food.name}-$index'),
+                    delay: BokunSpizeDurations.stateTransitionStagger * index,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.stateTransition,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 18),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.stateTransition,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: ManualAddMealFoodListTile(
+                      enabled: !isCopyingMeal,
+                      onPressed: isCopyingMeal
+                          ? () {}
+                          : () => handleOnPressed(
+                              onPressed: () => mealController.onAddFoodPressed(
+                                context,
+                                passedFood: food,
+                              ),
+                            ),
+                      onDeletePressed: () {
+                        HapticFeedback.lightImpact();
+                        mealController.deleteFood(
+                          index: index,
+                        );
+                      },
+                      food: food,
+                      index: index,
+                    ),
+                  );
+                },
+              ),
+              if (!isCopyingMeal)
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 8),
+                ),
+            ],
+
+            ///
+            /// ADD FOOD BUTTON
+            ///
+            if (!isCopyingMeal)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: ElevatedButton.icon(
+                    onPressed: () => handleOnPressed(
+                      onPressed: () => mealController.onAddFoodPressed(
+                        context,
+                        passedFood: null,
+                      ),
+                    ),
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.plus,
+                      color: BokunSpizeColors.black,
+                      size: 20,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 16,
+                        height: 1.6,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      foregroundColor: BokunSpizeColors.black,
+                      disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
+                      disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                    ),
+                    label: const Text(
+                      'Add food',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+          ],
 
           ///
           /// DATE & TIME TITLE
