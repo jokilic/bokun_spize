@@ -6,12 +6,9 @@ import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../widgets/text_field_widget.dart';
 
-// TODO: Is emailFocusNode neccesary here?
-
 class EntranceLogin extends StatelessWidget {
   final TextEditingController emailTextEditingController;
   final TextEditingController passwordTextEditingController;
-  final FocusNode emailFocusNode;
   final FocusNode passwordFocusNode;
   final bool validated;
   final bool emailValidated;
@@ -22,7 +19,6 @@ class EntranceLogin extends StatelessWidget {
   const EntranceLogin({
     required this.emailTextEditingController,
     required this.passwordTextEditingController,
-    required this.emailFocusNode,
     required this.passwordFocusNode,
     required this.validated,
     required this.emailValidated,
