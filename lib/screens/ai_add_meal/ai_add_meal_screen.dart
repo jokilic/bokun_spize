@@ -228,7 +228,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
           ),
 
           ///
-          /// TEXT FIELD
+          /// TEXT FIELD & SPEECH TO TEXT
           ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -247,54 +247,70 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: TextFieldWidget(
-                  minLines: 3,
-                  maxLines: 3,
-                  controller: mealController.textEditingController,
-                  focusNode: mealController.textFocusNode,
-                  onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                  title: 'Describe your meal',
-                  textColor: BokunSpizeColors.black,
-                  rightWidget: Animate(
-                    onPlay: (controller) {
-                      if (isListening) {
-                        controller.loop(
-                          reverse: true,
-                          min: 0.6,
-                        );
-                      }
-                    },
-                    effects: [
-                      if (isListening)
-                        const FadeEffect(
-                          duration: BokunSpizeDurations.speechToTextShimmer,
-                          curve: Curves.easeIn,
+                child: Stack(
+                  children: [
+                    ///
+                    /// TEXT FIELD
+                    ///
+                    TextFieldWidget(
+                      minLines: 3,
+                      maxLines: 3,
+                      controller: mealController.textEditingController,
+                      focusNode: mealController.textFocusNode,
+                      onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                      title: 'Describe your meal',
+                      hintText: 'What was it?',
+                      textColor: BokunSpizeColors.black,
+                    ),
+
+                    ///
+                    /// SPEECH TO TEXT ICON
+                    ///
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Animate(
+                        onPlay: (controller) {
+                          if (isListening) {
+                            controller.loop(
+                              reverse: true,
+                              min: 0.6,
+                            );
+                          }
+                        },
+                        effects: [
+                          if (isListening)
+                            const FadeEffect(
+                              duration: BokunSpizeDurations.speechToTextShimmer,
+                              curve: Curves.easeIn,
+                            ),
+                        ],
+                        child: IconButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            mealController.onSpeechToTextPressed(
+                              // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+                              locale: 'en',
+                              speechToTextAvailable: available,
+                            );
+                          },
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.microphone,
+                            size: 22,
+                          ),
+                          style: IconButton.styleFrom(
+                            elevation: 0,
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                            foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
+                          ),
                         ),
-                    ],
-                    child: IconButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        mealController.onSpeechToTextPressed(
-                          // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
-                          locale: 'en',
-                          speechToTextAvailable: available,
-                        );
-                      },
-                      icon: const PhosphorIcon(
-                        PhosphorIconsBold.microphone,
-                        size: 22,
-                      ),
-                      style: IconButton.styleFrom(
-                        elevation: 0,
-                        padding: const EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                        foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),

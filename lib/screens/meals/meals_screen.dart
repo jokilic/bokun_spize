@@ -145,40 +145,8 @@ class _MealsScreenState extends State<MealsScreen> {
                   SizedBox(
                     height: 68,
                     width: 68,
-                    child: FloatingActionButton(
-                      heroTag: const ValueKey('meals-add-ai-meal-fab'),
-                      elevation: 0,
-                      backgroundColor: BokunSpizeColors.green,
-                      foregroundColor: BokunSpizeColors.white,
-                      splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      shape: const CircleBorder(),
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        mealsController.onAddAIMealPressed(context);
-                      },
-                      child: const PhosphorIcon(
-                        PhosphorIconsBold.cpu,
-                        color: BokunSpizeColors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  SizedBox(
-                    height: 68,
-                    width: 68,
-                    child: FloatingActionButton(
-                      heroTag: const ValueKey('meals-add-manual-meal-fab'),
-                      elevation: 0,
-                      backgroundColor: BokunSpizeColors.green,
-                      foregroundColor: BokunSpizeColors.white,
-                      splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      shape: const CircleBorder(),
-                      onPressed: () {
+                    child: GestureDetector(
+                      onLongPress: () {
                         HapticFeedback.lightImpact();
                         mealsController.onAddManualMealPressed(
                           context,
@@ -186,10 +154,24 @@ class _MealsScreenState extends State<MealsScreen> {
                           isCopyingMeal: false,
                         );
                       },
-                      child: const PhosphorIcon(
-                        PhosphorIconsBold.plus,
-                        color: BokunSpizeColors.white,
-                        size: 32,
+                      child: FloatingActionButton(
+                        heroTag: const ValueKey('meals-add-meal-fab'),
+                        elevation: 0,
+                        backgroundColor: BokunSpizeColors.green,
+                        foregroundColor: BokunSpizeColors.white,
+                        splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          mealsController.onAddAIMealPressed(context);
+                        },
+                        child: const PhosphorIcon(
+                          PhosphorIconsBold.plus,
+                          color: BokunSpizeColors.white,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),

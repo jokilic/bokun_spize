@@ -258,7 +258,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
           ),
 
           ///
-          /// TEXT FIELD
+          /// TEXT FIELD & SPEECH TO TEXT
           ///
           if (showText) ...[
             SliverPadding(
@@ -278,18 +278,30 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       curve: Curves.easeOutCubic,
                     ),
                   ],
-                  child: TextFieldWidget(
-                    enabled: !isCopyingMeal,
-                    controller: mealController.nameTextEditingController,
-                    focusNode: mealController.nameFocusNode,
-                    onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                    onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
-                    title: 'Meal name',
-                    hintText: isCopyingMeal ? 'Meal has no text' : null,
-                    textColor: BokunSpizeColors.black,
-                    rightWidget: isCopyingMeal
-                        ? null
-                        : Animate(
+                  child: Stack(
+                    children: [
+                      ///
+                      /// TEXT FIELD
+                      ///
+                      TextFieldWidget(
+                        enabled: !isCopyingMeal,
+                        controller: mealController.nameTextEditingController,
+                        focusNode: mealController.nameFocusNode,
+                        onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                        onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
+                        title: 'Meal name',
+                        hintText: isCopyingMeal ? 'Meal has no name' : 'What was it?',
+                        textColor: BokunSpizeColors.black,
+                      ),
+
+                      ///
+                      /// SPEECH TO TEXT ICON
+                      ///
+                      if (!isCopyingMeal)
+                        Positioned(
+                          bottom: 8,
+                          right: 8,
+                          child: Animate(
                             onPlay: (controller) {
                               if (isListening) {
                                 controller.loop(
@@ -329,6 +341,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                               ),
                             ),
                           ),
+                        ),
+                    ],
                   ),
                 ),
               ),
