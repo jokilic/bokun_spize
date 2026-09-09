@@ -78,7 +78,12 @@ class EntranceController
     registerPasswordTextEditingController.dispose();
     registerNameTextEditingController.dispose();
 
+    loginEmailFocusNode.dispose();
     loginPasswordFocusNode.dispose();
+
+    registerEmailFocusNode.dispose();
+    registerPasswordFocusNode.dispose();
+    registerNameFocusNode.dispose();
   }
 
   ///
@@ -92,7 +97,12 @@ class EntranceController
   late final registerPasswordTextEditingController = TextEditingController();
   late final registerNameTextEditingController = TextEditingController();
 
+  final loginEmailFocusNode = FocusNode();
   final loginPasswordFocusNode = FocusNode();
+
+  late final registerEmailFocusNode = FocusNode();
+  late final registerPasswordFocusNode = FocusNode();
+  late final registerNameFocusNode = FocusNode();
 
   ///
   /// METHODS

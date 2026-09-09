@@ -6,11 +6,12 @@ import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../widgets/text_field_widget.dart';
 
-// TODO: Add emailFocusNode
+// TODO: Is emailFocusNode neccesary here?
 
 class EntranceLogin extends StatelessWidget {
   final TextEditingController emailTextEditingController;
   final TextEditingController passwordTextEditingController;
+  final FocusNode emailFocusNode;
   final FocusNode passwordFocusNode;
   final bool validated;
   final bool emailValidated;
@@ -21,6 +22,7 @@ class EntranceLogin extends StatelessWidget {
   const EntranceLogin({
     required this.emailTextEditingController,
     required this.passwordTextEditingController,
+    required this.emailFocusNode,
     required this.passwordFocusNode,
     required this.validated,
     required this.emailValidated,
@@ -157,7 +159,7 @@ class EntranceLogin extends StatelessWidget {
           textInputAction: TextInputAction.go,
         ),
       ),
-      const SizedBox(height: 36),
+      const SizedBox(height: 32),
 
       ///
       /// SIGN IN BUTTON

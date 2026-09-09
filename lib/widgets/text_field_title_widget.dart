@@ -63,7 +63,7 @@ class TextFieldTitleWidget extends StatelessWidget {
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(listTileRadius),
         ),
@@ -74,8 +74,7 @@ class TextFieldTitleWidget extends StatelessWidget {
             ///
             /// TITLE
             ///
-            Container(
-              color: Colors.yellow,
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 title.toUpperCase(),
@@ -88,79 +87,77 @@ class TextFieldTitleWidget extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 8),
 
             ///
             /// TEXT FIELD & HINT
             ///
-            Container(
-              color: Colors.red,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ///
-                  /// TEXT FIELD
-                  ///
-                  Expanded(
-                    child: TextFieldWidget(
-                      autofillHints: autofillHints,
-                      minLines: minLines,
-                      maxLines: maxLines,
-                      enabled: enabled,
-                      filled: false,
-                      contentPadding: EdgeInsets.zero,
-                      autocorrect: autocorrect,
-                      controller: controller,
-                      focusNode: focusNode,
-                      hintText: hintText,
-                      onChanged: onChanged,
-                      onSubmitted: onSubmitted,
-                      keyboardType: keyboardType,
-                      textAlign: TextAlign.left,
-                      textCapitalization: textCapitalization,
-                      textInputAction: textInputAction,
-                      hintStyle:
-                          hintStyle ??
-                          TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: textFieldFontSize,
-                            fontWeight: FontWeight.w700,
-                            color: textColor.withValues(alpha: 0.5),
-                          ),
-                      textStyle:
-                          textStyle ??
-                          TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: textFieldFontSize,
-                            fontWeight: FontWeight.w700,
-                            color: textColor,
-                          ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ///
+                /// TEXT FIELD
+                ///
+                Expanded(
+                  child: TextFieldWidget(
+                    autofillHints: autofillHints,
+                    minLines: minLines,
+                    maxLines: maxLines,
+                    enabled: enabled,
+                    filled: false,
+                    contentPadding: EdgeInsets.zero,
+                    autocorrect: autocorrect,
+                    controller: controller,
+                    focusNode: focusNode,
+                    hintText: hintText,
+                    onChanged: onChanged,
+                    onSubmitted: onSubmitted,
+                    keyboardType: keyboardType,
+                    textAlign: TextAlign.left,
+                    textCapitalization: textCapitalization,
+                    textInputAction: textInputAction,
+                    hintStyle:
+                        hintStyle ??
+                        TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: textFieldFontSize,
+                          fontWeight: FontWeight.w700,
+                          color: textColor.withValues(alpha: 0.5),
+                        ),
+                    textStyle:
+                        textStyle ??
+                        TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: textFieldFontSize,
+                          fontWeight: FontWeight.w700,
+                          color: textColor,
+                        ),
+                  ),
+                ),
+
+                ///
+                /// RIGHT TEXT
+                ///
+                if (rightText?.isNotEmpty ?? false)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      rightText!,
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.right,
                     ),
                   ),
 
-                  ///
-                  /// RIGHT TEXT
-                  ///
-                  if (rightText?.isNotEmpty ?? false)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text(
-                        rightText!,
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: textColor,
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-
-                  ///
-                  /// RIGHT WIDGET
-                  ///
-                  ?rightWidget,
-                ],
-              ),
+                ///
+                /// RIGHT WIDGET
+                ///
+                ?rightWidget,
+              ],
             ),
           ],
         ),

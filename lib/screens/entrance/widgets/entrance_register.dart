@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../widgets/text_field_title_widget.dart';
-import '../../../widgets/text_field_widget.dart';
 
 // TODO: `FocusNodes` here and logic, like in `EntranceRegister`
 
@@ -44,7 +43,7 @@ class EntranceRegister extends StatelessWidget {
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
           textCapitalization: TextCapitalization.none,
-          textFieldFontSize: 14,
+          textFieldFontSize: 18,
         ),
       ),
       const SizedBox(height: 20),
@@ -63,37 +62,21 @@ class EntranceRegister extends StatelessWidget {
           autofillHints: const [AutofillHints.password],
           keyboardType: TextInputType.visiblePassword,
           textCapitalization: TextCapitalization.none,
+          textFieldFontSize: 18,
         ),
       ),
-      const SizedBox(height: 32),
-
-      ///
-      /// NAME TITLE
-      ///
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: marginHorizontal + 16,
-        ),
-        child: Text(
-          'Name'.toUpperCase(),
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-          ),
-        ),
-      ),
-      const SizedBox(height: 12),
+      const SizedBox(height: 20),
 
       ///
       /// NAME TEXTFIELD
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldWidget(
+        child: TextFieldTitleWidget(
           controller: nameTextEditingController,
-          hintText: 'Danny',
+          focusNode: FocusNode(),
+          title: 'Name',
+          hintText: 'Jack',
           onSubmitted: (_) {
             if (!validated || emailIsLoading) {
               return;
@@ -101,14 +84,15 @@ class EntranceRegister extends StatelessWidget {
 
             onRegisterPressed();
           },
+          textColor: BokunSpizeColors.black,
           autofillHints: const [AutofillHints.name],
           keyboardType: TextInputType.name,
-          textAlign: TextAlign.left,
           textCapitalization: TextCapitalization.words,
+          textFieldFontSize: 18,
           textInputAction: TextInputAction.go,
         ),
       ),
-      const SizedBox(height: 36),
+      const SizedBox(height: 32),
 
       ///
       /// SIGN IN BUTTON
