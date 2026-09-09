@@ -467,6 +467,15 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         updateDate(
           outcome.meal.createdAt,
         );
+
+        /// Clean up removed or replaced images only after the edited meal is saved
+        final previousImageStoragePath = passedMeal.imageStoragePath;
+
+        if (previousImageStoragePath != null && previousImageStoragePath != outcome.meal.imageStoragePath) {
+          return await firebase.deleteMealImageIfUnused(
+            imageStoragePath: previousImageStoragePath,
+          );
+        }
       }
 
       return mealUpdated;

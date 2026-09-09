@@ -817,20 +817,9 @@ class FirebaseService {
       await collection.doc(meal.id).delete();
 
       if (meal.imageStoragePath != null) {
-        /// Keep shared images while another meal still references them
-        final mealsUsingImage = await collection
-            .where(
-              'imageStoragePath',
-              isEqualTo: meal.imageStoragePath,
-            )
-            .limit(1)
-            .get();
-
-        if (mealsUsingImage.docs.isEmpty) {
-          return await deleteMealImage(
-            imageStoragePath: meal.imageStoragePath!,
-          );
-        }
+        return await deleteMealImageIfUnused(
+          imageStoragePath: meal.imageStoragePath!,
+        );
       }
 
       return true;
@@ -846,6 +835,47 @@ class FirebaseService {
   ///
   /// MEAL IMAGE
   ///
+
+  /// Deletes a stored image only when no saved meal references it
+  Future<bool> deleteMealImageIfUnused({required String imageStoragePath}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      /// Check all `meals` before deleting image
+      final mealsUsingImage = await firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('meals')
+          .where(
+            'imageStoragePath',
+            isEqualTo: imageStoragePath,
+          )
+          .limit(1)
+          .get(
+            const GetOptions(
+              source: Source.server,
+            ),
+          );
+
+      if (mealsUsingImage.docs.isNotEmpty) {
+        return true;
+      }
+
+      return await deleteMealImage(
+        imageStoragePath: imageStoragePath,
+      );
+    } catch (error) {
+      log(
+        'Deleting unused meal image failed',
+        error: error,
+      );
+      return false;
+    }
+  }
 
   /// Uploads the image used to create a meal and returns its `Storage` path
   Future<String?> uploadMealImage({
