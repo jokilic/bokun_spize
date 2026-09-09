@@ -134,7 +134,6 @@ void registerServices() {
     getIt.registerLazySingleton(
       () => AIService(
         ai: FirebaseAI.googleAI(),
-        firebaseService: getIt.get<FirebaseService>(),
       ),
     );
   }

@@ -5,7 +5,6 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 
 import '../util/meal_image.dart';
-import 'firebase_service.dart';
 
 class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
@@ -13,11 +12,9 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   final FirebaseAI ai;
-  final FirebaseService firebaseService;
 
   AIService({
     required this.ai,
-    required this.firebaseService,
   }) : super([]);
 
   ///
@@ -262,10 +259,8 @@ JSON structure to follow strictly:
     ),
   );
 
-  // TODO: Can we refactor this method to use only AI logic? Image uploading should be in a seperate method if possible, perhaps in [FirebaseService] if that makes more sense...
-
-  /// Triggers `AI` with `prompt` and `uploads` image if necessary
-  Future<({String? aiResult, String? imageStoragePath, List<String>? errors})> triggerAI({
+  /// Triggers `AI` with text and image prompts and returns its result and errors
+  Future<({String? aiResult, List<String>? errors})> triggerAI({
     required String? textPrompt,
     required File? imageFile,
   }) async {
@@ -280,7 +275,6 @@ JSON structure to follow strictly:
 
     /// Generate an `imagePrompt`
     InlineDataPart? imagePart;
-    Future<String?>? imageUpload;
 
     if (imageFile != null) {
       final image = await imageFile.readAsBytes();
@@ -289,11 +283,6 @@ JSON structure to follow strictly:
         mealImageContentType(ext),
         image,
       );
-
-      /// Upload while `Gemini` processes the same image
-      imageUpload = firebaseService.uploadMealImage(
-        imageFile: imageFile,
-      );
     }
 
     /// Text and image don't exist, return
@@ -301,7 +290,6 @@ JSON structure to follow strictly:
       errors.add('No text and image');
       return (
         aiResult: null,
-        imageStoragePath: null,
         errors: errors,
       );
     }
@@ -321,14 +309,9 @@ JSON structure to follow strictly:
 
     if (value.isEmpty) {
       errors.add('No available models');
-      final uploadResult = await imageUpload;
-      if (imageFile != null && uploadResult == null) {
-        errors.add('Image failed to save');
-      }
 
       return (
         aiResult: null,
-        imageStoragePath: uploadResult,
         errors: errors,
       );
     }
@@ -352,14 +335,8 @@ JSON structure to follow strictly:
       }
     }
 
-    final uploadResult = await imageUpload;
-    if (imageFile != null && uploadResult == null) {
-      errors.add('Image failed to save');
-    }
-
     return (
       aiResult: aiResult,
-      imageStoragePath: uploadResult,
       errors: errors,
     );
   }
