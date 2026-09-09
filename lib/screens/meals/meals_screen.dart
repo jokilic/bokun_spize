@@ -165,7 +165,11 @@ class _MealsScreenState extends State<MealsScreen> {
                         shape: const CircleBorder(),
                         onPressed: () {
                           HapticFeedback.lightImpact();
-                          mealsController.onAddAIMealPressed(context);
+                          mealsController.onAddAIMealPressed(
+                            context,
+                            // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+                            languageCode: 'en',
+                          );
                         },
                         child: const PhosphorIcon(
                           PhosphorIconsBold.plus,

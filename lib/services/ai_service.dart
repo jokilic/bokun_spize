@@ -21,13 +21,16 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   /// INIT
   ///
 
-  void init() {
-    if (initialized) {
+  void init({required String languageCode}) {
+    if (initialized && initializedLanguageCode == languageCode) {
       return;
     }
 
-    initializeGemini();
+    initializeGemini(
+      languageCode: languageCode,
+    );
     initialized = value.isNotEmpty;
+    initializedLanguageCode = initialized ? languageCode : null;
   }
 
   ///
@@ -35,6 +38,8 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   var initialized = false;
+
+  String? initializedLanguageCode;
 
   final modelNames = [
     'gemini-3.5-flash-lite',
@@ -44,9 +49,17 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
     'gemini-3.5-flash',
   ];
 
-  final systemInstruction = '''
-You will receive a text in Croatian and / or image describing what the user ate.
+  ///
+  /// GETTERS
+  ///
+
+  /// Builds meal extraction instructions for the requested language
+  String getSystemInstruction({required String languageCode}) =>
+      '''
+You will receive text and / or image describing what the user ate.
 Estimate nutrition and extract foods.
+Use the language identified by language code "$languageCode" for meal names, food names, and unit names.
+Keep JSON property names unchanged and preserve standard unit symbols such as g and ml.
 
 Two values can be returned:
 1. ONLY valid JSON for a single Meal object
@@ -82,8 +95,8 @@ JSON structure to follow strictly:
 }
 ''';
 
-  /// `JSON` schema which the AI should return
-  final responseSchema = Schema.object(
+  /// Build `JSON` response schema for requested `languageCode`
+  Schema getResponseSchema({required String languageCode}) => Schema.object(
     title: 'Meal',
     description: 'Meal JSON schema',
     nullable: true,
@@ -97,7 +110,7 @@ JSON structure to follow strictly:
     properties: {
       'name': Schema.string(
         title: 'Meal name',
-        description: 'name best describing meal from user input, use Croatian language',
+        description: 'name best describing meal from user input, use the language identified by language code "$languageCode"',
         format: 'string',
         nullable: false,
       ),
@@ -164,7 +177,7 @@ JSON structure to follow strictly:
           properties: {
             'name': Schema.string(
               title: 'Food name',
-              description: 'name of food',
+              description: 'name of food, use the language identified by language code "$languageCode"',
               format: 'string',
               nullable: false,
             ),
@@ -176,7 +189,7 @@ JSON structure to follow strictly:
             ),
             'unit': Schema.string(
               title: 'Food unit',
-              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...), use Croatian language',
+              description: 'unit of food (e.g. piece, g, ml, tbsp, tsp, slice...), use the language identified by language code "$languageCode" and preserve standard unit symbols',
               format: 'string',
               nullable: false,
             ),
@@ -227,8 +240,8 @@ JSON structure to follow strictly:
   /// METHODS
   ///
 
-  /// Initialize `Gemini` backend service
-  void initializeGemini() {
+  /// Initialize `Gemini` backend models for requested `languageCode`
+  void initializeGemini({required String languageCode}) {
     try {
       final generativeModels = <GenerativeModel>[];
 
@@ -236,6 +249,7 @@ JSON structure to follow strictly:
         generativeModels.add(
           initializeGenerativeModel(
             model: model,
+            languageCode: languageCode,
           ),
         );
       }
@@ -244,24 +258,34 @@ JSON structure to follow strictly:
         generativeModels: generativeModels,
       );
     } catch (e) {
-      return;
+      updateState();
     }
   }
 
-  /// Initializes `generativeModel` with passed `model` name
-  GenerativeModel initializeGenerativeModel({required String model}) => ai.generativeModel(
+  /// Initializes `generativeModel` with passed model name and `languageCode`
+  GenerativeModel initializeGenerativeModel({
+    required String model,
+    required String languageCode,
+  }) => ai.generativeModel(
     model: model,
-    systemInstruction: Content.system(systemInstruction),
+    systemInstruction: Content.system(
+      getSystemInstruction(
+        languageCode: languageCode,
+      ),
+    ),
     generationConfig: GenerationConfig(
       responseMimeType: 'application/json',
-      responseSchema: responseSchema,
+      responseSchema: getResponseSchema(
+        languageCode: languageCode,
+      ),
     ),
   );
 
-  /// Triggers `AI` with text and image prompts and returns its result and errors
+  /// Trigger `AI` with text and image prompts in requested `languageCode`, return its result and errors
   Future<({String? aiResult, List<String>? errors})> triggerAI({
     required String? textPrompt,
     required File? imageFile,
+    required String languageCode,
   }) async {
     /// Create `errors` list
     final errors = <String>[];
@@ -293,8 +317,10 @@ JSON structure to follow strictly:
       );
     }
 
-    /// Models are created only when the user makes the first valid AI request
-    init();
+    /// Models are created on first valid AI request and refreshed when `languageCode` changes
+    init(
+      languageCode: languageCode,
+    );
 
     /// Generate `contents` to pass into `AI`
     final contents = [

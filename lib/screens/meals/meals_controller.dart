@@ -167,7 +167,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   );
 
   /// Triggered when the user presses `FAB` to add `AI meal`
-  Future<void> onAddAIMealPressed(BuildContext context) async {
+  Future<void> onAddAIMealPressed(
+    BuildContext context, {
+    required String languageCode,
+  }) async {
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
 
@@ -190,6 +193,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     final success = await createAIMeal(
       result: result,
       newMealId: newMealId,
+      languageCode: languageCode,
     );
 
     /// Add failed, show error snackbar
@@ -206,6 +210,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   Future<bool> createAIMeal({
     required AIMealResult result,
     required String newMealId,
+    required String languageCode,
   }) async {
     /// Trigger validation and return if fail
     if (!isValidAIMealResult(result)) {
@@ -239,6 +244,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       final outcome = await processAIMeal(
         loadingMeal: loadingMeal,
         imageFile: result.imageFile,
+        languageCode: languageCode,
       );
 
       /// Update `meal` in [Firebase] with new values
@@ -260,6 +266,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   Future<({Meal meal, bool success})> processAIMeal({
     required Meal loadingMeal,
     required File? imageFile,
+    required String languageCode,
   }) async {
     /// Start both operations and wait for them to finish before processing their results
     final results = await Future.wait(
@@ -268,6 +275,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         aiProvider().triggerAI(
           textPrompt: loadingMeal.originalText,
           imageFile: imageFile,
+          languageCode: languageCode,
         ),
 
         /// Image uploading logic
