@@ -28,7 +28,6 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
 
   final SpeechToTextService speechToText;
   final Meal? passedMeal;
-  // TODO: Implement logic for copying meal
   final bool isCopyingMeal;
 
   ManualAddMealController({

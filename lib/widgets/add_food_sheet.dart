@@ -28,19 +28,25 @@ class AddFoodSheet extends StatefulWidget {
 class _AddFoodSheetState extends State<AddFoodSheet> {
   var validation = false;
 
-  // TODO: Also add FocusNodes and handle accordingly
-
   late final nameTextEditingController = TextEditingController();
+  late final nameFocusNode = FocusNode();
 
   late final quantityTextEditingController = TextEditingController();
+  late final quantityFocusNode = FocusNode();
   late final unitTextEditingController = TextEditingController();
+  late final unitFocusNode = FocusNode();
 
   late final caloriesTextEditingController = TextEditingController();
+  late final caloriesFocusNode = FocusNode();
 
   late final proteinTextEditingController = TextEditingController();
+  late final proteinFocusNode = FocusNode();
   late final carbsTextEditingController = TextEditingController();
+  late final carbsFocusNode = FocusNode();
   late final fatsTextEditingController = TextEditingController();
+  late final fatsFocusNode = FocusNode();
 
+  /// Initializes the food fields and registers validation listeners
   @override
   void initState() {
     super.initState();
@@ -103,12 +109,22 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
       ..removeListener(triggerValidation)
       ..dispose();
 
+    /// Dispose [TextEditingControllers]
     quantityTextEditingController.dispose();
     unitTextEditingController.dispose();
     caloriesTextEditingController.dispose();
     proteinTextEditingController.dispose();
     carbsTextEditingController.dispose();
     fatsTextEditingController.dispose();
+
+    /// Dispose [FocusNodes]
+    nameFocusNode.dispose();
+    quantityFocusNode.dispose();
+    unitFocusNode.dispose();
+    caloriesFocusNode.dispose();
+    proteinFocusNode.dispose();
+    carbsFocusNode.dispose();
+    fatsFocusNode.dispose();
 
     super.dispose();
   }
@@ -278,9 +294,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ],
               child: TextFieldTitleWidget(
                 textEditingController: nameTextEditingController,
-                focusNode: FocusNode(),
-                // focusNode: mealController.caloriesFocusNode,
-                // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                focusNode: nameFocusNode,
+                onSubmitted: (_) => quantityFocusNode.requestFocus(),
                 title: 'Food name',
                 hintText: 'Write here...',
                 textColor: BokunSpizeColors.black,
@@ -331,9 +346,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   flex: 2,
                   child: TextFieldTitleWidget(
                     textEditingController: quantityTextEditingController,
-                    focusNode: FocusNode(),
-                    // focusNode: mealController.proteinFocusNode,
-                    // onSubmitted: (_) => unit.requestFocus(),
+                    focusNode: quantityFocusNode,
+                    onSubmitted: (_) => unitFocusNode.requestFocus(),
                     title: 'Quantity',
                     hintText: '0',
                     textColor: BokunSpizeColors.black,
@@ -348,9 +362,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   flex: 3,
                   child: TextFieldTitleWidget(
                     textEditingController: unitTextEditingController,
-                    focusNode: FocusNode(),
-                    // focusNode: mealController.proteinFocusNode,
-                    // onSubmitted: (_) => unit.requestFocus(),
+                    focusNode: unitFocusNode,
+                    onSubmitted: (_) => caloriesFocusNode.requestFocus(),
                     title: 'Unit',
                     hintText: 'grams',
                     textColor: BokunSpizeColors.black,
@@ -409,9 +422,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ],
               child: TextFieldTitleWidget(
                 textEditingController: caloriesTextEditingController,
-                focusNode: FocusNode(),
-                // focusNode: mealController.caloriesFocusNode,
-                // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                focusNode: caloriesFocusNode,
+                onSubmitted: (_) => proteinFocusNode.requestFocus(),
                 title: 'Calories',
                 hintText: '0',
                 rightText: 'kcal',
@@ -454,9 +466,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   Expanded(
                     child: TextFieldTitleWidget(
                       textEditingController: proteinTextEditingController,
-                      focusNode: FocusNode(),
-                      // focusNode: mealController.caloriesFocusNode,
-                      // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                      focusNode: proteinFocusNode,
+                      onSubmitted: (_) => carbsFocusNode.requestFocus(),
                       title: 'Protein',
                       hintText: '0',
                       rightText: 'g',
@@ -471,9 +482,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   Expanded(
                     child: TextFieldTitleWidget(
                       textEditingController: carbsTextEditingController,
-                      focusNode: FocusNode(),
-                      // focusNode: mealController.caloriesFocusNode,
-                      // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                      focusNode: carbsFocusNode,
+                      onSubmitted: (_) => fatsFocusNode.requestFocus(),
                       title: 'Carbs',
                       hintText: '0',
                       rightText: 'g',
@@ -488,9 +498,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   Expanded(
                     child: TextFieldTitleWidget(
                       textEditingController: fatsTextEditingController,
-                      focusNode: FocusNode(),
-                      // focusNode: mealController.caloriesFocusNode,
-                      // onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
+                      focusNode: fatsFocusNode,
                       title: 'Fats',
                       hintText: '0',
                       rightText: 'g',
