@@ -262,7 +262,9 @@ JSON structure to follow strictly:
     ),
   );
 
-  /// Triggers `AI` with `prompt` and all necessary data
+  // TODO: Can we refactor this method to use only AI logic? Image uploading should be in a seperate method if possible, perhaps in [FirebaseService] if that makes more sense...
+
+  /// Triggers `AI` with `prompt` and `uploads` image if necessary
   Future<({String? aiResult, String? imageStoragePath, List<String>? errors})> triggerAI({
     required String? textPrompt,
     required File? imageFile,
@@ -288,7 +290,7 @@ JSON structure to follow strictly:
         image,
       );
 
-      /// Upload while Gemini processes the same image
+      /// Upload while `Gemini` processes the same image
       imageUpload = firebaseService.uploadMealImage(
         imageFile: imageFile,
       );
@@ -296,8 +298,12 @@ JSON structure to follow strictly:
 
     /// Text and image don't exist, return
     if (textPart == null && imagePart == null) {
-      errors.add('Nema teksta ni slike');
-      return (aiResult: null, imageStoragePath: null, errors: errors);
+      errors.add('No text and image');
+      return (
+        aiResult: null,
+        imageStoragePath: null,
+        errors: errors,
+      );
     }
 
     /// Models are created only when the user makes the first valid AI request
@@ -314,10 +320,10 @@ JSON structure to follow strictly:
     ];
 
     if (value.isEmpty) {
-      errors.add('Nema dostupnih modela');
+      errors.add('No available models');
       final uploadResult = await imageUpload;
       if (imageFile != null && uploadResult == null) {
-        errors.add('Slika nije spremljena');
+        errors.add('Image failed to save');
       }
 
       return (
@@ -334,21 +340,21 @@ JSON structure to follow strictly:
         final result = response.text;
 
         if (result == null) {
-          errors.add('Model ${model.model.name} nije našao rezultat');
+          errors.add("Model ${model.model.name} didn't find a result");
           continue;
         }
 
         aiResult = result;
         break;
       } catch (e) {
-        final error = e.toString().contains('quota') ? 'Kvota modela ${model.model.name} je prekoračena, pokušaj ponovno kasnije' : 'Greška kod modela ${model.model.name}: $e';
+        final error = e.toString().contains('quota') ? 'Quota of model ${model.model.name} is exceeded, try later' : 'Error with model ${model.model.name}: $e';
         errors.add(error);
       }
     }
 
     final uploadResult = await imageUpload;
     if (imageFile != null && uploadResult == null) {
-      errors.add('Slika nije spremljena');
+      errors.add('Image failed to save');
     }
 
     return (

@@ -22,6 +22,8 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// CONSTRUCTOR
   ///
 
+  // TODO: This controller & screen won't have function to have a passedMeal and isCopyingMeal. Can you remove them from the constructor and update all code in the controller to not use those deleted variables?
+
   final SpeechToTextService speechToText;
   final Meal? passedMeal;
   final bool isCopyingMeal;

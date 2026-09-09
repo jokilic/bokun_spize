@@ -131,7 +131,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     date: value.activeDate,
   );
 
-  /// Deletes [meal] from Firebase
+  /// Deletes `meal` from [Firebase]
   Future<void> deleteMeal({
     required Meal meal,
     required BuildContext context,
@@ -175,17 +175,16 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       backgroundColor: BokunSpizeColors.grey,
       builder: (context) => AIAddMealScreen(
         mealId: newMealId,
-        passedMeal: null,
-        isCopyingMeal: false,
       ),
     );
 
+    /// Sheet was dismissed, do nothing
     if (result == null) {
       return;
     }
 
-    /// Run `AI` logic
-    final success = await validateAndRunAILogic(
+    /// Create and save the AI meal
+    final success = await createAIMeal(
       result: result,
       newMealId: newMealId,
     );
@@ -198,6 +197,96 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
+  }
+
+  /// Save a `loading meal` in [Firebase], then replaces it with the `AI outcome`
+  Future<bool> createAIMeal({
+    required AIMealResult result,
+    required String newMealId,
+  }) async {
+    /// Trigger validation and return if fail
+    if (!isValidAIMealResult(result)) {
+      return false;
+    }
+
+    /// Create `loading meal`
+    final loadingMeal = Meal(
+      id: newMealId,
+      createdAt: result.dateTime!,
+      originalText: result.words?.trim(),
+      isLoading: true,
+    );
+
+    try {
+      /// Write `loading meal` to [Firebase]
+      final loadingMealWritten = await firebase.writeMeal(
+        newMeal: loadingMeal,
+      );
+
+      if (!loadingMealWritten) {
+        return false;
+      }
+
+      /// Show the date where the newly saved `meal` belongs
+      updateDate(
+        loadingMeal.createdAt,
+      );
+
+      /// Trigger AI logic
+      final outcome = await processAIMeal(
+        loadingMeal: loadingMeal,
+        imageFile: result.imageFile,
+      );
+
+      /// Update `meal` in [Firebase] with new values
+      final mealUpdated = await firebase.updateMeal(
+        newMeal: outcome.meal,
+      );
+
+      return mealUpdated && outcome.success;
+    } catch (error) {
+      log(
+        'Adding AI meal failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
+  /// Runs AI and returns a finished `meal` containing parsed data or errors
+  Future<({Meal meal, bool success})> processAIMeal({
+    required Meal loadingMeal,
+    required File? imageFile,
+  }) async {
+    /// Run AI logic & image uploading
+    final result = await aiProvider().triggerAI(
+      textPrompt: loadingMeal.originalText,
+      imageFile: imageFile,
+    );
+
+    final aiResult = result.aiResult;
+
+    /// Parse result to proper [Meal] instance
+    final meal = aiResult == null
+        ? null
+        : parseAIResultToMeal(
+            aiResult: aiResult,
+            id: loadingMeal.id,
+            createdAt: loadingMeal.createdAt,
+            originalText: loadingMeal.originalText,
+            imageStoragePath: result.imageStoragePath,
+          );
+
+    return (
+      meal:
+          meal ??
+          loadingMeal.copyWith(
+            errors: aiResult == null ? result.errors : ['Meal failed decoding'],
+            imageStoragePath: result.imageStoragePath,
+            isLoading: false,
+          ),
+      success: meal != null,
+    );
   }
 
   /// Triggered when the user presses `FAB` to add `manual meal`
@@ -298,112 +387,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         text: 'Add failed',
         icon: PhosphorIconsBold.warningOctagon,
       );
-    }
-  }
-
-  Future<bool> validateAndRunAILogic({
-    required AIMealResult result,
-    required String newMealId,
-  }) async {
-    /// Check if `words` and `image` exists
-    final hasWords = result.words?.trim().isNotEmpty ?? false;
-    final hasImage = result.imageFile != null;
-
-    /// Data missing, return
-    if ((!hasWords && !hasImage) || result.dateTime == null) {
-      return false;
-    }
-
-    /// Trigger AI which generates a new `meal` and stores into [Firebase]
-    return triggerAIAndFinishCreatingMeal(
-      newMealId: newMealId,
-      textPrompt: result.words,
-      imageFile: result.imageFile,
-      dateTime: result.dateTime!,
-    );
-  }
-
-  /// Creates a loading `meal`, processes it with AI, and persists the result in [Firebase]
-  Future<bool> triggerAIAndFinishCreatingMeal({
-    required String newMealId,
-    required String? textPrompt,
-    required File? imageFile,
-    required DateTime dateTime,
-  }) async {
-    /// Get `trimmedPrompt`
-    final trimmedPrompt = textPrompt?.trim();
-
-    /// Create `loadingMeal` with loading state
-    final loadingMeal = Meal(
-      id: newMealId,
-      createdAt: dateTime,
-      originalText: trimmedPrompt,
-      isLoading: true,
-    );
-
-    try {
-      /// Write `loadingMeal` to [Firebase]
-      final loadingMealWritten = await firebase.writeMeal(
-        newMeal: loadingMeal,
-      );
-
-      /// Return if `meal` isn't written to [Firebase]
-      if (!loadingMealWritten) {
-        return false;
-      }
-
-      /// Show the date where the newly saved meal belongs
-      updateDate(dateTime);
-
-      /// Trigger AI
-      final result = await aiProvider().triggerAI(
-        textPrompt: trimmedPrompt,
-        imageFile: imageFile,
-      );
-
-      /// There is no proper result, update `meal` with `errors` in [Firebase]
-      if (result.aiResult == null) {
-        await firebase.updateMeal(
-          newMeal: loadingMeal.copyWith(
-            errors: result.errors,
-            imageStoragePath: result.imageStoragePath,
-            isLoading: false,
-          ),
-        );
-        return false;
-      }
-
-      /// Parse AI response into [Meal] model
-      final meal = parseAIResultToMeal(
-        aiResult: result.aiResult!,
-        id: loadingMeal.id,
-        createdAt: loadingMeal.createdAt,
-        originalText: trimmedPrompt,
-        imageStoragePath: result.imageStoragePath,
-      );
-
-      /// Result exists, update `meal` with newly parsed values in [Firebase]
-      if (meal != null) {
-        return await firebase.updateMeal(
-          newMeal: meal,
-        );
-      }
-
-      /// Some weird error happened, update `meal` with `error`
-      await firebase.updateMeal(
-        newMeal: loadingMeal.copyWith(
-          errors: ['Obrok nije dekodiran'],
-          imageStoragePath: result.imageStoragePath,
-          isLoading: false,
-        ),
-      );
-      return false;
-    } catch (error) {
-      log(
-        'Adding AI meal failed',
-        error: error,
-      );
-      return false;
     }
   }
 
