@@ -20,7 +20,8 @@ import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
-class ManualAddMealController extends ValueNotifier<({bool validation, String? speechToTextWords, List<Food>? foods, DateTime mealDate, DateTime mealTime, File? imageFile})>
+class ManualAddMealController
+    extends ValueNotifier<({bool validation, String? speechToTextWords, List<Food>? foods, DateTime mealDate, DateTime mealTime, File? imageFile, String? imageStoragePath})>
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -42,6 +43,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
            mealDate: DateTime.now(),
            mealTime: DateTime.now(),
            imageFile: null,
+           imageStoragePath: null,
          ),
        );
 
@@ -61,6 +63,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     /// Preserve the original date and time when editing an existing meal
     updateState(
       foods: meal?.foods,
+      imageStoragePath: meal?.imageStoragePath,
       mealDate: mealTime,
       mealTime: mealTime,
     );
@@ -160,11 +163,21 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
   /// Checks if validation passed
   void triggerValidation() {
     final isTextValidated = nameTextEditingController.text.trim().isNotEmpty;
-    final isImageValidated = value.imageFile != null || passedMeal?.imageStoragePath != null;
+    final isImageValidated = value.imageFile != null || value.imageStoragePath != null;
 
     updateState(
       validation: isTextValidated || isImageValidated,
     );
+  }
+
+  /// Removes the current image from the form before saving or choosing a replacement
+  void removeImage() {
+    updateState(
+      imageFile: null,
+      imageStoragePath: null,
+    );
+
+    triggerValidation();
   }
 
   /// Adds a food item without changing the existing list
@@ -394,7 +407,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
-      subtitle: 'Day of new meal',
+      subtitle: passedMeal != null && !isCopyingMeal ? 'Day of meal' : 'Day of new meal',
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
@@ -411,7 +424,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
-      subtitle: 'Time of new meal',
+      subtitle: passedMeal != null && !isCopyingMeal ? 'Time of meal' : 'Time of new meal',
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {
@@ -431,6 +444,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     DateTime? mealDate,
     DateTime? mealTime,
     Object? imageFile = nullStateNoChange,
+    Object? imageStoragePath = nullStateNoChange,
   }) => value = (
     validation: validation ?? value.validation,
     speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
@@ -442,5 +456,6 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     mealDate: mealDate ?? value.mealDate,
     mealTime: mealTime ?? value.mealTime,
     imageFile: identical(imageFile, nullStateNoChange) ? value.imageFile : imageFile as File?,
+    imageStoragePath: identical(imageStoragePath, nullStateNoChange) ? value.imageStoragePath : imageStoragePath as String?,
   );
 }

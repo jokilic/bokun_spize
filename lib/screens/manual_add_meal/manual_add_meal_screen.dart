@@ -87,6 +87,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     final isListening = speechToTextState.isListening;
 
     final imageFile = state.imageFile;
+    final imageStoragePath = state.imageStoragePath;
     final foods = state.foods;
     final mealDate = state.mealDate;
     final mealTime = state.mealTime;
@@ -104,9 +105,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     );
 
     final isCopyingMeal = widget.isCopyingMeal;
+    final isEditingMeal = widget.passedMeal != null && !isCopyingMeal;
 
     final showText = !isCopyingMeal || mealController.nameTextEditingController.text.trim().isNotEmpty;
-    final showImage = !isCopyingMeal || widget.passedMeal?.imageStoragePath != null || imageFile != null;
+    final showImage = !isCopyingMeal || imageStoragePath != null || imageFile != null;
 
     /// Keep the entrance sequence in layout order when optional sections are hidden
     final imageAnimationStep = showText ? 4 : 3;
@@ -181,7 +183,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ///
                     Expanded(
                       child: Text(
-                        isCopyingMeal ? 'Copy meal' : 'Log meal',
+                        isCopyingMeal ? 'Copy meal' : (isEditingMeal ? 'Edit meal' : 'Log meal'),
                         style: const TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -238,9 +240,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: const Text(
-                  'New meal in your journal',
-                  style: TextStyle(
+                child: Text(
+                  isEditingMeal ? 'Update meal in your journal' : 'New meal in your journal',
+                  style: const TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -340,12 +342,12 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
           ///
           /// NETWORK IMAGE
           ///
-          if (widget.passedMeal?.imageStoragePath != null)
+          if (imageStoragePath != null && imageFile == null)
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  key: ValueKey('meal-image-${widget.passedMeal!.imageStoragePath}'),
+                  key: ValueKey('meal-image-$imageStoragePath'),
                   delay: BokunSpizeDurations.stateTransitionStagger * imageAnimationStep,
                   effects: const [
                     FadeEffect(
@@ -366,29 +368,56 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       curve: Curves.easeOutCubic,
                     ),
                   ],
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(listTileRadius),
-                    child: SizedBox(
-                      height: 160,
-                      width: double.infinity,
-                      child: MealImage(
-                        imageStoragePath: widget.passedMeal!.imageStoragePath!,
-                        height: 160,
-                        width: double.infinity,
-                        errorWidget: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(listTileRadius),
-                          ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                        child: SizedBox(
                           height: 160,
                           width: double.infinity,
-                          child: const PhosphorIcon(
-                            PhosphorIconsBold.warningOctagon,
-                            size: 56,
-                            color: BokunSpizeColors.red,
+                          child: MealImage(
+                            imageStoragePath: imageStoragePath,
+                            height: 160,
+                            width: double.infinity,
+                            errorWidget: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(listTileRadius),
+                              ),
+                              height: 160,
+                              width: double.infinity,
+                              child: const PhosphorIcon(
+                                PhosphorIconsBold.warningOctagon,
+                                size: 56,
+                                color: BokunSpizeColors.red,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      if (!isCopyingMeal)
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: IconButton(
+                            onPressed: () => handleOnPressed(
+                              onPressed: mealController.removeImage,
+                            ),
+                            icon: const PhosphorIcon(
+                              PhosphorIconsBold.trash,
+                              size: 20,
+                            ),
+                            style: IconButton.styleFrom(
+                              elevation: 0,
+                              padding: const EdgeInsets.all(10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              backgroundColor: BokunSpizeColors.white,
+                              foregroundColor: BokunSpizeColors.red,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -457,11 +486,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         top: 8,
                         child: IconButton(
                           onPressed: () => handleOnPressed(
-                            onPressed: () => mealController
-                              ..updateState(
-                                imageFile: null,
-                              )
-                              ..triggerValidation(),
+                            onPressed: mealController.removeImage,
                           ),
                           icon: const PhosphorIcon(
                             PhosphorIconsBold.trash,
@@ -1260,6 +1285,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                     foods ?? [],
                                   ),
                                   imageFile: imageFile,
+                                  imageStoragePath: imageStoragePath,
                                 ),
                               );
                             },
@@ -1279,8 +1305,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
                       disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
                     ),
-                    child: const Text(
-                      'Log meal',
+                    child: Text(
+                      isEditingMeal ? 'Save changes' : 'Log meal',
                       textAlign: TextAlign.center,
                     ),
                   ),

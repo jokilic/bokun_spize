@@ -313,22 +313,24 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     );
   }
 
-  /// Triggered when the user presses `FAB` to add `manual meal`
+  /// Opens [ManualAddMealScreen] to add, copy, or edit a meal
   Future<void> onAddManualMealPressed(
     BuildContext context, {
     required Meal? passedMeal,
     required bool isCopyingMeal,
   }) async {
-    /// Generate `newMealId`
-    final newMealId = const Uuid().v1();
+    final isEditingMeal = passedMeal != null && !isCopyingMeal;
 
-    /// Show [ManualAddMealScreen] for adding `manual meal`
+    /// Keep the existing `mealId` when editing
+    final mealId = isEditingMeal ? passedMeal.id : const Uuid().v1();
+
+    /// Show [ManualAddMealScreen]
     final result = await showBlurredModalBottomSheet<ManualMealResult>(
       context: context,
       modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
       backgroundColor: BokunSpizeColors.grey,
       builder: (context) => ManualAddMealScreen(
-        mealId: newMealId,
+        mealId: mealId,
         passedMeal: passedMeal,
         isCopyingMeal: isCopyingMeal,
       ),
@@ -339,19 +341,24 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       return;
     }
 
-    /// Create and save the manual meal
-    final success = await createManualMeal(
-      result: result,
-      newMealId: newMealId,
-      passedMeal: passedMeal,
-      isCopyingMeal: isCopyingMeal,
-    );
+    /// Save edits to the original `meal` or create a new entry
+    final success = isEditingMeal
+        ? await updateManualMeal(
+            result: result,
+            passedMeal: passedMeal,
+          )
+        : await createManualMeal(
+            result: result,
+            newMealId: mealId,
+            passedMeal: passedMeal,
+            isCopyingMeal: isCopyingMeal,
+          );
 
-    /// Add failed, show error snackbar
+    /// Saving failed, show error snackbar
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Add failed',
+        text: isEditingMeal ? 'Update failed' : 'Add failed',
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -432,6 +439,46 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     }
   }
 
+  /// Saves edits to the existing `meal` and shows its selected date
+  Future<bool> updateManualMeal({
+    required ManualMealResult result,
+    required Meal passedMeal,
+  }) async {
+    if (result.dateTime == null) {
+      return false;
+    }
+
+    try {
+      final outcome = await processManualMeal(
+        loadingMeal: passedMeal,
+        result: result,
+      );
+
+      /// Keep the original `meal` intact if the replacement image fails to upload
+      if (!outcome.success) {
+        return false;
+      }
+
+      final mealUpdated = await firebase.updateMeal(
+        newMeal: outcome.meal,
+      );
+
+      if (mealUpdated) {
+        updateDate(
+          outcome.meal.createdAt,
+        );
+      }
+
+      return mealUpdated;
+    } catch (error) {
+      log(
+        'Updating manual meal failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
   /// Upload image and return finished manual `meal` containing its data or errors
   Future<({Meal meal, bool success})> processManualMeal({
     required Meal loadingMeal,
@@ -442,12 +489,17 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         ? await firebase.uploadMealImage(
             imageFile: imageFile,
           )
-        : null;
+        : result.imageStoragePath;
     final imageUploadFailed = imageFile != null && imageStoragePath == null;
 
     /// Finish loading and preserve the meal data even if the image upload fails
     return (
-      meal: loadingMeal.copyWith(
+      meal: Meal(
+        id: loadingMeal.id,
+        createdAt: result.dateTime ?? loadingMeal.createdAt,
+        emoji: loadingMeal.emoji,
+        color: loadingMeal.color,
+        originalText: loadingMeal.originalText,
         name: result.name,
         nutrition: result.nutrition,
         foods: result.foods,
