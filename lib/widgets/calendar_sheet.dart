@@ -14,11 +14,13 @@ class CalendarSheet extends StatefulWidget {
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
   final bool showConfirmButton;
+  final String subtitle;
 
   const CalendarSheet({
     required this.primaryColor,
     required this.dateValue,
     required this.onDateChanged,
+    required this.subtitle,
     this.showConfirmButton = true,
   });
 
@@ -150,9 +152,9 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: const Text(
-                'Add meal to your journal',
-                style: TextStyle(
+              child: Text(
+                widget.subtitle,
+                style: const TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,

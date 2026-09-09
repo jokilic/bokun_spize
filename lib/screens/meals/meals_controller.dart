@@ -155,6 +155,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
+      subtitle: 'View your activity and progress',
       primaryColor: BokunSpizeColors.green,
       dateValue: value.activeDate,
       onDateChanged: (newDate) {

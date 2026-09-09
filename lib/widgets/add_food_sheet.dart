@@ -254,7 +254,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
               ],
               child: const Text(
-                'Add food to your meal',
+                'Food in your new meal',
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
@@ -477,7 +477,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: 32),
+          child: SizedBox(height: 20),
         ),
 
         ///

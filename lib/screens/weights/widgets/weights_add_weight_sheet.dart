@@ -92,6 +92,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
+      subtitle: 'Day of new weight',
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
       onDateChanged: (newDate) => setState(
@@ -111,6 +112,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
+      subtitle: 'Time of new weight',
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
       onTimeChanged: (newTime) => setState(
@@ -259,7 +261,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   ),
                 ],
                 child: const Text(
-                  'Add meal to your journal',
+                  'New weight in your journal',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -309,7 +311,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 4),
           ),
 
           ///
@@ -364,7 +366,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 8),
+            child: SizedBox(height: 20),
           ),
 
           ///

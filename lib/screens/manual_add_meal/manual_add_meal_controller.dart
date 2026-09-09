@@ -394,6 +394,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
+      subtitle: 'Day of new meal',
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
@@ -410,6 +411,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     context: context,
     modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
+      subtitle: 'Time of new meal',
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {

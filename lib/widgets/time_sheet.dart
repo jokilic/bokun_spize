@@ -13,11 +13,13 @@ class TimeSheet extends StatefulWidget {
   final Color primaryColor;
   final DateTime dateValue;
   final Function(DateTime newTime) onTimeChanged;
+  final String subtitle;
 
   const TimeSheet({
     required this.primaryColor,
     required this.dateValue,
     required this.onTimeChanged,
+    required this.subtitle,
   });
 
   @override
@@ -148,9 +150,9 @@ class _TimeSheetState extends State<TimeSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: const Text(
-                'Add meal to your journal',
-                style: TextStyle(
+              child: Text(
+                widget.subtitle,
+                style: const TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,

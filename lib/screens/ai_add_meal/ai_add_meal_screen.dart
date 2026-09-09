@@ -213,7 +213,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   ),
                 ],
                 child: const Text(
-                  'Add meal to your journal',
+                  'New meal in your journal',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
