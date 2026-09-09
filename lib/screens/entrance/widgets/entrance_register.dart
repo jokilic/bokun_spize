@@ -59,6 +59,7 @@ class EntranceRegister extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
+          obscureText: true,
           controller: passwordTextEditingController,
           focusNode: passwordFocusNode,
           title: 'Password',

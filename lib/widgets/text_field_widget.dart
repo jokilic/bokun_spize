@@ -24,6 +24,7 @@ class TextFieldWidget extends StatelessWidget {
   final int? maxLines;
   final Iterable<String>? autofillHints;
   final double textFieldFontSize;
+  final bool obscureText;
 
   const TextFieldWidget({
     required this.controller,
@@ -46,6 +47,7 @@ class TextFieldWidget extends StatelessWidget {
     this.maxLines = 1,
     this.autofillHints,
     this.textFieldFontSize = 22,
+    this.obscureText = false,
   });
 
   @override
@@ -99,6 +101,7 @@ class TextFieldWidget extends StatelessWidget {
                 ///
                 Expanded(
                   child: TextFieldBody(
+                    obscureText: obscureText,
                     autofillHints: autofillHints,
                     minLines: minLines,
                     maxLines: maxLines,
