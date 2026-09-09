@@ -117,6 +117,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
     );
   }
 
+  // TODO: Staggered animation here
+
   @override
   Widget build(BuildContext context) {
     final entranceController = getIt.get<EntranceController>();
@@ -306,7 +308,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                       ),
                     ),
                   ),
-
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 32),
                   ),
@@ -342,6 +343,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                     sliver: SliverToBoxAdapter(
                       child: Row(
+                        spacing: 20,
                         children: [
                           ///
                           /// GOOGLE
@@ -382,8 +384,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                               ),
                             ),
                           ),
-
-                          const SizedBox(width: 20),
 
                           ///
                           /// APPLE
@@ -429,7 +429,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 40),
+                    child: SizedBox(height: 32),
                   ),
 
                   ///

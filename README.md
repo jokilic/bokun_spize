@@ -15,8 +15,6 @@
 - [ ] Notifications reminding to weight
 - [ ] Notifications analyzing previous meal day
 - [ ] Perhaps anonymous sign-in
-- [ ] Find `child: SizedBox(height: 40),` and change all screens with proper spacings
-- [ ] Subtitles everywhere
 
 # Bokun spize 🥗
 

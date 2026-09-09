@@ -252,7 +252,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                 child: TextFieldTitleWidget(
                   minLines: 3,
                   maxLines: 3,
-                  textEditingController: mealController.textEditingController,
+                  controller: mealController.textEditingController,
                   focusNode: mealController.textFocusNode,
                   onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                   title: 'Describe your meal',

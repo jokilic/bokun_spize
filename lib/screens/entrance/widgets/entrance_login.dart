@@ -6,6 +6,8 @@ import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../widgets/text_field_widget.dart';
 
+// TODO: Add emailFocusNode
+
 class EntranceLogin extends StatelessWidget {
   final TextEditingController emailTextEditingController;
   final TextEditingController passwordTextEditingController;

@@ -278,7 +278,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ],
                   child: TextFieldTitleWidget(
                     enabled: !isCopyingMeal,
-                    textEditingController: mealController.nameTextEditingController,
+                    controller: mealController.nameTextEditingController,
                     focusNode: mealController.nameFocusNode,
                     onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                     onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
@@ -717,7 +717,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ],
                   child: TextFieldTitleWidget(
                     enabled: !isCopyingMeal,
-                    textEditingController: mealController.caloriesTextEditingController,
+                    controller: mealController.caloriesTextEditingController,
                     focusNode: mealController.caloriesFocusNode,
                     onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                     onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
@@ -763,7 +763,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       Expanded(
                         child: TextFieldTitleWidget(
                           enabled: !isCopyingMeal,
-                          textEditingController: mealController.proteinTextEditingController,
+                          controller: mealController.proteinTextEditingController,
                           focusNode: mealController.proteinFocusNode,
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                           onSubmitted: (_) => mealController.carbsFocusNode.requestFocus(),
@@ -781,7 +781,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       Expanded(
                         child: TextFieldTitleWidget(
                           enabled: !isCopyingMeal,
-                          textEditingController: mealController.carbsTextEditingController,
+                          controller: mealController.carbsTextEditingController,
                           focusNode: mealController.carbsFocusNode,
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                           onSubmitted: (_) => mealController.fatsFocusNode.requestFocus(),
@@ -799,7 +799,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       Expanded(
                         child: TextFieldTitleWidget(
                           enabled: !isCopyingMeal,
-                          textEditingController: mealController.fatsTextEditingController,
+                          controller: mealController.fatsTextEditingController,
                           focusNode: mealController.fatsFocusNode,
                           title: 'Fats',
                           hintText: '0',

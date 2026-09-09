@@ -5,7 +5,7 @@ import '../../../constants/constants.dart';
 import '../../../widgets/text_field_widget.dart';
 
 class TextFieldTitleWidget extends StatelessWidget {
-  final TextEditingController textEditingController;
+  final TextEditingController controller;
   final FocusNode focusNode;
   final String title;
   final String? hintText;
@@ -23,9 +23,11 @@ class TextFieldTitleWidget extends StatelessWidget {
   final bool enabled;
   final int? minLines;
   final int? maxLines;
+  final Iterable<String>? autofillHints;
+  final double textFieldFontSize;
 
   const TextFieldTitleWidget({
-    required this.textEditingController,
+    required this.controller,
     required this.focusNode,
     required this.title,
     required this.textColor,
@@ -43,6 +45,8 @@ class TextFieldTitleWidget extends StatelessWidget {
     this.enabled = true,
     this.minLines = 1,
     this.maxLines = 1,
+    this.autofillHints,
+    this.textFieldFontSize = 22,
   });
 
   @override
@@ -70,7 +74,8 @@ class TextFieldTitleWidget extends StatelessWidget {
             ///
             /// TITLE
             ///
-            Padding(
+            Container(
+              color: Colors.yellow,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 title.toUpperCase(),
@@ -87,71 +92,75 @@ class TextFieldTitleWidget extends StatelessWidget {
             ///
             /// TEXT FIELD & HINT
             ///
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                ///
-                /// TEXT FIELD
-                ///
-                Expanded(
-                  child: TextFieldWidget(
-                    minLines: minLines,
-                    maxLines: maxLines,
-                    enabled: enabled,
-                    filled: false,
-                    contentPadding: EdgeInsets.zero,
-                    autocorrect: autocorrect,
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    hintText: hintText,
-                    onChanged: onChanged,
-                    onSubmitted: onSubmitted,
-                    keyboardType: keyboardType,
-                    textAlign: TextAlign.left,
-                    textCapitalization: textCapitalization,
-                    textInputAction: textInputAction,
-                    hintStyle:
-                        hintStyle ??
-                        TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: textColor.withValues(alpha: 0.5),
-                        ),
-                    textStyle:
-                        textStyle ??
-                        TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: textColor,
-                        ),
-                  ),
-                ),
-
-                ///
-                /// RIGHT TEXT
-                ///
-                if (rightText?.isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(
-                      rightText!,
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.right,
+            Container(
+              color: Colors.red,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ///
+                  /// TEXT FIELD
+                  ///
+                  Expanded(
+                    child: TextFieldWidget(
+                      autofillHints: autofillHints,
+                      minLines: minLines,
+                      maxLines: maxLines,
+                      enabled: enabled,
+                      filled: false,
+                      contentPadding: EdgeInsets.zero,
+                      autocorrect: autocorrect,
+                      controller: controller,
+                      focusNode: focusNode,
+                      hintText: hintText,
+                      onChanged: onChanged,
+                      onSubmitted: onSubmitted,
+                      keyboardType: keyboardType,
+                      textAlign: TextAlign.left,
+                      textCapitalization: textCapitalization,
+                      textInputAction: textInputAction,
+                      hintStyle:
+                          hintStyle ??
+                          TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: textFieldFontSize,
+                            fontWeight: FontWeight.w700,
+                            color: textColor.withValues(alpha: 0.5),
+                          ),
+                      textStyle:
+                          textStyle ??
+                          TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: textFieldFontSize,
+                            fontWeight: FontWeight.w700,
+                            color: textColor,
+                          ),
                     ),
                   ),
 
-                ///
-                /// RIGHT WIDGET
-                ///
-                ?rightWidget,
-              ],
+                  ///
+                  /// RIGHT TEXT
+                  ///
+                  if (rightText?.isNotEmpty ?? false)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Text(
+                        rightText!,
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: textColor,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+
+                  ///
+                  /// RIGHT WIDGET
+                  ///
+                  ?rightWidget,
+                ],
+              ),
             ),
           ],
         ),

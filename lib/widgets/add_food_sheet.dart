@@ -291,7 +291,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
               ],
               child: TextFieldTitleWidget(
-                textEditingController: nameTextEditingController,
+                controller: nameTextEditingController,
                 focusNode: nameFocusNode,
                 onSubmitted: (_) => quantityFocusNode.requestFocus(),
                 title: 'Food name',
@@ -372,7 +372,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   Expanded(
                     flex: 2,
                     child: TextFieldTitleWidget(
-                      textEditingController: quantityTextEditingController,
+                      controller: quantityTextEditingController,
                       focusNode: quantityFocusNode,
                       onSubmitted: (_) => unitFocusNode.requestFocus(),
                       title: 'Quantity',
@@ -388,7 +388,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   Expanded(
                     flex: 3,
                     child: TextFieldTitleWidget(
-                      textEditingController: unitTextEditingController,
+                      controller: unitTextEditingController,
                       focusNode: unitFocusNode,
                       onSubmitted: (_) => caloriesFocusNode.requestFocus(),
                       title: 'Unit',
@@ -464,7 +464,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
               ],
               child: TextFieldTitleWidget(
-                textEditingController: caloriesTextEditingController,
+                controller: caloriesTextEditingController,
                 focusNode: caloriesFocusNode,
                 onSubmitted: (_) => proteinFocusNode.requestFocus(),
                 title: 'Calories',
@@ -508,7 +508,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   ///
                   Expanded(
                     child: TextFieldTitleWidget(
-                      textEditingController: proteinTextEditingController,
+                      controller: proteinTextEditingController,
                       focusNode: proteinFocusNode,
                       onSubmitted: (_) => carbsFocusNode.requestFocus(),
                       title: 'Protein',
@@ -524,7 +524,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   ///
                   Expanded(
                     child: TextFieldTitleWidget(
-                      textEditingController: carbsTextEditingController,
+                      controller: carbsTextEditingController,
                       focusNode: carbsFocusNode,
                       onSubmitted: (_) => fatsFocusNode.requestFocus(),
                       title: 'Carbs',
@@ -540,7 +540,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   ///
                   Expanded(
                     child: TextFieldTitleWidget(
-                      textEditingController: fatsTextEditingController,
+                      controller: fatsTextEditingController,
                       focusNode: fatsFocusNode,
                       title: 'Fats',
                       hintText: '0',

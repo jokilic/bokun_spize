@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
+import '../../../widgets/text_field_title_widget.dart';
 import '../../../widgets/text_field_widget.dart';
+
+// TODO: `FocusNodes` here and logic, like in `EntranceRegister`
 
 class EntranceRegister extends StatelessWidget {
   final TextEditingController emailTextEditingController;
@@ -28,76 +31,38 @@ class EntranceRegister extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       ///
-      /// EMAIL TITLE
-      ///
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: marginHorizontal + 16,
-        ),
-        child: Text(
-          'Email address'.toUpperCase(),
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-          ),
-        ),
-      ),
-      const SizedBox(height: 12),
-
-      ///
       /// EMAIL TEXTFIELD
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldWidget(
-          autocorrect: false,
+        child: TextFieldTitleWidget(
           controller: emailTextEditingController,
+          focusNode: FocusNode(),
+          title: 'Email address',
           hintText: 'name@example.com',
+          textColor: BokunSpizeColors.black,
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
-          textAlign: TextAlign.left,
           textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.next,
+          textFieldFontSize: 14,
         ),
       ),
-      const SizedBox(height: 32),
-
-      ///
-      /// PASSWORD TITLE
-      ///
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: marginHorizontal + 16,
-        ),
-        child: Text(
-          'Password'.toUpperCase(),
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-          ),
-        ),
-      ),
-      const SizedBox(height: 12),
+      const SizedBox(height: 20),
 
       ///
       /// PASSWORD TEXTFIELD
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldWidget(
-          autocorrect: false,
-          obscureText: true,
+        child: TextFieldTitleWidget(
           controller: passwordTextEditingController,
+          focusNode: FocusNode(),
+          title: 'Password',
           hintText: '•' * 8,
+          textColor: BokunSpizeColors.black,
           autofillHints: const [AutofillHints.password],
           keyboardType: TextInputType.visiblePassword,
-          textAlign: TextAlign.left,
           textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.next,
         ),
       ),
       const SizedBox(height: 32),
