@@ -12,8 +12,6 @@ import '../util/parse.dart';
 import '../util/spacing.dart';
 import 'text_field_title_widget.dart';
 
-// TODO: Implement animations like in other sheet, e.g. [CalendarSheet] or [ManualAddMealScreen]
-
 class AddFoodSheet extends StatefulWidget {
   final Food? passedFood;
 
@@ -279,7 +277,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
             child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 5,
+              delay: BokunSpizeDurations.stateTransitionStagger * 3,
               effects: const [
                 FadeEffect(
                   duration: BokunSpizeDurations.animation,
@@ -311,17 +309,32 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
         ///
         /// QUANTITY & UNIT TITLE
         ///
-        const SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
-            child: Text(
-              'Serving size',
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.6,
-                color: BokunSpizeColors.black,
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 4,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
+                ),
+                MoveEffect(
+                  begin: Offset(0, 8),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ],
+              child: const Text(
+                'Serving size',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: BokunSpizeColors.black,
+                ),
               ),
             ),
           ),
@@ -336,41 +349,56 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
-            child: Row(
-              spacing: 20,
-              children: [
-                ///
-                /// QUANTITY
-                ///
-                Expanded(
-                  flex: 2,
-                  child: TextFieldTitleWidget(
-                    textEditingController: quantityTextEditingController,
-                    focusNode: quantityFocusNode,
-                    onSubmitted: (_) => unitFocusNode.requestFocus(),
-                    title: 'Quantity',
-                    hintText: '0',
-                    textColor: BokunSpizeColors.black,
-                    keyboardType: TextInputType.number,
-                  ),
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 5,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
                 ),
-
-                ///
-                /// UNIT
-                ///
-                Expanded(
-                  flex: 3,
-                  child: TextFieldTitleWidget(
-                    textEditingController: unitTextEditingController,
-                    focusNode: unitFocusNode,
-                    onSubmitted: (_) => caloriesFocusNode.requestFocus(),
-                    title: 'Unit',
-                    hintText: 'grams',
-                    textColor: BokunSpizeColors.black,
-                    textCapitalization: TextCapitalization.none,
-                  ),
+                MoveEffect(
+                  begin: Offset(0, 12),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
                 ),
               ],
+              child: Row(
+                spacing: 20,
+                children: [
+                  ///
+                  /// QUANTITY
+                  ///
+                  Expanded(
+                    flex: 2,
+                    child: TextFieldTitleWidget(
+                      textEditingController: quantityTextEditingController,
+                      focusNode: quantityFocusNode,
+                      onSubmitted: (_) => unitFocusNode.requestFocus(),
+                      title: 'Quantity',
+                      hintText: '0',
+                      textColor: BokunSpizeColors.black,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+
+                  ///
+                  /// UNIT
+                  ///
+                  Expanded(
+                    flex: 3,
+                    child: TextFieldTitleWidget(
+                      textEditingController: unitTextEditingController,
+                      focusNode: unitFocusNode,
+                      onSubmitted: (_) => caloriesFocusNode.requestFocus(),
+                      title: 'Unit',
+                      hintText: 'grams',
+                      textColor: BokunSpizeColors.black,
+                      textCapitalization: TextCapitalization.none,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -381,17 +409,32 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
         ///
         /// NUTRITION TITLE
         ///
-        const SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
-            child: Text(
-              'Nutritional values',
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.6,
-                color: BokunSpizeColors.black,
+            child: Animate(
+              delay: BokunSpizeDurations.stateTransitionStagger * 6,
+              effects: const [
+                FadeEffect(
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOut,
+                ),
+                MoveEffect(
+                  begin: Offset(0, 8),
+                  end: Offset.zero,
+                  duration: BokunSpizeDurations.animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ],
+              child: const Text(
+                'Nutritional values',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: BokunSpizeColors.black,
+                ),
               ),
             ),
           ),
@@ -407,7 +450,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
             child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 5,
+              delay: BokunSpizeDurations.stateTransitionStagger * 7,
               effects: const [
                 FadeEffect(
                   duration: BokunSpizeDurations.animation,
@@ -444,7 +487,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
             child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 5,
+              delay: BokunSpizeDurations.stateTransitionStagger * 8,
               effects: const [
                 FadeEffect(
                   duration: BokunSpizeDurations.animation,
@@ -522,7 +565,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
           padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
           sliver: SliverToBoxAdapter(
             child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 3,
+              delay: BokunSpizeDurations.stateTransitionStagger * 9,
               effects: const [
                 FadeEffect(
                   duration: BokunSpizeDurations.animation,

@@ -20,8 +20,6 @@ import '../../widgets/text_field_title_widget.dart';
 import 'manual_add_meal_controller.dart';
 import 'widgets/manual_add_meal_food_list_tile.dart';
 
-// TODO: I've added some new widgets (nutrition, titles, foods, etc.). Can you check and rework the staggered animations if necessary?
-
 class ManualAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
@@ -109,6 +107,16 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
 
     final showText = !isCopyingMeal || mealController.nameTextEditingController.text.trim().isNotEmpty;
     final showImage = !isCopyingMeal || widget.passedMeal?.imageStoragePath != null || imageFile != null;
+
+    /// Keep the entrance sequence in layout order when optional sections are hidden
+    final imageAnimationStep = showText ? 4 : 3;
+    final nutritionAnimationStep = imageAnimationStep + (showImage ? 1 : 0);
+    final foodListAnimationStep = nutritionAnimationStep + 4;
+
+    /// Limit the food stagger to five steps so long lists keep later controls responsive
+    final foodAnimationCount = (foods?.length ?? 0).clamp(0, 5);
+    final addFoodAnimationStep = foodListAnimationStep + foodAnimationCount;
+    final dateTimeAnimationStep = isCopyingMeal ? nutritionAnimationStep : addFoodAnimationStep + 1;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -255,7 +263,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -338,7 +346,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   key: ValueKey('meal-image-${widget.passedMeal!.imageStoragePath}'),
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger * imageAnimationStep,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -394,7 +402,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   key: ValueKey('meal-image-$imageFile'),
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger * imageAnimationStep,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -484,7 +492,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   key: ValueKey('meal-image-empty-${widget.isCopyingMeal}'),
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger * imageAnimationStep,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -653,17 +661,32 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ///
             /// NUTRITION TITLE
             ///
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Nutritional values',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
-                    color: BokunSpizeColors.black,
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * nutritionAnimationStep,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: const Text(
+                    'Nutritional values',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.black,
+                    ),
                   ),
                 ),
               ),
@@ -679,7 +702,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (nutritionAnimationStep + 1),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -718,7 +741,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (nutritionAnimationStep + 2),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -797,17 +820,32 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ///
             /// FOODS TITLE
             ///
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Foods',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
-                    color: BokunSpizeColors.black,
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * (foodListAnimationStep - 1),
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: const Text(
+                    'Foods',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: BokunSpizeColors.black,
+                    ),
                   ),
                 ),
               ),
@@ -833,7 +871,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
 
                   return Animate(
                     key: ObjectKey(food),
-                    delay: BokunSpizeDurations.stateTransitionStagger * index,
+                    delay: BokunSpizeDurations.stateTransitionStagger * (foodListAnimationStep + index.clamp(0, 4)),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,
@@ -881,36 +919,51 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
-                  child: ElevatedButton.icon(
-                    onPressed: () => handleOnPressed(
-                      onPressed: () => mealController.onAddFoodPressed(
-                        context,
-                        passedFood: null,
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * addFoodAnimationStep,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
                       ),
-                    ),
-                    icon: const PhosphorIcon(
-                      PhosphorIconsBold.plus,
-                      color: BokunSpizeColors.black,
-                      size: 20,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 16,
-                        height: 1.6,
-                        fontWeight: FontWeight.w600,
+                      MoveEffect(
+                        begin: Offset(0, 14),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
                       ),
-                      padding: const EdgeInsets.all(16),
-                      backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                      foregroundColor: BokunSpizeColors.black,
-                      disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                      disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-                    ),
-                    label: const Text(
-                      'Add food',
-                      textAlign: TextAlign.center,
+                    ],
+                    child: ElevatedButton.icon(
+                      onPressed: () => handleOnPressed(
+                        onPressed: () => mealController.onAddFoodPressed(
+                          context,
+                          passedFood: null,
+                        ),
+                      ),
+                      icon: const PhosphorIcon(
+                        PhosphorIconsBold.plus,
+                        color: BokunSpizeColors.black,
+                        size: 20,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 16,
+                          height: 1.6,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                        foregroundColor: BokunSpizeColors.black,
+                        disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
+                        disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                      ),
+                      label: const Text(
+                        'Add food',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
@@ -923,17 +976,32 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
           ///
           /// DATE & TIME TITLE
           ///
-          const SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: marginHorizontal),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
-              child: Text(
-                'Date & Time',
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  color: BokunSpizeColors.black,
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * dateTimeAnimationStep,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 8),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: const Text(
+                  'Date & Time',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
                 ),
               ),
             ),
@@ -949,7 +1017,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                delay: BokunSpizeDurations.stateTransitionStagger * (dateTimeAnimationStep + 1),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -1048,7 +1116,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                delay: BokunSpizeDurations.stateTransitionStagger * (dateTimeAnimationStep + 2),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -1147,7 +1215,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                delay: BokunSpizeDurations.stateTransitionStagger * (dateTimeAnimationStep + 3),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
