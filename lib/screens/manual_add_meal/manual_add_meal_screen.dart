@@ -16,7 +16,7 @@ import '../../util/parse.dart';
 import '../../util/spacing.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/meal_image.dart';
-import '../../widgets/text_field_title_widget.dart';
+import '../../widgets/text_field_widget.dart';
 import 'manual_add_meal_controller.dart';
 import 'widgets/manual_add_meal_food_list_tile.dart';
 
@@ -278,7 +278,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       curve: Curves.easeOutCubic,
                     ),
                   ],
-                  child: TextFieldTitleWidget(
+                  child: TextFieldWidget(
                     enabled: !isCopyingMeal,
                     controller: mealController.nameTextEditingController,
                     focusNode: mealController.nameFocusNode,
@@ -740,7 +740,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       curve: Curves.easeOutCubic,
                     ),
                   ],
-                  child: TextFieldTitleWidget(
+                  child: TextFieldWidget(
                     enabled: !isCopyingMeal,
                     controller: mealController.caloriesTextEditingController,
                     focusNode: mealController.caloriesFocusNode,
@@ -786,7 +786,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       /// PROTEIN
                       ///
                       Expanded(
-                        child: TextFieldTitleWidget(
+                        child: TextFieldWidget(
                           enabled: !isCopyingMeal,
                           controller: mealController.proteinTextEditingController,
                           focusNode: mealController.proteinFocusNode,
@@ -804,7 +804,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       /// CARBS
                       ///
                       Expanded(
-                        child: TextFieldTitleWidget(
+                        child: TextFieldWidget(
                           enabled: !isCopyingMeal,
                           controller: mealController.carbsTextEditingController,
                           focusNode: mealController.carbsFocusNode,
@@ -822,7 +822,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       /// FAT
                       ///
                       Expanded(
-                        child: TextFieldTitleWidget(
+                        child: TextFieldWidget(
                           enabled: !isCopyingMeal,
                           controller: mealController.fatsTextEditingController,
                           focusNode: mealController.fatsFocusNode,

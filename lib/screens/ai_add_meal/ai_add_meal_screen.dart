@@ -11,7 +11,7 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
-import '../../widgets/text_field_title_widget.dart';
+import '../../widgets/text_field_widget.dart';
 import 'ai_add_meal_controller.dart';
 
 class AIAddMealScreen extends WatchingStatefulWidget {
@@ -247,7 +247,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: TextFieldTitleWidget(
+                child: TextFieldWidget(
                   minLines: 3,
                   maxLines: 3,
                   controller: mealController.textEditingController,

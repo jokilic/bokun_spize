@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
-import '../../../widgets/text_field_title_widget.dart';
+import '../../../widgets/text_field_widget.dart';
 
 class EntranceRegister extends StatelessWidget {
   final TextEditingController emailTextEditingController;
@@ -17,7 +17,6 @@ class EntranceRegister extends StatelessWidget {
   final bool emailIsLoading;
   final Function onRegisterPressed;
 
-  // Creates the registration form with focus nodes owned by the entrance controller
   const EntranceRegister({
     required this.emailTextEditingController,
     required this.passwordTextEditingController,
@@ -39,7 +38,7 @@ class EntranceRegister extends StatelessWidget {
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldTitleWidget(
+        child: TextFieldWidget(
           controller: emailTextEditingController,
           focusNode: emailFocusNode,
           title: 'Email address',
@@ -59,7 +58,7 @@ class EntranceRegister extends StatelessWidget {
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldTitleWidget(
+        child: TextFieldWidget(
           controller: passwordTextEditingController,
           focusNode: passwordFocusNode,
           title: 'Password',
@@ -79,7 +78,7 @@ class EntranceRegister extends StatelessWidget {
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldTitleWidget(
+        child: TextFieldWidget(
           controller: nameTextEditingController,
           focusNode: nameFocusNode,
           title: 'Name',

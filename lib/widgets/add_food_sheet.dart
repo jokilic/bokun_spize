@@ -10,7 +10,7 @@ import '../models/meal/nutrition.dart';
 import '../util/format.dart';
 import '../util/parse.dart';
 import '../util/spacing.dart';
-import 'text_field_title_widget.dart';
+import 'text_field_widget.dart';
 
 class AddFoodSheet extends StatefulWidget {
   final Food? passedFood;
@@ -290,7 +290,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: TextFieldTitleWidget(
+              child: TextFieldWidget(
                 controller: nameTextEditingController,
                 focusNode: nameFocusNode,
                 onSubmitted: (_) => quantityFocusNode.requestFocus(),
@@ -371,7 +371,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   ///
                   Expanded(
                     flex: 2,
-                    child: TextFieldTitleWidget(
+                    child: TextFieldWidget(
                       controller: quantityTextEditingController,
                       focusNode: quantityFocusNode,
                       onSubmitted: (_) => unitFocusNode.requestFocus(),
@@ -387,7 +387,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   ///
                   Expanded(
                     flex: 3,
-                    child: TextFieldTitleWidget(
+                    child: TextFieldWidget(
                       controller: unitTextEditingController,
                       focusNode: unitFocusNode,
                       onSubmitted: (_) => caloriesFocusNode.requestFocus(),
@@ -463,7 +463,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: TextFieldTitleWidget(
+              child: TextFieldWidget(
                 controller: caloriesTextEditingController,
                 focusNode: caloriesFocusNode,
                 onSubmitted: (_) => proteinFocusNode.requestFocus(),
@@ -507,7 +507,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   /// PROTEIN
                   ///
                   Expanded(
-                    child: TextFieldTitleWidget(
+                    child: TextFieldWidget(
                       controller: proteinTextEditingController,
                       focusNode: proteinFocusNode,
                       onSubmitted: (_) => carbsFocusNode.requestFocus(),
@@ -523,7 +523,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   /// CARBS
                   ///
                   Expanded(
-                    child: TextFieldTitleWidget(
+                    child: TextFieldWidget(
                       controller: carbsTextEditingController,
                       focusNode: carbsFocusNode,
                       onSubmitted: (_) => fatsFocusNode.requestFocus(),
@@ -539,7 +539,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   /// FAT
                   ///
                   Expanded(
-                    child: TextFieldTitleWidget(
+                    child: TextFieldWidget(
                       controller: fatsTextEditingController,
                       focusNode: fatsFocusNode,
                       title: 'Fats',

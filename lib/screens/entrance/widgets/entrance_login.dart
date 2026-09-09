@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
 import '../../../widgets/text_field_widget.dart';
 
 class EntranceLogin extends StatelessWidget {
@@ -32,129 +33,103 @@ class EntranceLogin extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       ///
-      /// EMAIL TITLE
-      ///
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: marginHorizontal + 16,
-        ),
-        child: Text(
-          'Email address'.toUpperCase(),
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-          ),
-        ),
-      ),
-      const SizedBox(height: 12),
-
-      ///
       /// EMAIL TEXTFIELD
       ///
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
-          autocorrect: false,
           controller: emailTextEditingController,
+          title: 'Email address',
           hintText: 'name@example.com',
           onSubmitted: (_) => passwordFocusNode.requestFocus(),
+          textColor: BokunSpizeColors.black,
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
-          textAlign: TextAlign.left,
           textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.next,
+          textFieldFontSize: 18,
         ),
       ),
-      const SizedBox(height: 32),
+      const SizedBox(height: 20),
 
       ///
-      /// PASSWORD TITLE & FORGET PASSWORD
+      /// PASSWORD TEXTFIELD & FORGOT PASSWORD
       ///
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: marginHorizontal + 16,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ///
-            /// PASSWORD TITLE
-            ///
-            Expanded(
-              child: Text(
-                'Password'.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: BokunSpizeColors.black.withValues(alpha: 0.5),
+      Stack(
+        children: [
+          ///
+          /// PASSWORD TEXTFIELD
+          ///
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            child: TextFieldWidget(
+              controller: passwordTextEditingController,
+              focusNode: passwordFocusNode,
+              title: 'Password',
+              hintText: '•' * 8,
+              onSubmitted: (_) {
+                if (!validated || emailIsLoading) {
+                  return;
+                }
+
+                onLoginPressed();
+              },
+              textColor: BokunSpizeColors.black,
+              autofillHints: const [AutofillHints.password],
+              keyboardType: TextInputType.visiblePassword,
+              textCapitalization: TextCapitalization.none,
+              textInputAction: TextInputAction.go,
+              textFieldFontSize: 18,
+            ),
+          ),
+
+          ///
+          /// FORGET PASSWORD
+          ///
+          Positioned(
+            right: 3,
+            top: 19,
+            child: AnimatedOpacity(
+              opacity: emailValidated ? 1 : 0,
+              duration: BokunSpizeDurations.animation,
+              curve: Curves.easeIn,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal + 16,
+                ),
+                child: TextButton(
+                  onPressed: emailValidated ? onForgetPasswordPressed : null,
+                  style: TextButton.styleFrom(
+                    alignment: Alignment.centerRight,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    textStyle: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 1.2,
+                      color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: BokunSpizeColors.green,
+                    disabledBackgroundColor: Colors.transparent,
+                    disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                  ),
+                  child: Text(
+                    'Forgot?'.toUpperCase(),
+                    textAlign: TextAlign.right,
+                  ),
                 ),
               ),
             ),
-
-            ///
-            /// FORGET PASSWORD
-            ///
-            Expanded(
-              child: TextButton(
-                onPressed: emailValidated ? onForgetPasswordPressed : null,
-                style: TextButton.styleFrom(
-                  alignment: Alignment.centerRight,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  textStyle: const TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                  ),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: BokunSpizeColors.green,
-                  disabledBackgroundColor: Colors.transparent,
-                  disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
-                ),
-                child: Text(
-                  'Forgot?'.toUpperCase(),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-      const SizedBox(height: 12),
 
-      ///
-      /// PASSWORD TEXTFIELD
-      ///
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-        child: TextFieldWidget(
-          autocorrect: false,
-          obscureText: true,
-          controller: passwordTextEditingController,
-          focusNode: passwordFocusNode,
-          hintText: '•' * 8,
-          onSubmitted: (_) {
-            if (!validated || emailIsLoading) {
-              return;
-            }
-
-            onLoginPressed();
-          },
-          autofillHints: const [AutofillHints.password],
-          keyboardType: TextInputType.visiblePassword,
-          textAlign: TextAlign.left,
-          textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.go,
-        ),
-      ),
       const SizedBox(height: 32),
 
       ///
