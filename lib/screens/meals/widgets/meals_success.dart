@@ -21,6 +21,12 @@ class MealsSuccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SliverList.builder(
     itemCount: meals.length,
+    findChildIndexCallback: (key) {
+      final index = meals.indexWhere(
+        (meal) => ValueKey(meal.id) == key,
+      );
+      return index == -1 ? null : index;
+    },
     itemBuilder: (context, index) {
       final meal = meals[index];
 

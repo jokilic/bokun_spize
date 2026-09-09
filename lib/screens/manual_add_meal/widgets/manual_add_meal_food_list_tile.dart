@@ -39,7 +39,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
         child: SwipeActionCell(
           index: index,
           isDraggable: enabled,
-          key: ValueKey('${food.name}-$index'),
+          key: ObjectKey(food),
           backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,

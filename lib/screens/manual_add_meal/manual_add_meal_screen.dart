@@ -822,11 +822,17 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             if (foods?.isNotEmpty ?? false) ...[
               SliverList.builder(
                 itemCount: foods!.length,
+                findChildIndexCallback: (key) {
+                  final index = foods.indexWhere(
+                    (food) => ObjectKey(food) == key,
+                  );
+                  return index == -1 ? null : index;
+                },
                 itemBuilder: (context, index) {
                   final food = foods[index];
 
                   return Animate(
-                    key: ValueKey('${food.name}-$index'),
+                    key: ObjectKey(food),
                     delay: BokunSpizeDurations.stateTransitionStagger * index,
                     effects: const [
                       FadeEffect(

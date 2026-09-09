@@ -64,6 +64,12 @@ class WeightsSuccess extends StatelessWidget {
       ///
       SliverList.builder(
         itemCount: weightTracks.length,
+        findChildIndexCallback: (key) {
+          final index = weightTracks.indexWhere(
+            (weightTrack) => ValueKey(weightTrack.id) == key,
+          );
+          return index == -1 ? null : index;
+        },
         itemBuilder: (context, index) {
           final weightTrack = weightTracks[index];
 
