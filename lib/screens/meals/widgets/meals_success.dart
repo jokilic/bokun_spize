@@ -7,7 +7,7 @@ import 'meals_list_tile.dart';
 
 class MealsSuccess extends StatelessWidget {
   final List<Meal> meals;
-  final Function() onPressed;
+  final Function(Meal meal) onPressed;
   final Function(Meal meal) onDeletePressed;
   final Function(Meal meal) onCopyPressed;
 
@@ -53,7 +53,7 @@ class MealsSuccess extends StatelessWidget {
           ),
         ],
         child: MealsListTile(
-          onPressed: onPressed,
+          onPressed: () => onPressed(meal),
           onDeletePressed: () => onDeletePressed(meal),
           onCopyPressed: () => onCopyPressed(meal),
           meal: meal,

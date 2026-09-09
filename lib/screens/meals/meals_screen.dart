@@ -247,9 +247,13 @@ class _MealsScreenState extends State<MealsScreen> {
                 if (meals.isNotEmpty)
                   MealsSuccess(
                     meals: meals,
-                    onPressed: () {
+                    onPressed: (meal) {
                       HapticFeedback.lightImpact();
-                      // TODO: Open [MealScreen]
+                      mealsController.onAddManualMealPressed(
+                        context,
+                        passedMeal: meal,
+                        isCopyingMeal: false,
+                      );
                     },
                     onDeletePressed: (meal) {
                       HapticFeedback.lightImpact();
