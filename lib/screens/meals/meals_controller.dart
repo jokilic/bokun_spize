@@ -227,7 +227,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         return false;
       }
 
-      /// Show the date where the newly saved `meal` belongs
+      /// Show the date where the new `meal` belongs
       updateDate(
         loadingMeal.createdAt,
       );
@@ -330,76 +330,18 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       ),
     );
 
+    /// Sheet was dismissed, do nothing
     if (result == null) {
       return;
     }
 
-    var success = false;
-    final dateTime = result.dateTime;
-    final imageFile = result.imageFile;
-
-    if (dateTime != null) {
-      try {
-        if (isCopyingMeal && passedMeal != null) {
-          /// Copy the meal while keeping its shared image reference
-          success = await firebase.writeMeal(
-            newMeal: passedMeal.copyWith(
-              id: newMealId,
-              createdAt: dateTime,
-              imageStoragePath: passedMeal.imageStoragePath,
-            ),
-          );
-
-          if (success) {
-            updateDate(dateTime);
-          }
-        } else {
-          /// Save a loading meal so it appears while the image uploads
-          final loadingMeal = Meal(
-            id: newMealId,
-            createdAt: dateTime,
-            isLoading: true,
-          );
-
-          final loadingMealWritten = await firebase.writeMeal(
-            newMeal: loadingMeal,
-          );
-
-          if (loadingMealWritten) {
-            updateDate(dateTime);
-
-            final imageStoragePath = imageFile != null
-                ? await firebase.uploadMealImage(
-                    imageFile: imageFile,
-                  )
-                : null;
-            final imageUploadFailed = imageFile != null && imageStoragePath == null;
-
-            /// Finish loading and preserve the meal data even if the image upload fails
-            final meal = loadingMeal.copyWith(
-              name: result.name,
-              nutrition: result.nutrition,
-              foods: result.foods,
-              imageStoragePath: imageStoragePath,
-              isLoading: false,
-              errors: imageUploadFailed ? ['Image upload failed'] : null,
-            );
-
-            final mealUpdated = await firebase.updateMeal(
-              newMeal: meal,
-            );
-
-            success = mealUpdated && !imageUploadFailed;
-          }
-        }
-      } catch (error) {
-        log(
-          'Adding manual meal failed',
-          error: error,
-        );
-        success = false;
-      }
-    }
+    /// Create and save the manual meal
+    final success = await createManualMeal(
+      result: result,
+      newMealId: newMealId,
+      passedMeal: passedMeal,
+      isCopyingMeal: isCopyingMeal,
+    );
 
     /// Add failed, show error snackbar
     if (!success && context.mounted) {
@@ -409,6 +351,108 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
+  }
+
+  /// Saves a copied meal or a loading manual meal followed by its completed data
+  Future<bool> createManualMeal({
+    required ManualMealResult result,
+    required String newMealId,
+    required Meal? passedMeal,
+    required bool isCopyingMeal,
+  }) async {
+    final dateTime = result.dateTime;
+
+    /// Return if the meal date is missing
+    if (dateTime == null) {
+      return false;
+    }
+
+    try {
+      /// Meal is being copied
+      if (isCopyingMeal && passedMeal != null) {
+        /// Upload copied meal to [Firebase]
+        final mealWritten = await firebase.writeMeal(
+          newMeal: passedMeal.copyWith(
+            id: newMealId,
+            createdAt: dateTime,
+          ),
+        );
+
+        if (mealWritten) {
+          /// Show the date where the newly saved meal belongs
+          updateDate(dateTime);
+        }
+
+        return mealWritten;
+      }
+
+      /// Save `loading meal` so it appears while the image uploads
+      final loadingMeal = Meal(
+        id: newMealId,
+        createdAt: dateTime,
+        isLoading: true,
+      );
+
+      /// Write `loading meal` to [Firebase]
+      final loadingMealWritten = await firebase.writeMeal(
+        newMeal: loadingMeal,
+      );
+
+      if (!loadingMealWritten) {
+        return false;
+      }
+
+      /// Show the date where the new `meal` belongs
+      updateDate(
+        loadingMeal.createdAt,
+      );
+
+      /// Upload the image and prepare the completed manual `meal`
+      final outcome = await processManualMeal(
+        loadingMeal: loadingMeal,
+        result: result,
+      );
+
+      /// Update completed `meal` to [Firebase]
+      final mealUpdated = await firebase.updateMeal(
+        newMeal: outcome.meal,
+      );
+
+      return mealUpdated && outcome.success;
+    } catch (error) {
+      log(
+        'Adding manual meal failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
+  /// Upload image and return finished manual `meal` containing its data or errors
+  Future<({Meal meal, bool success})> processManualMeal({
+    required Meal loadingMeal,
+    required ManualMealResult result,
+  }) async {
+    final imageFile = result.imageFile;
+    final imageStoragePath = imageFile != null
+        ? await firebase.uploadMealImage(
+            imageFile: imageFile,
+          )
+        : null;
+    final imageUploadFailed = imageFile != null && imageStoragePath == null;
+
+    /// Finish loading and preserve the meal data even if the image upload fails
+    return (
+      meal: loadingMeal.copyWith(
+        name: result.name,
+        nutrition: result.nutrition,
+        foods: result.foods,
+        imageStoragePath: imageStoragePath,
+        isLoading: false,
+        errors: imageUploadFailed ? ['Image upload failed'] : null,
+      ),
+      success: !imageUploadFailed,
+    );
   }
 
   /// Updates `state`.
