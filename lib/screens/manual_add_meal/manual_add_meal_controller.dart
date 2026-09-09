@@ -12,6 +12,7 @@ import '../../models/meal/food.dart';
 import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
+import '../../util/format.dart';
 import '../../util/null_state.dart';
 import '../../util/path.dart';
 import '../../widgets/add_food_sheet.dart';
@@ -49,20 +50,44 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
   /// INIT
   ///
 
+  /// Initializes the form with the passed meal and registers validation listeners
   void init() {
-    final newMealTime = roundUpToFiveMinuteInterval(
-      DateTime.now(),
-    );
+    final meal = passedMeal;
+    final mealTime = meal != null && !isCopyingMeal
+        ? meal.createdAt
+        : roundUpToFiveMinuteInterval(
+            DateTime.now(),
+          );
 
-    /// New and copied meals use the current rounded `date` and `time`
+    /// Preserve the original date and time when editing an existing meal
     updateState(
-      foods: passedMeal?.foods,
-      mealDate: newMealTime,
-      mealTime: newMealTime,
+      foods: meal?.foods,
+      mealDate: mealTime,
+      mealTime: mealTime,
     );
 
     /// Update [TextEditingController] text
-    nameTextEditingController.text = passedMeal?.name ?? '';
+    nameTextEditingController.text = meal?.name ?? '';
+    caloriesTextEditingController.text =
+        formatNutritionValue(
+          meal?.nutrition?.calories,
+        ) ??
+        '';
+    proteinTextEditingController.text =
+        formatNutritionValue(
+          meal?.nutrition?.protein,
+        ) ??
+        '';
+    carbsTextEditingController.text =
+        formatNutritionValue(
+          meal?.nutrition?.carbs,
+        ) ??
+        '';
+    fatsTextEditingController.text =
+        formatNutritionValue(
+          meal?.nutrition?.fat,
+        ) ??
+        '';
 
     /// Add validation listener to [TextEditingController]
     nameTextEditingController.addListener(triggerValidation);
