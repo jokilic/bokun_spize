@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -14,6 +13,7 @@ import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../util/null_state.dart';
+import '../../util/parse.dart';
 import '../../util/snackbars.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
@@ -206,6 +206,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   Future<void> onAddManualMealPressed(
     BuildContext context, {
     required Meal? passedMeal,
+    required bool isCopyingMeal,
   }) async {
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
@@ -217,7 +218,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
       builder: (context) => ManualAddMealScreen(
         mealId: newMealId,
         passedMeal: passedMeal,
-        isCopyingMeal: false,
+        isCopyingMeal: isCopyingMeal,
       ),
     );
 
@@ -287,6 +288,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     }
   }
 
+  // TODO: We're removing logic for copying meals from this AI logic and placing it into manual logic. Can you first remove it from this method?
   Future<bool> validateAndRunAILogic({
     required AIMealResult result,
     required String newMealId,
@@ -323,7 +325,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     }
 
     /// Trigger AI which generates a new `meal` and stores into [Firebase]
-    return triggerAI(
+    return triggerAIAndFinishCreatingMeal(
       newMealId: newMealId,
       textPrompt: result.words,
       imageFile: result.imageFile,
@@ -332,7 +334,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   }
 
   /// Creates a loading `meal`, processes it with AI, and persists the result in [Firebase]
-  Future<bool> triggerAI({
+  Future<bool> triggerAIAndFinishCreatingMeal({
     required String newMealId,
     required String? textPrompt,
     required File? imageFile,
@@ -412,35 +414,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         error: error,
       );
       return false;
-    }
-  }
-
-  /// Parses the AI response into `meal` for [Firebase]
-  Meal? parseAIResultToMeal({
-    required String aiResult,
-    required String id,
-    required DateTime createdAt,
-    required String? originalText,
-    required String? imageStoragePath,
-  }) {
-    try {
-      final decoded = jsonDecode(aiResult);
-
-      if (decoded is Map<String, dynamic>) {
-        return Meal.fromMap(
-          decoded,
-          id: id,
-          createdAt: createdAt,
-          originalText: originalText,
-          imageStoragePath: imageStoragePath,
-          isLoading: false,
-          errors: null,
-        );
-      }
-
-      return null;
-    } catch (e) {
-      return null;
     }
   }
 
