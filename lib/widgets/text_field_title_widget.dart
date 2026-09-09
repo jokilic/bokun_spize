@@ -21,6 +21,8 @@ class TextFieldTitleWidget extends StatelessWidget {
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
   final bool enabled;
+  final int? minLines;
+  final int? maxLines;
 
   const TextFieldTitleWidget({
     required this.textEditingController,
@@ -39,6 +41,8 @@ class TextFieldTitleWidget extends StatelessWidget {
     this.hintStyle,
     this.textStyle,
     this.enabled = true,
+    this.minLines = 1,
+    this.maxLines = 1,
   });
 
   @override
@@ -84,12 +88,15 @@ class TextFieldTitleWidget extends StatelessWidget {
             /// TEXT FIELD & HINT
             ///
             Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 ///
                 /// TEXT FIELD
                 ///
                 Expanded(
                   child: TextFieldWidget(
+                    minLines: minLines,
+                    maxLines: maxLines,
                     enabled: enabled,
                     filled: false,
                     contentPadding: EdgeInsets.zero,

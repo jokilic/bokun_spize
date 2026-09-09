@@ -11,8 +11,10 @@ import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
-import '../../widgets/text_field_widget.dart';
+import '../../widgets/text_field_title_widget.dart';
 import 'ai_add_meal_controller.dart';
+
+// TODO: Added `Date & Time` title, update staggered animations to include it properly
 
 class AIAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
@@ -227,9 +229,6 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
             child: SizedBox(height: 20),
           ),
 
-          ///
-          /// TEXT FIELD & TITLE & ICON
-          ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
@@ -241,134 +240,60 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     curve: Curves.easeOut,
                   ),
                   MoveEffect(
-                    begin: Offset(0, 14),
+                    begin: Offset(0, 12),
                     end: Offset.zero,
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOutCubic,
                   ),
-                  ScaleEffect(
-                    begin: Offset(0.98, 0.98),
-                    end: Offset(1, 1),
-                    alignment: Alignment.topCenter,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
                 ],
-                child: Stack(
-                  children: [
-                    ///
-                    /// TEXT FIELD
-                    ///
-                    Material(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(listTileRadius),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                        highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        child: TextFieldWidget(
-                          controller: mealController.textEditingController,
-                          focusNode: mealController.textFocusNode,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 40,
-                          ),
-                          onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                          keyboardType: TextInputType.multiline,
-                          textAlign: TextAlign.left,
-                          textAlignVertical: TextAlignVertical.top,
-                          textCapitalization: TextCapitalization.sentences,
-                          textInputAction: TextInputAction.newline,
-                          minLines: 3,
-                          maxLines: 3,
-                          borderRadius: listTileRadius,
-                          hintText: 'What did you eat?',
-                          hintStyle: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.5),
-                          ),
-                          textStyle: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.black,
-                          ),
+                child: TextFieldTitleWidget(
+                  minLines: 3,
+                  maxLines: 3,
+                  textEditingController: mealController.textEditingController,
+                  focusNode: mealController.textFocusNode,
+                  onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                  title: 'Describe your meal',
+                  textColor: BokunSpizeColors.black,
+                  rightWidget: Animate(
+                    onPlay: (controller) {
+                      if (isListening) {
+                        controller.loop(
+                          reverse: true,
+                          min: 0.6,
+                        );
+                      }
+                    },
+                    effects: [
+                      if (isListening)
+                        const FadeEffect(
+                          duration: BokunSpizeDurations.speechToTextShimmer,
+                          curve: Curves.easeIn,
                         ),
+                    ],
+                    child: IconButton(
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        mealController.onSpeechToTextPressed(
+                          // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
+                          locale: 'en',
+                          speechToTextAvailable: available,
+                        );
+                      },
+                      icon: const PhosphorIcon(
+                        PhosphorIconsBold.microphone,
+                        size: 22,
+                      ),
+                      style: IconButton.styleFrom(
+                        elevation: 0,
+                        padding: const EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
+                        foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
                       ),
                     ),
-
-                    ///
-                    /// TEXT FIELD TITLE
-                    ///
-                    Positioned(
-                      top: 16,
-                      left: 20,
-                      child: IgnorePointer(
-                        child: Text(
-                          'Describe your meal'.toUpperCase(),
-                          style: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                            color: BokunSpizeColors.green,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    ///
-                    /// SPEECH TO TEXT ICON
-                    ///
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: Animate(
-                        onPlay: (controller) {
-                          if (isListening) {
-                            controller.loop(
-                              reverse: true,
-                              min: 0.6,
-                            );
-                          }
-                        },
-                        effects: [
-                          if (isListening)
-                            const FadeEffect(
-                              duration: BokunSpizeDurations.speechToTextShimmer,
-                              curve: Curves.easeIn,
-                            ),
-                        ],
-                        child: IconButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            mealController.onSpeechToTextPressed(
-                              // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
-                              locale: 'en',
-                              speechToTextAvailable: available,
-                            );
-                          },
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.microphone,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            elevation: 0,
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                            foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -601,7 +526,44 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
             ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 32),
+          ),
+
+          ///
+          /// DATE & TIME TITLE
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 8),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: const Text(
+                  'Date & Time',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: BokunSpizeColors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
           ),
 
           ///
