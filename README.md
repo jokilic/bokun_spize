@@ -7,7 +7,6 @@
 - [ ] Dark theme
 - [ ] Animations
 - [ ] [MealScreen]
-- [ ] [ManualAddMealScreen] (with ability to edit meal)
 - [ ] [AccountScreen]
 - [ ] [SearchMealScreen]
 - [ ] Firebase App Check
