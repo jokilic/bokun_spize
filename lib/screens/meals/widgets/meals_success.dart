@@ -51,6 +51,7 @@ class MealsSuccess extends StatelessWidget {
           onDeletePressed: () => onDeletePressed(meal),
           onCopyPressed: () => onCopyPressed(meal),
           meal: meal,
+          index: index,
         ),
       );
     },

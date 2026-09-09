@@ -17,12 +17,14 @@ class MealsListTile extends StatelessWidget {
   final Function() onDeletePressed;
   final Function() onCopyPressed;
   final Meal meal;
+  final int index;
 
   const MealsListTile({
     required this.onPressed,
     required this.onDeletePressed,
     required this.onCopyPressed,
     required this.meal,
+    required this.index,
   });
 
   @override
@@ -30,7 +32,7 @@ class MealsListTile extends StatelessWidget {
     final isLoading = meal.isLoading;
     final hasError = meal.errors?.isNotEmpty ?? false;
 
-    final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? 'Erroro has happendo';
+    final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? '📷';
 
     final subtitleText = getDateString(
       date: meal.createdAt,
@@ -56,6 +58,7 @@ class MealsListTile extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
+          index: index,
           key: ValueKey(meal.id),
           backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,

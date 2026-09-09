@@ -20,6 +20,7 @@ class TextFieldTitleWidget extends StatelessWidget {
   final TextInputAction textInputAction;
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
+  final bool enabled;
 
   const TextFieldTitleWidget({
     required this.textEditingController,
@@ -37,11 +38,14 @@ class TextFieldTitleWidget extends StatelessWidget {
     this.onSubmitted,
     this.hintStyle,
     this.textStyle,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) => Material(
-    color: BokunSpizeColors.white.withValues(alpha: 0.5),
+    color: BokunSpizeColors.white.withValues(
+      alpha: enabled ? 0.5 : 0.25,
+    ),
     borderRadius: BorderRadius.circular(listTileRadius),
     child: InkWell(
       onTap: () {},
@@ -86,6 +90,7 @@ class TextFieldTitleWidget extends StatelessWidget {
                 ///
                 Expanded(
                   child: TextFieldWidget(
+                    enabled: enabled,
                     filled: false,
                     contentPadding: EdgeInsets.zero,
                     autocorrect: autocorrect,

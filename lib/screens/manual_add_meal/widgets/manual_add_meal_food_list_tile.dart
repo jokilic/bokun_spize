@@ -13,12 +13,14 @@ class ManualAddMealFoodListTile extends StatelessWidget {
   final Function() onDeletePressed;
   final Food food;
   final int index;
+  final bool enabled;
 
   const ManualAddMealFoodListTile({
     required this.onPressed,
     required this.onDeletePressed,
     required this.food,
     required this.index,
+    required this.enabled,
   });
 
   @override
@@ -35,6 +37,8 @@ class ManualAddMealFoodListTile extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
+          index: index,
+          isDraggable: enabled,
           key: ValueKey('${food.name}-$index'),
           backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,
@@ -63,14 +67,18 @@ class ManualAddMealFoodListTile extends StatelessWidget {
             child: InkWell(
               onTap: onPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
-              highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              highlightColor: BokunSpizeColors.white.withValues(
+                alpha: enabled ? 0.5 : 0.25,
+              ),
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  color: BokunSpizeColors.white.withValues(
+                    alpha: enabled ? 0.5 : 0.25,
+                  ),
                 ),
                 padding: const EdgeInsets.all(20),
                 child: Row(

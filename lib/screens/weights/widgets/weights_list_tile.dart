@@ -13,12 +13,14 @@ class WeightsListTile extends StatelessWidget {
   final Function() onDeletePressed;
   final WeightTrack weightTrack;
   final double? weightChange;
+  final int index;
 
   const WeightsListTile({
     required this.onPressed,
     required this.onDeletePressed,
     required this.weightTrack,
     required this.weightChange,
+    required this.index,
   });
 
   @override
@@ -39,6 +41,7 @@ class WeightsListTile extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(listTileRadius),
         child: SwipeActionCell(
+          index: index,
           key: ValueKey(weightTrack.id),
           backgroundColor: BokunSpizeColors.grey,
           openAnimationDuration: 175,

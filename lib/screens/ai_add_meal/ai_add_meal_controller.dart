@@ -254,6 +254,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
+    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealDate,
@@ -269,6 +270,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
+    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealTime,

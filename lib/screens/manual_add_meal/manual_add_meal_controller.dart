@@ -353,6 +353,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
     /// Show [AddFoodSheet] for adding `food`
     final result = await showBlurredModalBottomSheet<Food>(
       context: context,
+      modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
       backgroundColor: BokunSpizeColors.grey,
       builder: (context) => AddFoodSheet(
         passedFood: passedFood,
@@ -392,6 +393,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
+    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealDate,
@@ -407,6 +409,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, String? s
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
+    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       primaryColor: BokunSpizeColors.green,
       dateValue: value.mealTime,

@@ -16,6 +16,7 @@
 - [ ] Notifications analyzing previous meal day
 - [ ] Perhaps anonymous sign-in
 - [ ] Recheck all animations in sheets and [ManualAddMealScreen]
+- [ ] When deleting from Swipe widget, remove animation fade
 
 # Bokun spize 🥗
 

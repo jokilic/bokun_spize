@@ -100,6 +100,7 @@ class WeightsSuccess extends StatelessWidget {
               onDeletePressed: () => onDeletePressed(weightTrack),
               weightTrack: weightTrack,
               weightChange: previousWeightChange,
+              index: index,
             ),
           );
         },

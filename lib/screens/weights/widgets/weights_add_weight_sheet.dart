@@ -90,6 +90,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
+    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
@@ -108,6 +109,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
+    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       primaryColor: BokunSpizeColors.blue,
       dateValue: selectedDateTime,
