@@ -8,7 +8,6 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
 import '../../constants/colors.dart';
-import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../util/date_time.dart';
 import '../../util/null_state.dart';
@@ -22,16 +21,11 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// CONSTRUCTOR
   ///
 
-  // TODO: This controller & screen won't have function to have a passedMeal and isCopyingMeal. Can you remove them from the constructor and update all code in the controller to not use those deleted variables?
-
   final SpeechToTextService speechToText;
-  final Meal? passedMeal;
-  final bool isCopyingMeal;
 
+  /// Creates a controller for adding a new meal
   AIAddMealController({
     required this.speechToText,
-    required this.passedMeal,
-    required this.isCopyingMeal,
   }) : super(
          (
            validation: false,
@@ -53,13 +47,10 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
 
     /// Update `state` with proper values
     updateState(
-      validation: (passedMeal?.originalText?.isNotEmpty ?? false) || passedMeal?.imageStoragePath != null,
-      mealDate: isCopyingMeal ? newMealTime : passedMeal?.createdAt ?? newMealTime,
-      mealTime: isCopyingMeal ? newMealTime : passedMeal?.createdAt ?? newMealTime,
+      validation: false,
+      mealDate: newMealTime,
+      mealTime: newMealTime,
     );
-
-    /// Update [TextEditingController] text
-    textEditingController.text = passedMeal?.originalText ?? '';
 
     /// Add validation listener to [TextEditingController]
     textEditingController.addListener(triggerValidation);
@@ -110,7 +101,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// Checks if validation passed
   void triggerValidation() {
     final isTextValidated = textEditingController.text.trim().isNotEmpty;
-    final isImageValidated = value.imageFile != null || passedMeal?.imageStoragePath != null;
+    final isImageValidated = value.imageFile != null;
 
     updateState(
       validation: isTextValidated || isImageValidated,

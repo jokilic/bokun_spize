@@ -183,6 +183,7 @@ class _MealsScreenState extends State<MealsScreen> {
                         mealsController.onAddManualMealPressed(
                           context,
                           passedMeal: null,
+                          isCopyingMeal: false,
                         );
                       },
                       child: const PhosphorIcon(
@@ -262,6 +263,7 @@ class _MealsScreenState extends State<MealsScreen> {
                       mealsController.onAddManualMealPressed(
                         context,
                         passedMeal: meal,
+                        isCopyingMeal: true,
                       );
                     },
                   ),
