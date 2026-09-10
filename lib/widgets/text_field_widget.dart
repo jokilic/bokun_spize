@@ -46,7 +46,7 @@ class TextFieldWidget extends StatelessWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.autofillHints,
-    this.textFieldFontSize = 22,
+    this.textFieldFontSize = 20,
     this.obscureText = false,
   });
 

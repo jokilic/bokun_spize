@@ -295,7 +295,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 focusNode: nameFocusNode,
                 onSubmitted: (_) => quantityFocusNode.requestFocus(),
                 title: 'Food name',
-                hintText: 'Write here...',
+                hintText: 'What was it?',
                 textColor: BokunSpizeColors.black,
                 autocorrect: true,
               ),
