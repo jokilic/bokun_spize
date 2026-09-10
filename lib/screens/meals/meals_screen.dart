@@ -234,6 +234,10 @@ class _MealsScreenState extends State<MealsScreen> {
                     meals: meals,
                     onPressed: (meal) {
                       HapticFeedback.lightImpact();
+                      // TODO: Open [MealScreen]
+                    },
+                    onLongPressed: (meal) {
+                      HapticFeedback.lightImpact();
                       mealsController.onAddManualMealPressed(
                         context,
                         passedMeal: meal,
