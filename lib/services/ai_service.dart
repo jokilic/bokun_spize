@@ -29,6 +29,7 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
     initializeGemini(
       languageCode: languageCode,
     );
+
     initialized = value.isNotEmpty;
     initializedLanguageCode = initialized ? languageCode : null;
   }

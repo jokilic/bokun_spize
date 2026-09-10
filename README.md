@@ -14,6 +14,7 @@
 - [ ] Notifications reminding to weight
 - [ ] Notifications analyzing previous meal day
 - [ ] Perhaps anonymous sign-in
+- [ ] Replace hardcoded 'en' with `context.locale.languageCode`
 
 # Bokun spize 🥗
 

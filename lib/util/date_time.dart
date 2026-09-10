@@ -16,7 +16,6 @@ DateTime roundUpToFiveMinuteInterval(DateTime dateTime) {
 String getDateString({
   required DateTime date,
   required String dateFormat,
-  // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
   String languageCode = 'en',
   bool useTodayYesterdayTomorrow = true,
 }) {

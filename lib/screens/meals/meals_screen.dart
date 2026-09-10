@@ -167,8 +167,7 @@ class _MealsScreenState extends State<MealsScreen> {
                           HapticFeedback.lightImpact();
                           mealsController.onAddAIMealPressed(
                             context,
-                            // TODO: Replace hardcoded 'en' with `context.locale.languageCode`
-                            languageCode: 'en',
+                            languageCode: 'hr',
                           );
                         },
                         child: const PhosphorIcon(
