@@ -8,7 +8,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
-import '../../theme/extensions.dart';
 import '../../util/null_state.dart';
 import '../../util/snackbars.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';

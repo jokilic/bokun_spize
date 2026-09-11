@@ -11,10 +11,12 @@ import 'walks_list_tile.dart';
 class WalksSuccess extends StatelessWidget {
   final List<StepsWithDate> stepsWithDate;
   final int calendarDays;
+  final bool isWalking;
 
   const WalksSuccess({
     required this.stepsWithDate,
     required this.calendarDays,
+    required this.isWalking,
   });
 
   @override
@@ -66,8 +68,15 @@ class WalksSuccess extends StatelessWidget {
 
           final previousStepsWithDate = index + 1 < stepsWithDate.length ? stepsWithDate[index + 1] : null;
 
+          final isToday = DateUtils.isSameDay(
+            stepWithDate.dateTime,
+            DateTime.now(),
+          );
+
           return Animate(
-            key: ValueKey(stepWithDate.dateTime.microsecondsSinceEpoch),
+            key: ValueKey(
+              stepWithDate.dateTime.microsecondsSinceEpoch,
+            ),
             delay: BokunSpizeDurations.stateTransitionStagger * index.clamp(0, 6),
             effects: const [
               FadeEffect(
@@ -92,6 +101,8 @@ class WalksSuccess extends StatelessWidget {
               onPressed: HapticFeedback.lightImpact,
               stepWithDate: stepWithDate,
               previousStepsWithDate: previousStepsWithDate,
+              isToday: isToday,
+              isWalking: isToday && isWalking,
             ),
           );
         },

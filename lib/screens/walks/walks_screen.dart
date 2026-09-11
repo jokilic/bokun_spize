@@ -173,7 +173,6 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                 ///
                 WalksAppBar(
                   isLoading: isLoading,
-                  isWalking: isWalking,
                   title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
                   dayString: latestStepsWithDate != null
                       ? getDateString(
@@ -208,6 +207,7 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                   WalksSuccess(
                     stepsWithDate: stepsWithDate,
                     calendarDays: graphCalendarDays,
+                    isWalking: isWalking,
                   ),
 
                 ///

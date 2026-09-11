@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
 import '../../../models/steps_with_date/steps_with_date.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/date_time.dart';
@@ -11,19 +13,19 @@ class WalksListTile extends StatelessWidget {
   final Function() onPressed;
   final StepsWithDate stepWithDate;
   final StepsWithDate? previousStepsWithDate;
+  final bool isToday;
+  final bool isWalking;
 
   const WalksListTile({
     required this.onPressed,
     required this.stepWithDate,
     required this.previousStepsWithDate,
+    required this.isToday,
+    required this.isWalking,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isToday = DateUtils.isSameDay(
-      stepWithDate.dateTime,
-      DateTime.now(),
-    );
     final stepsChange = previousStepsWithDate != null ? stepWithDate.steps - previousStepsWithDate!.steps : null;
 
     final changeColor = stepsChange != null
@@ -138,34 +140,51 @@ class WalksListTile extends StatelessWidget {
                     ///
                     /// STEPS
                     ///
-                    Text.rich(
-                      TextSpan(
-                        text: stepWithDate.steps.round().toStringAsFixed(0),
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          color: context.colors.text,
-                        ),
-                        children: [
-                          const WidgetSpan(
-                            child: SizedBox(width: 4),
+                    Animate(
+                      onPlay: (controller) {
+                        if (isWalking) {
+                          controller.loop(
+                            reverse: true,
+                            min: 0.6,
+                          );
+                        }
+                      },
+                      effects: [
+                        if (isWalking)
+                          const FadeEffect(
+                            duration: BokunSpizeDurations.shimmer,
+                            curve: Curves.easeIn,
                           ),
-                          TextSpan(
-                            text: 'steps',
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              height: 1.2,
-                              letterSpacing: 1.5,
-                              color: context.colors.text.withValues(alpha: 0.7),
+                      ],
+                      child: Text.rich(
+                        TextSpan(
+                          text: stepWithDate.steps.round().toStringAsFixed(0),
+                          style: TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            color: context.colors.text,
+                          ),
+                          children: [
+                            const WidgetSpan(
+                              child: SizedBox(width: 4),
                             ),
-                          ),
-                        ],
+                            TextSpan(
+                              text: 'steps',
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                height: 1.2,
+                                letterSpacing: 1.5,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
 
                     ///
