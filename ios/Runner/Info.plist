@@ -10,7 +10,7 @@
 		<string>Bokun spize reads your steps to show your activity and progress.</string>
 		<key>UIBackgroundModes</key>
 		<array>
-    		<string>processing</string>
+			<string>processing</string>
 		</array>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
