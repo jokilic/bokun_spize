@@ -106,7 +106,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   },
                   child: PhosphorIcon(
                     PhosphorIconsBold.arrowClockwise,
-                    color: context.colors.listTileBackground,
+                    color: context.colors.buttonText,
                     size: 32,
                   ),
                 ),
@@ -133,7 +133,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   },
                   child: PhosphorIcon(
                     PhosphorIconsBold.plus,
-                    color: context.colors.listTileBackground,
+                    color: context.colors.buttonText,
                     size: 32,
                   ),
                 ),

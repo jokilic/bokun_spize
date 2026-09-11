@@ -60,7 +60,7 @@ class BokunSpizeApp extends StatelessWidget {
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    themeMode: ThemeMode.light,
+    themeMode: ThemeMode.dark,
     theme: BokunSpizeTheme.light(),
     darkTheme: BokunSpizeTheme.dark(),
     themeAnimationCurve: Curves.easeIn,

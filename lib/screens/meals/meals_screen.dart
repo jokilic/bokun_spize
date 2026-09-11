@@ -110,7 +110,7 @@ class _MealsScreenState extends State<MealsScreen> {
                   },
                   child: PhosphorIcon(
                     PhosphorIconsBold.arrowClockwise,
-                    color: context.colors.listTileBackground,
+                    color: context.colors.buttonText,
                     size: 32,
                   ),
                 ),
@@ -136,7 +136,7 @@ class _MealsScreenState extends State<MealsScreen> {
                       },
                       child: PhosphorIcon(
                         PhosphorIconsBold.calendarDot,
-                        color: context.colors.listTileBackground,
+                        color: context.colors.buttonText,
                         size: 24,
                       ),
                     ),
@@ -172,7 +172,7 @@ class _MealsScreenState extends State<MealsScreen> {
                         },
                         child: PhosphorIcon(
                           PhosphorIconsBold.plus,
-                          color: context.colors.listTileBackground,
+                          color: context.colors.buttonText,
                           size: 32,
                         ),
                       ),

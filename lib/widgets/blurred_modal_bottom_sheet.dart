@@ -37,7 +37,7 @@ Future<T?> showBlurredModalBottomSheet<T>({
       elevation: 0,
       blurSigma: blurSigma,
       isScrollControlled: isScrollControlled,
-      backgroundColor: backgroundColor ?? context.colors.listTileBackground,
+      backgroundColor: backgroundColor ?? context.colors.scaffoldBackground,
       modalBarrierColor: modalBarrierColor,
       shape: shape,
       builder: (context) => ConstrainedBox(

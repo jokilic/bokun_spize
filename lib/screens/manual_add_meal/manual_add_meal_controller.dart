@@ -365,8 +365,6 @@ class ManualAddMealController
     /// Show [AddFoodSheet] for adding `food`
     final result = await showBlurredModalBottomSheet<Food>(
       context: context,
-      modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
-      backgroundColor: context.colors.scaffoldBackground,
       builder: (context) => AddFoodSheet(
         passedFood: passedFood,
       ),
@@ -405,7 +403,6 @@ class ManualAddMealController
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: passedMeal != null && !isCopyingMeal ? 'Day of meal' : 'Day of new meal',
       primaryColor: context.colors.protein,
@@ -422,7 +419,6 @@ class ManualAddMealController
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       subtitle: passedMeal != null && !isCopyingMeal ? 'Time of meal' : 'Time of new meal',
       primaryColor: context.colors.protein,

@@ -34,6 +34,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
   final Color scaffoldBackground;
   final Color listTileBackground;
   final Color text;
+  final Color buttonText;
   final Color delete;
   final Color protein;
   final Color carbs;
@@ -43,6 +44,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     required this.scaffoldBackground,
     required this.listTileBackground,
     required this.text,
+    required this.buttonText,
     required this.delete,
     required this.protein,
     required this.carbs,
@@ -54,6 +56,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     Color? scaffoldBackground,
     Color? listTileBackground,
     Color? text,
+    Color? buttonText,
     Color? delete,
     Color? protein,
     Color? carbs,
@@ -62,6 +65,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     scaffoldBackground: scaffoldBackground ?? this.scaffoldBackground,
     listTileBackground: listTileBackground ?? this.listTileBackground,
     text: text ?? this.text,
+    buttonText: buttonText ?? this.buttonText,
     delete: delete ?? this.delete,
     protein: protein ?? this.protein,
     carbs: carbs ?? this.carbs,
@@ -81,6 +85,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
       scaffoldBackground: Color.lerp(scaffoldBackground, other.scaffoldBackground, t)!,
       listTileBackground: Color.lerp(listTileBackground, other.listTileBackground, t)!,
       text: Color.lerp(text, other.text, t)!,
+      buttonText: Color.lerp(buttonText, other.buttonText, t)!,
       delete: Color.lerp(delete, other.delete, t)!,
       protein: Color.lerp(protein, other.protein, t)!,
       carbs: Color.lerp(carbs, other.carbs, t)!,

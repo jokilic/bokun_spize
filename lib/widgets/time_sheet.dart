@@ -285,7 +285,7 @@ class _TimeSheetState extends State<TimeSheet> {
                     ),
                     padding: const EdgeInsets.all(22),
                     backgroundColor: widget.primaryColor,
-                    foregroundColor: context.colors.listTileBackground,
+                    foregroundColor: context.colors.buttonText,
                   ),
                   child: const Text(
                     'Confirm',

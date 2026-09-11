@@ -90,7 +90,6 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: 'Day of new weight',
       primaryColor: context.colors.carbs,
@@ -110,7 +109,6 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       subtitle: 'Time of new weight',
       primaryColor: context.colors.carbs,
@@ -497,7 +495,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.25),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
                           foregroundColor: context.colors.text.withValues(alpha: 0.75),
                         ),
                         label: Text(
@@ -533,7 +531,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.25),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
                           foregroundColor: context.colors.text.withValues(alpha: 0.75),
                         ),
                         label: Text(
@@ -588,7 +586,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       ),
                       padding: const EdgeInsets.all(22),
                       backgroundColor: context.colors.carbs,
-                      foregroundColor: context.colors.listTileBackground,
+                      foregroundColor: context.colors.buttonText,
                     ),
                     child: const Text(
                       'Save weight',
@@ -618,9 +616,9 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     final isSelected = index == selectedIndex;
     final weight = minimumWeight + (index * weightStep);
     final color = isSelected
-        ? context.colors.carbs.withValues(alpha: 0.35)
+        ? context.colors.carbs.withValues(alpha: 0.5)
         : context.colors.text.withValues(
-            alpha: isWholeKilogram ? 0.28 : 0.14,
+            alpha: isWholeKilogram ? 0.75 : 0.5,
           );
 
     return Column(

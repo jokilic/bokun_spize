@@ -144,7 +144,6 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     required String weightTrackId,
   }) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (sheetContext) => WeightsAddWeightSheet(
       key: ValueKey(weightTrackId),
       initialWeight: initialWeight,

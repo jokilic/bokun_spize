@@ -241,7 +241,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: context.colors.listTileBackground,
+                      color: context.colors.buttonText,
                     ),
                     monthTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
@@ -350,7 +350,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       ),
                       padding: const EdgeInsets.all(22),
                       backgroundColor: widget.primaryColor,
-                      foregroundColor: context.colors.listTileBackground,
+                      foregroundColor: context.colors.buttonText,
                     ),
                     child: const Text(
                       'Confirm',

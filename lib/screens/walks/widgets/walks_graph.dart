@@ -366,7 +366,7 @@ class WalksGraphWidget extends StatelessWidget {
                     fontFamily: 'Epilogue',
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: context.colors.listTileBackground.withValues(alpha: 0.7),
+                    color: context.colors.buttonText.withValues(alpha: 0.7),
                   ),
                   children: [
                     const TextSpan(text: '\n'),
@@ -376,7 +376,7 @@ class WalksGraphWidget extends StatelessWidget {
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 14,
                         fontWeight: FontWeight.w900,
-                        color: context.colors.listTileBackground,
+                        color: context.colors.buttonText,
                       ),
                     ),
                   ],
@@ -513,7 +513,7 @@ class WalksGraphWidget extends StatelessWidget {
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
-          color: labelColor.withValues(alpha: 0.4),
+          color: labelColor.withValues(alpha: 0.7),
         ),
       ),
     );

@@ -620,7 +620,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     ),
                     padding: const EdgeInsets.all(22),
                     backgroundColor: context.colors.protein,
-                    foregroundColor: context.colors.listTileBackground,
+                    foregroundColor: context.colors.buttonText,
+                    disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
+                    disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                   ),
                   child: const Text(
                     'Add to meal',

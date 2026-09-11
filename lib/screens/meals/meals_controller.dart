@@ -153,7 +153,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: 'View your activity and progress',
       primaryColor: context.colors.protein,
@@ -177,8 +176,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Show [AIAddMealScreen] for adding `AI meal`
     final result = await showBlurredModalBottomSheet<AIMealResult>(
       context: context,
-      modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
-      backgroundColor: context.colors.scaffoldBackground,
       builder: (context) => AIAddMealScreen(
         mealId: newMealId,
       ),
@@ -335,8 +332,6 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Show [ManualAddMealScreen]
     final result = await showBlurredModalBottomSheet<ManualMealResult>(
       context: context,
-      modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
-      backgroundColor: context.colors.scaffoldBackground,
       builder: (context) => ManualAddMealScreen(
         mealId: mealId,
         passedMeal: passedMeal,

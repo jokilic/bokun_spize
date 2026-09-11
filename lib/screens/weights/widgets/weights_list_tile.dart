@@ -59,7 +59,7 @@ class WeightsListTile extends StatelessWidget {
               backgroundRadius: listTileRadius,
               icon: PhosphorIcon(
                 PhosphorIconsBold.trash,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 26,
               ),
             ),
@@ -89,10 +89,10 @@ class WeightsListTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100),
                       child: Container(
                         padding: const EdgeInsets.all(listTileIconRadius / 4),
-                        color: context.colors.scaffoldBackground,
+                        color: context.colors.carbs,
                         child: PhosphorIcon(
                           PhosphorIconsBold.personSimple,
-                          color: context.colors.carbs,
+                          color: context.colors.buttonText,
                           size: listTileIconRadius / 2,
                         ),
                       ),

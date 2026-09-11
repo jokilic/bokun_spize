@@ -136,7 +136,7 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                   },
                   child: PhosphorIcon(
                     PhosphorIconsBold.arrowClockwise,
-                    color: context.colors.listTileBackground,
+                    color: context.colors.buttonText,
                     size: 32,
                   ),
                 ),

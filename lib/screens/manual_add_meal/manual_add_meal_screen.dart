@@ -1317,9 +1317,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ),
                       padding: const EdgeInsets.all(22),
                       backgroundColor: context.colors.protein,
-                      foregroundColor: context.colors.listTileBackground,
+                      foregroundColor: context.colors.buttonText,
                       disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
-                      disabledForegroundColor: context.colors.listTileBackground.withValues(alpha: 0.75),
+                      disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                     ),
                     child: Text(
                       isEditingMeal ? 'Save changes' : 'Log meal',

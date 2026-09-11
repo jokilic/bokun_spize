@@ -79,7 +79,7 @@ class MealsListTile extends StatelessWidget {
               backgroundRadius: listTileRadius,
               icon: PhosphorIcon(
                 PhosphorIconsBold.trash,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 26,
               ),
             ),
@@ -209,7 +209,7 @@ class MealsListTile extends StatelessWidget {
                                       )
                                     : PhosphorIcon(
                                         PhosphorIconsBold.bowlFood,
-                                        color: context.colors.listTileBackground,
+                                        color: context.colors.buttonText,
                                         size: 24,
                                       ),
                               ),

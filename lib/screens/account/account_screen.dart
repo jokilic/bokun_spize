@@ -44,7 +44,7 @@ class AccountScreen extends StatelessWidget {
         },
         child: PhosphorIcon(
           PhosphorIconsBold.signOut,
-          color: context.colors.listTileBackground,
+          color: context.colors.buttonText,
           size: 32,
         ),
       ),

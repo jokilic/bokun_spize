@@ -70,7 +70,7 @@ class NavigationBarWidget extends WatchingWidget {
               ),
               child: PhosphorIcon(
                 PhosphorIconsBold.bowlFood,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 24,
               ),
             ),
@@ -109,7 +109,7 @@ class NavigationBarWidget extends WatchingWidget {
               ),
               child: PhosphorIcon(
                 PhosphorIconsBold.personSimple,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 24,
               ),
             ),
@@ -148,7 +148,7 @@ class NavigationBarWidget extends WatchingWidget {
               ),
               child: PhosphorIcon(
                 PhosphorIconsBold.footprints,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 24,
               ),
             ),
@@ -210,7 +210,7 @@ class NavigationBarWidget extends WatchingWidget {
                     )
                   : PhosphorIcon(
                       PhosphorIconsBold.user,
-                      color: context.colors.listTileBackground,
+                      color: context.colors.buttonText,
                       size: 24,
                     ),
             ),

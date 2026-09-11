@@ -64,10 +64,10 @@ class WalksListTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(100),
                   child: Container(
                     padding: const EdgeInsets.all(listTileIconRadius / 4),
-                    color: context.colors.scaffoldBackground,
+                    color: context.colors.fat,
                     child: PhosphorIcon(
                       PhosphorIconsBold.personSimpleWalk,
-                      color: context.colors.fat,
+                      color: context.colors.buttonText,
                       size: listTileIconRadius / 2,
                     ),
                   ),
