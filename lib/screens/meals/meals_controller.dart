@@ -523,7 +523,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     );
   }
 
-  /// Updates `state`.
+  /// Updates `state`
   void updateState({
     DateTime? activeDate,
     List<Meal>? meals,

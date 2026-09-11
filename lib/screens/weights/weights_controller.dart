@@ -162,7 +162,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     ),
   );
 
-  /// Updates `state`.
+  /// Updates `state`
   void updateState({
     List<WeightTrack>? weightTracks,
     bool? isLoading,

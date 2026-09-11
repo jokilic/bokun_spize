@@ -19,6 +19,7 @@ import '../services/firebase_service.dart';
 import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
 import '../services/storage_service.dart';
+import '../services/theme_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -144,6 +145,15 @@ void registerServices() {
   if (!getIt.isRegistered<ScreenService>()) {
     getIt.registerLazySingleton(
       ScreenService.new,
+    );
+  }
+
+  ///
+  /// THEME
+  ///
+  if (!getIt.isRegistered<ThemeService>()) {
+    getIt.registerLazySingleton(
+      ThemeService.new,
     );
   }
 }

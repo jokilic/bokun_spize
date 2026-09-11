@@ -72,6 +72,7 @@ class BokunSpizeTheme {
     return defaultTheme.copyWith(
       colorScheme: ColorScheme.fromSeed(
         seedColor: darkAppColors.protein,
+        brightness: Brightness.dark,
       ),
       scaffoldBackgroundColor: darkAppColors.scaffoldBackground,
       highlightColor: darkAppColors.listTileBackground.withValues(alpha: 0.5),

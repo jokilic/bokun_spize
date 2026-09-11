@@ -11,6 +11,7 @@ import 'package:watch_it/watch_it.dart';
 import 'constants/durations.dart';
 import 'screens/entrance/entrance_screen.dart';
 import 'services/screen_service.dart';
+import 'services/theme_service.dart';
 import 'theme/theme.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
@@ -29,13 +30,7 @@ Future<void> main() async {
     registerServices();
 
     runApp(
-      AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          systemNavigationBarColor: Colors.transparent,
-        ),
-        child: BokunSpizeApp(),
-      ),
+      BokunSpizeApp(),
     );
   } catch (error) {
     log(
@@ -45,7 +40,7 @@ Future<void> main() async {
   }
 }
 
-class BokunSpizeApp extends StatelessWidget {
+class BokunSpizeApp extends WatchingWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -60,27 +55,35 @@ class BokunSpizeApp extends StatelessWidget {
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    themeMode: ThemeMode.dark,
+    themeMode: watchIt<ThemeService>().value,
     theme: BokunSpizeTheme.light(),
     darkTheme: BokunSpizeTheme.dark(),
     themeAnimationCurve: Curves.easeIn,
     themeAnimationDuration: BokunSpizeDurations.animation,
-    builder: (_, child) {
+    builder: (context, child) {
+      final overlayStyle = Theme.brightnessOf(context) == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+
       final appWidget =
           child ??
           const Scaffold(
             body: SizedBox.shrink(),
           );
 
-      return kDebugMode
-          ? Banner(
-              message: '',
-              color: Colors.red,
-              location: BannerLocation.topEnd,
-              layoutDirection: TextDirection.ltr,
-              child: appWidget,
-            )
-          : appWidget;
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: overlayStyle.copyWith(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarColor: Colors.transparent,
+        ),
+        child: kDebugMode
+            ? Banner(
+                message: '',
+                color: Colors.red,
+                location: BannerLocation.topEnd,
+                layoutDirection: TextDirection.ltr,
+                child: appWidget,
+              )
+            : appWidget,
+      );
     },
   );
 }

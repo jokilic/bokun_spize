@@ -165,7 +165,7 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
     );
   }
 
-  /// Updates `state`.
+  /// Updates `state`
   void updateState({
     Map<String, String>? mealImageDownloadUrls,
     Map<String, Future<String>>? mealImageDownloadUrlRequests,
