@@ -39,7 +39,7 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
         health: Health(),
       ),
       afterRegister: (controller) => controller.init(),
-    );
+    ).resumeStepsRefresh();
   }
 
   @override
