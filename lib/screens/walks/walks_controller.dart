@@ -44,9 +44,9 @@ class WalksController
   /// INIT
   ///
 
-  void init() {
-    resumeStepsRefresh();
-    refreshSteps();
+  Future<void> init() async {
+    await resumeStepsRefresh();
+    await refreshSteps();
     startWalkingDetection();
   }
 
@@ -127,7 +127,7 @@ class WalksController
   }
 
   /// Starts refreshing today's steps while [WalksScreen] is visible
-  void resumeStepsRefresh() {
+  Future<void> resumeStepsRefresh() async {
     if (isDisposed || isStepsRefreshActive) {
       return;
     }
@@ -136,14 +136,14 @@ class WalksController
 
     /// Refresh immediately when returning to an already loaded [WalksScreen]
     if (value.stepsWithDate != null && value.permissionAuthorized == true && !value.isLoading) {
-      refreshCurrentDaySteps();
+      await refreshCurrentDaySteps();
     }
 
     stepsRefreshTimer = Timer.periodic(
       BokunSpizeDurations.stepsRefreshInterval,
-      (_) {
+      (_) async {
         if (value.permissionAuthorized == true && !value.isLoading) {
-          refreshCurrentDaySteps();
+          await refreshCurrentDaySteps();
         }
       },
     );
