@@ -141,18 +141,15 @@ class TextFieldWidget extends StatelessWidget {
                 /// RIGHT TEXT
                 ///
                 if (rightText?.isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(
-                      rightText!,
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.right,
+                  Text(
+                    rightText!,
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: textColor,
                     ),
+                    textAlign: TextAlign.right,
                   ),
 
                 ///
