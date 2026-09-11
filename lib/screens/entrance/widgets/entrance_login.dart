@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
 import '../../../widgets/text_field_widget.dart';
 
 class EntranceLogin extends StatelessWidget {
@@ -42,7 +43,7 @@ class EntranceLogin extends StatelessWidget {
           title: 'Email address',
           hintText: 'name@example.com',
           onSubmitted: (_) => passwordFocusNode.requestFocus(),
-          textColor: BokunSpizeColors.black,
+          textColor: context.colors.text,
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
           textCapitalization: TextCapitalization.none,
@@ -74,7 +75,7 @@ class EntranceLogin extends StatelessWidget {
 
                 onLoginPressed();
               },
-              textColor: BokunSpizeColors.black,
+              textColor: context.colors.text,
               autofillHints: const [AutofillHints.password],
               keyboardType: TextInputType.visiblePassword,
               textCapitalization: TextCapitalization.none,
@@ -110,15 +111,15 @@ class EntranceLogin extends StatelessWidget {
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 1.2,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                      color: context.colors.text.withValues(alpha: 0.5),
                     ),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: EdgeInsets.zero,
                     backgroundColor: Colors.transparent,
-                    foregroundColor: BokunSpizeColors.green,
+                    foregroundColor: context.colors.primary,
                     disabledBackgroundColor: Colors.transparent,
-                    disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                    disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                   ),
                   child: Text(
                     'Forgot?'.toUpperCase(),
@@ -151,10 +152,10 @@ class EntranceLogin extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
               padding: const EdgeInsets.all(22),
-              backgroundColor: BokunSpizeColors.green,
-              foregroundColor: BokunSpizeColors.white,
-              disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
-              disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
+              backgroundColor: context.colors.primary,
+              foregroundColor: context.colors.listTileBackground,
+              disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.25),
+              disabledForegroundColor: context.colors.listTileBackground.withValues(alpha: 0.75),
             ),
             child: const Text(
               'Sign in',

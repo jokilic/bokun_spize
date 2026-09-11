@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
+import '../../../theme/extensions.dart';
 import '../../../widgets/text_field_widget.dart';
 
 class EntranceRegister extends StatelessWidget {
@@ -44,7 +45,7 @@ class EntranceRegister extends StatelessWidget {
           title: 'Email address',
           hintText: 'name@example.com',
           onSubmitted: (_) => passwordFocusNode.requestFocus(),
-          textColor: BokunSpizeColors.black,
+          textColor: context.colors.text,
           autofillHints: const [AutofillHints.email],
           keyboardType: TextInputType.emailAddress,
           textCapitalization: TextCapitalization.none,
@@ -65,7 +66,7 @@ class EntranceRegister extends StatelessWidget {
           title: 'Password',
           hintText: '•' * 8,
           onSubmitted: (_) => nameFocusNode.requestFocus(),
-          textColor: BokunSpizeColors.black,
+          textColor: context.colors.text,
           autofillHints: const [AutofillHints.password],
           keyboardType: TextInputType.visiblePassword,
           textCapitalization: TextCapitalization.none,
@@ -91,7 +92,7 @@ class EntranceRegister extends StatelessWidget {
 
             onRegisterPressed();
           },
-          textColor: BokunSpizeColors.black,
+          textColor: context.colors.text,
           autofillHints: const [AutofillHints.name],
           keyboardType: TextInputType.name,
           textCapitalization: TextCapitalization.words,
@@ -119,10 +120,10 @@ class EntranceRegister extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
               padding: const EdgeInsets.all(22),
-              backgroundColor: BokunSpizeColors.green,
-              foregroundColor: BokunSpizeColors.white,
-              disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
-              disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
+              backgroundColor: context.colors.primary,
+              foregroundColor: context.colors.listTileBackground,
+              disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.25),
+              disabledForegroundColor: context.colors.listTileBackground.withValues(alpha: 0.75),
             ),
             child: const Text(
               'Register',

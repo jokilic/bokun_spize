@@ -11,6 +11,7 @@ import '../../constants/colors.dart';
 import '../../models/meal/food.dart';
 import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/format.dart';
 import '../../util/null_state.dart';
@@ -365,8 +366,8 @@ class ManualAddMealController
     /// Show [AddFoodSheet] for adding `food`
     final result = await showBlurredModalBottomSheet<Food>(
       context: context,
-      modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
-      backgroundColor: BokunSpizeColors.grey,
+      modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
+      backgroundColor: context.colors.scaffoldBackground,
       builder: (context) => AddFoodSheet(
         passedFood: passedFood,
       ),
@@ -405,10 +406,10 @@ class ManualAddMealController
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: passedMeal != null && !isCopyingMeal ? 'Day of meal' : 'Day of new meal',
-      primaryColor: BokunSpizeColors.green,
+      primaryColor: context.colors.protein,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
         HapticFeedback.lightImpact();
@@ -422,10 +423,10 @@ class ManualAddMealController
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       subtitle: passedMeal != null && !isCopyingMeal ? 'Time of meal' : 'Time of new meal',
-      primaryColor: BokunSpizeColors.green,
+      primaryColor: context.colors.protein,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {
         HapticFeedback.lightImpact();

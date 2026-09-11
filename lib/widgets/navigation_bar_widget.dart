@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../constants/colors.dart';
 import '../constants/durations.dart';
 import '../services/firebase_service.dart';
 import '../services/screen_service.dart';
+import '../theme/extensions.dart';
 import '../util/dependencies.dart';
 
 class NavigationBarWidget extends WatchingWidget {
@@ -25,7 +25,7 @@ class NavigationBarWidget extends WatchingWidget {
       borderRadius: BorderRadius.circular(48),
       child: NavigationBar(
         height: 88,
-        backgroundColor: BokunSpizeColors.grey,
+        backgroundColor: context.colors.scaffoldBackground,
         elevation: 0,
         indicatorColor: Colors.transparent,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
@@ -45,32 +45,32 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const PhosphorIcon(
+                PhosphorIcon(
                   PhosphorIconsBold.bowlFood,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Meals'.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                 ),
               ],
             ),
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: BokunSpizeColors.green,
+              decoration: BoxDecoration(
+                color: context.colors.protein,
                 shape: BoxShape.circle,
               ),
-              child: const PhosphorIcon(
+              child: PhosphorIcon(
                 PhosphorIconsBold.bowlFood,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 24,
               ),
             ),
@@ -84,32 +84,32 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const PhosphorIcon(
+                PhosphorIcon(
                   PhosphorIconsBold.personSimple,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Weights'.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                 ),
               ],
             ),
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: BokunSpizeColors.blue,
+              decoration: BoxDecoration(
+                color: context.colors.carbs,
                 shape: BoxShape.circle,
               ),
-              child: const PhosphorIcon(
+              child: PhosphorIcon(
                 PhosphorIconsBold.personSimple,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 24,
               ),
             ),
@@ -123,32 +123,32 @@ class NavigationBarWidget extends WatchingWidget {
             icon: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const PhosphorIcon(
+                PhosphorIcon(
                   PhosphorIconsBold.footprints,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                   size: 24,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Walks'.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                 ),
               ],
             ),
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: BokunSpizeColors.bordeaux,
+              decoration: BoxDecoration(
+                color: context.colors.fat,
                 shape: BoxShape.circle,
               ),
-              child: const PhosphorIcon(
+              child: PhosphorIcon(
                 PhosphorIconsBold.footprints,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 24,
               ),
             ),
@@ -174,27 +174,27 @@ class NavigationBarWidget extends WatchingWidget {
                     ),
                   )
                 else
-                  const PhosphorIcon(
+                  PhosphorIcon(
                     PhosphorIconsBold.user,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                     size: 24,
                   ),
                 const SizedBox(height: 8),
                 Text(
                   'Account'.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                 ),
               ],
             ),
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: BokunSpizeColors.red,
+              decoration: BoxDecoration(
+                color: context.colors.delete,
                 shape: BoxShape.circle,
               ),
               child: userPhoto != null
@@ -208,9 +208,9 @@ class NavigationBarWidget extends WatchingWidget {
                         errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                       ),
                     )
-                  : const PhosphorIcon(
+                  : PhosphorIcon(
                       PhosphorIconsBold.user,
-                      color: BokunSpizeColors.white,
+                      color: context.colors.listTileBackground,
                       size: 24,
                     ),
             ),

@@ -8,9 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:watch_it/watch_it.dart';
 
-import 'constants/colors.dart';
+import 'constants/durations.dart';
 import 'screens/entrance/entrance_screen.dart';
 import 'services/screen_service.dart';
+import 'theme/theme.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
 
@@ -59,14 +60,11 @@ class BokunSpizeApp extends StatelessWidget {
       Locale('en'),
     ],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    theme: ThemeData.light().copyWith(
-      scaffoldBackgroundColor: BokunSpizeColors.grey,
-      textSelectionTheme: const TextSelectionThemeData(
-        cursorColor: BokunSpizeColors.green,
-        selectionColor: BokunSpizeColors.green,
-        selectionHandleColor: BokunSpizeColors.green,
-      ),
-    ),
+    themeMode: ThemeMode.light,
+    theme: BokunSpizeTheme.light(),
+    darkTheme: BokunSpizeTheme.dark(),
+    themeAnimationCurve: Curves.easeIn,
+    themeAnimationDuration: BokunSpizeDurations.animation,
     builder: (_, child) {
       final appWidget =
           child ??

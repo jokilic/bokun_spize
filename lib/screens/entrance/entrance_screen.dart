@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +8,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import '../../util/spacing.dart';
@@ -131,7 +130,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     final appleIsLoading = state.appleIsLoading;
 
     return ColoredBox(
-      color: BokunSpizeColors.grey,
+      color: context.colors.scaffoldBackground,
       child: Animate(
         effects: const [
           FadeEffect(
@@ -179,11 +178,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           curve: Curves.easeOutCubic,
                         ),
                       ],
-                      child: CachedNetworkImage(
-                        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT25eEKqXY3z-LPhiaLBeZ222wKUARuyg_vkBmdKegriFUgGicOnoj-aM&s=10',
+                      child: Image.asset(
+                        'assets/illustration.webp',
                         fit: BoxFit.cover,
                         height: 400,
-                        placeholder: (context, url) => const SizedBox.shrink(),
                         errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                       ),
                     ),
@@ -212,7 +210,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             curve: Curves.easeOutCubic,
                           ),
                         ],
-                        child: const Text(
+                        child: Text(
                           'Welcome',
                           style: TextStyle(
                             fontFamily: 'Epilogue',
@@ -220,7 +218,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             fontWeight: FontWeight.w800,
                             height: 1.2,
                             letterSpacing: 1,
-                            color: BokunSpizeColors.black,
+                            color: context.colors.text,
                           ),
                         ),
                       ),
@@ -250,13 +248,13 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             curve: Curves.easeOutCubic,
                           ),
                         ],
-                        child: const Text(
+                        child: Text(
                           'Track your everyday meals, weight & walks',
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: BokunSpizeColors.black,
+                            color: context.colors.text,
                           ),
                         ),
                       ),
@@ -401,7 +399,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             fontWeight: FontWeight.w700,
                             height: 1.2,
                             letterSpacing: 1,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                            color: context.colors.text.withValues(alpha: 0.5),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -448,7 +446,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                       ),
                                 icon: PhosphorIcon(
                                   PhosphorIconsBold.googleLogo,
-                                  color: BokunSpizeColors.black.withValues(
+                                  color: context.colors.text.withValues(
                                     alpha: googleIsLoading ? 0.5 : 1,
                                   ),
                                   size: 24,
@@ -463,10 +461,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                     fontWeight: FontWeight.w800,
                                   ),
                                   padding: const EdgeInsets.all(18),
-                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                  foregroundColor: BokunSpizeColors.black,
-                                  disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                  disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                  foregroundColor: context.colors.text,
+                                  disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
+                                  disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                                 ),
                                 label: const Text(
                                   'Google',
@@ -488,7 +486,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                       ),
                                 icon: PhosphorIcon(
                                   PhosphorIconsBold.appleLogo,
-                                  color: BokunSpizeColors.black.withValues(
+                                  color: context.colors.text.withValues(
                                     alpha: googleIsLoading ? 0.5 : 1,
                                   ),
                                   size: 24,
@@ -503,10 +501,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                     fontWeight: FontWeight.w800,
                                   ),
                                   padding: const EdgeInsets.all(18),
-                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                  foregroundColor: BokunSpizeColors.black,
-                                  disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.25),
-                                  disabledForegroundColor: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                  foregroundColor: context.colors.text,
+                                  disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
+                                  disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                                 ),
                                 label: const Text(
                                   'Apple',
@@ -568,20 +566,20 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                 TextSpan(
                                   recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
                                   text: showLogin ? 'Create an account' : 'Sign in',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: BokunSpizeColors.green,
+                                    color: context.colors.primary,
                                   ),
                                 ),
                               ],
                             ),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: BokunSpizeColors.black,
+                              color: context.colors.text,
                             ),
                             textAlign: TextAlign.center,
                           ),
