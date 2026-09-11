@@ -6,6 +6,8 @@ abstract class BokunSpizeColors {
   ///
 
   static const lightThemeText = Color(0xFF121412);
+
+  /// Light original
   static const lightThemeBackground = Color(0xFFFFFFFF);
   static const lightThemeScaffold = Color(0xFFDCE0D9);
 
@@ -14,8 +16,26 @@ abstract class BokunSpizeColors {
   ///
 
   static const darkThemeText = Color(0xFFFFFFFF);
-  static const darkThemeBackground = Color(0xFF373E4A);
-  static const darkThemeScaffold = Color(0xFF202630);
+
+  /// Dark original
+  // static const darkThemeBackground = Color(0xFF373E4A);
+  // static const darkThemeScaffold = Color(0xFF202630);
+
+  /// Dark
+  static const darkThemeBackground = Color(0xFF202630);
+  static const darkThemeScaffold = Color(0xFF1a1f27);
+
+  /// Dark alternate
+  // static const darkThemeBackground = Color(0xFF282828);
+  // static const darkThemeScaffold = Color(0xFF1f1f1f);
+
+  /// Bluish
+  // static const darkThemeBackground = Color(0xFF2A2C42);
+  // static const darkThemeScaffold = Color(0xFF181825);
+
+  /// Bluish alternate
+  // static const darkThemeBackground = Color(0xFF262836);
+  // static const darkThemeScaffold = Color(0xFF1f1d2b);
 
   ///
   /// PRIMARY COLORS

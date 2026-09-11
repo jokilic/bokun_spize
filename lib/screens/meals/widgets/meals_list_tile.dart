@@ -148,7 +148,7 @@ class MealsListTile extends StatelessWidget {
                     else
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
-                        child: meal.imageStoragePath != null
+                        child: meal.imageStoragePath != null && showImageMealListTile
                             ? MealImage(
                                 imageStoragePath: meal.imageStoragePath!,
                                 height: listTileIconRadius,
