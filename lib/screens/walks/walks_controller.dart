@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:health/health.dart';
+import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../constants/durations.dart';
@@ -17,6 +18,7 @@ class WalksController
           ({
             List<StepsWithDate>? stepsWithDate,
             bool? permissionAuthorized,
+            bool isWalking,
             bool isLoading,
             String? error,
           })
@@ -33,6 +35,7 @@ class WalksController
   }) : super((
          stepsWithDate: null,
          permissionAuthorized: null,
+         isWalking: false,
          isLoading: false,
          error: null,
        ));
@@ -44,6 +47,7 @@ class WalksController
   void init() {
     resumeStepsRefresh();
     refreshSteps();
+    startWalkingDetection();
   }
 
   ///
@@ -54,6 +58,10 @@ class WalksController
   void onDispose() {
     isDisposed = true;
     pauseStepsRefresh();
+
+    pedestrianStatusSubscription?.cancel();
+    pedestrianStatusSubscription = null;
+
     super.dispose();
   }
 
@@ -64,6 +72,7 @@ class WalksController
   final graphCalendarDayOptions = [3, 7, 14, 30];
 
   Timer? stepsRefreshTimer;
+  StreamSubscription<PedestrianStatus>? pedestrianStatusSubscription;
 
   bool isDisposed = false;
   bool isStepsRefreshActive = false;
@@ -72,6 +81,50 @@ class WalksController
   ///
   /// METHODS
   ///
+
+  /// Listens for walking changes
+  void startWalkingDetection() {
+    if (isDisposed || pedestrianStatusSubscription != null) {
+      return;
+    }
+
+    if (defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS) {
+      return;
+    }
+
+    runZonedGuarded(
+      () {
+        pedestrianStatusSubscription = Pedometer.pedestrianStatusStream.listen(
+          onPedestrianStatusChanged,
+          onError: onPedestrianStatusError,
+        );
+      },
+      onPedestrianStatusError,
+    );
+  }
+
+  /// Updates walking state
+  void onPedestrianStatusChanged(PedestrianStatus status) {
+    updateState(
+      isWalking: status.status == 'walking',
+    );
+  }
+
+  /// Resets walking state when data is unavailable
+  void onPedestrianStatusError(Object error, StackTrace stackTrace) {
+    if (isDisposed) {
+      return;
+    }
+
+    updateState(
+      isWalking: false,
+    );
+
+    log(
+      'Walking detection failed',
+      error: error,
+    );
+  }
 
   /// Starts refreshing today's steps while [WalksScreen] is visible
   void resumeStepsRefresh() {
@@ -163,6 +216,10 @@ class WalksController
       final activityRecognitionPermission = await Permission.activityRecognition.request();
 
       if (!activityRecognitionPermission.isGranted) {
+        updateState(
+          isWalking: false,
+        );
+
         return (
           granted: false,
           error: 'Activity recognition permission was not granted.',
@@ -295,6 +352,7 @@ class WalksController
     List<StepsWithDate>? stepsWithDate,
     Object? permissionAuthorized = nullStateNoChange,
     bool? isLoading,
+    bool? isWalking,
     Object? error = nullStateNoChange,
   }) {
     if (isDisposed) {
@@ -305,6 +363,7 @@ class WalksController
       stepsWithDate: stepsWithDate ?? value.stepsWithDate,
       permissionAuthorized: identical(permissionAuthorized, nullStateNoChange) ? value.permissionAuthorized : permissionAuthorized as bool?,
       isLoading: isLoading ?? value.isLoading,
+      isWalking: isWalking ?? value.isWalking,
       error: identical(error, nullStateNoChange) ? value.error : error as String?,
     );
   }
