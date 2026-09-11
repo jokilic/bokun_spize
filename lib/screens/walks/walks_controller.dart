@@ -47,7 +47,6 @@ class WalksController
   void init() {
     resumeStepsRefresh();
     refreshSteps();
-    startWalkingDetection();
   }
 
   ///
@@ -59,9 +58,6 @@ class WalksController
     isDisposed = true;
     pauseStepsRefresh();
 
-    pedestrianStatusSubscription?.cancel();
-    pedestrianStatusSubscription = null;
-
     super.dispose();
   }
 
@@ -72,6 +68,7 @@ class WalksController
   final graphCalendarDayOptions = [3, 7, 14, 30];
 
   Timer? stepsRefreshTimer;
+  Stream<PedestrianStatus>? pedestrianStatusStream;
   StreamSubscription<PedestrianStatus>? pedestrianStatusSubscription;
 
   bool isDisposed = false;
@@ -84,7 +81,7 @@ class WalksController
 
   /// Listens for walking changes
   void startWalkingDetection() {
-    if (isDisposed || pedestrianStatusSubscription != null) {
+    if (isDisposed || !isStepsRefreshActive || pedestrianStatusSubscription != null) {
       return;
     }
 
@@ -93,8 +90,20 @@ class WalksController
     }
 
     runZonedGuarded(
-      () {
-        pedestrianStatusSubscription = Pedometer.pedestrianStatusStream.listen(
+      () async {
+        /// Initial permission requests are handled by `requestStepPermission()`
+        if (defaultTargetPlatform == TargetPlatform.android && !(await Permission.activityRecognition.status).isGranted) {
+          return;
+        }
+
+        /// The screen may have paused or another call may have subscribed while checking permission
+        if (isDisposed || !isStepsRefreshActive || pedestrianStatusSubscription != null) {
+          return;
+        }
+
+        /// Reuse the stream because pedometer 4.2.0 creates an internal Android listener on each getter call
+        pedestrianStatusStream ??= Pedometer.pedestrianStatusStream;
+        pedestrianStatusSubscription = pedestrianStatusStream!.listen(
           onPedestrianStatusChanged,
           onError: onPedestrianStatusError,
         );
@@ -105,6 +114,10 @@ class WalksController
 
   /// Updates walking state
   void onPedestrianStatusChanged(PedestrianStatus status) {
+    if (!isStepsRefreshActive) {
+      return;
+    }
+
     updateState(
       isWalking: status.status == 'walking',
     );
@@ -126,13 +139,14 @@ class WalksController
     );
   }
 
-  /// Starts refreshing today's steps while [WalksScreen] is visible
+  /// Starts step refreshes and walking detection while [WalksScreen] is active
   void resumeStepsRefresh() {
     if (isDisposed || isStepsRefreshActive) {
       return;
     }
 
     isStepsRefreshActive = true;
+    startWalkingDetection();
 
     /// Refresh immediately when returning to an already loaded [WalksScreen]
     if (value.stepsWithDate != null && value.permissionAuthorized == true && !value.isLoading) {
@@ -149,11 +163,18 @@ class WalksController
     );
   }
 
-  /// Stops refreshing steps while [WalksScreen] is not visible
+  /// Stops step refreshes and the walking subscription while [WalksScreen] is inactive
   void pauseStepsRefresh() {
     isStepsRefreshActive = false;
     stepsRefreshTimer?.cancel();
     stepsRefreshTimer = null;
+
+    pedestrianStatusSubscription?.cancel();
+    pedestrianStatusSubscription = null;
+
+    updateState(
+      isWalking: false,
+    );
   }
 
   /// Fetches and updates only the current day steps
@@ -225,6 +246,9 @@ class WalksController
           error: 'Activity recognition permission was not granted.',
         );
       }
+
+      /// Start walking detection after permission succeeds, including after a retry
+      startWalkingDetection();
 
       /// Check if `Health Connect` is available
       final healthConnectAvailable = await health.isHealthConnectAvailable();
