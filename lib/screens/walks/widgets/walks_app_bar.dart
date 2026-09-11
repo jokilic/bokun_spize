@@ -9,6 +9,7 @@ import '../../../constants/durations.dart';
 
 class WalksAppBar extends StatelessWidget {
   final bool isLoading;
+  final bool isWalking;
   final String? title;
   final String dayString;
   final int? currentSteps;
@@ -17,6 +18,7 @@ class WalksAppBar extends StatelessWidget {
 
   const WalksAppBar({
     required this.isLoading,
+    required this.isWalking,
     required this.title,
     required this.dayString,
     required this.currentSteps,
@@ -82,6 +84,7 @@ class WalksAppBar extends StatelessWidget {
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: FadingFlexibleTitle(
         isLoading: isLoading,
+        isWalking: isWalking,
         dayString: dayString,
         currentSteps: currentSteps,
         stepsChange: stepsChange,
@@ -93,6 +96,7 @@ class WalksAppBar extends StatelessWidget {
 
 class FadingFlexibleTitle extends StatelessWidget {
   final bool isLoading;
+  final bool isWalking;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
@@ -100,6 +104,7 @@ class FadingFlexibleTitle extends StatelessWidget {
 
   const FadingFlexibleTitle({
     required this.isLoading,
+    required this.isWalking,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -223,13 +228,13 @@ class FadingFlexibleTitle extends StatelessWidget {
                           loop: false,
                           curve: Curves.easeIn,
                           duration: BokunSpizeDurations.animation,
-                          textStyle: const TextStyle(
+                          textStyle: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 40,
                             fontWeight: FontWeight.w800,
                             height: 1.2,
                             letterSpacing: 1.5,
-                            color: BokunSpizeColors.bordeaux,
+                            color: isWalking ? BokunSpizeColors.green : BokunSpizeColors.bordeaux,
                           ),
                         ),
 

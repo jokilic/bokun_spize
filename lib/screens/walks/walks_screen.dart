@@ -79,6 +79,8 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
     final isLoading = state.isLoading;
     final permissionAuthorized = state.permissionAuthorized;
 
+    final isWalking = state.isWalking;
+
     final graphCalendarDays = watchIt<StorageService>().value.walksCalendarDays;
 
     final stepsWithDate = [...?state.stepsWithDate]
@@ -171,6 +173,7 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                 ///
                 WalksAppBar(
                   isLoading: isLoading,
+                  isWalking: isWalking,
                   title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
                   dayString: latestStepsWithDate != null
                       ? getDateString(
