@@ -10,6 +10,14 @@ abstract class BokunSpizeColors {
   static const lightThemeScaffold = Color(0xFFDCE0D9);
 
   ///
+  /// DARK THEME
+  ///
+
+  static const darkThemeText = Color(0xFFFFFFFF);
+  static const darkThemeBackground = Color(0xFF373E4A);
+  static const darkThemeScaffold = Color(0xFF202630);
+
+  ///
   /// PRIMARY COLORS
   ///
 
