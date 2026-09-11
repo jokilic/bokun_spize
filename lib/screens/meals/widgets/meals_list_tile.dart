@@ -3,10 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/meal/meal.dart';
+import '../../../theme/extensions.dart';
 import '../../../util/color.dart';
 import '../../../util/date_time.dart';
 import '../../../util/format.dart';
@@ -44,12 +44,13 @@ class MealsListTile extends StatelessWidget {
 
     final primaryColor = getCalorieValueColor(
       nutrition: meal.nutrition,
+      context: context,
     );
 
     final imageBackgroundColor = isLoading
-        ? BokunSpizeColors.grey
+        ? context.colors.scaffoldBackground
         : hasError
-        ? BokunSpizeColors.red
+        ? context.colors.delete
         : meal.color ?? primaryColor;
 
     return Padding(
@@ -62,7 +63,7 @@ class MealsListTile extends StatelessWidget {
         child: SwipeActionCell(
           index: index,
           key: ValueKey(meal.id),
-          backgroundColor: BokunSpizeColors.grey,
+          backgroundColor: context.colors.scaffoldBackground,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
           deleteAnimationDuration: 175,
@@ -74,11 +75,11 @@ class MealsListTile extends StatelessWidget {
                 await handler(true);
                 await onDeletePressed();
               },
-              color: BokunSpizeColors.red,
+              color: context.colors.delete,
               backgroundRadius: listTileRadius,
-              icon: const PhosphorIcon(
+              icon: PhosphorIcon(
                 PhosphorIconsBold.trash,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 26,
               ),
             ),
@@ -89,11 +90,11 @@ class MealsListTile extends StatelessWidget {
                 await handler(false);
                 await onCopyPressed();
               },
-              color: BokunSpizeColors.green,
+              color: context.colors.protein,
               backgroundRadius: listTileRadius,
-              icon: const PhosphorIcon(
+              icon: PhosphorIcon(
                 PhosphorIconsBold.copy,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 26,
               ),
             ),
@@ -105,14 +106,14 @@ class MealsListTile extends StatelessWidget {
               onTap: isLoading || hasError ? null : onPressed,
               onLongPress: isLoading || hasError ? null : onLongPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
-              highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
                 ),
                 padding: const EdgeInsets.all(20),
                 child: Row(
@@ -172,13 +173,13 @@ class MealsListTile extends StatelessWidget {
                                 errorWidget: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(100),
-                                    color: BokunSpizeColors.red,
+                                    color: context.colors.delete,
                                   ),
                                   height: listTileIconRadius,
                                   width: listTileIconRadius,
-                                  child: const PhosphorIcon(
+                                  child: PhosphorIcon(
                                     PhosphorIconsBold.warningOctagon,
-                                    color: BokunSpizeColors.white,
+                                    color: context.colors.listTileBackground,
                                     size: 24,
                                   ),
                                 ),
@@ -188,9 +189,9 @@ class MealsListTile extends StatelessWidget {
                                 width: listTileIconRadius,
                                 color: imageBackgroundColor,
                                 child: hasError
-                                    ? const PhosphorIcon(
+                                    ? PhosphorIcon(
                                         PhosphorIconsBold.warningOctagon,
-                                        color: BokunSpizeColors.white,
+                                        color: context.colors.listTileBackground,
                                         size: 24,
                                       )
                                     : meal.emoji != null
@@ -206,9 +207,9 @@ class MealsListTile extends StatelessWidget {
                                           softWrap: false,
                                         ),
                                       )
-                                    : const PhosphorIcon(
+                                    : PhosphorIcon(
                                         PhosphorIconsBold.bowlFood,
-                                        color: BokunSpizeColors.white,
+                                        color: context.colors.listTileBackground,
                                         size: 24,
                                       ),
                               ),
@@ -240,7 +241,7 @@ class MealsListTile extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                  color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                                 ),
                                 height: 20,
                                 width: 112,
@@ -252,11 +253,11 @@ class MealsListTile extends StatelessWidget {
                           else
                             Text(
                               titleText,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
-                                color: BokunSpizeColors.black,
+                                color: context.colors.text,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -282,7 +283,7 @@ class MealsListTile extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                  color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                                 ),
                                 height: 12,
                                 width: 56,
@@ -299,7 +300,7 @@ class MealsListTile extends StatelessWidget {
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                                color: context.colors.text.withValues(alpha: 0.7),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -332,7 +333,7 @@ class MealsListTile extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                               ),
                               height: 28,
                               width: 48,
@@ -374,7 +375,7 @@ class MealsListTile extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                                color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                               ),
                               height: 12,
                               width: 32,
@@ -387,7 +388,7 @@ class MealsListTile extends StatelessWidget {
                               fontFamily: 'Epilogue',
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                              color: context.colors.text.withValues(alpha: 0.5),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

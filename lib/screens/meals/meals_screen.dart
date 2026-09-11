@@ -4,11 +4,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../constants/colors.dart';
 import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -86,7 +86,7 @@ class _MealsScreenState extends State<MealsScreen> {
     );
 
     return ColoredBox(
-      color: BokunSpizeColors.grey,
+      color: context.colors.scaffoldBackground,
       child: Scaffold(
         bottomNavigationBar: NavigationBarWidget(),
         floatingActionButton: isLoading
@@ -98,9 +98,9 @@ class _MealsScreenState extends State<MealsScreen> {
                 child: FloatingActionButton(
                   heroTag: const ValueKey('meals-retry-fab'),
                   elevation: 0,
-                  backgroundColor: BokunSpizeColors.green,
-                  foregroundColor: BokunSpizeColors.white,
-                  splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  backgroundColor: context.colors.protein,
+                  foregroundColor: context.colors.listTileBackground,
+                  splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   shape: const CircleBorder(),
@@ -108,9 +108,9 @@ class _MealsScreenState extends State<MealsScreen> {
                     HapticFeedback.lightImpact();
                     mealsController.retryMeals();
                   },
-                  child: const PhosphorIcon(
+                  child: PhosphorIcon(
                     PhosphorIconsBold.arrowClockwise,
-                    color: BokunSpizeColors.white,
+                    color: context.colors.listTileBackground,
                     size: 32,
                   ),
                 ),
@@ -124,9 +124,9 @@ class _MealsScreenState extends State<MealsScreen> {
                     child: FloatingActionButton(
                       heroTag: const ValueKey('meals-calendar-fab'),
                       elevation: 0,
-                      backgroundColor: BokunSpizeColors.green,
-                      foregroundColor: BokunSpizeColors.white,
-                      splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      backgroundColor: context.colors.protein,
+                      foregroundColor: context.colors.listTileBackground,
+                      splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       hoverColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       shape: const CircleBorder(),
@@ -134,9 +134,9 @@ class _MealsScreenState extends State<MealsScreen> {
                         HapticFeedback.lightImpact();
                         mealsController.updateDateViaPicker(context);
                       },
-                      child: const PhosphorIcon(
+                      child: PhosphorIcon(
                         PhosphorIconsBold.calendarDot,
-                        color: BokunSpizeColors.white,
+                        color: context.colors.listTileBackground,
                         size: 24,
                       ),
                     ),
@@ -157,9 +157,9 @@ class _MealsScreenState extends State<MealsScreen> {
                       child: FloatingActionButton(
                         heroTag: const ValueKey('meals-add-meal-fab'),
                         elevation: 0,
-                        backgroundColor: BokunSpizeColors.green,
-                        foregroundColor: BokunSpizeColors.white,
-                        splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                        backgroundColor: context.colors.protein,
+                        foregroundColor: context.colors.listTileBackground,
+                        splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         shape: const CircleBorder(),
@@ -170,9 +170,9 @@ class _MealsScreenState extends State<MealsScreen> {
                             languageCode: 'hr',
                           );
                         },
-                        child: const PhosphorIcon(
+                        child: PhosphorIcon(
                           PhosphorIconsBold.plus,
-                          color: BokunSpizeColors.white,
+                          color: context.colors.listTileBackground,
                           size: 32,
                         ),
                       ),

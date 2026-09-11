@@ -7,8 +7,8 @@ import 'package:get_it/get_it.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
-import '../../constants/colors.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/path.dart';
@@ -254,10 +254,10 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: 'Day of new meal',
-      primaryColor: BokunSpizeColors.green,
+      primaryColor: context.colors.protein,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
         HapticFeedback.lightImpact();
@@ -271,10 +271,10 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       subtitle: 'Time of new meal',
-      primaryColor: BokunSpizeColors.green,
+      primaryColor: context.colors.protein,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {
         HapticFeedback.lightImpact();

@@ -5,10 +5,10 @@ import 'package:health/health.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../constants/colors.dart';
 import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -114,7 +114,7 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
     );
 
     return ColoredBox(
-      color: BokunSpizeColors.grey,
+      color: context.colors.scaffoldBackground,
       child: Scaffold(
         bottomNavigationBar: NavigationBarWidget(),
         floatingActionButton: showRefreshButton
@@ -124,9 +124,9 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                 child: FloatingActionButton(
                   heroTag: const ValueKey('walks-fab'),
                   elevation: 0,
-                  backgroundColor: BokunSpizeColors.bordeaux,
-                  foregroundColor: BokunSpizeColors.white,
-                  splashColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  backgroundColor: context.colors.fat,
+                  foregroundColor: context.colors.listTileBackground,
+                  splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   shape: const CircleBorder(),
@@ -134,9 +134,9 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                     HapticFeedback.lightImpact();
                     walksController.retrySteps();
                   },
-                  child: const PhosphorIcon(
+                  child: PhosphorIcon(
                     PhosphorIconsBold.arrowClockwise,
-                    color: BokunSpizeColors.white,
+                    color: context.colors.listTileBackground,
                     size: 32,
                   ),
                 ),

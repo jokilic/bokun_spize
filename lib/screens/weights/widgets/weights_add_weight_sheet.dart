@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
 import '../../../util/date_time.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/blurred_modal_bottom_sheet.dart';
@@ -90,10 +90,10 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: 'Day of new weight',
-      primaryColor: BokunSpizeColors.blue,
+      primaryColor: context.colors.carbs,
       dateValue: selectedDateTime,
       onDateChanged: (newDate) => setState(
         () => selectedDateTime = DateTime(
@@ -110,10 +110,10 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   /// Opens [TimeSheet] and updates the selected `date`
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => TimeSheet(
       subtitle: 'Time of new weight',
-      primaryColor: BokunSpizeColors.blue,
+      primaryColor: context.colors.carbs,
       dateValue: selectedDateTime,
       onTimeChanged: (newTime) => setState(
         () => selectedDateTime = DateTime(
@@ -191,8 +191,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                            foregroundColor: BokunSpizeColors.black,
+                            backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
                           ),
                         ),
                       ),
@@ -201,7 +201,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                     ///
                     /// TITLE
                     ///
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         'Log weight',
                         style: TextStyle(
@@ -210,7 +210,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                           fontWeight: FontWeight.w800,
                           height: 1.2,
                           letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
+                          color: context.colors.text,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -230,8 +230,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
                         ),
-                        backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                        foregroundColor: BokunSpizeColors.black,
+                        backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                        foregroundColor: context.colors.text,
                       ),
                     ),
                   ],
@@ -260,13 +260,13 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: const Text(
+                child: Text(
                   'New weight in your journal',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -299,11 +299,11 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 ],
                 child: Text(
                   '$date, $time',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -348,16 +348,16 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             fontFamily: 'Epilogue',
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                            color: context.colors.text.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
                     ),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 56,
                       fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -430,7 +430,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             width: 6,
                             height: 96,
                             decoration: BoxDecoration(
-                              color: BokunSpizeColors.blue,
+                              color: context.colors.carbs,
                               borderRadius: BorderRadius.circular(100),
                             ),
                           ),
@@ -482,7 +482,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         },
                         icon: PhosphorIcon(
                           PhosphorIconsBold.calendarDot,
-                          color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                          color: context.colors.text.withValues(alpha: 0.75),
                           size: 18,
                         ),
                         style: ElevatedButton.styleFrom(
@@ -497,8 +497,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
-                          foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.25),
+                          foregroundColor: context.colors.text.withValues(alpha: 0.75),
                         ),
                         label: Text(
                           date,
@@ -518,7 +518,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         },
                         icon: PhosphorIcon(
                           PhosphorIconsBold.clock,
-                          color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                          color: context.colors.text.withValues(alpha: 0.75),
                           size: 18,
                         ),
                         style: ElevatedButton.styleFrom(
@@ -533,8 +533,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.25),
-                          foregroundColor: BokunSpizeColors.black.withValues(alpha: 0.75),
+                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.25),
+                          foregroundColor: context.colors.text.withValues(alpha: 0.75),
                         ),
                         label: Text(
                           time,
@@ -587,8 +587,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         fontWeight: FontWeight.w800,
                       ),
                       padding: const EdgeInsets.all(22),
-                      backgroundColor: BokunSpizeColors.blue,
-                      foregroundColor: BokunSpizeColors.white,
+                      backgroundColor: context.colors.carbs,
+                      foregroundColor: context.colors.listTileBackground,
                     ),
                     child: const Text(
                       'Save weight',
@@ -618,8 +618,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     final isSelected = index == selectedIndex;
     final weight = minimumWeight + (index * weightStep);
     final color = isSelected
-        ? BokunSpizeColors.blue.withValues(alpha: 0.35)
-        : BokunSpizeColors.black.withValues(
+        ? context.colors.carbs.withValues(alpha: 0.35)
+        : context.colors.text.withValues(
             alpha: isWholeKilogram ? 0.28 : 0.14,
           );
 

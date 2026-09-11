@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../theme/extensions.dart';
 import '../../../widgets/text_field_widget.dart';
@@ -120,9 +119,9 @@ class EntranceRegister extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
               padding: const EdgeInsets.all(22),
-              backgroundColor: context.colors.primary,
+              backgroundColor: context.colors.protein,
               foregroundColor: context.colors.listTileBackground,
-              disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.25),
+              disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
               disabledForegroundColor: context.colors.listTileBackground.withValues(alpha: 0.75),
             ),
             child: const Text(

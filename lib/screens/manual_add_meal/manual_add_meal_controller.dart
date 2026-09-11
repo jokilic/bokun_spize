@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
-import '../../constants/colors.dart';
 import '../../models/meal/food.dart';
 import '../../models/meal/meal.dart';
 import '../../services/speech_to_text_service.dart';

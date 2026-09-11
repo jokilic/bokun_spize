@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 
-import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/durations.dart';
+import '../theme/extensions.dart';
 import '../util/spacing.dart';
 
 class TimeSheet extends StatefulWidget {
@@ -81,8 +81,8 @@ class _TimeSheetState extends State<TimeSheet> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                          foregroundColor: BokunSpizeColors.black,
+                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
                         ),
                       ),
                     ),
@@ -91,7 +91,7 @@ class _TimeSheetState extends State<TimeSheet> {
                   ///
                   /// TITLE
                   ///
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Select time',
                       style: TextStyle(
@@ -100,7 +100,7 @@ class _TimeSheetState extends State<TimeSheet> {
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 0.6,
-                        color: BokunSpizeColors.black,
+                        color: context.colors.text,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -120,8 +120,8 @@ class _TimeSheetState extends State<TimeSheet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                      foregroundColor: BokunSpizeColors.black,
+                      backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                      foregroundColor: context.colors.text,
                     ),
                   ),
                 ],
@@ -152,11 +152,11 @@ class _TimeSheetState extends State<TimeSheet> {
               ],
               child: Text(
                 widget.subtitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -207,13 +207,13 @@ class _TimeSheetState extends State<TimeSheet> {
                       fontFamily: 'Epilogue',
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.45),
+                      color: context.colors.text.withValues(alpha: 0.45),
                     ),
                     disabledStyle: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
-                      color: BokunSpizeColors.black.withValues(alpha: 0.2),
+                      color: context.colors.text.withValues(alpha: 0.2),
                     ),
                   ),
                   wheelOption: const DateTimePickerWheelOption(
@@ -285,7 +285,7 @@ class _TimeSheetState extends State<TimeSheet> {
                     ),
                     padding: const EdgeInsets.all(22),
                     backgroundColor: widget.primaryColor,
-                    foregroundColor: BokunSpizeColors.white,
+                    foregroundColor: context.colors.listTileBackground,
                   ),
                   child: const Text(
                     'Confirm',

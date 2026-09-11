@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/steps_with_date/steps_with_date.dart';
+import '../../../theme/extensions.dart';
 import 'walks_list_tile.dart';
 
 class WalksSuccess extends StatelessWidget {
@@ -42,14 +42,14 @@ class WalksSuccess extends StatelessWidget {
                 curve: Curves.easeOutCubic,
               ),
             ],
-            child: const Text(
+            child: Text(
               'Recent logs',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.6,
-                color: BokunSpizeColors.black,
+                color: context.colors.text,
               ),
             ),
           ),

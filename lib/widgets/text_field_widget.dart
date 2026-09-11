@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
+import '../theme/extensions.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -52,14 +52,14 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: BokunSpizeColors.white.withValues(
+    color: context.colors.listTileBackground.withValues(
       alpha: enabled ? 0.5 : 0.25,
     ),
     borderRadius: BorderRadius.circular(listTileRadius),
     child: InkWell(
       onTap: () {},
       borderRadius: BorderRadius.circular(listTileRadius),
-      highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
@@ -84,7 +84,7 @@ class TextFieldWidget extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1.2,
-                  color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                  color: context.colors.text.withValues(alpha: 0.5),
                 ),
               ),
             ),
@@ -233,12 +233,12 @@ class TextFieldBody extends StatelessWidget {
     cursorHeight: 24,
     cursorRadius: const Radius.circular(8),
     cursorWidth: 1.5,
-    cursorColor: BokunSpizeColors.green,
+    cursorColor: context.colors.protein,
     decoration: InputDecoration(
       isDense: true,
       filled: filled,
       enabled: enabled,
-      fillColor: BokunSpizeColors.white.withValues(
+      fillColor: context.colors.listTileBackground.withValues(
         alpha: enabled ? 0.5 : 0.25,
       ),
       contentPadding: contentPadding,
@@ -286,7 +286,7 @@ class TextFieldBody extends StatelessWidget {
             fontFamily: 'PlusJakartaSans',
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: BokunSpizeColors.black.withValues(alpha: 0.5),
+            color: context.colors.text.withValues(alpha: 0.5),
           ),
     ),
     keyboardType: keyboardType,
@@ -294,11 +294,11 @@ class TextFieldBody extends StatelessWidget {
     maxLines: maxLines,
     style:
         textStyle ??
-        const TextStyle(
+        TextStyle(
           fontFamily: 'PlusJakartaSans',
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: BokunSpizeColors.black,
+          color: context.colors.text,
         ),
     textAlign: textAlign,
     textAlignVertical: textAlignVertical,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/durations.dart';
+import '../theme/extensions.dart';
 
 class AnimatedNutritionBar extends StatelessWidget {
   final double width;
@@ -27,7 +27,7 @@ class AnimatedNutritionBar extends StatelessWidget {
     child: ClipRRect(
       borderRadius: BorderRadius.circular(100),
       child: ColoredBox(
-        color: BokunSpizeColors.white.withValues(alpha: 0.5),
+        color: context.colors.listTileBackground.withValues(alpha: 0.5),
         child: Align(
           alignment: Alignment.centerLeft,
           child: TweenAnimationBuilder<double>(

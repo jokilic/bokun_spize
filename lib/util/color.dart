@@ -4,8 +4,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart';
 import '../models/meal/nutrition.dart';
+import '../theme/colors.dart';
+import '../theme/extensions.dart';
 
 Color colorFromHex(String hex) {
   final buffer = StringBuffer();
@@ -25,20 +26,23 @@ Color colorFromHex(String hex) {
 
 String colorToHex(Color color) => '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
 
-Color getCalorieValueColor({required Nutrition? nutrition}) {
+Color getCalorieValueColor({
+  required Nutrition? nutrition,
+  required BuildContext context,
+}) {
   if (nutrition == null || (nutrition.protein == 0 && nutrition.carbs == 0 && nutrition.fat == 0)) {
-    return BokunSpizeColors.black;
+    return context.colors.text;
   }
 
   if (nutrition.protein >= nutrition.carbs && nutrition.protein >= nutrition.fat) {
-    return BokunSpizeColors.green;
+    return context.colors.protein;
   }
 
   if (nutrition.carbs >= nutrition.fat) {
-    return BokunSpizeColors.blue;
+    return context.colors.carbs;
   }
 
-  return BokunSpizeColors.bordeaux;
+  return context.colors.fat;
 }
 
 Color getRandomPrimaryColor() {

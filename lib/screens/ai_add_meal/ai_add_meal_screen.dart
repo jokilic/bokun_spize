@@ -4,10 +4,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../constants/colors.dart';
 import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -141,8 +141,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                            foregroundColor: BokunSpizeColors.black,
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
                           ),
                         ),
                       ),
@@ -151,7 +151,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     ///
                     /// TITLE
                     ///
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         'Log meal',
                         style: TextStyle(
@@ -160,7 +160,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                           fontWeight: FontWeight.w800,
                           height: 1.2,
                           letterSpacing: 0.6,
-                          color: BokunSpizeColors.black,
+                          color: context.colors.text,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -180,8 +180,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
                         ),
-                        backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                        foregroundColor: BokunSpizeColors.black,
+                        backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        foregroundColor: context.colors.text,
                       ),
                     ),
                   ],
@@ -210,13 +210,13 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: const Text(
+                child: Text(
                   'New meal in your journal',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -260,7 +260,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                       onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                       title: 'Describe your meal',
                       hintText: 'What was it?',
-                      textColor: BokunSpizeColors.black,
+                      textColor: context.colors.text,
                     ),
 
                     ///
@@ -303,8 +303,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: isListening ? BokunSpizeColors.red : BokunSpizeColors.white.withValues(alpha: 0.5),
-                            foregroundColor: isListening ? BokunSpizeColors.white : BokunSpizeColors.red,
+                            backgroundColor: isListening ? context.colors.delete : context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: isListening ? context.colors.listTileBackground : context.colors.delete,
                           ),
                         ),
                       ),
@@ -365,10 +365,10 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             ),
                             height: 160,
                             width: double.infinity,
-                            child: const PhosphorIcon(
+                            child: PhosphorIcon(
                               PhosphorIconsBold.warningOctagon,
                               size: 56,
-                              color: BokunSpizeColors.red,
+                              color: context.colors.delete,
                             ),
                           ),
                         ),
@@ -398,8 +398,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: BokunSpizeColors.white,
-                            foregroundColor: BokunSpizeColors.red,
+                            backgroundColor: context.colors.listTileBackground,
+                            foregroundColor: context.colors.delete,
                           ),
                         ),
                       ),
@@ -441,7 +441,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(listTileRadius),
-                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     ),
                     height: 160,
                     width: double.infinity,
@@ -473,19 +473,19 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(100),
                                   ),
-                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                  foregroundColor: BokunSpizeColors.green,
+                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                  foregroundColor: context.colors.protein,
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              const Text(
+                              Text(
                                 'Camera',
                                 style: TextStyle(
                                   fontFamily: 'Epilogue',
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.6,
-                                  color: BokunSpizeColors.black,
+                                  color: context.colors.text,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -516,19 +516,19 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(100),
                                   ),
-                                  backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                                  foregroundColor: BokunSpizeColors.green,
+                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                  foregroundColor: context.colors.protein,
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              const Text(
+                              Text(
                                 'Gallery',
                                 style: TextStyle(
                                   fontFamily: 'Epilogue',
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.6,
-                                  color: BokunSpizeColors.black,
+                                  color: context.colors.text,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -565,14 +565,14 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: const Text(
-                  'Date & Time',
+                child: Text(
+                  'Date & time',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.6,
-                    color: BokunSpizeColors.black,
+                    color: context.colors.text,
                   ),
                 ),
               ),
@@ -603,14 +603,14 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   ),
                 ],
                 child: Material(
-                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
                     onTap: () => handleOnPressed(
                       onPressed: () => mealController.updateDateViaPicker(context),
                     ),
                     borderRadius: BorderRadius.circular(listTileRadius),
-                    highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     focusColor: Colors.transparent,
@@ -639,7 +639,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                     fontSize: 12,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 1.2,
-                                    color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                    color: context.colors.text.withValues(alpha: 0.5),
                                   ),
                                 ),
                                 const SizedBox(height: 6),
@@ -649,12 +649,12 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 ///
                                 Text(
                                   date,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 0.6,
-                                    color: BokunSpizeColors.black,
+                                    color: context.colors.text,
                                   ),
                                 ),
                               ],
@@ -664,10 +664,10 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                           ///
                           /// ICON
                           ///
-                          const PhosphorIcon(
+                          PhosphorIcon(
                             PhosphorIconsBold.calendarPlus,
                             size: 28,
-                            color: BokunSpizeColors.green,
+                            color: context.colors.protein,
                           ),
                         ],
                       ),
@@ -702,14 +702,14 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   ),
                 ],
                 child: Material(
-                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
                     onTap: () => handleOnPressed(
                       onPressed: () => mealController.updateTimeViaPicker(context),
                     ),
                     borderRadius: BorderRadius.circular(listTileRadius),
-                    highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     focusColor: Colors.transparent,
@@ -738,7 +738,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                     fontSize: 12,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 1.2,
-                                    color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                                    color: context.colors.text.withValues(alpha: 0.5),
                                   ),
                                 ),
                                 const SizedBox(height: 6),
@@ -748,12 +748,12 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 ///
                                 Text(
                                   time,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 0.6,
-                                    color: BokunSpizeColors.black,
+                                    color: context.colors.text,
                                   ),
                                 ),
                               ],
@@ -763,10 +763,10 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                           ///
                           /// ICON
                           ///
-                          const PhosphorIcon(
+                          PhosphorIcon(
                             PhosphorIconsBold.clock,
                             size: 28,
-                            color: BokunSpizeColors.green,
+                            color: context.colors.protein,
                           ),
                         ],
                       ),
@@ -832,10 +832,10 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         fontWeight: FontWeight.w800,
                       ),
                       padding: const EdgeInsets.all(22),
-                      backgroundColor: BokunSpizeColors.green,
-                      foregroundColor: BokunSpizeColors.white,
-                      disabledBackgroundColor: BokunSpizeColors.green.withValues(alpha: 0.25),
-                      disabledForegroundColor: BokunSpizeColors.white.withValues(alpha: 0.75),
+                      backgroundColor: context.colors.protein,
+                      foregroundColor: context.colors.listTileBackground,
+                      disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
+                      disabledForegroundColor: context.colors.listTileBackground.withValues(alpha: 0.75),
                     ),
                     child: const Text(
                       'Log meal',

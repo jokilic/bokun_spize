@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
 
 class MealsEmpty extends StatelessWidget {
   @override
@@ -37,20 +37,20 @@ class MealsEmpty extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            const PhosphorIcon(
+            PhosphorIcon(
               PhosphorIconsBold.bowlFood,
-              color: BokunSpizeColors.green,
+              color: context.colors.protein,
               size: 88,
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Meal journal for today is empty',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.6,
-                color: BokunSpizeColors.black,
+                color: context.colors.text,
               ),
               textAlign: TextAlign.center,
             ),
@@ -62,7 +62,7 @@ class MealsEmpty extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 letterSpacing: 0.6,
-                color: BokunSpizeColors.black.withValues(alpha: 0.75),
+                color: context.colors.text.withValues(alpha: 0.75),
               ),
               textAlign: TextAlign.center,
             ),

@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../constants/colors.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/null_state.dart';
 import '../../util/snackbars.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
@@ -144,7 +144,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     required String weightTrackId,
   }) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (sheetContext) => WeightsAddWeightSheet(
       key: ValueKey(weightTrackId),
       initialWeight: initialWeight,

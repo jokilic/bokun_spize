@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../models/weight_track/weight_track.dart';
+import '../../../theme/extensions.dart';
 import '../../../util/date_time.dart';
 import '../../../util/format.dart';
 
@@ -27,11 +27,11 @@ class WeightsListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final changeColor = weightChange != null
         ? switch (weightChange!) {
-            > 0 => BokunSpizeColors.red,
-            < 0 => BokunSpizeColors.green,
-            _ => BokunSpizeColors.black,
+            < 0 => context.colors.protein,
+            > 0 => context.colors.delete,
+            _ => context.colors.text,
           }
-        : BokunSpizeColors.black;
+        : context.colors.text;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -43,7 +43,7 @@ class WeightsListTile extends StatelessWidget {
         child: SwipeActionCell(
           index: index,
           key: ValueKey(weightTrack.id),
-          backgroundColor: BokunSpizeColors.grey,
+          backgroundColor: context.colors.scaffoldBackground,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
           deleteAnimationDuration: 175,
@@ -55,11 +55,11 @@ class WeightsListTile extends StatelessWidget {
                 await handler(true);
                 await onDeletePressed();
               },
-              color: BokunSpizeColors.red,
+              color: context.colors.delete,
               backgroundRadius: listTileRadius,
-              icon: const PhosphorIcon(
+              icon: PhosphorIcon(
                 PhosphorIconsBold.trash,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 26,
               ),
             ),
@@ -70,14 +70,14 @@ class WeightsListTile extends StatelessWidget {
             child: InkWell(
               onTap: onPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
-              highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+              highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
                 ),
                 padding: const EdgeInsets.all(20),
                 child: Row(
@@ -89,10 +89,10 @@ class WeightsListTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100),
                       child: Container(
                         padding: const EdgeInsets.all(listTileIconRadius / 4),
-                        color: BokunSpizeColors.grey,
-                        child: const PhosphorIcon(
+                        color: context.colors.scaffoldBackground,
+                        child: PhosphorIcon(
                           PhosphorIconsBold.personSimple,
-                          color: BokunSpizeColors.blue,
+                          color: context.colors.carbs,
                           size: listTileIconRadius / 2,
                         ),
                       ),
@@ -117,11 +117,11 @@ class WeightsListTile extends StatelessWidget {
                                   ),
                                 ) ??
                                 '--',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
-                              color: BokunSpizeColors.black,
+                              color: context.colors.text,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -141,7 +141,7 @@ class WeightsListTile extends StatelessWidget {
                               fontFamily: 'PlusJakartaSans',
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                              color: context.colors.text.withValues(alpha: 0.7),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -163,11 +163,11 @@ class WeightsListTile extends StatelessWidget {
                         Text.rich(
                           TextSpan(
                             text: weightTrack.weight.toStringAsFixed(1),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 24,
                               fontWeight: FontWeight.w900,
-                              color: BokunSpizeColors.black,
+                              color: context.colors.text,
                             ),
                             children: [
                               const WidgetSpan(
@@ -181,7 +181,7 @@ class WeightsListTile extends StatelessWidget {
                                   fontWeight: FontWeight.w500,
                                   height: 1.2,
                                   letterSpacing: 1.5,
-                                  color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                                  color: context.colors.text.withValues(alpha: 0.7),
                                 ),
                               ),
                             ],

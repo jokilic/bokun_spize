@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/steps_with_date/steps_with_date.dart';
+import '../../../theme/extensions.dart';
 import '../../../util/date_time.dart';
 import '../../../util/steps_with_date.dart';
 
@@ -56,7 +56,7 @@ class WalksGraph extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     ),
                     height: 30,
                     width: 144,
@@ -66,7 +66,7 @@ class WalksGraph extends StatelessWidget {
               /// GRAPH TITLE
               ///
               else
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Recent progress',
                     style: TextStyle(
@@ -74,7 +74,7 @@ class WalksGraph extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.6,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
                   ),
                 ),
@@ -97,7 +97,7 @@ class WalksGraph extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     ),
                     height: 30,
                     width: 104,
@@ -115,7 +115,7 @@ class WalksGraph extends StatelessWidget {
                   position: PopupMenuPosition.under,
                   offset: const Offset(0, 8),
                   elevation: 0,
-                  color: BokunSpizeColors.white,
+                  color: context.colors.listTileBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -126,11 +126,11 @@ class WalksGraph extends StatelessWidget {
                           value: calendarDays,
                           child: Text(
                             '$calendarDays days',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: BokunSpizeColors.black,
+                              color: context.colors.text,
                             ),
                           ),
                         ),
@@ -138,7 +138,7 @@ class WalksGraph extends StatelessWidget {
                       .toList(),
                   child: Container(
                     decoration: ShapeDecoration(
-                      color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
                       shape: const StadiumBorder(),
                     ),
                     child: Padding(
@@ -146,20 +146,20 @@ class WalksGraph extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const PhosphorIcon(
+                          PhosphorIcon(
                             PhosphorIconsBold.caretDown,
-                            color: BokunSpizeColors.black,
+                            color: context.colors.text,
                             size: 16,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             '$calendarDays days',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
                               height: 1.6,
                               fontWeight: FontWeight.w600,
-                              color: BokunSpizeColors.black,
+                              color: context.colors.text,
                             ),
                           ),
                         ],
@@ -234,7 +234,7 @@ class WalksGraphWidget extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
                 ),
                 child: isLoading
                     ? const SizedBox.shrink()
@@ -246,7 +246,7 @@ class WalksGraphWidget extends StatelessWidget {
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: BokunSpizeColors.black.withValues(alpha: 0.4),
+                            color: context.colors.text.withValues(alpha: 0.4),
                           ),
                         ),
                       )
@@ -255,6 +255,7 @@ class WalksGraphWidget extends StatelessWidget {
                         child: buildLineChart(
                           stepsWithDate: visibleStepsWithDate,
                           calendarDays: calendarDays,
+                          context: context,
                         ),
                       ),
               ),
@@ -268,6 +269,7 @@ class WalksGraphWidget extends StatelessWidget {
   Widget buildLineChart({
     required List<StepsWithDate> stepsWithDate,
     required int calendarDays,
+    required BuildContext context,
   }) {
     final lastDateTime = stepsWithDate.last.dateTime;
     final firstDateTime = lastDateTime.subtract(
@@ -324,8 +326,8 @@ class WalksGraphWidget extends StatelessWidget {
     final chartMinY = (minimumSteps - stepsPadding).clamp(0.0, double.infinity).toDouble();
 
     final lineEndColor = Color.lerp(
-      BokunSpizeColors.bordeaux,
-      BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
+      context.colors.fat,
+      context.colors.fat.withValues(alpha: 0.25),
       0.75,
     )!;
 
@@ -345,7 +347,7 @@ class WalksGraphWidget extends StatelessWidget {
             maxContentWidth: 160,
             fitInsideHorizontally: true,
             fitInsideVertically: true,
-            getTooltipColor: (touchedSpot) => BokunSpizeColors.bordeaux,
+            getTooltipColor: (touchedSpot) => context.colors.fat,
             getTooltipItems: (touchedSpots) => touchedSpots.map(
               (touchedSpot) {
                 final stepWithDate = stepsWithDate[touchedSpot.spotIndex];
@@ -364,17 +366,17 @@ class WalksGraphWidget extends StatelessWidget {
                     fontFamily: 'Epilogue',
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: BokunSpizeColors.white.withValues(alpha: 0.7),
+                    color: context.colors.listTileBackground.withValues(alpha: 0.7),
                   ),
                   children: [
                     const TextSpan(text: '\n'),
                     TextSpan(
                       text: '$steps steps',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 14,
                         fontWeight: FontWeight.w900,
-                        color: BokunSpizeColors.white,
+                        color: context.colors.listTileBackground,
                       ),
                     ),
                   ],
@@ -386,15 +388,15 @@ class WalksGraphWidget extends StatelessWidget {
               .map(
                 (spotIndex) => TouchedSpotIndicatorData(
                   FlLine(
-                    color: BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
+                    color: context.colors.fat.withValues(alpha: 0.25),
                     strokeWidth: 3.5,
                   ),
                   FlDotData(
                     getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                       radius: 4.5,
-                      color: BokunSpizeColors.bordeaux,
+                      color: context.colors.fat,
                       strokeWidth: 6,
-                      strokeColor: BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
+                      strokeColor: context.colors.fat.withValues(alpha: 0.25),
                     ),
                   ),
                 ),
@@ -417,6 +419,7 @@ class WalksGraphWidget extends StatelessWidget {
                 lastDateTime: lastDateTime,
                 hasSinglePosition: hasSinglePosition,
                 isSingleDay: isSingleDay,
+                labelColor: context.colors.text,
               ),
             ),
           ),
@@ -434,7 +437,7 @@ class WalksGraphWidget extends StatelessWidget {
             gradientArea: LineChartGradientArea.wholeChart,
             gradient: LinearGradient(
               colors: [
-                BokunSpizeColors.bordeaux,
+                context.colors.fat,
                 lineEndColor,
               ],
             ),
@@ -444,8 +447,8 @@ class WalksGraphWidget extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  BokunSpizeColors.bordeaux.withValues(alpha: 0.16),
-                  BokunSpizeColors.bordeaux.withValues(alpha: 0),
+                  context.colors.fat.withValues(alpha: 0.16),
+                  context.colors.fat.withValues(alpha: 0),
                 ],
               ),
             ),
@@ -456,9 +459,9 @@ class WalksGraphWidget extends StatelessWidget {
               ),
               getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                 radius: 4.5,
-                color: BokunSpizeColors.bordeaux,
+                color: context.colors.fat,
                 strokeWidth: 6,
-                strokeColor: BokunSpizeColors.bordeaux.withValues(alpha: 0.25),
+                strokeColor: context.colors.fat.withValues(alpha: 0.25),
               ),
             ),
           ),
@@ -476,6 +479,7 @@ class WalksGraphWidget extends StatelessWidget {
     required DateTime lastDateTime,
     required bool hasSinglePosition,
     required bool isSingleDay,
+    required Color labelColor,
   }) {
     final isSinglePositionTitle = hasSinglePosition && value.abs() < 0.001;
     final isLastTitle = (value - meta.max).abs() < 0.001;
@@ -509,7 +513,7 @@ class WalksGraphWidget extends StatelessWidget {
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
-          color: BokunSpizeColors.black.withValues(alpha: 0.4),
+          color: labelColor.withValues(alpha: 0.4),
         ),
       ),
     );

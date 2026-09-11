@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
@@ -117,7 +116,7 @@ class EntranceLogin extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: EdgeInsets.zero,
                     backgroundColor: Colors.transparent,
-                    foregroundColor: context.colors.primary,
+                    foregroundColor: context.colors.protein,
                     disabledBackgroundColor: Colors.transparent,
                     disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                   ),
@@ -152,9 +151,9 @@ class EntranceLogin extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
               padding: const EdgeInsets.all(22),
-              backgroundColor: context.colors.primary,
+              backgroundColor: context.colors.protein,
               foregroundColor: context.colors.listTileBackground,
-              disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.25),
+              disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
               disabledForegroundColor: context.colors.listTileBackground.withValues(alpha: 0.75),
             ),
             child: const Text(

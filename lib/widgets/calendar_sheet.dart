@@ -4,9 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/durations.dart';
+import '../theme/extensions.dart';
 import '../util/spacing.dart';
 
 class CalendarSheet extends StatefulWidget {
@@ -83,8 +83,8 @@ class _CalendarSheetState extends State<CalendarSheet> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                          foregroundColor: BokunSpizeColors.black,
+                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
                         ),
                       ),
                     ),
@@ -93,7 +93,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   ///
                   /// TITLE
                   ///
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Select date',
                       style: TextStyle(
@@ -102,7 +102,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 0.6,
-                        color: BokunSpizeColors.black,
+                        color: context.colors.text,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -122,8 +122,8 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      backgroundColor: BokunSpizeColors.grey.withValues(alpha: 0.5),
-                      foregroundColor: BokunSpizeColors.black,
+                      backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                      foregroundColor: context.colors.text,
                     ),
                   ),
                 ],
@@ -154,11 +154,11 @@ class _CalendarSheetState extends State<CalendarSheet> {
               ],
               child: Text(
                 widget.subtitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -213,59 +213,59 @@ class _CalendarSheetState extends State<CalendarSheet> {
                     calendarType: CalendarDatePicker2Type.single,
                     dynamicCalendarRows: true,
                     customModePickerIcon: const SizedBox.shrink(),
-                    weekdayLabelTextStyle: const TextStyle(
+                    weekdayLabelTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 12,
                       fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
-                    controlsTextStyle: const TextStyle(
+                    controlsTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
-                    todayTextStyle: const TextStyle(
+                    todayTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
-                    dayTextStyle: const TextStyle(
+                    dayTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
-                    selectedDayTextStyle: const TextStyle(
+                    selectedDayTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.white,
+                      color: context.colors.listTileBackground,
                     ),
-                    monthTextStyle: const TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: BokunSpizeColors.black,
-                    ),
-                    selectedMonthTextStyle: const TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.white,
-                    ),
-                    yearTextStyle: const TextStyle(
+                    monthTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                     ),
-                    selectedYearTextStyle: const TextStyle(
+                    selectedMonthTextStyle: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
-                      color: BokunSpizeColors.white,
+                      color: context.colors.listTileBackground,
+                    ),
+                    yearTextStyle: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: context.colors.text,
+                    ),
+                    selectedYearTextStyle: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: context.colors.listTileBackground,
                     ),
                     selectedDayHighlightColor: widget.primaryColor,
                     daySplashColor: widget.primaryColor,
@@ -275,7 +275,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       if ((isToday ?? false) && !(isSelected ?? false)) {
                         currentDecoration = BoxDecoration(
                           border: Border.all(
-                            color: BokunSpizeColors.black,
+                            color: context.colors.text,
                             width: 2,
                           ),
                           shape: BoxShape.circle,
@@ -292,14 +292,14 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       );
                     },
                     firstDayOfWeek: DateTime.monday,
-                    lastMonthIcon: const PhosphorIcon(
+                    lastMonthIcon: PhosphorIcon(
                       PhosphorIconsBold.caretLeft,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                       size: 22,
                     ),
-                    nextMonthIcon: const PhosphorIcon(
+                    nextMonthIcon: PhosphorIcon(
                       PhosphorIconsBold.caretRight,
-                      color: BokunSpizeColors.black,
+                      color: context.colors.text,
                       size: 22,
                     ),
                   ),
@@ -350,7 +350,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       ),
                       padding: const EdgeInsets.all(22),
                       backgroundColor: widget.primaryColor,
-                      foregroundColor: BokunSpizeColors.white,
+                      foregroundColor: context.colors.listTileBackground,
                     ),
                     child: const Text(
                       'Confirm',

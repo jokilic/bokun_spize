@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
 
 class WeightsListTileLoading extends StatelessWidget {
   @override
@@ -20,14 +20,14 @@ class WeightsListTileLoading extends StatelessWidget {
         child: InkWell(
           onTap: () {},
           borderRadius: BorderRadius.circular(listTileRadius),
-          highlightColor: BokunSpizeColors.white.withValues(alpha: 0.5),
+          highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           focusColor: Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(listTileRadius),
-              color: BokunSpizeColors.white.withValues(alpha: 0.5),
+              color: context.colors.listTileBackground.withValues(alpha: 0.5),
             ),
             padding: const EdgeInsets.all(20),
             child: Row(
@@ -49,7 +49,7 @@ class WeightsListTileLoading extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      color: BokunSpizeColors.blue.withValues(alpha: 0.5),
+                      color: context.colors.carbs.withValues(alpha: 0.5),
                     ),
                     height: listTileIconRadius,
                     width: listTileIconRadius,
@@ -81,7 +81,7 @@ class WeightsListTileLoading extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
-                            color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                            color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                           ),
                           height: 20,
                           width: 112,
@@ -107,7 +107,7 @@ class WeightsListTileLoading extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
-                            color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                            color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                           ),
                           height: 12,
                           width: 56,
@@ -140,7 +140,7 @@ class WeightsListTileLoading extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
-                          color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                          color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                         ),
                         height: 28,
                         width: 48,
@@ -165,7 +165,7 @@ class WeightsListTileLoading extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
-                          color: BokunSpizeColors.grey.withValues(alpha: 0.5),
+                          color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                         ),
                         height: 12,
                         width: 32,

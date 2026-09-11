@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/durations.dart';
 import '../models/meal/food.dart';
 import '../models/meal/nutrition.dart';
+import '../theme/extensions.dart';
 import '../util/format.dart';
 import '../util/parse.dart';
 import '../util/spacing.dart';
@@ -184,8 +184,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                          foregroundColor: BokunSpizeColors.black,
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
                         ),
                       ),
                     ),
@@ -194,7 +194,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   ///
                   /// TITLE
                   ///
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Add food',
                       style: TextStyle(
@@ -203,7 +203,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                         fontWeight: FontWeight.w800,
                         height: 1.2,
                         letterSpacing: 0.6,
-                        color: BokunSpizeColors.black,
+                        color: context.colors.text,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -223,8 +223,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-                      foregroundColor: BokunSpizeColors.black,
+                      backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      foregroundColor: context.colors.text,
                     ),
                   ),
                 ],
@@ -253,13 +253,13 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: const Text(
+              child: Text(
                 'Food in your new meal',
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -296,7 +296,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 onSubmitted: (_) => quantityFocusNode.requestFocus(),
                 title: 'Food name',
                 hintText: 'What was it?',
-                textColor: BokunSpizeColors.black,
+                textColor: context.colors.text,
                 autocorrect: true,
               ),
             ),
@@ -326,14 +326,14 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: const Text(
+              child: Text(
                 'Serving size',
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.6,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                 ),
               ),
             ),
@@ -377,7 +377,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       onSubmitted: (_) => unitFocusNode.requestFocus(),
                       title: 'Quantity',
                       hintText: '0',
-                      textColor: BokunSpizeColors.black,
+                      textColor: context.colors.text,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -393,7 +393,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       onSubmitted: (_) => caloriesFocusNode.requestFocus(),
                       title: 'Unit',
                       hintText: 'grams',
-                      textColor: BokunSpizeColors.black,
+                      textColor: context.colors.text,
                       textCapitalization: TextCapitalization.none,
                     ),
                   ),
@@ -426,14 +426,14 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   curve: Curves.easeOutCubic,
                 ),
               ],
-              child: const Text(
+              child: Text(
                 'Nutritional values',
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.6,
-                  color: BokunSpizeColors.black,
+                  color: context.colors.text,
                 ),
               ),
             ),
@@ -470,7 +470,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 title: 'Calories',
                 hintText: '0',
                 rightText: 'kcal',
-                textColor: BokunSpizeColors.green,
+                textColor: context.colors.protein,
                 keyboardType: TextInputType.number,
               ),
             ),
@@ -514,7 +514,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       title: 'Protein',
                       hintText: '0',
                       rightText: 'g',
-                      textColor: BokunSpizeColors.green,
+                      textColor: context.colors.protein,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -530,7 +530,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       title: 'Carbs',
                       hintText: '0',
                       rightText: 'g',
-                      textColor: BokunSpizeColors.blue,
+                      textColor: context.colors.carbs,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -545,7 +545,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       title: 'Fats',
                       hintText: '0',
                       rightText: 'g',
-                      textColor: BokunSpizeColors.bordeaux,
+                      textColor: context.colors.fat,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -619,8 +619,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       fontWeight: FontWeight.w800,
                     ),
                     padding: const EdgeInsets.all(22),
-                    backgroundColor: BokunSpizeColors.green,
-                    foregroundColor: BokunSpizeColors.white,
+                    backgroundColor: context.colors.protein,
+                    foregroundColor: context.colors.listTileBackground,
                   ),
                   child: const Text(
                     'Add to meal',

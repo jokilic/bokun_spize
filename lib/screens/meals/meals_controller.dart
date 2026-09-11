@@ -8,10 +8,10 @@ import 'package:get_it/get_it.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../constants/colors.dart';
 import '../../models/meal/meal.dart';
 import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/null_state.dart';
 import '../../util/parse.dart';
 import '../../util/snackbars.dart';
@@ -153,10 +153,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   /// Opens [CalendarSheet] and updates the selected `date`
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
-    modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
+    modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
     builder: (context) => CalendarSheet(
       subtitle: 'View your activity and progress',
-      primaryColor: BokunSpizeColors.green,
+      primaryColor: context.colors.protein,
       dateValue: value.activeDate,
       onDateChanged: (newDate) {
         HapticFeedback.lightImpact();
@@ -177,8 +177,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Show [AIAddMealScreen] for adding `AI meal`
     final result = await showBlurredModalBottomSheet<AIMealResult>(
       context: context,
-      modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
-      backgroundColor: BokunSpizeColors.grey,
+      modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
+      backgroundColor: context.colors.scaffoldBackground,
       builder: (context) => AIAddMealScreen(
         mealId: newMealId,
       ),
@@ -335,8 +335,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Show [ManualAddMealScreen]
     final result = await showBlurredModalBottomSheet<ManualMealResult>(
       context: context,
-      modalBarrierColor: BokunSpizeColors.black.withValues(alpha: 0.25),
-      backgroundColor: BokunSpizeColors.grey,
+      modalBarrierColor: context.colors.text.withValues(alpha: 0.25),
+      backgroundColor: context.colors.scaffoldBackground,
       builder: (context) => ManualAddMealScreen(
         mealId: mealId,
         passedMeal: passedMeal,

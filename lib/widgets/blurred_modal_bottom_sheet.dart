@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../theme/extensions.dart';
 
 /// Opens sheet from passed `builder` with blur
 Future<T?> showBlurredModalBottomSheet<T>({
@@ -13,7 +13,7 @@ Future<T?> showBlurredModalBottomSheet<T>({
   double elevation = 0,
   double blurSigma = 8,
   bool isScrollControlled = true,
-  Color backgroundColor = BokunSpizeColors.white,
+  Color? backgroundColor,
   Color modalBarrierColor = Colors.transparent,
   ShapeBorder shape = const RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(
@@ -37,7 +37,7 @@ Future<T?> showBlurredModalBottomSheet<T>({
       elevation: 0,
       blurSigma: blurSigma,
       isScrollControlled: isScrollControlled,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? context.colors.listTileBackground,
       modalBarrierColor: modalBarrierColor,
       shape: shape,
       builder: (context) => ConstrainedBox(

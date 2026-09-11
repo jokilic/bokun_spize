@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../constants/colors.dart';
+import '../theme/extensions.dart';
 
 void showSnackbar(
   BuildContext context, {
@@ -17,18 +17,18 @@ void showSnackbar(
         children: [
           PhosphorIcon(
             icon,
-            color: BokunSpizeColors.black,
+            color: context.colors.text,
             size: 28,
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'PlusJakartaSans',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: BokunSpizeColors.black,
+                color: context.colors.text,
               ),
             ),
           ),
@@ -36,11 +36,11 @@ void showSnackbar(
       ),
       padding: const EdgeInsets.all(14),
       behavior: SnackBarBehavior.floating,
-      backgroundColor: BokunSpizeColors.grey,
+      backgroundColor: context.colors.scaffoldBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(100),
-        side: const BorderSide(
-          color: BokunSpizeColors.black,
+        side: BorderSide(
+          color: context.colors.text,
           width: 1.5,
         ),
       ),

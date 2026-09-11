@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../models/meal/food.dart';
+import '../../../theme/extensions.dart';
 import '../../../util/color.dart';
 import '../../../util/format.dart';
 
@@ -27,6 +27,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = getCalorieValueColor(
       nutrition: food.nutrition,
+      context: context,
     );
 
     return Padding(
@@ -40,7 +41,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
           index: index,
           isDraggable: enabled,
           key: ObjectKey(food),
-          backgroundColor: BokunSpizeColors.grey,
+          backgroundColor: context.colors.scaffoldBackground,
           openAnimationDuration: 175,
           closeAnimationDuration: 175,
           deleteAnimationDuration: 175,
@@ -52,11 +53,11 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                 await handler(true);
                 await onDeletePressed();
               },
-              color: BokunSpizeColors.red,
+              color: context.colors.delete,
               backgroundRadius: listTileRadius,
-              icon: const PhosphorIcon(
+              icon: PhosphorIcon(
                 PhosphorIconsBold.trash,
-                color: BokunSpizeColors.white,
+                color: context.colors.listTileBackground,
                 size: 26,
               ),
             ),
@@ -67,7 +68,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
             child: InkWell(
               onTap: onPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
-              highlightColor: BokunSpizeColors.white.withValues(
+              highlightColor: context.colors.listTileBackground.withValues(
                 alpha: enabled ? 0.5 : 0.25,
               ),
               splashColor: Colors.transparent,
@@ -76,7 +77,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(listTileRadius),
-                  color: BokunSpizeColors.white.withValues(
+                  color: context.colors.listTileBackground.withValues(
                     alpha: enabled ? 0.5 : 0.25,
                   ),
                 ),
@@ -90,7 +91,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100),
                       child: Container(
                         padding: const EdgeInsets.all(listTileIconRadius / 4),
-                        color: BokunSpizeColors.grey,
+                        color: context.colors.scaffoldBackground,
                         child: PhosphorIcon(
                           PhosphorIconsBold.bowlFood,
                           color: primaryColor,
@@ -112,11 +113,11 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                           ///
                           Text(
                             food.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
-                              color: BokunSpizeColors.black,
+                              color: context.colors.text,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -135,7 +136,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                                color: context.colors.text.withValues(alpha: 0.7),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -154,11 +155,11 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                         food.nutrition.protein,
                                       )}g'
                                     : null,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: BokunSpizeColors.green,
+                                  color: context.colors.protein,
                                 ),
                                 children: [
                                   if (food.nutrition.protein > 0)
@@ -171,11 +172,11 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                             food.nutrition.carbs,
                                           )}g'
                                         : null,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontFamily: 'PlusJakartaSans',
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: BokunSpizeColors.blue,
+                                      color: context.colors.carbs,
                                     ),
                                   ),
                                   if (food.nutrition.carbs > 0)
@@ -188,11 +189,11 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                             food.nutrition.fat,
                                           )}g'
                                         : null,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontFamily: 'PlusJakartaSans',
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: BokunSpizeColors.bordeaux,
+                                      color: context.colors.fat,
                                     ),
                                   ),
                                 ],
@@ -241,7 +242,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                               fontFamily: 'Epilogue',
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: BokunSpizeColors.black.withValues(alpha: 0.5),
+                              color: context.colors.text.withValues(alpha: 0.5),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

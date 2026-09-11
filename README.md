@@ -1,20 +1,28 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Replace all `Colors.xxx`
-- [ ] Replace all `TextStyle()`
-- [ ] Update database permissions
-- [ ] Icon & splash screen
-- [ ] Dark theme
-- [ ] Animations
-- [ ] [MealScreen]
-- [ ] [AccountScreen]
-- [ ] [SearchMealScreen]
-- [ ] Firebase App Check
-- [ ] Firebase Functions for AI
-- [ ] Notifications reminding to weight
-- [ ] Notifications analyzing previous meal day
-- [ ] Perhaps anonymous sign-in
-- [ ] Replace hardcoded 'en' with `context.locale.languageCode`
+### Theme
+    - [ ] Replace all `TextStyle()`
+    - [ ] Dark theme
+    - [ ] Animations
+
+### Screens
+    - [ ] [MealScreen]
+    - [ ] [AccountScreen]
+    - [ ] [SearchMealScreen]
+
+### Firebase
+    - [ ] Update database permissions
+    - [ ] Firebase App Check
+    - [ ] Firebase Functions for AI
+    - [ ] Perhaps anonymous sign-in
+
+### Notifications
+    - [ ] Notifications reminding to weight
+    - [ ] Notifications analyzing previous meal day
+
+### Localization
+    - [ ] Localize `Strings`
+    - [ ] Replace hardcoded 'en' with `context.locale.languageCode`
 
 # Bokun spize 🥗
 

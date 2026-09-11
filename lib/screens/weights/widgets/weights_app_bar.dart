@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/colors.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
 
 class WeightsAppBar extends StatelessWidget {
   final bool isLoading;
@@ -26,7 +26,7 @@ class WeightsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SliverAppBar.large(
-    backgroundColor: BokunSpizeColors.grey,
+    backgroundColor: context.colors.scaffoldBackground,
     elevation: 0,
     scrolledUnderElevation: 0,
     expandedHeight: 200,
@@ -49,10 +49,10 @@ class WeightsAppBar extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
-              backgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              foregroundColor: BokunSpizeColors.blue,
-              disabledBackgroundColor: BokunSpizeColors.white.withValues(alpha: 0.5),
-              disabledForegroundColor: BokunSpizeColors.blue,
+              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+              foregroundColor: context.colors.carbs,
+              disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+              disabledForegroundColor: context.colors.carbs,
             ),
           ),
           const SizedBox(width: 14),
@@ -64,13 +64,13 @@ class WeightsAppBar extends StatelessWidget {
             Expanded(
               child: Text(
                 title!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 22,
                   height: 1.2,
                   letterSpacing: 0.6,
                   fontWeight: FontWeight.w800,
-                  color: BokunSpizeColors.blue,
+                  color: context.colors.carbs,
                 ),
               ),
             ),
@@ -122,11 +122,11 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final changeColor = weightChange != null
         ? switch (weightChange!) {
-            > 0 => BokunSpizeColors.red,
-            < 0 => BokunSpizeColors.green,
-            _ => BokunSpizeColors.black,
+            < 0 => context.colors.protein,
+            > 0 => context.colors.delete,
+            _ => context.colors.text,
           }
-        : BokunSpizeColors.black;
+        : context.colors.text;
 
     return Opacity(
       opacity: opacity,
@@ -161,7 +161,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
-                          color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                          color: context.colors.listTileBackground.withValues(alpha: 0.5),
                         ),
                         height: 10,
                         width: 64,
@@ -178,7 +178,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.6,
-                        color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                        color: context.colors.text.withValues(alpha: 0.7),
                       ),
                     ),
                   SizedBox(height: isLoading ? 10 : 2),
@@ -208,7 +208,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: BokunSpizeColors.blue.withValues(alpha: 0.5),
+                              color: context.colors.carbs.withValues(alpha: 0.5),
                             ),
                             height: 34,
                             width: 28,
@@ -224,20 +224,20 @@ class FadingFlexibleTitle extends StatelessWidget {
                           loop: false,
                           curve: Curves.easeIn,
                           duration: BokunSpizeDurations.animation,
-                          textStyle: const TextStyle(
+                          textStyle: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 40,
                             fontWeight: FontWeight.w800,
                             height: 1.2,
                             letterSpacing: 1.5,
-                            color: BokunSpizeColors.blue,
+                            color: context.colors.carbs,
                           ),
                         )
                       ///
                       /// NO VALUE
                       ///
                       else
-                        const Text(
+                        Text(
                           '--',
                           style: TextStyle(
                             fontFamily: 'Epilogue',
@@ -245,7 +245,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             fontWeight: FontWeight.w800,
                             height: 1.2,
                             letterSpacing: 1.5,
-                            color: BokunSpizeColors.blue,
+                            color: context.colors.carbs,
                           ),
                         ),
 
@@ -269,7 +269,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                color: BokunSpizeColors.white.withValues(alpha: 0.5),
+                                color: context.colors.listTileBackground.withValues(alpha: 0.5),
                               ),
                               height: 10,
                               width: 32,
@@ -290,7 +290,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               height: 1.2,
                               letterSpacing: 1.5,
-                              color: BokunSpizeColors.black.withValues(alpha: 0.7),
+                              color: context.colors.text.withValues(alpha: 0.7),
                             ),
                           ),
                         ),
@@ -339,12 +339,12 @@ class FadingFlexibleTitle extends StatelessWidget {
                         final int days => 'vs last $days days',
                         null => '-',
                       },
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 8,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.2,
-                        color: BokunSpizeColors.black,
+                        color: context.colors.text,
                       ),
                       textAlign: TextAlign.right,
                     ),
