@@ -2,7 +2,6 @@
 
 ### Theme
     - [ ] Replace all `TextStyle()`
-    - [ ] Dark theme
     - [ ] Animations
 
 ### Screens
