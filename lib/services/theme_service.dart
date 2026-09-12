@@ -5,12 +5,12 @@ class ThemeService extends ValueNotifier<ThemeMode> {
   /// CONSTRUCTOR
   ///
 
-  ThemeService() : super(ThemeMode.light);
+  ThemeService() : super(ThemeMode.system);
 
   ///
   /// METHODS
   ///
 
   /// Toggles active `theme`
-  void toggleTheme() => value = value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  void toggleTheme() => value = value != ThemeMode.light ? ThemeMode.light : ThemeMode.dark;
 }
