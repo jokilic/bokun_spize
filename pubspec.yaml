@@ -130,12 +130,12 @@ flutter_launcher_icons:
   adaptive_icon_foreground_inset: 16
   min_sdk_android: 21
   remove_alpha_ios: true
-  background_color_ios: '#DCE0D9'
+  background_color_ios: '#DBDEE1'
   web:
     generate: true
     image_path: 'assets/icon.png'
-    background_color: '#DCE0D9'
-    theme_color: '#DCE0D9'
+    background_color: '#DBDEE1'
+    theme_color: '#DBDEE1'
   windows:
     generate: true
     image_path: 'assets/icon.png'
@@ -151,5 +151,5 @@ flutter_native_splash:
   background_image_dark: 'assets/splash_dark.png'
   android_12:
     image: 'assets/splash_icon.png'
-    color: '#DCE0D9'
-    color_dark: '#202630'
+    color: '#DBDEE1'
+    color_dark: '#181825'
