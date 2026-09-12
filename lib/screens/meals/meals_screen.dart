@@ -51,9 +51,6 @@ class _MealsScreenState extends State<MealsScreen> {
     final firebaseService = getIt.get<FirebaseService>();
     final mealsController = getIt.get<MealsController>();
 
-    /// User data from `Firebase`
-    final userName = firebaseService.userName;
-
     /// Reference to `state`
     final state = watchIt<MealsController>().value;
 
@@ -66,6 +63,9 @@ class _MealsScreenState extends State<MealsScreen> {
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
+
+    /// User name from `Firebase`
+    final userName = firebaseService.userName ?? userMetrics?.name;
 
     /// Calculates total values for `List<Meals>`
     final currentCalories = meals.fold<double>(

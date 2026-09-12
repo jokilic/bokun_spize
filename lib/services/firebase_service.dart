@@ -585,7 +585,7 @@ class FirebaseService {
       final snapshot = await firestore.collection('users').doc(user.uid).get();
       final data = snapshot.data();
 
-      if (data == null || !data.containsKey('age')) {
+      if (data == null) {
         return null;
       }
 
@@ -614,7 +614,7 @@ class FirebaseService {
       await for (final snapshot in document.snapshots()) {
         final data = snapshot.data();
 
-        if (data == null || !data.containsKey('age')) {
+        if (data == null) {
           yield null;
           continue;
         }

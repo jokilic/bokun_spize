@@ -3,27 +3,27 @@ import 'sex.dart';
 
 class UserMetrics {
   final String? name;
-  final int age;
-  final double height;
-  final double weight;
-  final ActivityLevel activity;
-  final Sex sex;
-  final double dailyCalories;
-  final double dailyProtein;
-  final double dailyCarbs;
-  final double dailyFat;
+  final int? age;
+  final double? height;
+  final double? weight;
+  final ActivityLevel? activity;
+  final Sex? sex;
+  final double? dailyCalories;
+  final double? dailyProtein;
+  final double? dailyCarbs;
+  final double? dailyFat;
 
   UserMetrics({
-    required this.name,
-    required this.age,
-    required this.height,
-    required this.weight,
-    required this.activity,
-    required this.sex,
-    required this.dailyCalories,
-    required this.dailyProtein,
-    required this.dailyCarbs,
-    required this.dailyFat,
+    this.name,
+    this.age,
+    this.height,
+    this.weight,
+    this.activity,
+    this.sex,
+    this.dailyCalories,
+    this.dailyProtein,
+    this.dailyCarbs,
+    this.dailyFat,
   });
 
   UserMetrics copyWith({
@@ -52,15 +52,15 @@ class UserMetrics {
 
   factory UserMetrics.fromMap(Map<String, dynamic> map) => UserMetrics(
     name: map['name'] as String?,
-    age: (map['age'] as num).toInt(),
-    height: (map['height'] as num).toDouble(),
-    weight: (map['weight'] as num).toDouble(),
-    activity: ActivityLevel.values[map['activity'] as int],
-    sex: Sex.values[map['sex'] as int],
-    dailyCalories: (map['dailyCalories'] as num).toDouble(),
-    dailyProtein: (map['dailyProtein'] as num).toDouble(),
-    dailyCarbs: (map['dailyCarbs'] as num).toDouble(),
-    dailyFat: (map['dailyFat'] as num).toDouble(),
+    age: (map['age'] as num?)?.toInt(),
+    height: (map['height'] as num?)?.toDouble(),
+    weight: (map['weight'] as num?)?.toDouble(),
+    activity: map['activity'] != null ? ActivityLevel.values[map['activity'] as int] : null,
+    sex: map['sex'] != null ? Sex.values[map['sex'] as int] : null,
+    dailyCalories: (map['dailyCalories'] as num?)?.toDouble(),
+    dailyProtein: (map['dailyProtein'] as num?)?.toDouble(),
+    dailyCarbs: (map['dailyCarbs'] as num?)?.toDouble(),
+    dailyFat: (map['dailyFat'] as num?)?.toDouble(),
   );
 
   Map<String, dynamic> toMap() => {
@@ -68,8 +68,8 @@ class UserMetrics {
     'age': age,
     'height': height,
     'weight': weight,
-    'activity': activity.index,
-    'sex': sex.index,
+    'activity': activity?.index,
+    'sex': sex?.index,
     'dailyCalories': dailyCalories,
     'dailyProtein': dailyProtein,
     'dailyCarbs': dailyCarbs,
@@ -109,13 +109,30 @@ class UserMetrics {
       dailyCarbs.hashCode ^
       dailyFat.hashCode;
 
-  double get bmr {
+  double? get bmr {
+    final currentWeight = weight;
+    final currentHeight = height;
+    final currentAge = age;
+
+    if (currentWeight == null || currentHeight == null || currentAge == null || sex == null) {
+      return null;
+    }
+
     if (sex == Sex.male) {
-      return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+      return (10 * currentWeight) + (6.25 * currentHeight) - (5 * currentAge) + 5;
     } else {
-      return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+      return (10 * currentWeight) + (6.25 * currentHeight) - (5 * currentAge) - 161;
     }
   }
 
-  double get tdee => bmr * activity.multiplier;
+  double? get tdee {
+    final basalMetabolicRate = bmr;
+    final currentActivity = activity;
+
+    if (basalMetabolicRate == null || currentActivity == null) {
+      return null;
+    }
+
+    return basalMetabolicRate * currentActivity.multiplier;
+  }
 }

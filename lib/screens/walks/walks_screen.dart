@@ -6,6 +6,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
+import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
@@ -69,9 +70,6 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
     final storageService = getIt.get<StorageService>();
     final walksController = getIt.get<WalksController>();
 
-    /// User name
-    final userName = firebaseService.userName;
-
     /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
@@ -82,6 +80,14 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
     final isWalking = state.isWalking;
 
     final graphCalendarDays = watchIt<StorageService>().value.walksCalendarDays;
+
+    /// Listens to any changes in `userMetrics` from [Firebase]
+    final userMetrics = watchStream<FirebaseService, UserMetrics?>(
+      (firebaseService) => firebaseService.listenToUserMetrics(),
+    ).data;
+
+    /// User name from `Firebase`
+    final userName = firebaseService.userName ?? userMetrics?.name;
 
     final stepsWithDate = [...?state.stepsWithDate]
       ..sort(
