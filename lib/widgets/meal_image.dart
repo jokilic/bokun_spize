@@ -1,8 +1,11 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
+import '../constants/constants.dart';
 import '../constants/durations.dart';
 import '../services/cache_service.dart';
+import '../theme/extensions.dart';
 import '../util/dependencies.dart';
 
 class MealImage extends StatefulWidget {
@@ -10,7 +13,7 @@ class MealImage extends StatefulWidget {
   final BoxFit fit;
   final double height;
   final double width;
-  final Widget placeholderWidget;
+  final Widget? placeholderWidget;
   final Widget errorWidget;
 
   const MealImage({
@@ -18,9 +21,7 @@ class MealImage extends StatefulWidget {
     required this.height,
     required this.width,
     this.fit = BoxFit.cover,
-    this.placeholderWidget = const Center(
-      child: CircularProgressIndicator(),
-    ),
+    this.placeholderWidget,
     this.errorWidget = const SizedBox.shrink(),
     super.key,
   });
@@ -59,6 +60,27 @@ class MealImageState extends State<MealImage> {
     );
   }
 
+  Widget getPlaceholderWidget() => Animate(
+    onPlay: (controller) => controller.loop(
+      reverse: true,
+      min: 0.6,
+    ),
+    effects: const [
+      FadeEffect(
+        duration: BokunSpizeDurations.shimmer,
+        curve: Curves.easeIn,
+      ),
+    ],
+    child: Container(
+      height: widget.height,
+      width: widget.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(listTileRadius),
+        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) => FutureBuilder<String?>(
     future: imageUrlFuture,
@@ -76,7 +98,7 @@ class MealImageState extends State<MealImage> {
           fit: widget.fit,
           height: widget.height,
           width: widget.width,
-          placeholder: (context, url) => widget.placeholderWidget,
+          placeholder: (context, url) => widget.placeholderWidget ?? getPlaceholderWidget(),
           errorBuilder: (context, error, stackTrace) => widget.errorWidget,
           fadeOutCurve: Curves.easeIn,
           fadeInDuration: BokunSpizeDurations.animation,
@@ -85,7 +107,7 @@ class MealImageState extends State<MealImage> {
         );
       }
 
-      return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : widget.placeholderWidget;
+      return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : widget.placeholderWidget ?? getPlaceholderWidget();
     },
   );
 }
