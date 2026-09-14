@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../models/meal/meal.dart';
 
@@ -15,7 +15,5 @@ class ViewMealScreen extends StatefulWidget {
 
 class _ViewMealScreenState extends State<ViewMealScreen> {
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
+  Widget build(BuildContext context) => const Scaffold();
 }

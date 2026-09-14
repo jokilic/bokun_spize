@@ -102,7 +102,8 @@ class WalksSuccess extends StatelessWidget {
               stepWithDate: stepWithDate,
               previousStepsWithDate: previousStepsWithDate,
               isToday: isToday,
-              isWalking: isToday && isWalking,
+              // isWalking: isToday && isWalking,
+              isWalking: true,
             ),
           );
         },

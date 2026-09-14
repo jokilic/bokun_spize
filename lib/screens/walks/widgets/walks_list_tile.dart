@@ -140,52 +140,80 @@ class WalksListTile extends StatelessWidget {
                     ///
                     /// STEPS
                     ///
-                    Animate(
-                      onPlay: (controller) {
-                        if (isWalking) {
-                          controller.loop(
-                            reverse: true,
-                            min: 0.6,
-                          );
-                        }
-                      },
-                      effects: [
-                        if (isWalking)
-                          const FadeEffect(
-                            duration: BokunSpizeDurations.shimmer,
-                            curve: Curves.easeIn,
-                          ),
-                      ],
-                      child: Text.rich(
-                        TextSpan(
-                          text: stepWithDate.steps.round().toStringAsFixed(0),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            color: context.colors.text,
-                          ),
-                          children: [
-                            const WidgetSpan(
-                              child: SizedBox(width: 4),
-                            ),
-                            TextSpan(
-                              text: 'steps',
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                height: 1.2,
-                                letterSpacing: 1.5,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ],
+                    Text.rich(
+                      TextSpan(
+                        text: stepWithDate.steps.round().toStringAsFixed(0),
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: context.colors.text,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        children: [
+                          const WidgetSpan(
+                            child: SizedBox(width: 4),
+                          ),
+                          TextSpan(
+                            text: 'steps',
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              height: 1.2,
+                              letterSpacing: 1.5,
+                              color: context.colors.text.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+
+                    ///
+                    /// WALKING
+                    ///
+                    // TODO: This value will change and this walking Row will show up. Can we animate the showing (perhaps some subtle animation on the parent column, so it doesn't jump suddenly and move content)
+                    if (isWalking)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Animate(
+                            onPlay: (controller) => controller.loop(
+                              reverse: true,
+                              min: 0.6,
+                            ),
+                            effects: const [
+                              FadeEffect(
+                                duration: BokunSpizeDurations.shimmer,
+                                curve: Curves.easeIn,
+                              ),
+                            ],
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: context.colors.fat,
+                                  width: 3.5,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              height: 14,
+                              width: 14,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'Walking now',
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: context.colors.fat,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
 
                     ///
                     /// CHANGE
