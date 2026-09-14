@@ -14,6 +14,7 @@ import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/navigation_bar_widget.dart';
+import '../search/search_screen.dart';
 import '../view_meal/view_meal_screen.dart';
 import 'meals_controller.dart';
 import 'widgets/meals_app_bar.dart';
@@ -182,7 +183,9 @@ class _MealsScreenState extends State<MealsScreen> {
                   isLoading: isLoading,
                   onPressedPreviousDay: () {
                     HapticFeedback.lightImpact();
-                    // TODO: Finish
+                    mealsController.updateDate(
+                      DateUtils.addDaysToDate(activeDate, -1),
+                    );
                   },
                   onPressedDay: () {
                     HapticFeedback.lightImpact();
@@ -190,11 +193,16 @@ class _MealsScreenState extends State<MealsScreen> {
                   },
                   onPressedNextDay: () {
                     HapticFeedback.lightImpact();
-                    // TODO: Finish
+                    mealsController.updateDate(
+                      DateUtils.addDaysToDate(activeDate, 1),
+                    );
                   },
                   onSearchPressed: () {
                     HapticFeedback.lightImpact();
-                    // TODO: Finish
+                    showBlurredModalBottomSheet(
+                      context: context,
+                      builder: (context) => SearchScreen(),
+                    );
                   },
                   shortDayString: getDateString(
                     date: activeDate,

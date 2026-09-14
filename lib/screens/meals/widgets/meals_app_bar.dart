@@ -80,7 +80,6 @@ class MealsAppBar extends StatelessWidget {
           ///
           /// CURRENT DAY & BUTTONS
           ///
-          // TODO: Implement animating this widget (it will change shortDayString and I need animated width changes)
           Flexible(
             child: Container(
               decoration: BoxDecoration(
@@ -116,32 +115,38 @@ class MealsAppBar extends StatelessWidget {
                   /// CURRENT DAY
                   ///
                   Flexible(
-                    child: IconButton(
-                      onPressed: onPressedDay,
-                      icon: Text(
-                        shortDayString,
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 18,
-                          height: 1.2,
-                          letterSpacing: 0.6,
-                          fontWeight: FontWeight.w900,
-                          color: context.colors.protein,
+                    child: AnimatedSize(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeInOut,
+                      child: IconButton(
+                        onPressed: onPressedDay,
+                        icon: Text(
+                          shortDayString,
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 18,
+                            height: 1.2,
+                            letterSpacing: 0.6,
+                            fontWeight: FontWeight.w900,
+                            color: context.colors.protein,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      style: IconButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 12,
+                        style: IconButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: context.colors.protein,
+                          disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          disabledForegroundColor: context.colors.protein,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: context.colors.protein,
-                        disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                        disabledForegroundColor: context.colors.protein,
                       ),
                     ),
                   ),
