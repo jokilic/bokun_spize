@@ -12,7 +12,6 @@ import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../theme/extensions.dart';
-import '../../util/color.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import '../../util/spacing.dart';
