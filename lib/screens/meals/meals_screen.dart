@@ -50,7 +50,6 @@ class _MealsScreenState extends State<MealsScreen> {
   @override
   Widget build(BuildContext context) {
     /// References to services & controllers
-    final firebaseService = getIt.get<FirebaseService>();
     final mealsController = getIt.get<MealsController>();
 
     /// Reference to `state`
@@ -65,9 +64,6 @@ class _MealsScreenState extends State<MealsScreen> {
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
-
-    /// User name from `Firebase`
-    final userName = firebaseService.userName ?? userMetrics?.name;
 
     /// Calculates total values for `List<Meals>`
     final currentCalories = meals.fold<double>(
@@ -117,70 +113,41 @@ class _MealsScreenState extends State<MealsScreen> {
                   ),
                 ),
               )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 48,
-                    width: 48,
-                    child: FloatingActionButton(
-                      heroTag: const ValueKey('meals-calendar-fab'),
-                      elevation: 0,
-                      backgroundColor: context.colors.protein,
-                      foregroundColor: context.colors.listTileBackground,
-                      splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      shape: const CircleBorder(),
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        mealsController.updateDateViaPicker(context);
-                      },
-                      child: PhosphorIcon(
-                        PhosphorIconsBold.calendarDot,
-                        color: context.colors.buttonText,
-                        size: 24,
-                      ),
+            : SizedBox(
+                height: 68,
+                width: 68,
+                child: GestureDetector(
+                  onLongPress: () {
+                    HapticFeedback.lightImpact();
+                    mealsController.onAddManualMealPressed(
+                      context,
+                      passedMeal: null,
+                      isCopyingMeal: false,
+                    );
+                  },
+                  child: FloatingActionButton(
+                    heroTag: const ValueKey('meals-add-meal-fab'),
+                    elevation: 0,
+                    backgroundColor: context.colors.protein,
+                    foregroundColor: context.colors.listTileBackground,
+                    splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    shape: const CircleBorder(),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      mealsController.onAddAIMealPressed(
+                        context,
+                        languageCode: 'hr',
+                      );
+                    },
+                    child: PhosphorIcon(
+                      PhosphorIconsBold.plus,
+                      color: context.colors.buttonText,
+                      size: 32,
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  SizedBox(
-                    height: 68,
-                    width: 68,
-                    child: GestureDetector(
-                      onLongPress: () {
-                        HapticFeedback.lightImpact();
-                        mealsController.onAddManualMealPressed(
-                          context,
-                          passedMeal: null,
-                          isCopyingMeal: false,
-                        );
-                      },
-                      child: FloatingActionButton(
-                        heroTag: const ValueKey('meals-add-meal-fab'),
-                        elevation: 0,
-                        backgroundColor: context.colors.protein,
-                        foregroundColor: context.colors.listTileBackground,
-                        splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        shape: const CircleBorder(),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          mealsController.onAddAIMealPressed(
-                            context,
-                            languageCode: 'hr',
-                          );
-                        },
-                        child: PhosphorIcon(
-                          PhosphorIconsBold.plus,
-                          color: context.colors.buttonText,
-                          size: 32,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
         body: Animate(
           effects: const [
@@ -213,8 +180,27 @@ class _MealsScreenState extends State<MealsScreen> {
                 ///
                 MealsAppBar(
                   isLoading: isLoading,
-                  title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
-                  dayString: getDateString(
+                  onPressedPreviousDay: () {
+                    HapticFeedback.lightImpact();
+                    // TODO: Finish
+                  },
+                  onPressedDay: () {
+                    HapticFeedback.lightImpact();
+                    mealsController.updateDateViaPicker(context);
+                  },
+                  onPressedNextDay: () {
+                    HapticFeedback.lightImpact();
+                    // TODO: Finish
+                  },
+                  onSearchPressed: () {
+                    HapticFeedback.lightImpact();
+                    // TODO: Finish
+                  },
+                  shortDayString: getDateString(
+                    date: activeDate,
+                    dateFormat: 'dd.MM.',
+                  ),
+                  fullDayString: getDateString(
                     date: activeDate,
                     dateFormat: 'EEEE, dd.MM.yyyy.',
                   ),

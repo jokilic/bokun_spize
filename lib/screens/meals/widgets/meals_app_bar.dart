@@ -10,8 +10,12 @@ import '../../../widgets/animated_nutrition_bar.dart';
 
 class MealsAppBar extends StatelessWidget {
   final bool isLoading;
-  final String? title;
-  final String dayString;
+  final Function() onPressedPreviousDay;
+  final Function() onPressedDay;
+  final Function() onPressedNextDay;
+  final Function() onSearchPressed;
+  final String shortDayString;
+  final String fullDayString;
   final double currentCalories;
   final double currentProtein;
   final double currentCarbs;
@@ -23,8 +27,12 @@ class MealsAppBar extends StatelessWidget {
 
   const MealsAppBar({
     required this.isLoading,
-    required this.title,
-    required this.dayString,
+    required this.onPressedPreviousDay,
+    required this.onPressedDay,
+    required this.onPressedNextDay,
+    required this.onSearchPressed,
+    required this.shortDayString,
+    required this.fullDayString,
     required this.currentCalories,
     required this.currentProtein,
     required this.currentCarbs,
@@ -45,6 +53,7 @@ class MealsAppBar extends StatelessWidget {
     leading: Padding(
       padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ///
           /// ICON
@@ -69,22 +78,120 @@ class MealsAppBar extends StatelessWidget {
           const SizedBox(width: 14),
 
           ///
-          /// APP TITLE
+          /// CURRENT DAY & BUTTONS
           ///
-          if (title != null)
-            Expanded(
-              child: Text(
-                title!,
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 22,
-                  height: 1.2,
-                  letterSpacing: 0.6,
-                  fontWeight: FontWeight.w800,
-                  color: context.colors.protein,
-                ),
+          // TODO: Implement animating this widget (it will change shortDayString and I need animated width changes)
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: context.colors.protein.withValues(alpha: 0.05),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ///
+                  /// PREVIOUS BUTTON
+                  ///
+                  IconButton(
+                    onPressed: onPressedPreviousDay,
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.caretLeft,
+                      size: 24,
+                    ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: context.colors.protein,
+                      disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      disabledForegroundColor: context.colors.protein,
+                    ),
+                  ),
+
+                  ///
+                  /// CURRENT DAY
+                  ///
+                  Flexible(
+                    child: IconButton(
+                      onPressed: onPressedDay,
+                      icon: Text(
+                        shortDayString,
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 18,
+                          height: 1.2,
+                          letterSpacing: 0.6,
+                          fontWeight: FontWeight.w900,
+                          color: context.colors.protein,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: context.colors.protein,
+                        disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        disabledForegroundColor: context.colors.protein,
+                      ),
+                    ),
+                  ),
+
+                  ///
+                  /// NEXT BUTTON
+                  ///
+                  IconButton(
+                    onPressed: onPressedNextDay,
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.caretRight,
+                      size: 24,
+                    ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: context.colors.protein,
+                      disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      disabledForegroundColor: context.colors.protein,
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
+
+          ///
+          /// ICON
+          ///
+          const SizedBox(width: 14),
+          IconButton(
+            onPressed: onSearchPressed,
+            icon: const PhosphorIcon(
+              PhosphorIconsBold.magnifyingGlass,
+              size: 24,
+            ),
+            style: IconButton.styleFrom(
+              padding: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+              foregroundColor: context.colors.protein,
+              disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+              disabledForegroundColor: context.colors.protein,
+            ),
+          ),
         ],
       ),
     ),
@@ -93,7 +200,7 @@ class MealsAppBar extends StatelessWidget {
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: FadingFlexibleTitle(
         isLoading: isLoading,
-        dayString: dayString,
+        fullDayString: fullDayString,
         currentCalories: currentCalories,
         currentProtein: currentProtein,
         currentCarbs: currentCarbs,
@@ -109,7 +216,7 @@ class MealsAppBar extends StatelessWidget {
 
 class FadingFlexibleTitle extends StatelessWidget {
   final bool isLoading;
-  final String dayString;
+  final String fullDayString;
   final double currentCalories;
   final double currentProtein;
   final double currentCarbs;
@@ -121,7 +228,7 @@ class FadingFlexibleTitle extends StatelessWidget {
 
   const FadingFlexibleTitle({
     required this.isLoading,
-    required this.dayString,
+    required this.fullDayString,
     required this.currentCalories,
     required this.currentProtein,
     required this.currentCarbs,
@@ -212,7 +319,7 @@ class FadingFlexibleTitle extends StatelessWidget {
             ///
             else
               Text(
-                dayString.toUpperCase(),
+                fullDayString.toUpperCase(),
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 10,
