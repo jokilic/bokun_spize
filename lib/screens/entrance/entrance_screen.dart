@@ -12,6 +12,7 @@ import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/color.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import '../../util/spacing.dart';
@@ -161,33 +162,56 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   ///
-                  /// ILLUSTRATION
+                  /// ILLUSTRATION & ROUNDED TOP
                   ///
                   SliverToBoxAdapter(
-                    child: Animate(
-                      delay: BokunSpizeDurations.stateTransitionStagger,
-                      effects: const [
-                        FadeEffect(
-                          duration: BokunSpizeDurations.animation,
-                          curve: Curves.easeOut,
+                    child: Stack(
+                      children: [
+                        ///
+                        /// ILLUSTRATION
+                        ///
+                        Animate(
+                          delay: BokunSpizeDurations.stateTransitionStagger,
+                          effects: const [
+                            FadeEffect(
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOut,
+                            ),
+                            MoveEffect(
+                              begin: Offset(0, 10),
+                              end: Offset.zero,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOutCubic,
+                            ),
+                          ],
+                          child: Image.asset(
+                            'assets/illustration.webp',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 400,
+                            errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                          ),
                         ),
-                        MoveEffect(
-                          begin: Offset(0, 10),
-                          end: Offset.zero,
-                          duration: BokunSpizeDurations.animation,
-                          curve: Curves.easeOutCubic,
+
+                        ///
+                        /// ROUNDED TOP
+                        ///
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          height: 24,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: context.colors.scaffoldBackground,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(listTileRadius),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
-                      child: Image.asset(
-                        'assets/illustration.webp',
-                        fit: BoxFit.cover,
-                        height: 400,
-                        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-                      ),
                     ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 32),
                   ),
 
                   ///
@@ -210,22 +234,78 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             curve: Curves.easeOutCubic,
                           ),
                         ],
-                        child: Text(
-                          'Welcome',
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 36,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 1,
-                            color: context.colors.text,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ///
+                            /// PLACEHOLDER BUTTON
+                            ///
+                            Opacity(
+                              opacity: 0,
+                              child: IgnorePointer(
+                                child: IconButton(
+                                  onPressed: null,
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.x,
+                                    size: 22,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    padding: const EdgeInsets.all(10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    foregroundColor: context.colors.text,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            ///
+                            /// TITLE
+                            ///
+                            Expanded(
+                              child: Text(
+                                'Welcome',
+                                style: TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.2,
+                                  letterSpacing: 0.6,
+                                  color: context.colors.text,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+                            ///
+                            /// PLACEHOLDER BUTTON
+                            ///
+                            Opacity(
+                              opacity: 0,
+                              child: IgnorePointer(
+                                child: IconButton(
+                                  onPressed: null,
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.x,
+                                    size: 22,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    padding: const EdgeInsets.all(10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    foregroundColor: context.colors.text,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 4),
                   ),
 
                   ///
@@ -256,6 +336,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             fontWeight: FontWeight.w500,
                             color: context.colors.text,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
