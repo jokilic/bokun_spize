@@ -189,7 +189,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                             foregroundColor: context.colors.text,
                           ),
                         ),
@@ -228,7 +228,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
                         ),
-                        backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                        backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                         foregroundColor: context.colors.text,
                       ),
                     ),
@@ -480,7 +480,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         },
                         icon: PhosphorIcon(
                           PhosphorIconsBold.calendarDot,
-                          color: context.colors.text.withValues(alpha: 0.75),
+                          color: context.colors.text,
                           size: 18,
                         ),
                         style: ElevatedButton.styleFrom(
@@ -495,8 +495,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
-                          foregroundColor: context.colors.text.withValues(alpha: 0.75),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
                         ),
                         label: Text(
                           date,
@@ -516,7 +516,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         },
                         icon: PhosphorIcon(
                           PhosphorIconsBold.clock,
-                          color: context.colors.text.withValues(alpha: 0.75),
+                          color: context.colors.text,
                           size: 18,
                         ),
                         style: ElevatedButton.styleFrom(
@@ -531,8 +531,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
-                          foregroundColor: context.colors.text.withValues(alpha: 0.75),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
                         ),
                         label: Text(
                           time,

@@ -83,7 +83,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                           foregroundColor: context.colors.text,
                         ),
                       ),
@@ -122,7 +122,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                      backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       foregroundColor: context.colors.text,
                     ),
                   ),
