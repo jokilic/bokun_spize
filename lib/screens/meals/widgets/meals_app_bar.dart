@@ -214,14 +214,14 @@ class FadingFlexibleTitle extends StatelessWidget {
               Text(
                 dayString.toUpperCase(),
                 style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
+                  fontFamily: 'Epilogue',
                   fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.6,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
                   color: context.colors.text,
                 ),
               ),
-            SizedBox(height: isLoading ? 10 : 2),
+            if (isLoading) const SizedBox(height: 8),
 
             ///
             /// CALORIES
@@ -268,7 +268,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       fontSize: 40,
                       fontWeight: FontWeight.w800,
                       height: 1.2,
-                      letterSpacing: 1.5,
+                      letterSpacing: 1.2,
                       color: context.colors.protein,
                     ),
                   ),
@@ -305,15 +305,14 @@ class FadingFlexibleTitle extends StatelessWidget {
                 ///
                 else
                   Transform.translate(
-                    offset: const Offset(0, 5),
+                    offset: const Offset(0, 6),
                     child: Text(
                       dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
                       style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
+                        fontFamily: 'Epilogue',
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        height: 1.2,
-                        letterSpacing: 1.5,
+                        letterSpacing: 1.2,
                         color: context.colors.text,
                       ),
                     ),

@@ -31,7 +31,7 @@ Color getCalorieValueColor({
   required BuildContext context,
 }) {
   if (nutrition == null || (nutrition.protein == 0 && nutrition.carbs == 0 && nutrition.fat == 0)) {
-    return context.colors.text;
+    return context.colors.text.withValues(alpha: 0.5);
   }
 
   if (nutrition.protein >= nutrition.carbs && nutrition.protein >= nutrition.fat) {

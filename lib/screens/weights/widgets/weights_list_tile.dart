@@ -180,7 +180,7 @@ class WeightsListTile extends StatelessWidget {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   height: 1.2,
-                                  letterSpacing: 1.5,
+                                  letterSpacing: 1.2,
                                   color: context.colors.text.withValues(alpha: 0.7),
                                 ),
                               ),
