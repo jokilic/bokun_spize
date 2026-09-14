@@ -173,47 +173,46 @@ class WalksListTile extends StatelessWidget {
                     ///
                     /// WALKING
                     ///
-                    // TODO: This value will change and this walking Row will show up. Can we animate the showing (perhaps some subtle animation on the parent column, so it doesn't jump suddenly and move content)
-                    if (isWalking)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Animate(
-                            onPlay: (controller) => controller.loop(
-                              reverse: true,
-                              min: 0.6,
-                            ),
-                            effects: const [
-                              FadeEffect(
-                                duration: BokunSpizeDurations.shimmer,
-                                curve: Curves.easeIn,
-                              ),
-                            ],
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: context.colors.fat,
-                                  width: 3.5,
+                    AnimatedSize(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeInOut,
+                      alignment: Alignment.topRight,
+                      child: isWalking
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Animate(
+                                  onPlay: (controller) => controller.loop(
+                                    reverse: true,
+                                    min: 0.6,
+                                  ),
+                                  effects: const [
+                                    FadeEffect(
+                                      duration: BokunSpizeDurations.shimmer,
+                                      curve: Curves.easeIn,
+                                    ),
+                                  ],
+                                  child: PhosphorIcon(
+                                    PhosphorIconsBold.footprints,
+                                    color: context.colors.fat,
+                                    size: 16,
+                                  ),
                                 ),
-                                shape: BoxShape.circle,
-                              ),
-                              height: 14,
-                              width: 14,
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            'Walking now',
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.fat,
-                            ),
-                            textAlign: TextAlign.right,
-                          ),
-                        ],
-                      ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  'Walking now',
+                                  style: TextStyle(
+                                    fontFamily: 'PlusJakartaSans',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: context.colors.fat,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
+                    ),
 
                     ///
                     /// CHANGE
