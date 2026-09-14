@@ -156,7 +156,7 @@ class WalksController
     stepsRefreshTimer = Timer.periodic(
       BokunSpizeDurations.stepsRefreshInterval,
       (_) {
-        if (value.permissionAuthorized == true && !value.isLoading) {
+        if (value.isWalking && value.permissionAuthorized == true && !value.isLoading) {
           refreshCurrentDaySteps();
         }
       },

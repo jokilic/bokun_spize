@@ -12,7 +12,9 @@ import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
+import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/navigation_bar_widget.dart';
+import '../view_meal/view_meal_screen.dart';
 import 'meals_controller.dart';
 import 'widgets/meals_app_bar.dart';
 import 'widgets/meals_empty.dart';
@@ -234,7 +236,12 @@ class _MealsScreenState extends State<MealsScreen> {
                     meals: meals,
                     onPressed: (meal) {
                       HapticFeedback.lightImpact();
-                      // TODO: Open [MealScreen]
+                      showBlurredModalBottomSheet(
+                        context: context,
+                        builder: (context) => ViewMealScreen(
+                          passedMeal: meal,
+                        ),
+                      );
                     },
                     onLongPressed: (meal) {
                       HapticFeedback.lightImpact();
