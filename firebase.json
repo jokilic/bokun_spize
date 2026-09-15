@@ -1,4 +1,13 @@
 {
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "ai-meals",
+      "runtime": "nodejs22",
+      "ignore": ["node_modules", ".git", "test", "*.log", ".secret.local"],
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+    }
+  ],
   "flutter": {
     "platforms": {
       "android": {
@@ -42,6 +51,7 @@
     "rules": "storage.rules"
   },
   "firestore": {
-    "rules": "firestore.rules"
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,6 +54,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
   @override
   void onDispose() {
+    isDisposed = true;
     mealsSubscription?.cancel();
     super.dispose();
   }
@@ -64,6 +64,13 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   ///
 
   StreamSubscription<List<Meal>>? mealsSubscription;
+
+  final pendingAIMeals = <String, Meal>{};
+  final submittingAIMeals = <String>{};
+  final cancelledAIMeals = <String>{};
+  List<Meal> streamedMeals = [];
+
+  var isDisposed = false;
 
   ///
   /// METHODS
@@ -84,9 +91,12 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
   /// Listens to meals from [date] and updates the loading and error state
   void listenToMeals({required DateTime date}) {
+    streamedMeals = [];
     updateState(
       activeDate: date,
-      meals: const [],
+      meals: getVisibleMeals(
+        date: date,
+      ),
       isLoading: true,
       error: null,
     );
@@ -101,8 +111,13 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
               return;
             }
 
+            streamedMeals = meals;
+            for (final meal in meals) {
+              pendingAIMeals.remove(meal.id);
+            }
+
             updateState(
-              meals: meals,
+              meals: getVisibleMeals(date: value.activeDate),
               isLoading: false,
               error: null,
             );
@@ -136,9 +151,25 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     required Meal meal,
     required BuildContext context,
   }) async {
+    if (pendingAIMeals.containsKey(meal.id) && submittingAIMeals.contains(meal.id)) {
+      cancelledAIMeals.add(meal.id);
+      pendingAIMeals.remove(meal.id);
+      updateState(meals: getVisibleMeals(date: value.activeDate));
+      return;
+    }
+
     final success = await firebase.deleteMeal(
       meal: meal,
     );
+
+    if (success) {
+      pendingAIMeals.remove(meal.id);
+      updateState(
+        meals: getVisibleMeals(
+          date: value.activeDate,
+        ),
+      );
+    }
 
     /// Delete failed, show error snackbar
     if (!success && context.mounted) {
@@ -203,119 +234,111 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     }
   }
 
-  /// Save a `loading meal` in [Firebase], then replaces it with the `AI outcome`
+  /// Combines temporary photo uploads with the meal documents received from `Firebase`
+  List<Meal> getVisibleMeals({required DateTime date}) {
+    final mealsById = {
+      ...pendingAIMeals,
+      for (final meal in streamedMeals) meal.id: meal,
+    };
+    return mealsById.values
+        .where(
+          (meal) => DateUtils.isSameDay(
+            meal.createdAt,
+            date,
+          ),
+        )
+        .toList()
+      ..sort(
+        (first, second) => second.createdAt.compareTo(
+          first.createdAt,
+        ),
+      );
+  }
+
+  /// Uploads the photo and submits a durable job whose outcome arrives through the meal listener
   Future<bool> createAIMeal({
     required AIMealResult result,
     required String newMealId,
     required String languageCode,
   }) async {
-    /// Trigger validation and return if fail
-    if (!isValidAIMealResult(result)) {
+    final userId = firebase.auth.currentUser?.uid;
+    if (!isValidAIMealResult(result) || userId == null) {
       return false;
     }
 
-    /// Create `loading meal`
+    final text = result.words?.trim();
     final loadingMeal = Meal(
       id: newMealId,
       createdAt: result.dateTime!,
-      originalText: result.words?.trim(),
+      originalText: text == null || text.isEmpty ? null : text,
       isLoading: true,
     );
 
-    try {
-      /// Write `loading meal` to [Firebase]
-      final loadingMealWritten = await firebase.writeMeal(
-        newMeal: loadingMeal,
-      );
+    /// Show upload progress before Firebase has received the meal request
+    pendingAIMeals[newMealId] = loadingMeal;
+    submittingAIMeals.add(newMealId);
+    updateDate(
+      loadingMeal.createdAt,
+    );
+    updateState(
+      meals: getVisibleMeals(
+        date: value.activeDate,
+      ),
+    );
 
-      if (!loadingMealWritten) {
+    var submitted = false;
+    try {
+      final imageFile = result.imageFile;
+      final imageStoragePath = imageFile == null ? null : await firebase.uploadMealImage(imageFile: imageFile);
+      if (imageFile != null && imageStoragePath == null) {
         return false;
       }
 
-      /// Show the date where the new `meal` belongs
-      updateDate(
-        loadingMeal.createdAt,
+      /// Cancelling during upload prevents the AI request from being submitted
+      if (cancelledAIMeals.contains(newMealId)) {
+        return imageStoragePath == null ||
+            await firebase.deleteMealImageIfUnused(
+              imageStoragePath: imageStoragePath,
+            );
+      }
+
+      pendingAIMeals[newMealId] = loadingMeal.copyWith(
+        imageStoragePath: imageStoragePath,
       );
 
-      /// Trigger AI logic
-      final outcome = await processAIMeal(
-        loadingMeal: loadingMeal,
-        imageFile: result.imageFile,
+      await aiProvider().createMeal(
+        userId: userId,
+        mealId: newMealId,
+        text: loadingMeal.originalText,
+        imageStoragePath: imageStoragePath,
+        createdAt: loadingMeal.createdAt,
         languageCode: languageCode,
       );
-
-      /// Update `meal` in [Firebase] with new values
-      final mealUpdated = await firebase.updateMeal(
-        newMeal: outcome.meal,
-      );
-
-      return mealUpdated && outcome.success;
-    } catch (error) {
-      log(
-        'Adding AI meal failed',
-        error: error,
-      );
-      return false;
-    }
-  }
-
-  /// Runs AI alongside image uploading and returns a finished `meal` containing parsed data or errors
-  Future<({Meal meal, bool success})> processAIMeal({
-    required Meal loadingMeal,
-    required File? imageFile,
-    required String languageCode,
-  }) async {
-    /// Start both operations and wait for them to finish before processing their results
-    final results = await Future.wait(
-      [
-        /// AI logic
-        aiProvider().triggerAI(
-          textPrompt: loadingMeal.originalText,
-          imageFile: imageFile,
-          languageCode: languageCode,
-        ),
-
-        /// Image uploading logic
-        if (imageFile != null)
-          firebase.uploadMealImage(
-            imageFile: imageFile,
-          )
-        else
-          Future<String?>.value(),
-      ],
-    );
-
-    final result = results.first! as ({String? aiResult, List<String>? errors});
-    final imageStoragePath = results.last as String?;
-
-    final aiResult = result.aiResult;
-
-    /// Parse result to proper [Meal] instance
-    final meal = aiResult == null
-        ? null
-        : parseAIResultToMeal(
-            aiResult: aiResult,
-            id: loadingMeal.id,
-            createdAt: loadingMeal.createdAt,
-            originalText: loadingMeal.originalText,
+      if (cancelledAIMeals.contains(newMealId)) {
+        return await firebase.deleteMeal(
+          meal: loadingMeal.copyWith(
             imageStoragePath: imageStoragePath,
-          );
-
-    /// Keep errors while allowing fallback AI model to recover
-    final errors = [
-      if (aiResult == null) ...?result.errors,
-      if (aiResult != null && meal == null) 'Meal failed decoding',
-      if (imageFile != null && imageStoragePath == null) 'Image failed to save',
-    ];
-
-    return (
-      meal: (meal ?? loadingMeal).copyWith(
-        errors: errors.isEmpty ? null : errors,
-        imageStoragePath: imageStoragePath,
-        isLoading: false,
-      ),
-      success: meal != null && errors.isEmpty,
-    );
+          ),
+        );
+      }
+      submitted = true;
+      return true;
+    } catch (error) {
+      log('Submitting AI meal failed', error: error);
+      return false;
+    } finally {
+      /// A server meal may already be visible even if the callable response was lost
+      if (!submitted) {
+        pendingAIMeals.remove(newMealId);
+      }
+      cancelledAIMeals.remove(newMealId);
+      submittingAIMeals.remove(newMealId);
+      updateState(
+        meals: getVisibleMeals(
+          date: value.activeDate,
+        ),
+      );
+    }
   }
 
   /// Opens [ManualAddMealScreen] to add, copy, or edit a meal
@@ -529,10 +552,16 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     List<Meal>? meals,
     bool? isLoading,
     Object? error = nullStateNoChange,
-  }) => value = (
-    activeDate: activeDate ?? value.activeDate,
-    meals: meals ?? value.meals,
-    isLoading: isLoading ?? value.isLoading,
-    error: identical(error, nullStateNoChange) ? value.error : error as String?,
-  );
+  }) {
+    if (isDisposed) {
+      return;
+    }
+
+    value = (
+      activeDate: activeDate ?? value.activeDate,
+      meals: meals ?? value.meals,
+      isLoading: isLoading ?? value.isLoading,
+      error: identical(error, nullStateNoChange) ? value.error : error as String?,
+    );
+  }
 }

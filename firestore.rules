@@ -105,6 +105,14 @@ service cloud.firestore {
         );
     }
 
+    // Keep an active AI meal under server control while allowing completed meals to be edited
+    function canWriteMeal(userId, mealId) {
+      let jobPath = /databases/$(database)/documents/users/$(userId)/aiMealJobs/$(mealId);
+      return !exists(jobPath)
+        || (resource != null
+          && get(jobPath).data.state in ['complete', 'failed']);
+    }
+
     function isValidWeightTrack(data, weightTrackId) {
       return data.keys().hasAll(['id', 'dateTime', 'weight'])
         && data.keys().hasOnly(['id', 'dateTime', 'weight'])
@@ -124,7 +132,17 @@ service cloud.firestore {
       match /meals/{mealId} {
         allow read, delete: if isOwner(userId);
         allow create, update: if isOwner(userId)
+          && canWriteMeal(userId, mealId)
           && isValidMeal(request.resource.data, userId, mealId);
+      }
+
+      // AI jobs and usage limits are maintained exclusively by the Admin SDK
+      match /aiMealJobs/{mealId} {
+        allow read, write: if false;
+      }
+
+      match /aiMealLimits/{limitId} {
+        allow read, write: if false;
       }
 
       match /weightTracks/{weightTrackId} {
