@@ -12,7 +12,6 @@
 ### Firebase
     - [ ] Update database permissions
     - [ ] Firebase App Check
-    - [ ] Firebase Functions for AI
     - [ ] Perhaps anonymous sign-in
 
 ### Notifications

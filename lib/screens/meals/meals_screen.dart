@@ -206,7 +206,7 @@ class _MealsScreenState extends State<MealsScreen> {
                   },
                   shortDayString: getDateString(
                     date: activeDate,
-                    dateFormat: 'dd.MM.',
+                    dateFormat: 'dd MMM',
                   ),
                   fullDayString: getDateString(
                     date: activeDate,
