@@ -204,7 +204,6 @@ class _MealsScreenState extends State<MealsScreen> {
                       builder: (context) => SearchScreen(),
                     );
                   },
-                  // TODO: 01. Apr format
                   shortDayString: getDateString(
                     date: activeDate,
                     dateFormat: 'dd.MM.',

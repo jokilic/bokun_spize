@@ -84,23 +84,21 @@ class MealsListTile extends StatelessWidget {
               ),
             ),
           ],
-          trailingActions: isLoading || hasError
-              ? null
-              : [
-                  SwipeAction(
-                    onTap: (handler) async {
-                      await handler(false);
-                      await onCopyPressed();
-                    },
-                    color: context.colors.protein,
-                    backgroundRadius: listTileRadius,
-                    icon: PhosphorIcon(
-                      PhosphorIconsBold.copy,
-                      color: context.colors.listTileBackground,
-                      size: 26,
-                    ),
-                  ),
-                ],
+          trailingActions: [
+            SwipeAction(
+              onTap: (handler) async {
+                await handler(false);
+                await onCopyPressed();
+              },
+              color: context.colors.protein,
+              backgroundRadius: listTileRadius,
+              icon: PhosphorIcon(
+                PhosphorIconsBold.copy,
+                color: context.colors.listTileBackground,
+                size: 26,
+              ),
+            ),
+          ],
           child: Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(listTileRadius),

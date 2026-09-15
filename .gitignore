@@ -126,10 +126,3 @@ android/fastlane/.env.default
 ios/fastlane/.env.default
 ios/vendor/
 assets/key.pem
-
-# Firebase Functions
-functions/node_modules/
-functions/lib/
-functions/.env*
-functions/.secret.local
-.firebase/
