@@ -11,6 +11,7 @@
         - [ ] Delete icon
     - [ ] [AccountScreen]
     - [ ] [SearchMealScreen]
+    - [ ] [MealsAppBar] - Add values for protein, carbs & fat
 
 ### Firebase
     - [ ] Update database permissions

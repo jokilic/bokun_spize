@@ -140,13 +140,13 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                             child: imageStoragePath != null && showImageMealListTile
                                 ? MealImage(
                                     imageStoragePath: imageStoragePath,
-                                    height: 400,
+                                    height: 240,
                                     width: double.infinity,
                                     errorWidget: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(listTileRadius),
                                       ),
-                                      height: 400,
+                                      height: 240,
                                       width: double.infinity,
                                       child: PhosphorIcon(
                                         PhosphorIconsBold.warningOctagon,
@@ -156,7 +156,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     ),
                                   )
                                 : Container(
-                                    height: 400,
+                                    height: 240,
                                     width: double.infinity,
                                     color: imageBackgroundColor,
                                     child: hasError
@@ -695,51 +695,52 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                         ),
                       ),
                     ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 32),
-                    ),
 
-                    ///
-                    /// FOODS TITLE
-                    ///
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-                      sliver: SliverToBoxAdapter(
-                        child: Animate(
-                          delay: BokunSpizeDurations.stateTransitionStagger,
-                          effects: const [
-                            FadeEffect(
-                              duration: BokunSpizeDurations.animation,
-                              curve: Curves.easeOut,
-                            ),
-                            MoveEffect(
-                              begin: Offset(0, 8),
-                              end: Offset.zero,
-                              duration: BokunSpizeDurations.animation,
-                              curve: Curves.easeOutCubic,
-                            ),
-                          ],
-                          child: Text(
-                            'Foods',
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.6,
-                              color: context.colors.text,
+                    if (foods?.isNotEmpty ?? false) ...[
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: 32),
+                      ),
+
+                      ///
+                      /// FOODS TITLE
+                      ///
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                        sliver: SliverToBoxAdapter(
+                          child: Animate(
+                            delay: BokunSpizeDurations.stateTransitionStagger,
+                            effects: const [
+                              FadeEffect(
+                                duration: BokunSpizeDurations.animation,
+                                curve: Curves.easeOut,
+                              ),
+                              MoveEffect(
+                                begin: Offset(0, 8),
+                                end: Offset.zero,
+                                duration: BokunSpizeDurations.animation,
+                                curve: Curves.easeOutCubic,
+                              ),
+                            ],
+                            child: Text(
+                              'Foods',
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.6,
+                                color: context.colors.text,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 16),
-                    ),
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: 16),
+                      ),
 
-                    ///
-                    /// FOODS
-                    ///
-                    if (foods?.isNotEmpty ?? false)
+                      ///
+                      /// FOODS
+                      ///
                       SliverList.builder(
                         itemCount: foods!.length,
                         findChildIndexCallback: (key) {
@@ -773,6 +774,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                           );
                         },
                       ),
+                    ],
 
                     ///
                     /// BOTTOM SPACING

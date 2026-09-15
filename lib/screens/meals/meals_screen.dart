@@ -230,6 +230,7 @@ class _MealsScreenState extends State<MealsScreen> {
                     meals: meals,
                     onPressed: (meal) {
                       HapticFeedback.lightImpact();
+                      // TODO: Sometimes this screen is not too long, why is it always `MediaQuery.sizeOf(context).height * 0.9` high? Can it be high as much as content is, but if it goes over `MediaQuery.sizeOf(context).height * 0.9`, then limit to that size?
                       showBlurredModalBottomSheet(
                         context: context,
                         builder: (context) => ViewMealScreen(
