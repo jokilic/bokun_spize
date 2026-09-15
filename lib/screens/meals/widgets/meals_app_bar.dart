@@ -463,6 +463,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         /// PROTEIN
                         ///
                         AnimatedNutritionBar(
+                          height: nutritionValuesHeight,
                           width: availableWidth * proteinBarWeight / totalBarWeight,
                           progress: proteinProgress,
                           color: context.colors.protein,
@@ -472,6 +473,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         /// CARBS
                         ///
                         AnimatedNutritionBar(
+                          height: nutritionValuesHeight,
                           width: availableWidth * carbsBarWeight / totalBarWeight,
                           progress: carbsProgress,
                           color: context.colors.carbs,
@@ -481,6 +483,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         /// FATS
                         ///
                         AnimatedNutritionBar(
+                          height: nutritionValuesHeight,
                           width: availableWidth * fatBarWeight / totalBarWeight,
                           progress: fatProgress,
                           color: context.colors.fat,

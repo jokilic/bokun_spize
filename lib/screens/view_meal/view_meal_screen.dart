@@ -11,9 +11,12 @@ import '../../theme/extensions.dart';
 import '../../util/color.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/format.dart';
 import '../../util/spacing.dart';
+import '../../widgets/animated_nutrition_bar.dart';
 import '../../widgets/meal_image.dart';
 import 'view_meal_controller.dart';
+import 'widgets/view_meal_food_list_tile.dart';
 
 // TODO: Implement proper staggered animations, like in other screens
 
@@ -47,10 +50,23 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
   @override
   Widget build(BuildContext context) {
     final mealName = widget.passedMeal.name ?? widget.passedMeal.originalText ?? '--';
+    final createdAt = widget.passedMeal.createdAt;
+
     final emoji = widget.passedMeal.emoji;
     final imageStoragePath = widget.passedMeal.imageStoragePath;
-    final createdAt = widget.passedMeal.createdAt;
+
     final nutrition = widget.passedMeal.nutrition;
+    final foods = widget.passedMeal.foods;
+
+    final protein = nutrition?.protein ?? 0.0;
+    final carbs = nutrition?.carbs ?? 0.0;
+    final fat = nutrition?.fat ?? 0.0;
+
+    final proteinBarWeight = protein.round() > 0 ? protein.round() : 1;
+    final carbsBarWeight = carbs.round() > 0 ? carbs.round() : 1;
+    final fatBarWeight = fat.round() > 0 ? fat.round() : 1;
+
+    final totalBarWeight = proteinBarWeight + carbsBarWeight + fatBarWeight;
 
     final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
 
@@ -340,54 +356,453 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                     ),
 
                     ///
-                    /// CALORIES
+                    /// NUTRITION TITLE
                     ///
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                       sliver: SliverToBoxAdapter(
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 4,
-                          children: [
-                            ///
-                            /// VALUE
-                            ///
-                            // TODO: Handle if null
-                            AnimatedDigitWidget(
-                              value: nutrition?.calories.round(),
-                              loop: false,
-                              curve: Curves.easeIn,
+                        child: Animate(
+                          delay: BokunSpizeDurations.stateTransitionStagger,
+                          effects: const [
+                            FadeEffect(
                               duration: BokunSpizeDurations.animation,
-                              textStyle: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 56,
-                                fontWeight: FontWeight.w800,
-                                height: 1.2,
-                                letterSpacing: 1.2,
-                                color: context.colors.protein,
-                              ),
+                              curve: Curves.easeOut,
                             ),
-
-                            ///
-                            /// UNIT
-                            ///
-                            Transform.translate(
-                              offset: const Offset(0, 8),
-                              child: Text(
-                                'kcal',
-                                style: TextStyle(
-                                  fontFamily: 'Epilogue',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 1.2,
-                                  color: context.colors.text,
-                                ),
-                              ),
+                            MoveEffect(
+                              begin: Offset(0, 8),
+                              end: Offset.zero,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOutCubic,
                             ),
                           ],
+                          child: Text(
+                            'Nutritional values',
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.6,
+                              color: context.colors.text,
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 16),
+                    ),
+
+                    ///
+                    /// CALORIES & NUTRITION
+                    ///
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                      sliver: SliverToBoxAdapter(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(listTileRadius),
+                            color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          ),
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///
+                              /// CALORIES
+                              ///
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 4,
+                                children: [
+                                  ///
+                                  /// VALUE
+                                  ///
+                                  // TODO: Handle if null
+                                  AnimatedDigitWidget(
+                                    value: nutrition?.calories.round(),
+                                    loop: false,
+                                    curve: Curves.easeIn,
+                                    duration: BokunSpizeDurations.animation,
+                                    textStyle: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 40 * 1.5,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1.2,
+                                      letterSpacing: 1.2,
+                                      color: context.colors.protein,
+                                    ),
+                                  ),
+
+                                  ///
+                                  /// UNIT
+                                  ///
+                                  Transform.translate(
+                                    offset: const Offset(0, 8),
+                                    child: Text(
+                                      'kcal',
+                                      style: TextStyle(
+                                        fontFamily: 'Epilogue',
+                                        fontSize: 12 * 1.5,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 1.2,
+                                        color: context.colors.text,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+
+                              ///
+                              /// NUTRITION VALUES
+                              ///
+                              SizedBox(
+                                height: nutritionValuesHeight * 1.5,
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    const spacing = 12.0 * 1.5;
+                                    final availableWidth = (constraints.maxWidth - (spacing * 2)).clamp(0.0, constraints.maxWidth).toDouble();
+
+                                    return Row(
+                                      spacing: spacing,
+                                      children: [
+                                        ///
+                                        /// PROTEIN
+                                        ///
+                                        AnimatedNutritionBar(
+                                          height: nutritionValuesHeight * 1.5,
+                                          width: availableWidth * proteinBarWeight / totalBarWeight,
+                                          progress: protein > 0 ? 1.0 : 0.0,
+                                          color: context.colors.protein,
+                                        ),
+
+                                        ///
+                                        /// CARBS
+                                        ///
+                                        AnimatedNutritionBar(
+                                          height: nutritionValuesHeight * 1.5,
+                                          width: availableWidth * carbsBarWeight / totalBarWeight,
+                                          progress: carbs > 0 ? 1.0 : 0.0,
+                                          color: context.colors.carbs,
+                                        ),
+
+                                        ///
+                                        /// FATS
+                                        ///
+                                        AnimatedNutritionBar(
+                                          height: nutritionValuesHeight * 1.5,
+                                          width: availableWidth * fatBarWeight / totalBarWeight,
+                                          progress: fat > 0 ? 1.0 : 0.0,
+                                          color: context.colors.fat,
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 6 * 1.5),
+
+                              ///
+                              /// NUTRITION TEXT
+                              ///
+                              Row(
+                                children: [
+                                  ///
+                                  /// PROTEIN
+                                  ///
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 7 * 1.5,
+                                          width: 7 * 1.5,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: context.colors.protein,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4 * 1.5),
+                                        Text(
+                                          'Protein'.toUpperCase(),
+                                          style: TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 8 * 1.5,
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.2,
+                                            letterSpacing: 0.4,
+                                            color: context.colors.text,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  ///
+                                  /// CARBS
+                                  ///
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          height: 7 * 1.5,
+                                          width: 7 * 1.5,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: context.colors.carbs,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4 * 1.5),
+                                        Text(
+                                          'Carbs'.toUpperCase(),
+                                          style: TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 8 * 1.5,
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.2,
+                                            letterSpacing: 0.4,
+                                            color: context.colors.text,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  ///
+                                  /// FATS
+                                  ///
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          height: 7 * 1.5,
+                                          width: 7 * 1.5,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: context.colors.fat,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4 * 1.5),
+                                        Text(
+                                          'Fats'.toUpperCase(),
+                                          style: TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 8 * 1.5,
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.2,
+                                            letterSpacing: 0.4,
+                                            color: context.colors.text,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    ///
+                    /// NUTRITION
+                    ///
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                      sliver: SliverToBoxAdapter(
+                        child: Animate(
+                          delay: BokunSpizeDurations.stateTransitionStagger,
+                          effects: const [
+                            FadeEffect(
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOut,
+                            ),
+                            MoveEffect(
+                              begin: Offset(0, 12),
+                              end: Offset.zero,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOutCubic,
+                            ),
+                          ],
+                          child: Row(
+                            spacing: 20,
+                            children: [
+                              ///
+                              /// PROTEIN
+                              ///
+                              Expanded(
+                                child: Container(
+                                  color: Colors.red,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ///
+                                      /// TITLE
+                                      ///
+                                      const Text(
+                                        'Protein',
+                                      ),
+
+                                      ///
+                                      /// VALUE
+                                      ///
+                                      Text(
+                                        formatNutritionValue(protein) ?? '--',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              ///
+                              /// CARBS
+                              ///
+                              Expanded(
+                                child: Container(
+                                  color: Colors.yellow,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ///
+                                      /// TITLE
+                                      ///
+                                      const Text(
+                                        'Carbs',
+                                      ),
+
+                                      ///
+                                      /// VALUE
+                                      ///
+                                      Text(
+                                        formatNutritionValue(carbs) ?? '--',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              ///
+                              /// FAT
+                              ///
+                              Expanded(
+                                child: Container(
+                                  color: Colors.purple,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ///
+                                      /// TITLE
+                                      ///
+                                      const Text(
+                                        'Fat',
+                                      ),
+
+                                      ///
+                                      /// VALUE
+                                      ///
+                                      Text(
+                                        formatNutritionValue(fat) ?? '--',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 20),
+                    ),
+
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 32),
+                    ),
+
+                    ///
+                    /// FOODS TITLE
+                    ///
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                      sliver: SliverToBoxAdapter(
+                        child: Animate(
+                          delay: BokunSpizeDurations.stateTransitionStagger,
+                          effects: const [
+                            FadeEffect(
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOut,
+                            ),
+                            MoveEffect(
+                              begin: Offset(0, 8),
+                              end: Offset.zero,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeOutCubic,
+                            ),
+                          ],
+                          child: Text(
+                            'Foods',
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.6,
+                              color: context.colors.text,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 16),
+                    ),
+
+                    ///
+                    /// FOODS
+                    ///
+                    if (foods?.isNotEmpty ?? false)
+                      SliverList.builder(
+                        itemCount: foods!.length,
+                        findChildIndexCallback: (key) {
+                          final index = foods.indexWhere(
+                            (food) => ObjectKey(food) == key,
+                          );
+                          return index == -1 ? null : index;
+                        },
+                        itemBuilder: (context, index) {
+                          final food = foods[index];
+
+                          return Animate(
+                            key: ObjectKey(food),
+                            delay: BokunSpizeDurations.stateTransitionStagger,
+                            effects: const [
+                              FadeEffect(
+                                duration: BokunSpizeDurations.stateTransition,
+                                curve: Curves.easeOut,
+                              ),
+                              MoveEffect(
+                                begin: Offset(0, 18),
+                                end: Offset.zero,
+                                duration: BokunSpizeDurations.stateTransition,
+                                curve: Curves.easeOutCubic,
+                              ),
+                            ],
+                            child: ViewMealFoodListTile(
+                              food: food,
+                              index: index,
+                            ),
+                          );
+                        },
+                      ),
 
                     ///
                     /// BOTTOM SPACING

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../constants/constants.dart';
 import '../constants/durations.dart';
 import '../theme/extensions.dart';
 
 class AnimatedNutritionBar extends StatelessWidget {
+  final double height;
   final double width;
   final double progress;
   final Color color;
 
   const AnimatedNutritionBar({
+    required this.height,
     required this.width,
     required this.progress,
     required this.color,
@@ -39,7 +40,7 @@ class AnimatedNutritionBar extends StatelessWidget {
               child: child,
             ),
             child: SizedBox(
-              height: nutritionValuesHeight,
+              height: height,
               child: ColoredBox(
                 color: color,
               ),
