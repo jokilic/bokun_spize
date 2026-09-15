@@ -232,7 +232,6 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                               ///
                               Expanded(
                                 child: Text(
-                                  // TODO: Check this
                                   mealName,
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
@@ -296,7 +295,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                             ),
                           ],
                           child: Text(
-                            'Track your everyday meals, weight & walks',
+                            'Some subtitle here...',
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
