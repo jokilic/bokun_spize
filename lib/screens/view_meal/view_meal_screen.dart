@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -8,10 +9,13 @@ import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
 import '../../theme/extensions.dart';
 import '../../util/color.dart';
+import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/meal_image.dart';
 import 'view_meal_controller.dart';
+
+// TODO: Implement proper staggered animations, like in other screens
 
 class ViewMealScreen extends WatchingStatefulWidget {
   final Meal passedMeal;
@@ -42,10 +46,13 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
-    final imageStoragePath = widget.passedMeal.imageStoragePath;
-    final emoji = widget.passedMeal.emoji;
     final mealName = widget.passedMeal.name ?? widget.passedMeal.originalText ?? '--';
+    final emoji = widget.passedMeal.emoji;
+    final imageStoragePath = widget.passedMeal.imageStoragePath;
+    final createdAt = widget.passedMeal.createdAt;
+    final nutrition = widget.passedMeal.nutrition;
+
+    final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
 
     final primaryColor = getCalorieValueColor(
       nutrition: widget.passedMeal.nutrition,
@@ -294,8 +301,29 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                               curve: Curves.easeOutCubic,
                             ),
                           ],
-                          child: Text(
-                            'Some subtitle here...',
+                          child: Text.rich(
+                            TextSpan(
+                              text: getDateString(
+                                date: createdAt,
+                                dateFormat: 'EEEE, dd MMM',
+                              ),
+                              children: [
+                                WidgetSpan(
+                                  child: PhosphorIcon(
+                                    PhosphorIconsBold.dotOutline,
+                                    size: 16,
+                                    color: context.colors.text,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: getDateString(
+                                    date: createdAt,
+                                    dateFormat: 'HH:mm',
+                                    useTodayYesterdayTomorrow: false,
+                                  ),
+                                ),
+                              ],
+                            ),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
@@ -309,6 +337,56 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                     ),
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 32),
+                    ),
+
+                    ///
+                    /// CALORIES
+                    ///
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                      sliver: SliverToBoxAdapter(
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 4,
+                          children: [
+                            ///
+                            /// VALUE
+                            ///
+                            // TODO: Handle if null
+                            AnimatedDigitWidget(
+                              value: nutrition?.calories.round(),
+                              loop: false,
+                              curve: Curves.easeIn,
+                              duration: BokunSpizeDurations.animation,
+                              textStyle: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 56,
+                                fontWeight: FontWeight.w800,
+                                height: 1.2,
+                                letterSpacing: 1.2,
+                                color: context.colors.protein,
+                              ),
+                            ),
+
+                            ///
+                            /// UNIT
+                            ///
+                            Transform.translate(
+                              offset: const Offset(0, 8),
+                              child: Text(
+                                'kcal',
+                                style: TextStyle(
+                                  fontFamily: 'Epilogue',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 1.2,
+                                  color: context.colors.text,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
 
                     ///
