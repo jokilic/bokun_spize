@@ -50,6 +50,10 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
       return;
     }
 
+    if (state == AppLifecycleState.inactive) {
+      return;
+    }
+
     walksController.pauseStepsRefresh();
   }
 
