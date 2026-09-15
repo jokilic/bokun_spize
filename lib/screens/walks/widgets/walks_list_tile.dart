@@ -90,7 +90,7 @@ class WalksListTile extends StatelessWidget {
                         capitalizeFirstLetter(
                               getDateString(
                                 date: stepWithDate.dateTime,
-                                dateFormat: 'dd.MM.',
+                                dateFormat: 'dd MMM',
                               ),
                             ) ??
                             '--',

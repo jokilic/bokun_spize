@@ -6,7 +6,6 @@ import 'package:uuid/uuid.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
-import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
@@ -50,7 +49,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
   @override
   Widget build(BuildContext context) {
     /// References to services & controllers
-    final firebaseService = getIt.get<FirebaseService>();
     final storageService = getIt.get<StorageService>();
     final weightsController = getIt.get<WeightsController>();
 
@@ -62,14 +60,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
     final weightTracks = state.weightTracks;
 
     final graphCalendarDays = watchIt<StorageService>().value.weightsCalendarDays;
-
-    /// Listens to any changes in `userMetrics` from [Firebase]
-    final userMetrics = watchStream<FirebaseService, UserMetrics?>(
-      (firebaseService) => firebaseService.listenToUserMetrics(),
-    ).data;
-
-    /// User name from `Firebase`
-    final userName = firebaseService.userName ?? userMetrics?.name;
 
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;
@@ -175,7 +165,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 ///
                 WeightsAppBar(
                   isLoading: isLoading,
-                  title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
                   dayString: lastWeightTrack != null
                       ? getDateString(
                           date: lastWeightTrack.dateTime,

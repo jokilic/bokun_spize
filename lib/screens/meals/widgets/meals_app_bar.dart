@@ -65,7 +65,7 @@ class MealsAppBar extends StatelessWidget {
               size: 24,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -135,10 +135,7 @@ class MealsAppBar extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         style: IconButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 12,
-                          ),
+                          padding: const EdgeInsets.all(12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100),
                           ),
@@ -187,7 +184,7 @@ class MealsAppBar extends StatelessWidget {
               size: 24,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),

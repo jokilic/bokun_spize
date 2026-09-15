@@ -6,8 +6,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
-import '../../models/user_metrics/user_metrics.dart';
-import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
@@ -66,7 +64,6 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     /// References to services & controllers
-    final firebaseService = getIt.get<FirebaseService>();
     final storageService = getIt.get<StorageService>();
     final walksController = getIt.get<WalksController>();
 
@@ -80,14 +77,6 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
     final isWalking = state.isWalking;
 
     final graphCalendarDays = watchIt<StorageService>().value.walksCalendarDays;
-
-    /// Listens to any changes in `userMetrics` from [Firebase]
-    final userMetrics = watchStream<FirebaseService, UserMetrics?>(
-      (firebaseService) => firebaseService.listenToUserMetrics(),
-    ).data;
-
-    /// User name from `Firebase`
-    final userName = firebaseService.userName ?? userMetrics?.name;
 
     final stepsWithDate = [...?state.stepsWithDate]
       ..sort(
@@ -179,7 +168,6 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
                 ///
                 WalksAppBar(
                   isLoading: isLoading,
-                  title: userName?.isNotEmpty ?? false ? 'Hello, $userName' : 'Bokun spize',
                   dayString: latestStepsWithDate != null
                       ? getDateString(
                           date: latestStepsWithDate.dateTime,

@@ -9,7 +9,6 @@ import '../../../theme/extensions.dart';
 
 class WalksAppBar extends StatelessWidget {
   final bool isLoading;
-  final String? title;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
@@ -17,7 +16,6 @@ class WalksAppBar extends StatelessWidget {
 
   const WalksAppBar({
     required this.isLoading,
-    required this.title,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -34,6 +32,7 @@ class WalksAppBar extends StatelessWidget {
     leading: Padding(
       padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ///
           /// AVATAR
@@ -45,7 +44,7 @@ class WalksAppBar extends StatelessWidget {
               size: 24,
             ),
             style: IconButton.styleFrom(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -58,22 +57,70 @@ class WalksAppBar extends StatelessWidget {
           const SizedBox(width: 14),
 
           ///
-          /// APP TITLE
+          /// TITLE
           ///
-          if (title != null)
-            Expanded(
-              child: Text(
-                title!,
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 22,
-                  height: 1.2,
-                  letterSpacing: 0.6,
-                  fontWeight: FontWeight.w800,
-                  color: context.colors.fat,
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: context.colors.fat.withValues(alpha: 0.05),
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: Text(
+                  'Walks',
+                  style: TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 18,
+                    height: 1.2,
+                    letterSpacing: 0.6,
+                    fontWeight: FontWeight.w900,
+                    color: context.colors.fat,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: context.colors.fat,
+                  disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                  disabledForegroundColor: context.colors.fat,
                 ),
               ),
             ),
+          ),
+
+          ///
+          /// PLACEHOLDER ICON
+          ///
+          const SizedBox(width: 14),
+          Opacity(
+            opacity: 0,
+            child: IgnorePointer(
+              child: IconButton(
+                onPressed: null,
+                icon: const PhosphorIcon(
+                  PhosphorIconsBold.magnifyingGlass,
+                  size: 24,
+                ),
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                  foregroundColor: context.colors.fat,
+                  disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                  disabledForegroundColor: context.colors.fat,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     ),

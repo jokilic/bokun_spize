@@ -113,7 +113,7 @@ class WeightsListTile extends StatelessWidget {
                             capitalizeFirstLetter(
                                   getDateString(
                                     date: weightTrack.dateTime,
-                                    dateFormat: 'EEE, dd.MM.',
+                                    dateFormat: 'EEE, dd MMM',
                                   ),
                                 ) ??
                                 '--',
