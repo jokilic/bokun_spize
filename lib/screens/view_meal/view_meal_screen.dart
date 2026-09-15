@@ -756,7 +756,6 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                   ],
                   child: ViewMealFoodListTile(
                     food: food,
-                    index: index,
                   ),
                 );
               },

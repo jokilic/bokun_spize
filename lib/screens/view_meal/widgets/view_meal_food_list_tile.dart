@@ -9,11 +9,9 @@ import '../../../util/format.dart';
 
 class ViewMealFoodListTile extends StatelessWidget {
   final Food food;
-  final int index;
 
   const ViewMealFoodListTile({
     required this.food,
-    required this.index,
   });
 
   @override

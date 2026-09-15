@@ -5,13 +5,16 @@
     - [ ] Animations
 
 ### Screens
-    - [ ] [ViewMealScreen]
+    - [ ] `ViewMealScreen`
         - [ ] Close icon
         - [ ] Copy icon
         - [ ] Delete icon
-    - [ ] [AccountScreen]
-    - [ ] [SearchMealScreen]
-    - [ ] [MealsAppBar] - Add values for protein, carbs & fat
+    - [ ] `ViewMealFoodListTile` & `ManualAddMealFoodListTile`
+        - [ ] Add emoji & color
+    - [ ] `AccountScreen`
+    - [ ] `SearchMealScreen`
+    - [ ] `MealsAppBar`
+        - [ ] Add values for protein, carbs & fat
 
 ### Firebase
     - [ ] Update database permissions
