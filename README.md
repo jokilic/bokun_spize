@@ -5,7 +5,10 @@
     - [ ] Animations
 
 ### Screens
-    - [ ] [MealScreen]
+    - [ ] [ViewMealScreen]
+        - [ ] Close icon
+        - [ ] Copy icon
+        - [ ] Delete icon
     - [ ] [AccountScreen]
     - [ ] [SearchMealScreen]
 

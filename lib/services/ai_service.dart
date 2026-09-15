@@ -84,6 +84,8 @@ JSON structure to follow strictly:
   "foods": [
     {
       "name": "string",
+      "emoji": "string",
+      "color": "string",
       "quantity": number,
       "unit": "string",
       "nutrition": {
@@ -172,6 +174,8 @@ JSON structure to follow strictly:
         items: Schema.object(
           propertyOrdering: [
             'name',
+            'emoji',
+            'color',
             'quantity',
             'unit',
             'nutrition',
@@ -180,6 +184,18 @@ JSON structure to follow strictly:
             'name': Schema.string(
               title: 'Food name',
               description: 'name of food, use the language identified by language code "$languageCode"',
+              format: 'string',
+              nullable: false,
+            ),
+            'emoji': Schema.string(
+              title: 'Food emoji',
+              description: 'only one emoji best describing food',
+              format: 'string',
+              nullable: false,
+            ),
+            'color': Schema.string(
+              title: 'Food color',
+              description: 'color best describing food in hex format (e.g. #FF0000)',
               format: 'string',
               nullable: false,
             ),

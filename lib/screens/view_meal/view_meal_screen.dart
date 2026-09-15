@@ -66,6 +66,10 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
     final carbsBarWeight = carbs.round() > 0 ? carbs.round() : 1;
     final fatBarWeight = fat.round() > 0 ? fat.round() : 1;
 
+    final formattedProtein = '${formatNutritionValue(protein)}g';
+    final formattedCarbs = '${formatNutritionValue(carbs)}g';
+    final formattedFat = '${formatNutritionValue(fat)}g';
+
     final totalBarWeight = proteinBarWeight + carbsBarWeight + fatBarWeight;
 
     final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
@@ -403,7 +407,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                             borderRadius: BorderRadius.circular(listTileRadius),
                             color: context.colors.listTileBackground.withValues(alpha: 0.5),
                           ),
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -417,9 +421,8 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                   ///
                                   /// VALUE
                                   ///
-                                  // TODO: Handle if null
                                   AnimatedDigitWidget(
-                                    value: nutrition?.calories.round(),
+                                    value: nutrition?.calories != null ? nutrition?.calories.round() : 0,
                                     loop: false,
                                     curve: Curves.easeIn,
                                     duration: BokunSpizeDurations.animation,
@@ -512,6 +515,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                   ///
                                   Expanded(
                                     child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 7 * 1.5,
@@ -522,18 +526,44 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 4 * 1.5),
-                                        Text(
-                                          'Protein'.toUpperCase(),
-                                          style: TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 8 * 1.5,
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.2,
-                                            letterSpacing: 0.4,
-                                            color: context.colors.text,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ///
+                                            /// TITLE
+                                            ///
+                                            Text(
+                                              'Protein'.toUpperCase(),
+                                              style: TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 8 * 1.5,
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.2,
+                                                letterSpacing: 0.4,
+                                                color: context.colors.text,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 2),
+
+                                            ///
+                                            /// VALUE
+                                            ///
+                                            Text(
+                                              formattedProtein,
+                                              style: TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 8 * 1.5,
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.2,
+                                                letterSpacing: 0.4,
+                                                color: context.colors.text,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -545,6 +575,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                   Expanded(
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 7 * 1.5,
@@ -555,18 +586,44 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 4 * 1.5),
-                                        Text(
-                                          'Carbs'.toUpperCase(),
-                                          style: TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 8 * 1.5,
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.2,
-                                            letterSpacing: 0.4,
-                                            color: context.colors.text,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ///
+                                            /// TITLE
+                                            ///
+                                            Text(
+                                              'Carbs'.toUpperCase(),
+                                              style: TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 8 * 1.5,
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.2,
+                                                letterSpacing: 0.4,
+                                                color: context.colors.text,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 2),
+
+                                            ///
+                                            /// VALUE
+                                            ///
+                                            Text(
+                                              formattedCarbs,
+                                              style: TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 8 * 1.5,
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.2,
+                                                letterSpacing: 0.4,
+                                                color: context.colors.text,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -578,6 +635,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                   Expanded(
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 7 * 1.5,
@@ -588,18 +646,44 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 4 * 1.5),
-                                        Text(
-                                          'Fats'.toUpperCase(),
-                                          style: TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 8 * 1.5,
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.2,
-                                            letterSpacing: 0.4,
-                                            color: context.colors.text,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ///
+                                            /// TITLE
+                                            ///
+                                            Text(
+                                              'Fats'.toUpperCase(),
+                                              style: TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 8 * 1.5,
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.2,
+                                                letterSpacing: 0.4,
+                                                color: context.colors.text,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 2),
+
+                                            ///
+                                            /// VALUE
+                                            ///
+                                            Text(
+                                              formattedFat,
+                                              style: TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 8 * 1.5,
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.2,
+                                                letterSpacing: 0.4,
+                                                color: context.colors.text,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -611,120 +695,6 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                         ),
                       ),
                     ),
-
-                    ///
-                    /// NUTRITION
-                    ///
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-                      sliver: SliverToBoxAdapter(
-                        child: Animate(
-                          delay: BokunSpizeDurations.stateTransitionStagger,
-                          effects: const [
-                            FadeEffect(
-                              duration: BokunSpizeDurations.animation,
-                              curve: Curves.easeOut,
-                            ),
-                            MoveEffect(
-                              begin: Offset(0, 12),
-                              end: Offset.zero,
-                              duration: BokunSpizeDurations.animation,
-                              curve: Curves.easeOutCubic,
-                            ),
-                          ],
-                          child: Row(
-                            spacing: 20,
-                            children: [
-                              ///
-                              /// PROTEIN
-                              ///
-                              Expanded(
-                                child: Container(
-                                  color: Colors.red,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ///
-                                      /// TITLE
-                                      ///
-                                      const Text(
-                                        'Protein',
-                                      ),
-
-                                      ///
-                                      /// VALUE
-                                      ///
-                                      Text(
-                                        formatNutritionValue(protein) ?? '--',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              ///
-                              /// CARBS
-                              ///
-                              Expanded(
-                                child: Container(
-                                  color: Colors.yellow,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ///
-                                      /// TITLE
-                                      ///
-                                      const Text(
-                                        'Carbs',
-                                      ),
-
-                                      ///
-                                      /// VALUE
-                                      ///
-                                      Text(
-                                        formatNutritionValue(carbs) ?? '--',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              ///
-                              /// FAT
-                              ///
-                              Expanded(
-                                child: Container(
-                                  color: Colors.purple,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ///
-                                      /// TITLE
-                                      ///
-                                      const Text(
-                                        'Fat',
-                                      ),
-
-                                      ///
-                                      /// VALUE
-                                      ///
-                                      Text(
-                                        formatNutritionValue(fat) ?? '--',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 20),
-                    ),
-
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 32),
                     ),
