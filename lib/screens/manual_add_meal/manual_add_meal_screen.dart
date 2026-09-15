@@ -123,9 +123,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
       child: CustomScrollView(
+        shrinkWrap: true,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
-        shrinkWrap: true,
         slivers: [
           const SliverToBoxAdapter(
             child: SizedBox(height: 24),

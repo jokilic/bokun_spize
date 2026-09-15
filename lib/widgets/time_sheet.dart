@@ -33,9 +33,9 @@ class _TimeSheetState extends State<TimeSheet> {
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
     child: CustomScrollView(
+      shrinkWrap: true,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       physics: const BouncingScrollPhysics(),
-      shrinkWrap: true,
       slivers: [
         const SliverToBoxAdapter(
           child: SizedBox(height: 24),
