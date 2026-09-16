@@ -6,6 +6,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
+import '../../../util/format.dart';
 import '../../../widgets/animated_nutrition_bar.dart';
 
 class MealsAppBar extends StatelessWidget {
@@ -241,6 +242,7 @@ class FadingFlexibleTitle extends StatelessWidget {
     required this.dailyFat,
   });
 
+  /// Builds the fading daily summary with current nutrition values
   @override
   Widget build(BuildContext context) {
     final settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
@@ -254,6 +256,10 @@ class FadingFlexibleTitle extends StatelessWidget {
     final opacity = Curves.easeIn.transform(t);
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
+
+    final formattedProtein = isLoading ? '--' : '${formatNutritionValue(currentProtein)}g';
+    final formattedCarbs = isLoading ? '--' : '${formatNutritionValue(currentCarbs)}g';
+    final formattedFat = isLoading ? '--' : '${formatNutritionValue(currentFat)}g';
 
     final hasDailyProtein = dailyProtein != null && dailyProtein! > 0;
     final hasDailyCarbs = dailyCarbs != null && dailyCarbs! > 0;
@@ -522,6 +528,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   Expanded(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           height: 7,
@@ -532,18 +539,50 @@ class FadingFlexibleTitle extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'Protein'.toUpperCase(),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                            letterSpacing: 0.4,
-                            color: context.colors.text,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ///
+                            /// TITLE
+                            ///
+                            Text(
+                              'Protein'.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 8,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                                letterSpacing: 0.4,
+                                color: context.colors.text,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+
+                            ///
+                            /// VALUE
+                            ///
+                            AnimatedOpacity(
+                              // TODO: (If protein value is 0) ? 0 : 1
+                              opacity: 1,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeIn,
+                              child: Text(
+                                formattedProtein,
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                  letterSpacing: 0.4,
+                                  color: context.colors.text,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -555,6 +594,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           height: 7,
@@ -565,18 +605,50 @@ class FadingFlexibleTitle extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'Carbs'.toUpperCase(),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                            letterSpacing: 0.4,
-                            color: context.colors.text,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ///
+                            /// TITLE
+                            ///
+                            Text(
+                              'Carbs'.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 8,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                                letterSpacing: 0.4,
+                                color: context.colors.text,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+
+                            ///
+                            /// VALUE
+                            ///
+                            AnimatedOpacity(
+                              // TODO: (If carbs value is 0) ? 0 : 1
+                              opacity: 1,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeIn,
+                              child: Text(
+                                formattedCarbs,
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                  letterSpacing: 0.4,
+                                  color: context.colors.text,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -588,6 +660,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           height: 7,
@@ -598,18 +671,50 @@ class FadingFlexibleTitle extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'Fats'.toUpperCase(),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                            letterSpacing: 0.4,
-                            color: context.colors.text,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ///
+                            /// TITLE
+                            ///
+                            Text(
+                              'Fats'.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 8,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                                letterSpacing: 0.4,
+                                color: context.colors.text,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+
+                            ///
+                            /// VALUE
+                            ///
+                            AnimatedOpacity(
+                              // TODO: (If fat value is 0) ? 0 : 1
+                              opacity: 1,
+                              duration: BokunSpizeDurations.animation,
+                              curve: Curves.easeIn,
+                              child: Text(
+                                formattedFat,
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                  letterSpacing: 0.4,
+                                  color: context.colors.text,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
