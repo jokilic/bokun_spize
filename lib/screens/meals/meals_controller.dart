@@ -332,10 +332,19 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     /// Show [ManualAddMealScreen]
     final result = await showBlurredModalBottomSheet<ManualMealResult>(
       context: context,
-      builder: (context) => ManualAddMealScreen(
+      builder: (sheetContext) => ManualAddMealScreen(
         mealId: mealId,
         passedMeal: passedMeal,
         isCopyingMeal: isCopyingMeal,
+        onDeletePressed: isEditingMeal
+            ? () {
+                HapticFeedback.lightImpact();
+                deleteMeal(
+                  meal: passedMeal,
+                  context: context,
+                );
+              }
+            : null,
       ),
     );
 

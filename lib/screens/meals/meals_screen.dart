@@ -235,7 +235,7 @@ class _MealsScreenState extends State<MealsScreen> {
                         builder: (context) => ViewMealScreen(
                           passedMeal: meal,
                           onCopyPressed: () {
-                            // TODO
+                            // TODO This should open another blurred modal bottom sheet, like when we press copy in `onCopyPressed` in MealsListTile widget
                           },
                           onEditPressed: () {
                             // TODO

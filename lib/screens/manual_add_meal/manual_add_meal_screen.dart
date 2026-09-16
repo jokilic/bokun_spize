@@ -24,11 +24,13 @@ class ManualAddMealScreen extends WatchingStatefulWidget {
   final String mealId;
   final Meal? passedMeal;
   final bool isCopyingMeal;
+  final Function()? onDeletePressed;
 
   const ManualAddMealScreen({
     required this.mealId,
     required this.passedMeal,
     required this.isCopyingMeal,
+    required this.onDeletePressed,
   });
 
   @override
@@ -155,15 +157,23 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ///
-                    /// PLACEHOLDER BUTTON
+                    /// DELETE BUTTON
                     ///
                     Opacity(
-                      opacity: 0,
+                      opacity: isEditingMeal ? 1 : 0,
                       child: IgnorePointer(
+                        ignoring: !isEditingMeal,
                         child: IconButton(
-                          onPressed: null,
+                          onPressed: () {
+                            if (widget.onDeletePressed != null) {
+                              handleOnPressed(
+                                onPressed: () => widget.onDeletePressed!(),
+                              );
+                              Navigator.of(context).pop();
+                            }
+                          },
                           icon: const PhosphorIcon(
-                            PhosphorIconsBold.x,
+                            PhosphorIconsBold.trash,
                             size: 22,
                           ),
                           style: IconButton.styleFrom(
@@ -171,8 +181,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: context.colors.text,
+                            backgroundColor: context.colors.delete,
+                            foregroundColor: context.colors.listTileBackground,
                           ),
                         ),
                       ),
