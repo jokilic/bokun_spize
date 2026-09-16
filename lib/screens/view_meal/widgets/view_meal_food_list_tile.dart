@@ -16,10 +16,12 @@ class ViewMealFoodListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = getCalorieValueColor(
-      nutrition: food.nutrition,
-      context: context,
-    );
+    final primaryColor =
+        food.color ??
+        getCalorieValueColor(
+          nutrition: food.nutrition,
+          context: context,
+        );
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -49,16 +51,31 @@ class ViewMealFoodListTile extends StatelessWidget {
                   ///
                   /// ICON
                   ///
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
+                  ClipOval(
                     child: Container(
+                      width: listTileIconRadius,
+                      height: listTileIconRadius,
+                      alignment: Alignment.center,
                       padding: const EdgeInsets.all(listTileIconRadius / 4),
                       color: primaryColor,
-                      child: PhosphorIcon(
-                        PhosphorIconsBold.bowlFood,
-                        color: context.colors.buttonText,
-                        size: listTileIconRadius / 2,
-                      ),
+                      child: food.emoji != null
+                          ? FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                food.emoji!,
+                                style: const TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 24,
+                                ),
+                                maxLines: 1,
+                                softWrap: false,
+                              ),
+                            )
+                          : PhosphorIcon(
+                              PhosphorIconsBold.bowlFood,
+                              color: context.colors.buttonText,
+                              size: listTileIconRadius / 2,
+                            ),
                     ),
                   ),
                   const SizedBox(width: 20),

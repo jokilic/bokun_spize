@@ -5,8 +5,6 @@
     - [ ] Animations
 
 ### Screens
-    - [ ] `ViewMealFoodListTile` & `ManualAddMealFoodListTile`
-        - [ ] Add emoji & color
     - [ ] `AccountScreen`
     - [ ] `SearchMealScreen`
 
