@@ -594,18 +594,23 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     ///
                                     /// VALUE
                                     ///
-                                    Text(
-                                      formattedProtein,
-                                      style: TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 8 * 1.5,
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.2,
-                                        letterSpacing: 0.4,
-                                        color: context.colors.text,
+                                    AnimatedOpacity(
+                                      opacity: protein == 0 ? 0 : 1,
+                                      duration: BokunSpizeDurations.animation,
+                                      curve: Curves.easeIn,
+                                      child: Text(
+                                        formattedProtein,
+                                        style: TextStyle(
+                                          fontFamily: 'PlusJakartaSans',
+                                          fontSize: 8 * 1.5,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                          letterSpacing: 0.4,
+                                          color: context.colors.text,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
@@ -654,18 +659,23 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     ///
                                     /// VALUE
                                     ///
-                                    Text(
-                                      formattedCarbs,
-                                      style: TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 8 * 1.5,
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.2,
-                                        letterSpacing: 0.4,
-                                        color: context.colors.text,
+                                    AnimatedOpacity(
+                                      opacity: carbs == 0 ? 0 : 1,
+                                      duration: BokunSpizeDurations.animation,
+                                      curve: Curves.easeIn,
+                                      child: Text(
+                                        formattedCarbs,
+                                        style: TextStyle(
+                                          fontFamily: 'PlusJakartaSans',
+                                          fontSize: 8 * 1.5,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                          letterSpacing: 0.4,
+                                          color: context.colors.text,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
@@ -714,18 +724,23 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     ///
                                     /// VALUE
                                     ///
-                                    Text(
-                                      formattedFat,
-                                      style: TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 8 * 1.5,
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.2,
-                                        letterSpacing: 0.4,
-                                        color: context.colors.text,
+                                    AnimatedOpacity(
+                                      opacity: fat == 0 ? 0 : 1,
+                                      duration: BokunSpizeDurations.animation,
+                                      curve: Curves.easeIn,
+                                      child: Text(
+                                        formattedFat,
+                                        style: TextStyle(
+                                          fontFamily: 'PlusJakartaSans',
+                                          fontSize: 8 * 1.5,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                          letterSpacing: 0.4,
+                                          color: context.colors.text,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),

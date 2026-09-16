@@ -564,8 +564,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// VALUE
                             ///
                             AnimatedOpacity(
-                              // TODO: (If protein value is 0) ? 0 : 1
-                              opacity: 1,
+                              opacity: currentProtein == 0 ? 0 : 1,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
                               child: Text(
@@ -630,8 +629,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// VALUE
                             ///
                             AnimatedOpacity(
-                              // TODO: (If carbs value is 0) ? 0 : 1
-                              opacity: 1,
+                              opacity: currentCarbs == 0 ? 0 : 1,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
                               child: Text(
@@ -696,8 +694,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// VALUE
                             ///
                             AnimatedOpacity(
-                              // TODO: (If fat value is 0) ? 0 : 1
-                              opacity: 1,
+                              opacity: currentFat == 0 ? 0 : 1,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
                               child: Text(

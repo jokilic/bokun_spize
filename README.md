@@ -15,8 +15,6 @@
         - [ ] Add emoji & color
     - [ ] `AccountScreen`
     - [ ] `SearchMealScreen`
-    - [ ] `MealsAppBar`
-        - [ ] Add values for protein, carbs & fat
 
 ### Firebase
     - [ ] When starting app, fire-and-forget to delete all `loading` meals
