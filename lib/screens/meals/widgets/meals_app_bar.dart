@@ -571,6 +571,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                                 formattedProtein,
                                 style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
+                                  // TODO: Smaller font-size here and everywhere
                                   fontSize: 8,
                                   fontWeight: FontWeight.w500,
                                   height: 1.2,

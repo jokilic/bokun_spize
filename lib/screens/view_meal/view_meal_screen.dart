@@ -183,7 +183,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                 ),
 
                 ///
-                /// CLOSE BUTTON
+                /// BUTTONS
                 ///
                 Positioned(
                   left: 0,
@@ -324,6 +324,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                         ///
                         /// CLOSE BUTTON
                         ///
+                        // TODO: This button should have blur, alongside it's `context.colors.listTileBackground.withValues(alpha: 0.5)` color
                         IconButton(
                           onPressed: Navigator.of(context).pop,
                           icon: const PhosphorIcon(
@@ -440,6 +441,8 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               ),
             ),
           ),
+
+          // TODO: Perhaps some spacing here
 
           ///
           /// SUBTITLE
@@ -712,6 +715,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                         formattedProtein,
                                         style: TextStyle(
                                           fontFamily: 'PlusJakartaSans',
+                                          // TODO: Smaller font-size here and everywhere
                                           fontSize: 8 * 1.5,
                                           fontWeight: FontWeight.w500,
                                           height: 1.2,

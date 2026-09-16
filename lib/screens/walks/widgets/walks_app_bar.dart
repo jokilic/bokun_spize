@@ -82,6 +82,7 @@ class WalksAppBar extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 style: IconButton.styleFrom(
+                  // TODO: Bigger horizontal padding
                   padding: const EdgeInsets.all(12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
