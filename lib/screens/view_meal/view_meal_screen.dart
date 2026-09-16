@@ -215,7 +215,10 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                         /// COPY BUTTON
                         ///
                         IconButton(
-                          onPressed: widget.onCopyPressed,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            widget.onCopyPressed();
+                          },
                           icon: const PhosphorIcon(
                             PhosphorIconsBold.copy,
                             size: 22,

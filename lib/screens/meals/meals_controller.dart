@@ -337,13 +337,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         passedMeal: passedMeal,
         isCopyingMeal: isCopyingMeal,
         onDeletePressed: isEditingMeal
-            ? () {
-                HapticFeedback.lightImpact();
-                deleteMeal(
-                  meal: passedMeal,
-                  context: context,
-                );
-              }
+            ? () => deleteMeal(
+                meal: passedMeal,
+                context: context,
+              )
             : null,
       ),
     );
