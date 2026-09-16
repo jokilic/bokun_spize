@@ -190,8 +190,27 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        ///
+                        /// EDIT BUTTON
+                        ///
+                        IconButton(
+                          onPressed: widget.onEditPressed,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.pencilSimple,
+                            size: 22,
+                          ),
+                          style: IconButton.styleFrom(
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: context.colors.carbs,
+                            foregroundColor: context.colors.listTileBackground,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+
                         ///
                         /// COPY BUTTON
                         ///
@@ -206,10 +225,12 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: context.colors.text,
+                            backgroundColor: context.colors.protein,
+                            foregroundColor: context.colors.listTileBackground,
                           ),
                         ),
+
+                        const Spacer(),
 
                         ///
                         /// CLOSE BUTTON

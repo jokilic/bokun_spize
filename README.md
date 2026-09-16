@@ -6,9 +6,8 @@
 
 ### Screens
     - [ ] `ViewMealScreen`
-        - [ ] Close icon
-        - [ ] Copy icon
-        - [ ] Edit icon
+        - [ ] Copy logic
+        - [ ] Edit logic
     - [ ] `ManualMealScreen`
         - [ ] Delete icon
     - [ ] `ViewMealFoodListTile` & `ManualAddMealFoodListTile`
