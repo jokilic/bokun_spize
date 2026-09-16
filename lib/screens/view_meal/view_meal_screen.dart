@@ -22,11 +22,13 @@ class ViewMealScreen extends WatchingStatefulWidget {
   final Meal passedMeal;
   final Function() onCopyPressed;
   final Function() onEditPressed;
+  final Function() onDeletePressed;
 
   const ViewMealScreen({
     required this.passedMeal,
     required this.onCopyPressed,
     required this.onEditPressed,
+    required this.onDeletePressed,
   });
 
   @override
@@ -190,14 +192,16 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ///
-                        /// EDIT BUTTON
+                        /// MORE BUTTON
                         ///
+                        // TODO: This should open a popup menu with 'Copy, Edit & Delete'
                         IconButton(
-                          onPressed: widget.onEditPressed,
+                          onPressed: () {},
                           icon: const PhosphorIcon(
-                            PhosphorIconsBold.pencilSimple,
+                            PhosphorIconsBold.dotsThreeOutline,
                             size: 22,
                           ),
                           style: IconButton.styleFrom(
@@ -205,35 +209,10 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
-                            backgroundColor: context.colors.carbs,
-                            foregroundColor: context.colors.listTileBackground,
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
                           ),
                         ),
-                        const SizedBox(width: 8),
-
-                        ///
-                        /// COPY BUTTON
-                        ///
-                        IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            widget.onCopyPressed();
-                          },
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.copy,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: context.colors.protein,
-                            foregroundColor: context.colors.listTileBackground,
-                          ),
-                        ),
-
-                        const Spacer(),
 
                         ///
                         /// CLOSE BUTTON

@@ -14,7 +14,7 @@ import '../../../widgets/meal_image.dart';
 
 class MealsListTile extends StatelessWidget {
   final Function() onPressed;
-  final Function() onLongPressed;
+  final Function() onEditPressed;
   final Function() onDeletePressed;
   final Function() onCopyPressed;
   final Meal meal;
@@ -22,7 +22,7 @@ class MealsListTile extends StatelessWidget {
 
   const MealsListTile({
     required this.onPressed,
-    required this.onLongPressed,
+    required this.onEditPressed,
     required this.onDeletePressed,
     required this.onCopyPressed,
     required this.meal,
@@ -91,9 +91,21 @@ class MealsListTile extends StatelessWidget {
                 await onCopyPressed();
               },
               color: context.colors.protein,
-              backgroundRadius: listTileRadius,
               icon: PhosphorIcon(
                 PhosphorIconsBold.copy,
+                color: context.colors.listTileBackground,
+                size: 26,
+              ),
+            ),
+            SwipeAction(
+              onTap: (handler) async {
+                await handler(false);
+                await onEditPressed();
+              },
+              color: context.colors.carbs,
+              backgroundRadius: listTileIconRadius / 2,
+              icon: PhosphorIcon(
+                PhosphorIconsBold.pencilSimple,
                 color: context.colors.listTileBackground,
                 size: 26,
               ),
@@ -104,7 +116,6 @@ class MealsListTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
               onTap: isLoading || hasError ? null : onPressed,
-              onLongPress: isLoading || hasError ? null : onLongPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,

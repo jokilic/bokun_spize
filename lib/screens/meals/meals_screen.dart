@@ -243,12 +243,24 @@ class _MealsScreenState extends State<MealsScreen> {
                             );
                           },
                           onEditPressed: () {
-                            // TODO This should open another blurred modal bottom sheet, like when we long-press `MealsListTile`
+                            HapticFeedback.lightImpact();
+                            mealsController.onAddManualMealPressed(
+                              context,
+                              passedMeal: meal,
+                              isCopyingMeal: false,
+                            );
+                          },
+                          onDeletePressed: () {
+                            HapticFeedback.lightImpact();
+                            mealsController.deleteMeal(
+                              meal: meal,
+                              context: context,
+                            );
                           },
                         ),
                       );
                     },
-                    onLongPressed: (meal) {
+                    onEditPressed: (meal) {
                       HapticFeedback.lightImpact();
                       mealsController.onAddManualMealPressed(
                         context,

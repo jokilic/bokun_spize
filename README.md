@@ -5,11 +5,6 @@
     - [ ] Animations
 
 ### Screens
-    - [ ] `ViewMealScreen`
-        - [ ] Copy logic
-        - [ ] Edit logic
-    - [ ] `ManualMealScreen`
-        - [ ] Delete icon
     - [ ] `ViewMealFoodListTile` & `ManualAddMealFoodListTile`
         - [ ] Add emoji & color
     - [ ] `AccountScreen`
