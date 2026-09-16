@@ -9,7 +9,6 @@
     - [ ] `SearchMealScreen`
 
 ### Firebase
-    - [ ] When starting app, fire-and-forget to delete all `loading` meals
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Perhaps anonymous sign-in

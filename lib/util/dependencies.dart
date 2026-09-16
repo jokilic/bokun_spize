@@ -78,7 +78,7 @@ Future<void> initializeFirebase() async {
   );
 }
 
-/// Registers app services without performing feature-specific startup work
+/// Register app services and initialize `Firebase` cleanup
 void registerServices() {
   ///
   /// CACHE
@@ -104,6 +104,7 @@ void registerServices() {
         googleSignIn: GoogleSignIn.instance,
         cache: getIt.get<CacheService>(),
       ),
+      onCreated: (service) => service.init(),
     );
   }
 

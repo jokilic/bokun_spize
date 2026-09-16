@@ -44,6 +44,15 @@ class FirebaseService {
   });
 
   ///
+  /// INIT
+  ///
+
+  /// Remove unfinished `meals` from `Firebase`
+  void init() {
+    deleteLoadingMeals();
+  }
+
+  ///
   /// GETTERS
   ///
 
@@ -719,23 +728,19 @@ class FirebaseService {
           .where(
             'isLoading',
             isEqualTo: true,
-          )
-          .limit(300);
+          );
 
-      while (true) {
-        final snapshot = await query.get(
-          const GetOptions(
-            source: Source.server,
-          ),
-        );
+      /// Capture matching meals once so later batches do not pick up new meals
+      final snapshot = await query.get(
+        const GetOptions(
+          source: Source.server,
+        ),
+      );
 
-        if (snapshot.docs.isEmpty) {
-          return;
-        }
-
+      for (var offset = 0; offset < snapshot.docs.length; offset += 300) {
         final batch = firestore.batch();
 
-        for (final document in snapshot.docs) {
+        for (final document in snapshot.docs.skip(offset).take(300)) {
           batch.delete(document.reference);
         }
 
