@@ -703,6 +703,52 @@ class FirebaseService {
   /// MEALS
   ///
 
+  /// Deletes the current user's unfinished `meals` during app startup
+  Future<void> deleteLoadingMeals() async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return;
+      }
+
+      final query = firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('meals')
+          .where(
+            'isLoading',
+            isEqualTo: true,
+          )
+          .limit(300);
+
+      while (true) {
+        final snapshot = await query.get(
+          const GetOptions(
+            source: Source.server,
+          ),
+        );
+
+        if (snapshot.docs.isEmpty) {
+          return;
+        }
+
+        final batch = firestore.batch();
+
+        for (final document in snapshot.docs) {
+          batch.delete(document.reference);
+        }
+
+        await batch.commit();
+      }
+    } catch (error) {
+      log(
+        'Deleting loading meals failed',
+        error: error,
+      );
+    }
+  }
+
   /// Fetches `meals` from [Firebase]
   Future<List<Meal>?> getMeals() async {
     try {

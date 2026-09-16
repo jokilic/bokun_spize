@@ -10,6 +10,7 @@ import 'package:watch_it/watch_it.dart';
 
 import 'constants/durations.dart';
 import 'screens/entrance/entrance_screen.dart';
+import 'services/firebase_service.dart';
 import 'services/screen_service.dart';
 import 'services/theme_service.dart';
 import 'theme/theme.dart';
@@ -28,6 +29,9 @@ Future<void> main() async {
   try {
     await initializeBeforeAppStart();
     registerServices();
+
+    /// Remove unfinished meals before new meals can be created
+    await getIt.get<FirebaseService>().deleteLoadingMeals();
 
     runApp(
       BokunSpizeApp(),
