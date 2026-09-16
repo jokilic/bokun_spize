@@ -8,6 +8,8 @@
     - [ ] `ViewMealScreen`
         - [ ] Close icon
         - [ ] Copy icon
+        - [ ] Edit icon
+    - [ ] `ManualMealScreen`
         - [ ] Delete icon
     - [ ] `ViewMealFoodListTile` & `ManualAddMealFoodListTile`
         - [ ] Add emoji & color
@@ -17,6 +19,7 @@
         - [ ] Add values for protein, carbs & fat
 
 ### Firebase
+    - [ ] When starting app, fire-and-forget to delete all `loading` meals
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Perhaps anonymous sign-in

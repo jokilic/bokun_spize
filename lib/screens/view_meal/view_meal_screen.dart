@@ -20,9 +20,13 @@ import 'widgets/view_meal_food_list_tile.dart';
 
 class ViewMealScreen extends WatchingStatefulWidget {
   final Meal passedMeal;
+  final Function() onCopyPressed;
+  final Function() onEditPressed;
 
   const ViewMealScreen({
     required this.passedMeal,
+    required this.onCopyPressed,
+    required this.onEditPressed,
   });
 
   @override
@@ -172,6 +176,60 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(listTileRadius),
                       ),
+                    ),
+                  ),
+                ),
+
+                ///
+                /// CLOSE BUTTON
+                ///
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 24,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ///
+                        /// COPY BUTTON
+                        ///
+                        IconButton(
+                          onPressed: widget.onCopyPressed,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.copy,
+                            size: 22,
+                          ),
+                          style: IconButton.styleFrom(
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
+                          ),
+                        ),
+
+                        ///
+                        /// CLOSE BUTTON
+                        ///
+                        IconButton(
+                          onPressed: Navigator.of(context).pop,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.x,
+                            size: 22,
+                          ),
+                          style: IconButton.styleFrom(
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

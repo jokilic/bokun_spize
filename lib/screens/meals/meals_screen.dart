@@ -234,6 +234,12 @@ class _MealsScreenState extends State<MealsScreen> {
                         context: context,
                         builder: (context) => ViewMealScreen(
                           passedMeal: meal,
+                          onCopyPressed: () {
+                            // TODO
+                          },
+                          onEditPressed: () {
+                            // TODO
+                          },
                         ),
                       );
                     },
