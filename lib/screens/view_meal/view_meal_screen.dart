@@ -138,7 +138,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                           child: hasError
                               ? PhosphorIcon(
                                   PhosphorIconsBold.warningOctagon,
-                                  color: context.colors.listTileBackground,
+                                  color: context.colors.buttonText,
                                   size: 80,
                                 )
                               : emoji != null

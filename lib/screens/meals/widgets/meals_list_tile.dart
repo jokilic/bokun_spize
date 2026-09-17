@@ -93,7 +93,7 @@ class MealsListTile extends StatelessWidget {
               color: context.colors.protein,
               icon: PhosphorIcon(
                 PhosphorIconsBold.copy,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 26,
               ),
             ),
@@ -106,7 +106,7 @@ class MealsListTile extends StatelessWidget {
               backgroundRadius: listTileIconRadius / 2,
               icon: PhosphorIcon(
                 PhosphorIconsBold.pencilSimple,
-                color: context.colors.listTileBackground,
+                color: context.colors.buttonText,
                 size: 26,
               ),
             ),
@@ -191,7 +191,7 @@ class MealsListTile extends StatelessWidget {
                                   width: listTileIconRadius,
                                   child: PhosphorIcon(
                                     PhosphorIconsBold.warningOctagon,
-                                    color: context.colors.listTileBackground,
+                                    color: context.colors.buttonText,
                                     size: 24,
                                   ),
                                 ),
@@ -203,7 +203,7 @@ class MealsListTile extends StatelessWidget {
                                 child: hasError
                                     ? PhosphorIcon(
                                         PhosphorIconsBold.warningOctagon,
-                                        color: context.colors.listTileBackground,
+                                        color: context.colors.buttonText,
                                         size: 24,
                                       )
                                     : meal.emoji != null

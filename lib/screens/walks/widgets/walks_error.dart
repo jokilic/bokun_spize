@@ -47,7 +47,7 @@ class WalksError extends StatelessWidget {
             const SizedBox(height: 24),
             PhosphorIcon(
               PhosphorIconsBold.warningOctagon,
-              color: context.colors.fat,
+              color: context.colors.delete,
               size: 88,
             ),
             const SizedBox(height: 16),
