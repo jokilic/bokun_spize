@@ -233,78 +233,26 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             curve: Curves.easeOutCubic,
                           ),
                         ],
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ///
-                            /// PLACEHOLDER BUTTON
-                            ///
-                            Opacity(
-                              opacity: 0,
-                              child: IgnorePointer(
-                                child: IconButton(
-                                  onPressed: null,
-                                  icon: const PhosphorIcon(
-                                    PhosphorIconsBold.x,
-                                    size: 22,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    padding: const EdgeInsets.all(10),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                    foregroundColor: context.colors.text,
-                                  ),
-                                ),
-                              ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 22),
+                          child: Text(
+                            'Welcome',
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 30,
+                              fontWeight: FontWeight.w800,
+                              height: 1.2,
+                              letterSpacing: 0.6,
+                              color: context.colors.text,
                             ),
-
-                            ///
-                            /// TITLE
-                            ///
-                            Expanded(
-                              child: Text(
-                                'Welcome',
-                                style: TextStyle(
-                                  fontFamily: 'Epilogue',
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2,
-                                  letterSpacing: 0.6,
-                                  color: context.colors.text,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-
-                            ///
-                            /// PLACEHOLDER BUTTON
-                            ///
-                            Opacity(
-                              opacity: 0,
-                              child: IgnorePointer(
-                                child: IconButton(
-                                  onPressed: null,
-                                  icon: const PhosphorIcon(
-                                    PhosphorIconsBold.x,
-                                    size: 22,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    padding: const EdgeInsets.all(10),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                    foregroundColor: context.colors.text,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 8),
                   ),
 
                   ///
