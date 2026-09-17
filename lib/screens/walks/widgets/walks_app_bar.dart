@@ -82,8 +82,10 @@ class WalksAppBar extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 style: IconButton.styleFrom(
-                  // TODO: Bigger horizontal padding
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
                   ),
@@ -269,8 +271,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                         AnimatedDigitWidget(
                           value: currentSteps ?? 0,
                           loop: false,
-                          curve: Curves.easeIn,
                           duration: BokunSpizeDurations.animation,
+                          curve: Curves.easeIn,
                           textStyle: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 40,

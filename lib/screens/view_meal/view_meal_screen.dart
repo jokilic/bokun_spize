@@ -437,8 +437,9 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               ),
             ),
           ),
-
-          // TODO: Perhaps some spacing here
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 4),
+          ),
 
           ///
           /// SUBTITLE
@@ -577,8 +578,8 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                           AnimatedDigitWidget(
                             value: nutrition?.calories != null ? nutrition?.calories.round() : 0,
                             loop: false,
-                            curve: Curves.easeIn,
                             duration: BokunSpizeDurations.animation,
+                            curve: Curves.easeIn,
                             textStyle: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 40 * 1.5,
@@ -942,8 +943,8 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
       fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
       suffix: 'g',
       loop: false,
-      curve: Curves.easeIn,
       duration: BokunSpizeDurations.animation,
+      curve: Curves.easeIn,
       textStyle: TextStyle(
         fontFamily: 'PlusJakartaSans',
         fontSize: 8 * 1.5,

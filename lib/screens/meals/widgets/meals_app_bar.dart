@@ -391,8 +391,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                   AnimatedDigitWidget(
                     value: currentCalories.round(),
                     loop: false,
-                    curve: Curves.easeIn,
                     duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeIn,
                     textStyle: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 40,
@@ -744,8 +744,8 @@ class FadingFlexibleTitle extends StatelessWidget {
       fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
       suffix: 'g',
       loop: false,
-      curve: Curves.easeIn,
       duration: BokunSpizeDurations.animation,
+      curve: Curves.easeIn,
       textStyle: textStyle,
     );
   }
