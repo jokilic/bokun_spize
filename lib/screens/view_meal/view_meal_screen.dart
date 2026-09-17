@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -111,7 +113,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                       curve: Curves.easeOutCubic,
                     ),
                   ],
-                  child: imageStoragePath != null && showImageMealListTile
+                  child: imageStoragePath != null
                       ? MealImage(
                           imageStoragePath: imageStoragePath,
                           height: 240,
@@ -193,147 +195,164 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                         ///
                         /// MORE BUTTON
                         ///
-                        PopupMenuButton<VoidCallback>(
-                          menuPadding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 12,
-                          ),
-                          position: PopupMenuPosition.under,
-                          offset: const Offset(0, 8),
-                          elevation: 0,
-                          color: context.colors.listTileBackground,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          onSelected: (action) => action(),
-                          itemBuilder: (context) => [
-                            ///
-                            /// COPY
-                            ///
-                            PopupMenuItem<VoidCallback>(
-                              value: () {
-                                Navigator.of(context).pop();
-                                widget.onCopyPressed();
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  PhosphorIcon(
-                                    PhosphorIconsBold.copy,
-                                    color: context.colors.protein,
-                                    size: 26,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Copy',
-                                      style: TextStyle(
-                                        fontFamily: 'Epilogue',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: context.colors.text,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 8,
+                              sigmaY: 8,
                             ),
+                            child: PopupMenuButton<VoidCallback>(
+                              menuPadding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 12,
+                              ),
+                              position: PopupMenuPosition.under,
+                              offset: const Offset(0, 8),
+                              elevation: 0,
+                              color: context.colors.listTileBackground,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              onSelected: (action) => action(),
+                              itemBuilder: (context) => [
+                                ///
+                                /// COPY
+                                ///
+                                PopupMenuItem<VoidCallback>(
+                                  value: () {
+                                    Navigator.of(context).pop();
+                                    widget.onCopyPressed();
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      PhosphorIcon(
+                                        PhosphorIconsBold.copy,
+                                        color: context.colors.protein,
+                                        size: 26,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Copy',
+                                          style: TextStyle(
+                                            fontFamily: 'Epilogue',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.text,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
 
-                            ///
-                            /// EDIT
-                            ///
-                            PopupMenuItem<VoidCallback>(
-                              value: () {
-                                Navigator.of(context).pop();
-                                widget.onEditPressed();
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  PhosphorIcon(
-                                    PhosphorIconsBold.pencilSimple,
-                                    color: context.colors.carbs,
-                                    size: 26,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Edit',
-                                      style: TextStyle(
-                                        fontFamily: 'Epilogue',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: context.colors.text,
+                                ///
+                                /// EDIT
+                                ///
+                                PopupMenuItem<VoidCallback>(
+                                  value: () {
+                                    Navigator.of(context).pop();
+                                    widget.onEditPressed();
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      PhosphorIcon(
+                                        PhosphorIconsBold.pencilSimple,
+                                        color: context.colors.carbs,
+                                        size: 26,
                                       ),
-                                    ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Edit',
+                                          style: TextStyle(
+                                            fontFamily: 'Epilogue',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.text,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
+                                ),
 
-                            ///
-                            /// DELETE
-                            ///
-                            PopupMenuItem<VoidCallback>(
-                              value: () {
-                                Navigator.of(context).pop();
-                                widget.onDeletePressed();
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  PhosphorIcon(
-                                    PhosphorIconsBold.trash,
-                                    color: context.colors.delete,
-                                    size: 26,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Delete',
-                                      style: TextStyle(
-                                        fontFamily: 'Epilogue',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: context.colors.text,
+                                ///
+                                /// DELETE
+                                ///
+                                PopupMenuItem<VoidCallback>(
+                                  value: () {
+                                    Navigator.of(context).pop();
+                                    widget.onDeletePressed();
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      PhosphorIcon(
+                                        PhosphorIconsBold.trash,
+                                        color: context.colors.delete,
+                                        size: 26,
                                       ),
-                                    ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Delete',
+                                          style: TextStyle(
+                                            fontFamily: 'Epilogue',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.text,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
+                              ],
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.dotsThreeOutline,
+                                size: 22,
+                              ),
+                              style: IconButton.styleFrom(
+                                padding: const EdgeInsets.all(10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                foregroundColor: context.colors.text,
                               ),
                             ),
-                          ],
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.dotsThreeOutline,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: context.colors.text,
                           ),
                         ),
 
                         ///
                         /// CLOSE BUTTON
                         ///
-                        // TODO: This button should have blur, alongside it's `context.colors.listTileBackground.withValues(alpha: 0.5)` color
-                        IconButton(
-                          onPressed: Navigator.of(context).pop,
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.x,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 8,
+                              sigmaY: 8,
                             ),
-                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: context.colors.text,
+                            child: IconButton(
+                              onPressed: Navigator.of(context).pop,
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.x,
+                                size: 22,
+                              ),
+                              style: IconButton.styleFrom(
+                                padding: const EdgeInsets.all(10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                foregroundColor: context.colors.text,
+                              ),
+                            ),
                           ),
                         ),
                       ],
