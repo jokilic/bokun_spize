@@ -56,9 +56,10 @@ class _MealsScreenState extends State<MealsScreen> {
     /// Reference to `state`
     final state = watchIt<MealsController>().value;
 
-    final activeDate = state.activeDate;
+    final requestedDate = state.requestedDate;
+    final currentlyVisibleDate = state.currentlyVisibleDate ?? requestedDate;
     final error = state.error;
-    final isLoading = state.isLoading;
+    final isLoading = state.isLoading && state.currentlyVisibleDate == null;
     final meals = state.meals;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
@@ -184,7 +185,10 @@ class _MealsScreenState extends State<MealsScreen> {
                   onPressedPreviousDay: () {
                     HapticFeedback.lightImpact();
                     mealsController.updateDate(
-                      DateUtils.addDaysToDate(activeDate, -1),
+                      DateUtils.addDaysToDate(
+                        requestedDate,
+                        -1,
+                      ),
                     );
                   },
                   onPressedDay: () {
@@ -194,7 +198,10 @@ class _MealsScreenState extends State<MealsScreen> {
                   onPressedNextDay: () {
                     HapticFeedback.lightImpact();
                     mealsController.updateDate(
-                      DateUtils.addDaysToDate(activeDate, 1),
+                      DateUtils.addDaysToDate(
+                        requestedDate,
+                        1,
+                      ),
                     );
                   },
                   onSearchPressed: () {
@@ -205,11 +212,11 @@ class _MealsScreenState extends State<MealsScreen> {
                     );
                   },
                   shortDayString: getDateString(
-                    date: activeDate,
+                    date: currentlyVisibleDate,
                     dateFormat: 'dd MMM',
                   ),
                   fullDayString: getDateString(
-                    date: activeDate,
+                    date: currentlyVisibleDate,
                     dateFormat: 'EEEE, dd.MM.yyyy.',
                   ),
                   currentCalories: currentCalories,

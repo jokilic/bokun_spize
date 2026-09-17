@@ -121,19 +121,25 @@ class MealsAppBar extends StatelessWidget {
                       curve: Curves.easeInOut,
                       child: IconButton(
                         onPressed: onPressedDay,
-                        icon: Text(
-                          shortDayString,
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 18,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            fontWeight: FontWeight.w900,
-                            color: context.colors.protein,
+                        icon: AnimatedSwitcher(
+                          duration: BokunSpizeDurations.animation,
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeIn,
+                          child: Text(
+                            shortDayString,
+                            key: ValueKey(shortDayString),
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 18,
+                              height: 1.2,
+                              letterSpacing: 0.6,
+                              fontWeight: FontWeight.w900,
+                              color: context.colors.protein,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
                         ),
                         style: IconButton.styleFrom(
                           padding: const EdgeInsets.all(12),
@@ -326,14 +332,27 @@ class FadingFlexibleTitle extends StatelessWidget {
             /// DAY
             ///
             else
-              Text(
-                fullDayString.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
-                  color: context.colors.text,
+              AnimatedSwitcher(
+                duration: BokunSpizeDurations.animation,
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                layoutBuilder: (currentChild, previousChildren) => Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
+                child: Text(
+                  fullDayString.toUpperCase(),
+                  key: ValueKey(fullDayString),
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: context.colors.text,
+                  ),
                 ),
               ),
             if (isLoading) const SizedBox(height: 8),

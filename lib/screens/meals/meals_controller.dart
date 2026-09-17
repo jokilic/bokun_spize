@@ -21,7 +21,7 @@ import '../../widgets/calendar_sheet.dart';
 import '../ai_add_meal/ai_add_meal_screen.dart';
 import '../manual_add_meal/manual_add_meal_screen.dart';
 
-class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
+class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? currentlyVisibleDate, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -33,9 +33,10 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     required this.firebase,
     required this.aiProvider,
   }) : super((
-         activeDate: DateUtils.dateOnly(
+         requestedDate: DateUtils.dateOnly(
            DateTime.now(),
          ),
+         currentlyVisibleDate: null,
          meals: const [],
          isLoading: false,
          error: null,
@@ -46,7 +47,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   ///
 
   void init() => listenToMeals(
-    date: value.activeDate,
+    date: value.requestedDate,
   );
 
   ///
@@ -55,6 +56,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
   @override
   void onDispose() {
+    mealsListenerVersion++;
     mealsSubscription?.cancel();
     super.dispose();
   }
@@ -62,6 +64,8 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   ///
   /// VARIABLES
   ///
+
+  var mealsListenerVersion = 0;
 
   StreamSubscription<List<Meal>>? mealsSubscription;
 
@@ -73,7 +77,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
   void updateDate(DateTime newValue) {
     final selectedDate = DateUtils.dateOnly(newValue);
 
-    if (DateUtils.isSameDay(value.activeDate, selectedDate)) {
+    if (DateUtils.isSameDay(value.requestedDate, selectedDate)) {
       return;
     }
 
@@ -82,11 +86,12 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     );
   }
 
-  /// Listens to meals from [date] and updates the loading and error state
+  /// Keeps the displayed day visible until meals from [date] arrive
   void listenToMeals({required DateTime date}) {
+    final listenerVersion = ++mealsListenerVersion;
+
     updateState(
-      activeDate: date,
-      meals: const [],
+      requestedDate: date,
       isLoading: true,
       error: null,
     );
@@ -97,18 +102,19 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
         .listenToMeals(date: date)
         .listen(
           (meals) {
-            if (!DateUtils.isSameDay(value.activeDate, date)) {
+            if (listenerVersion != mealsListenerVersion) {
               return;
             }
 
             updateState(
+              currentlyVisibleDate: date,
               meals: meals,
               isLoading: false,
               error: null,
             );
           },
           onError: (error) {
-            if (!DateUtils.isSameDay(value.activeDate, date)) {
+            if (listenerVersion != mealsListenerVersion) {
               return;
             }
 
@@ -118,6 +124,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
             );
 
             updateState(
+              currentlyVisibleDate: null,
               meals: const [],
               isLoading: false,
               error: 'Meals could not be loaded.',
@@ -128,7 +135,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
   /// Restarts the listener after an error
   void retryMeals() => listenToMeals(
-    date: value.activeDate,
+    date: value.requestedDate,
   );
 
   /// Deletes `meal` from [Firebase]
@@ -156,7 +163,7 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
     builder: (context) => CalendarSheet(
       subtitle: 'View your activity and progress',
       primaryColor: context.colors.protein,
-      dateValue: value.activeDate,
+      dateValue: value.requestedDate,
       onDateChanged: (newDate) {
         HapticFeedback.lightImpact();
         updateDate(newDate);
@@ -531,12 +538,14 @@ class MealsController extends ValueNotifier<({DateTime activeDate, List<Meal> me
 
   /// Updates `state`
   void updateState({
-    DateTime? activeDate,
+    DateTime? requestedDate,
+    Object? currentlyVisibleDate = nullStateNoChange,
     List<Meal>? meals,
     bool? isLoading,
     Object? error = nullStateNoChange,
   }) => value = (
-    activeDate: activeDate ?? value.activeDate,
+    requestedDate: requestedDate ?? value.requestedDate,
+    currentlyVisibleDate: identical(currentlyVisibleDate, nullStateNoChange) ? value.currentlyVisibleDate : currentlyVisibleDate as DateTime?,
     meals: meals ?? value.meals,
     isLoading: isLoading ?? value.isLoading,
     error: identical(error, nullStateNoChange) ? value.error : error as String?,
