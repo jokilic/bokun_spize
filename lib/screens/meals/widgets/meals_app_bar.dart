@@ -263,10 +263,6 @@ class FadingFlexibleTitle extends StatelessWidget {
 
     final dy = Tween<double>(begin: 8, end: 0).transform(t);
 
-    final formattedProtein = isLoading ? '--' : '${formatNutritionValue(currentProtein)}g';
-    final formattedCarbs = isLoading ? '--' : '${formatNutritionValue(currentCarbs)}g';
-    final formattedFat = isLoading ? '--' : '${formatNutritionValue(currentFat)}g';
-
     final hasDailyProtein = dailyProtein != null && dailyProtein! > 0;
     final hasDailyCarbs = dailyCarbs != null && dailyCarbs! > 0;
     final hasDailyFat = dailyFat != null && dailyFat! > 0;
@@ -586,19 +582,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                               opacity: currentProtein == 0 ? 0 : 1,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
-                              child: Text(
-                                formattedProtein,
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  // TODO: Smaller font-size here and everywhere
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
-                                  letterSpacing: 0.4,
-                                  color: context.colors.text,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              child: buildNutritionValue(
+                                context,
+                                value: currentProtein,
                               ),
                             ),
                           ],
@@ -652,18 +638,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                               opacity: currentCarbs == 0 ? 0 : 1,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
-                              child: Text(
-                                formattedCarbs,
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
-                                  letterSpacing: 0.4,
-                                  color: context.colors.text,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              child: buildNutritionValue(
+                                context,
+                                value: currentCarbs,
                               ),
                             ),
                           ],
@@ -717,18 +694,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                               opacity: currentFat == 0 ? 0 : 1,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
-                              child: Text(
-                                formattedFat,
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
-                                  letterSpacing: 0.4,
-                                  color: context.colors.text,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              child: buildNutritionValue(
+                                context,
+                                value: currentFat,
                               ),
                             ),
                           ],
@@ -743,6 +711,42 @@ class FadingFlexibleTitle extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildNutritionValue(
+    BuildContext context, {
+    required double value,
+  }) {
+    final textStyle = TextStyle(
+      fontFamily: 'PlusJakartaSans',
+      fontSize: 8,
+      fontWeight: FontWeight.w500,
+      height: 1.2,
+      letterSpacing: 0.4,
+      color: context.colors.text,
+    );
+
+    if (isLoading) {
+      return Text(
+        '--',
+        style: textStyle,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
+    final formattedValue = formatNutritionValue(value)!;
+    final decimalIndex = formattedValue.indexOf('.');
+
+    return AnimatedDigitWidget(
+      value: num.parse(formattedValue),
+      fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
+      suffix: 'g',
+      loop: false,
+      curve: Curves.easeIn,
+      duration: BokunSpizeDurations.animation,
+      textStyle: textStyle,
     );
   }
 }

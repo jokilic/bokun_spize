@@ -70,10 +70,6 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
     final carbsBarWeight = carbs.round() > 0 ? carbs.round() : 1;
     final fatBarWeight = fat.round() > 0 ? fat.round() : 1;
 
-    final formattedProtein = '${formatNutritionValue(protein)}g';
-    final formattedCarbs = '${formatNutritionValue(carbs)}g';
-    final formattedFat = '${formatNutritionValue(fat)}g';
-
     final totalBarWeight = proteinBarWeight + carbsBarWeight + fatBarWeight;
 
     final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
@@ -711,19 +707,9 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                       opacity: protein == 0 ? 0 : 1,
                                       duration: BokunSpizeDurations.animation,
                                       curve: Curves.easeIn,
-                                      child: Text(
-                                        formattedProtein,
-                                        style: TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          // TODO: Smaller font-size here and everywhere
-                                          fontSize: 8 * 1.5,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.2,
-                                          letterSpacing: 0.4,
-                                          color: context.colors.text,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                      child: buildNutritionValue(
+                                        context,
+                                        value: protein,
                                       ),
                                     ),
                                   ],
@@ -777,18 +763,9 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                       opacity: carbs == 0 ? 0 : 1,
                                       duration: BokunSpizeDurations.animation,
                                       curve: Curves.easeIn,
-                                      child: Text(
-                                        formattedCarbs,
-                                        style: TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 8 * 1.5,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.2,
-                                          letterSpacing: 0.4,
-                                          color: context.colors.text,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                      child: buildNutritionValue(
+                                        context,
+                                        value: carbs,
                                       ),
                                     ),
                                   ],
@@ -842,18 +819,9 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                       opacity: fat == 0 ? 0 : 1,
                                       duration: BokunSpizeDurations.animation,
                                       curve: Curves.easeIn,
-                                      child: Text(
-                                        formattedFat,
-                                        style: TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 8 * 1.5,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.2,
-                                          letterSpacing: 0.4,
-                                          color: context.colors.text,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                      child: buildNutritionValue(
+                                        context,
+                                        value: fat,
                                       ),
                                     ),
                                   ],
@@ -958,6 +926,31 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildNutritionValue(
+    BuildContext context, {
+    required double value,
+  }) {
+    final formattedValue = formatNutritionValue(value)!;
+    final decimalIndex = formattedValue.indexOf('.');
+
+    return AnimatedDigitWidget(
+      value: num.parse(formattedValue),
+      fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
+      suffix: 'g',
+      loop: false,
+      curve: Curves.easeIn,
+      duration: BokunSpizeDurations.animation,
+      textStyle: TextStyle(
+        fontFamily: 'PlusJakartaSans',
+        fontSize: 8 * 1.5,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        letterSpacing: 0.4,
+        color: context.colors.text,
       ),
     );
   }
