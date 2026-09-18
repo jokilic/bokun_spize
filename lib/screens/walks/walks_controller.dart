@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../constants/durations.dart';
 import '../../models/steps_with_date/steps_with_date.dart';
 import '../../util/null_state.dart';
+import '../../util/steps_history.dart';
 
 class WalksController
     extends
@@ -65,15 +66,18 @@ class WalksController
   /// VARIABLES
   ///
 
-  final graphCalendarDayOptions = [3, 7, 14, 30];
+  final graphCalendarDayOptions = [3, 7, 14, 30, 60, 90];
+
+  final stepsHistory = const StepsHistory();
 
   Timer? stepsRefreshTimer;
   Stream<PedestrianStatus>? pedestrianStatusStream;
   StreamSubscription<PedestrianStatus>? pedestrianStatusSubscription;
 
-  bool isDisposed = false;
-  bool isStepsRefreshActive = false;
-  bool isRefreshingCurrentDaySteps = false;
+  var isDisposed = false;
+  var isStepsRefreshActive = false;
+  var isRefreshingCurrentDaySteps = false;
+  var hasRequestedHistoryPermission = false;
 
   ///
   /// METHODS
@@ -179,7 +183,7 @@ class WalksController
 
   /// Fetches and updates only the current day steps
   Future<void> refreshCurrentDaySteps() async {
-    if (isDisposed || !isStepsRefreshActive || isRefreshingCurrentDaySteps) {
+    if (isDisposed || !isStepsRefreshActive || isRefreshingCurrentDaySteps || value.isLoading) {
       return;
     }
 
@@ -195,7 +199,7 @@ class WalksController
       );
 
       /// Ignore a result completed after leaving [WalksScreen]
-      if (isDisposed || !isStepsRefreshActive) {
+      if (isDisposed || !isStepsRefreshActive || value.isLoading) {
         return;
       }
 
@@ -283,8 +287,32 @@ class WalksController
     );
   }
 
-  /// Requests permission and fetches the total steps recorded
+  /// Requests access to older Android records while retaining ordinary step access
+  Future<void> requestStepHistoryPermission() async {
+    if (defaultTargetPlatform != TargetPlatform.android || hasRequestedHistoryPermission) {
+      return;
+    }
+
+    hasRequestedHistoryPermission = true;
+
+    try {
+      if (await health.isHealthDataHistoryAvailable() && !(await health.isHealthDataHistoryAuthorized())) {
+        await health.requestHealthDataHistoryAuthorization();
+      }
+    } catch (error) {
+      log(
+        'Step history permission is unavailable',
+        error: error,
+      );
+    }
+  }
+
+  /// Requests permission and fetches all accessible history in batches of calendar days
   Future<void> refreshSteps() async {
+    if (isDisposed || value.isLoading) {
+      return;
+    }
+
     updateState(
       stepsWithDate: const [],
       permissionAuthorized: null,
@@ -308,50 +336,59 @@ class WalksController
         return;
       }
 
+      await requestStepHistoryPermission();
+
+      if (isDisposed) {
+        return;
+      }
+
       /// Permission is confirmed before step data starts loading
       updateState(
         permissionAuthorized: true,
       );
 
       final now = DateTime.now();
-      final stepsWithDate = <StepsWithDate>[];
+      final today = DateUtils.dateOnly(now);
+      final earliestDate = await stepsHistory.getEarliestStepDate(now);
+      final historyStart = DateUtils.dateOnly(earliestDate ?? today);
+      final stepsByDate = <DateTime, StepsWithDate>{
+        today: StepsWithDate(dateTime: today, steps: 0),
+      };
+      var batchEnd = now;
 
-      /// Get steps for today and the previous days
-      for (var dayOffset = 30; dayOffset >= 0; dayOffset--) {
-        final startOfDay = DateTime(
-          now.year,
-          now.month,
-          now.day - dayOffset,
-        );
-        final startOfNextDay = DateTime(
-          startOfDay.year,
-          startOfDay.month,
-          startOfDay.day + 1,
-        );
-
-        final endOfInterval = startOfNextDay.isAfter(now) ? now : startOfNextDay;
-
-        final steps = await health.getTotalStepsInInterval(
-          startOfDay,
-          endOfInterval,
-        );
-
-        /// Keep only past days with recorded steps, but always include today
-        if (dayOffset > 0 && (steps == null || steps <= 0)) {
-          continue;
+      /// Load recent totals first and continue through empty periods to the oldest record
+      while (batchEnd.isAfter(historyStart)) {
+        if (isDisposed) {
+          return;
         }
 
-        stepsWithDate.add(
-          StepsWithDate(
-            dateTime: startOfDay,
-            steps: steps ?? 0,
-          ),
+        final proposedStart = DateTime(batchEnd.year, batchEnd.month, batchEnd.day - 365);
+        final batchStart = proposedStart.isBefore(historyStart) ? historyStart : proposedStart;
+        final batch = await stepsHistory.getDailySteps(batchStart, batchEnd);
+
+        if (isDisposed) {
+          return;
+        }
+
+        for (final entry in batch) {
+          final date = DateUtils.dateOnly(entry.dateTime);
+
+          /// Keep only past days with recorded steps, but always include today
+          if (entry.steps > 0 || date == today) {
+            stepsByDate[date] = StepsWithDate(dateTime: date, steps: entry.steps);
+          }
+        }
+
+        updateState(
+          stepsWithDate: stepsByDate.values.toList()..sort((a, b) => a.dateTime.compareTo(b.dateTime)),
         );
+
+        batchEnd = batchStart;
       }
 
-      /// Steps fetched succesfully
+      /// Preserve today even when the health store has no recorded steps
       updateState(
-        stepsWithDate: stepsWithDate,
+        stepsWithDate: stepsByDate.values.toList()..sort((a, b) => a.dateTime.compareTo(b.dateTime)),
         permissionAuthorized: true,
         error: null,
       );

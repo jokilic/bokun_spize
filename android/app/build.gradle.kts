@@ -59,6 +59,9 @@ android {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // Match the Health Connect version used by the Flutter health package
+    implementation("androidx.health.connect:connect-client:1.2.0-alpha02")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }
 
 flutter {
