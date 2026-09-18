@@ -241,7 +241,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                             'Copy',
                                             style: TextStyle(
                                               fontFamily: 'Epilogue',
-                                              fontSize: 18,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w600,
                                               color: context.colors.text,
                                             ),
@@ -273,7 +273,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                             'Edit',
                                             style: TextStyle(
                                               fontFamily: 'Epilogue',
-                                              fontSize: 18,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w600,
                                               color: context.colors.text,
                                             ),
@@ -305,7 +305,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                             'Delete',
                                             style: TextStyle(
                                               fontFamily: 'Epilogue',
-                                              fontSize: 18,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w600,
                                               color: context.colors.text,
                                             ),
@@ -320,6 +320,8 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                   size: 22,
                                 ),
                                 style: IconButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   padding: const EdgeInsets.all(10),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(100),
@@ -350,6 +352,8 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                   size: 22,
                                 ),
                                 style: IconButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   padding: const EdgeInsets.all(10),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(100),

@@ -44,6 +44,8 @@ class WeightsAppBar extends StatelessWidget {
               size: 24,
             ),
             style: IconButton.styleFrom(
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               padding: const EdgeInsets.all(14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
@@ -82,6 +84,8 @@ class WeightsAppBar extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 style: IconButton.styleFrom(
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 12,
@@ -112,6 +116,8 @@ class WeightsAppBar extends StatelessWidget {
                   size: 24,
                 ),
                 style: IconButton.styleFrom(
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: const EdgeInsets.all(14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),

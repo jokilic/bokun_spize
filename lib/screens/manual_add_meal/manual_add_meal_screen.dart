@@ -177,6 +177,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             size: 22,
                           ),
                           style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             padding: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
@@ -216,6 +218,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         size: 22,
                       ),
                       style: IconButton.styleFrom(
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         padding: const EdgeInsets.all(10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
@@ -340,6 +344,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                 size: 22,
                               ),
                               style: IconButton.styleFrom(
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 elevation: 0,
                                 padding: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -430,6 +436,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                               size: 20,
                             ),
                             style: IconButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               elevation: 0,
                               padding: const EdgeInsets.all(10),
                               shape: RoundedRectangleBorder(
@@ -516,6 +524,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             size: 20,
                           ),
                           style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             padding: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
@@ -582,6 +592,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   size: 32,
                                 ),
                                 style: IconButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   elevation: 0,
                                   padding: const EdgeInsets.all(16),
                                   shape: RoundedRectangleBorder(
@@ -628,6 +640,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                         size: 32,
                                       ),
                                       style: IconButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         elevation: 0,
                                         padding: const EdgeInsets.all(16),
                                         shape: RoundedRectangleBorder(
@@ -671,6 +685,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                         size: 32,
                                       ),
                                       style: IconButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         elevation: 0,
                                         padding: const EdgeInsets.all(16),
                                         shape: RoundedRectangleBorder(

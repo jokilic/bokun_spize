@@ -137,6 +137,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             size: 22,
                           ),
                           style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             padding: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
@@ -176,6 +178,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         size: 22,
                       ),
                       style: IconButton.styleFrom(
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         padding: const EdgeInsets.all(10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
@@ -298,6 +302,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             size: 22,
                           ),
                           style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             padding: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
@@ -393,6 +399,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             size: 20,
                           ),
                           style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             padding: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
@@ -468,6 +476,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   size: 32,
                                 ),
                                 style: IconButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   elevation: 0,
                                   padding: const EdgeInsets.all(16),
                                   shape: RoundedRectangleBorder(
@@ -511,6 +521,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   size: 32,
                                 ),
                                 style: IconButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   elevation: 0,
                                   padding: const EdgeInsets.all(16),
                                   shape: RoundedRectangleBorder(
