@@ -498,6 +498,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                           width: availableWidth * proteinBarWeight / totalBarWeight,
                           progress: proteinProgress,
                           color: context.colors.protein,
+                          backgroundColor: context.colors.listTileBackground,
                         ),
 
                         ///
@@ -508,6 +509,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                           width: availableWidth * carbsBarWeight / totalBarWeight,
                           progress: carbsProgress,
                           color: context.colors.carbs,
+                          backgroundColor: context.colors.listTileBackground,
                         ),
 
                         ///
@@ -518,6 +520,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                           width: availableWidth * fatBarWeight / totalBarWeight,
                           progress: fatProgress,
                           color: context.colors.fat,
+                          backgroundColor: context.colors.listTileBackground,
                         ),
                       ],
                     );

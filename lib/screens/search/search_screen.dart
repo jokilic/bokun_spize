@@ -9,7 +9,6 @@ import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import 'search_controller.dart';
-import 'widgets/search_error.dart';
 
 class SearchScreen extends StatefulWidget {
   @override

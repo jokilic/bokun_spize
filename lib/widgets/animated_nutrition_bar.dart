@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../constants/durations.dart';
-import '../theme/extensions.dart';
 
 class AnimatedNutritionBar extends StatelessWidget {
   final double height;
   final double width;
   final double progress;
   final Color color;
+  final Color backgroundColor;
 
   const AnimatedNutritionBar({
     required this.height,
     required this.width,
     required this.progress,
     required this.color,
+    required this.backgroundColor,
   });
 
   @override
@@ -28,7 +29,7 @@ class AnimatedNutritionBar extends StatelessWidget {
     child: ClipRRect(
       borderRadius: BorderRadius.circular(100),
       child: ColoredBox(
-        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+        color: backgroundColor,
         child: Align(
           alignment: Alignment.centerLeft,
           child: TweenAnimationBuilder<double>(

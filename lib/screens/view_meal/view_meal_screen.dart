@@ -607,6 +607,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     width: availableWidth * proteinBarWeight / totalBarWeight,
                                     progress: protein > 0 ? 1.0 : 0.0,
                                     color: context.colors.protein,
+                                    backgroundColor: context.colors.scaffoldBackground,
                                   ),
 
                                   ///
@@ -617,6 +618,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     width: availableWidth * carbsBarWeight / totalBarWeight,
                                     progress: carbs > 0 ? 1.0 : 0.0,
                                     color: context.colors.carbs,
+                                    backgroundColor: context.colors.scaffoldBackground,
                                   ),
 
                                   ///
@@ -627,6 +629,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     width: availableWidth * fatBarWeight / totalBarWeight,
                                     progress: fat > 0 ? 1.0 : 0.0,
                                     color: context.colors.fat,
+                                    backgroundColor: context.colors.scaffoldBackground,
                                   ),
                                 ],
                               );
