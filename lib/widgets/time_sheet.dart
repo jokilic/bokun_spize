@@ -32,284 +32,287 @@ class _TimeSheetState extends State<TimeSheet> {
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
-    child: CustomScrollView(
-      shrinkWrap: true,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 24),
-        ),
+    child: ColoredBox(
+      color: context.colors.scaffoldBackground,
+      child: CustomScrollView(
+        shrinkWrap: true,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 24),
+          ),
 
-        ///
-        /// TITLE & CLOSE BUTTON
-        ///
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-          sliver: SliverToBoxAdapter(
-            child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger,
-              effects: const [
-                FadeEffect(
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOut,
-                ),
-                MoveEffect(
-                  begin: Offset(0, 10),
-                  end: Offset.zero,
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOutCubic,
-                ),
-              ],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ///
-                  /// PLACEHOLDER BUTTON
-                  ///
-                  Opacity(
-                    opacity: 0,
-                    child: IgnorePointer(
-                      child: IconButton(
-                        onPressed: null,
-                        icon: const PhosphorIcon(
-                          PhosphorIconsBold.x,
-                          size: 22,
-                        ),
-                        style: IconButton.styleFrom(
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: const EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
+          ///
+          /// TITLE & CLOSE BUTTON
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 10),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ///
+                    /// PLACEHOLDER BUTTON
+                    ///
+                    Opacity(
+                      opacity: 0,
+                      child: IgnorePointer(
+                        child: IconButton(
+                          onPressed: null,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.x,
+                            size: 22,
                           ),
-                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                          foregroundColor: context.colors.text,
+                          style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  ///
-                  /// TITLE
-                  ///
-                  Expanded(
-                    child: Text(
-                      'Select time',
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2,
-                        letterSpacing: 0.6,
-                        color: context.colors.text,
+                    ///
+                    /// TITLE
+                    ///
+                    Expanded(
+                      child: Text(
+                        'Select time',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          height: 1.2,
+                          letterSpacing: 0.6,
+                          color: context.colors.text,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
+                    ),
+
+                    ///
+                    /// CLOSE BUTTON
+                    ///
+                    IconButton(
+                      onPressed: Navigator.of(context).pop,
+                      icon: const PhosphorIcon(
+                        PhosphorIconsBold.x,
+                        size: 22,
+                      ),
+                      style: IconButton.styleFrom(
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        foregroundColor: context.colors.text,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          ///
+          /// SUBTITLE
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 8),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Text(
+                  widget.subtitle,
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: context.colors.text,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 32),
+          ),
+
+          ///
+          /// TIME
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  ScaleEffect(
+                    begin: Offset(0.98, 0.98),
+                    end: Offset(1, 1),
+                    alignment: Alignment.topCenter,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ScrollDateTimePicker(
+                    onChange: (newDateTime) => selectedDateTime = newDateTime,
+                    itemExtent: 64,
+                    style: DateTimePickerStyle(
+                      activeStyle: TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: widget.primaryColor,
+                      ),
+                      inactiveStyle: TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: context.colors.text.withValues(alpha: 0.45),
+                      ),
+                      disabledStyle: TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: context.colors.text.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    wheelOption: const DateTimePickerWheelOption(
+                      physics: BouncingScrollPhysics(),
+                    ),
+                    dateOption: DateTimePickerOption(
+                      dateFormat: DateFormat(
+                        'HH:mm',
+                        Localizations.localeOf(context).languageCode,
+                      ),
+                      minDate: DateTime(2020),
+                      maxDate: DateTime(2050),
+                      initialDate: selectedDateTime,
+                    ),
+                    centerWidget: DateTimePickerCenterWidget(
+                      builder: (context, constraints, child) => Container(
+                        decoration: ShapeDecoration(
+                          color: widget.primaryColor.withValues(alpha: 0.25),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: child,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 32),
+          ),
+
+          ///
+          /// SAVE BUTTON
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 14),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onTimeChanged(selectedDateTime);
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      padding: const EdgeInsets.all(22),
+                      backgroundColor: widget.primaryColor,
+                      foregroundColor: context.colors.buttonText,
+                    ),
+                    child: const Text(
+                      'Confirm',
                       textAlign: TextAlign.center,
                     ),
                   ),
-
-                  ///
-                  /// CLOSE BUTTON
-                  ///
-                  IconButton(
-                    onPressed: Navigator.of(context).pop,
-                    icon: const PhosphorIcon(
-                      PhosphorIconsBold.x,
-                      size: 22,
-                    ),
-                    style: IconButton.styleFrom(
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: const EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                      foregroundColor: context.colors.text,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        ///
-        /// SUBTITLE
-        ///
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-          sliver: SliverToBoxAdapter(
-            child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 2,
-              effects: const [
-                FadeEffect(
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOut,
-                ),
-                MoveEffect(
-                  begin: Offset(0, 8),
-                  end: Offset.zero,
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOutCubic,
-                ),
-              ],
-              child: Text(
-                widget.subtitle,
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.text,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 32),
-        ),
-
-        ///
-        /// TIME
-        ///
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-          sliver: SliverToBoxAdapter(
-            child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 2,
-              effects: const [
-                FadeEffect(
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOut,
-                ),
-                ScaleEffect(
-                  begin: Offset(0.98, 0.98),
-                  end: Offset(1, 1),
-                  alignment: Alignment.topCenter,
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOutCubic,
-                ),
-              ],
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ScrollDateTimePicker(
-                  onChange: (newDateTime) => selectedDateTime = newDateTime,
-                  itemExtent: 64,
-                  style: DateTimePickerStyle(
-                    activeStyle: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: widget.primaryColor,
-                    ),
-                    inactiveStyle: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text.withValues(alpha: 0.45),
-                    ),
-                    disabledStyle: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  wheelOption: const DateTimePickerWheelOption(
-                    physics: BouncingScrollPhysics(),
-                  ),
-                  dateOption: DateTimePickerOption(
-                    dateFormat: DateFormat(
-                      'HH:mm',
-                      Localizations.localeOf(context).languageCode,
-                    ),
-                    minDate: DateTime(2020),
-                    maxDate: DateTime(2050),
-                    initialDate: selectedDateTime,
-                  ),
-                  centerWidget: DateTimePickerCenterWidget(
-                    builder: (context, constraints, child) => Container(
-                      decoration: ShapeDecoration(
-                        color: widget.primaryColor.withValues(alpha: 0.25),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: child,
-                    ),
-                  ),
                 ),
               ),
             ),
           ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 32),
-        ),
 
-        ///
-        /// SAVE BUTTON
-        ///
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-          sliver: SliverToBoxAdapter(
-            child: Animate(
-              delay: BokunSpizeDurations.stateTransitionStagger * 3,
-              effects: const [
-                FadeEffect(
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOut,
-                ),
-                MoveEffect(
-                  begin: Offset(0, 14),
-                  end: Offset.zero,
-                  duration: BokunSpizeDurations.animation,
-                  curve: Curves.easeOutCubic,
-                ),
-              ],
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    widget.onTimeChanged(selectedDateTime);
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: const StadiumBorder(),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                    padding: const EdgeInsets.all(22),
-                    backgroundColor: widget.primaryColor,
-                    foregroundColor: context.colors.buttonText,
-                  ),
-                  child: const Text(
-                    'Confirm',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
+          ///
+          /// BOTTOM SPACING
+          ///
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: getBottomSpacing(context),
             ),
           ),
-        ),
-
-        ///
-        /// BOTTOM SPACING
-        ///
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: getBottomSpacing(context),
-          ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

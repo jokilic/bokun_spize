@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide SearchController;
 
 import '../../constants/constants.dart';
 import '../../services/firebase_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import 'search_controller.dart';
@@ -33,29 +34,32 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
-    child: CustomScrollView(
-      shrinkWrap: true,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 24),
-        ),
-
-        // TODO: Content here
-        const SearchError(
-          error: 'Worko in progresso',
-        ),
-
-        ///
-        /// BOTTOM SPACING
-        ///
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: getBottomSpacing(context),
+    child: ColoredBox(
+      color: context.colors.scaffoldBackground,
+      child: CustomScrollView(
+        shrinkWrap: true,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 24),
           ),
-        ),
-      ],
+
+          // TODO: Content here
+          const SearchError(
+            error: 'Worko in progresso',
+          ),
+
+          ///
+          /// BOTTOM SPACING
+          ///
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: getBottomSpacing(context),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

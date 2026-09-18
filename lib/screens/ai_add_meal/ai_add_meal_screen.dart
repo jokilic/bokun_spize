@@ -92,263 +92,163 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
-      child: CustomScrollView(
-        shrinkWrap: true,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 24),
-          ),
-
-          ///
-          /// TITLE & CLOSE BUTTON
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 10),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ///
-                    /// PLACEHOLDER BUTTON
-                    ///
-                    Opacity(
-                      opacity: 0,
-                      child: IgnorePointer(
-                        child: IconButton(
-                          onPressed: null,
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.x,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: context.colors.text,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    ///
-                    /// TITLE
-                    ///
-                    Expanded(
-                      child: Text(
-                        'Log meal',
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          height: 1.2,
-                          letterSpacing: 0.6,
-                          color: context.colors.text,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-
-                    ///
-                    /// CLOSE BUTTON
-                    ///
-                    IconButton(
-                      onPressed: Navigator.of(context).pop,
-                      icon: const PhosphorIcon(
-                        PhosphorIconsBold.x,
-                        size: 22,
-                      ),
-                      style: IconButton.styleFrom(
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: const EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                        foregroundColor: context.colors.text,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      child: ColoredBox(
+        color: context.colors.scaffoldBackground,
+        child: CustomScrollView(
+          shrinkWrap: true,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
             ),
-          ),
 
-          ///
-          /// SUBTITLE
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 8),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Text(
-                  'New meal in your journal',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: context.colors.text,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
-
-          ///
-          /// TEXT FIELD & SPEECH TO TEXT
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 3,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 12),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Stack(
-                  children: [
-                    ///
-                    /// TEXT FIELD
-                    ///
-                    TextFieldWidget(
-                      minLines: 3,
-                      maxLines: 3,
-                      controller: mealController.textEditingController,
-                      focusNode: mealController.textFocusNode,
-                      onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                      title: 'Describe your meal',
-                      hintText: 'What was it?',
-                      textColor: context.colors.text,
-                    ),
-
-                    ///
-                    /// SPEECH TO TEXT ICON
-                    ///
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Animate(
-                        onPlay: (controller) {
-                          if (isListening) {
-                            controller.loop(
-                              reverse: true,
-                              min: 0.6,
-                            );
-                          }
-                        },
-                        effects: [
-                          if (isListening)
-                            const FadeEffect(
-                              duration: BokunSpizeDurations.speechToTextShimmer,
-                              curve: Curves.easeIn,
-                            ),
-                        ],
-                        child: IconButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            mealController.onSpeechToTextPressed(
-                              locale: 'en',
-                              speechToTextAvailable: available,
-                            );
-                          },
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.microphone,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            elevation: 0,
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: isListening ? context.colors.delete : context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: isListening ? context.colors.listTileBackground : context.colors.delete,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
-
-          ///
-          /// LOCAL IMAGE
-          ///
-          if (imageFile != null)
+            ///
+            /// TITLE & CLOSE BUTTON
+            ///
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  key: ValueKey('meal-image-$imageFile'),
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
                       curve: Curves.easeOut,
                     ),
                     MoveEffect(
-                      begin: Offset(0, 14),
+                      begin: Offset(0, 10),
                       end: Offset.zero,
                       duration: BokunSpizeDurations.animation,
                       curve: Curves.easeOutCubic,
                     ),
-                    ScaleEffect(
-                      begin: Offset(0.98, 0.98),
-                      end: Offset(1, 1),
-                      alignment: Alignment.topCenter,
+                  ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ///
+                      /// PLACEHOLDER BUTTON
+                      ///
+                      Opacity(
+                        opacity: 0,
+                        child: IgnorePointer(
+                          child: IconButton(
+                            onPressed: null,
+                            icon: const PhosphorIcon(
+                              PhosphorIconsBold.x,
+                              size: 22,
+                            ),
+                            style: IconButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: const EdgeInsets.all(10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                              foregroundColor: context.colors.text,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      ///
+                      /// TITLE
+                      ///
+                      Expanded(
+                        child: Text(
+                          'Log meal',
+                          style: TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2,
+                            letterSpacing: 0.6,
+                            color: context.colors.text,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+
+                      ///
+                      /// CLOSE BUTTON
+                      ///
+                      IconButton(
+                        onPressed: Navigator.of(context).pop,
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.x,
+                          size: 22,
+                        ),
+                        style: IconButton.styleFrom(
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            ///
+            /// SUBTITLE
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Text(
+                    'New meal in your journal',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: context.colors.text,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+
+            ///
+            /// TEXT FIELD & SPEECH TO TEXT
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
                       duration: BokunSpizeDurations.animation,
                       curve: Curves.easeOutCubic,
                     ),
@@ -356,58 +256,64 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   child: Stack(
                     children: [
                       ///
-                      /// IMAGE
+                      /// TEXT FIELD
                       ///
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                        child: Image.file(
-                          imageFile,
-                          height: 160,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(listTileRadius),
-                            ),
-                            height: 160,
-                            width: double.infinity,
-                            child: PhosphorIcon(
-                              PhosphorIconsBold.warningOctagon,
-                              size: 56,
-                              color: context.colors.delete,
-                            ),
-                          ),
-                        ),
+                      TextFieldWidget(
+                        minLines: 3,
+                        maxLines: 3,
+                        controller: mealController.textEditingController,
+                        focusNode: mealController.textFocusNode,
+                        onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                        title: 'Describe your meal',
+                        hintText: 'What was it?',
+                        textColor: context.colors.text,
                       ),
 
                       ///
-                      /// DELETE
+                      /// SPEECH TO TEXT ICON
                       ///
                       Positioned(
+                        bottom: 8,
                         right: 8,
-                        top: 8,
-                        child: IconButton(
-                          onPressed: () => handleOnPressed(
-                            onPressed: () => mealController
-                              ..updateState(
-                                imageFile: null,
-                              )
-                              ..triggerValidation(),
-                          ),
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.trash,
-                            size: 20,
-                          ),
-                          style: IconButton.styleFrom(
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            elevation: 0,
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
+                        child: Animate(
+                          onPlay: (controller) {
+                            if (isListening) {
+                              controller.loop(
+                                reverse: true,
+                                min: 0.6,
+                              );
+                            }
+                          },
+                          effects: [
+                            if (isListening)
+                              const FadeEffect(
+                                duration: BokunSpizeDurations.speechToTextShimmer,
+                                curve: Curves.easeIn,
+                              ),
+                          ],
+                          child: IconButton(
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              mealController.onSpeechToTextPressed(
+                                locale: 'en',
+                                speechToTextAvailable: available,
+                              );
+                            },
+                            icon: const PhosphorIcon(
+                              PhosphorIconsBold.microphone,
+                              size: 22,
                             ),
-                            backgroundColor: context.colors.listTileBackground,
-                            foregroundColor: context.colors.delete,
+                            style: IconButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              elevation: 0,
+                              padding: const EdgeInsets.all(10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              backgroundColor: isListening ? context.colors.delete : context.colors.listTileBackground.withValues(alpha: 0.5),
+                              foregroundColor: isListening ? context.colors.listTileBackground : context.colors.delete,
+                            ),
                           ),
                         ),
                       ),
@@ -415,17 +321,487 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   ),
                 ),
               ),
-            )
-          ///
-          /// EMPTY IMAGE
-          ///
-          else
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 20),
+            ),
+
+            ///
+            /// LOCAL IMAGE
+            ///
+            if (imageFile != null)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    key: ValueKey('meal-image-$imageFile'),
+                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 14),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                      ScaleEffect(
+                        begin: Offset(0.98, 0.98),
+                        end: Offset(1, 1),
+                        alignment: Alignment.topCenter,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Stack(
+                      children: [
+                        ///
+                        /// IMAGE
+                        ///
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                          child: Image.file(
+                            imageFile,
+                            height: 160,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(listTileRadius),
+                              ),
+                              height: 160,
+                              width: double.infinity,
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.warningOctagon,
+                                size: 56,
+                                color: context.colors.delete,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        ///
+                        /// DELETE
+                        ///
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: IconButton(
+                            onPressed: () => handleOnPressed(
+                              onPressed: () => mealController
+                                ..updateState(
+                                  imageFile: null,
+                                )
+                                ..triggerValidation(),
+                            ),
+                            icon: const PhosphorIcon(
+                              PhosphorIconsBold.trash,
+                              size: 20,
+                            ),
+                            style: IconButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              elevation: 0,
+                              padding: const EdgeInsets.all(10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              backgroundColor: context.colors.listTileBackground,
+                              foregroundColor: context.colors.delete,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ///
+            /// EMPTY IMAGE
+            ///
+            else
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    key: const ValueKey('meal-image-empty'),
+                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 14),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                      ScaleEffect(
+                        begin: Offset(0.98, 0.98),
+                        end: Offset(1, 1),
+                        alignment: Alignment.topCenter,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      ),
+                      height: 160,
+                      width: double.infinity,
+                      child: Row(
+                        spacing: 56,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ///
+                          /// CAMERA
+                          ///
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () => handleOnPressed(
+                                    onPressed: mealController.onCameraPressed,
+                                  ),
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.cameraPlus,
+                                    size: 32,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    minimumSize: Size.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.all(16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    foregroundColor: context.colors.protein,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Camera',
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.6,
+                                    color: context.colors.text,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          ///
+                          /// GALLERY
+                          ///
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                  onPressed: () => handleOnPressed(
+                                    onPressed: mealController.onGalleryPressed,
+                                  ),
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.images,
+                                    size: 32,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    minimumSize: Size.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.all(16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    foregroundColor: context.colors.protein,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Gallery',
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.6,
+                                    color: context.colors.text,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+
+            ///
+            /// DATE & TIME TITLE
+            ///
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  key: const ValueKey('meal-image-empty'),
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Text(
+                    'Date & time',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: context.colors.text,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            ),
+
+            ///
+            /// DATE
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Material(
+                    color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    child: InkWell(
+                      onTap: () => handleOnPressed(
+                        onPressed: () => mealController.updateDateViaPicker(context),
+                      ),
+                      borderRadius: BorderRadius.circular(listTileRadius),
+                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      splashColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ///
+                                  /// TITLE
+                                  ///
+                                  Text(
+                                    'Date'.toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.2,
+                                      color: context.colors.text.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+
+                                  ///
+                                  /// DATE
+                                  ///
+                                  Text(
+                                    date,
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.6,
+                                      color: context.colors.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            ///
+                            /// ICON
+                            ///
+                            PhosphorIcon(
+                              PhosphorIconsBold.calendarPlus,
+                              size: 28,
+                              color: context.colors.protein,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 20),
+            ),
+
+            ///
+            /// TIME
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Material(
+                    color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    child: InkWell(
+                      onTap: () => handleOnPressed(
+                        onPressed: () => mealController.updateTimeViaPicker(context),
+                      ),
+                      borderRadius: BorderRadius.circular(listTileRadius),
+                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      splashColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ///
+                                  /// TITLE
+                                  ///
+                                  Text(
+                                    'Time'.toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.2,
+                                      color: context.colors.text.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+
+                                  ///
+                                  /// TIME
+                                  ///
+                                  Text(
+                                    time,
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.6,
+                                      color: context.colors.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            ///
+                            /// ICON
+                            ///
+                            PhosphorIcon(
+                              PhosphorIconsBold.clock,
+                              size: 28,
+                              color: context.colors.protein,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+
+            ///
+            /// SAVE BUTTON
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 8,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -437,437 +813,64 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                       duration: BokunSpizeDurations.animation,
                       curve: Curves.easeOutCubic,
                     ),
-                    ScaleEffect(
-                      begin: Offset(0.98, 0.98),
-                      end: Offset(1, 1),
-                      alignment: Alignment.topCenter,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
                   ],
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(listTileRadius),
-                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                    ),
-                    height: 160,
+                  child: SizedBox(
                     width: double.infinity,
-                    child: Row(
-                      spacing: 56,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ///
-                        /// CAMERA
-                        ///
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () => handleOnPressed(
-                                  onPressed: mealController.onCameraPressed,
-                                ),
-                                icon: const PhosphorIcon(
-                                  PhosphorIconsBold.cameraPlus,
-                                  size: 32,
-                                ),
-                                style: IconButton.styleFrom(
-                                  minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  elevation: 0,
-                                  padding: const EdgeInsets.all(16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
+                    child: ElevatedButton(
+                      onPressed: validation
+                          ? () => handleOnPressed(
+                              onPressed: () {
+                                /// Get `words` from [TextEditingController]
+                                final words = mealController.textEditingController.text.trim();
+
+                                /// Dismiss sheet
+                                Navigator.of(context).pop(
+                                  (
+                                    words: words,
+                                    dateTime: getMealDateTime(
+                                      mealDate: mealDate,
+                                      mealTime: mealTime,
+                                    ),
+                                    imageFile: imageFile,
                                   ),
-                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                  foregroundColor: context.colors.protein,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Camera',
-                                style: TextStyle(
-                                  fontFamily: 'Epilogue',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.6,
-                                  color: context.colors.text,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
+                                );
+                              },
+                            )
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
                         ),
-
-                        ///
-                        /// GALLERY
-                        ///
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              IconButton(
-                                onPressed: () => handleOnPressed(
-                                  onPressed: mealController.onGalleryPressed,
-                                ),
-                                icon: const PhosphorIcon(
-                                  PhosphorIconsBold.images,
-                                  size: 32,
-                                ),
-                                style: IconButton.styleFrom(
-                                  minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  elevation: 0,
-                                  padding: const EdgeInsets.all(16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                  foregroundColor: context.colors.protein,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Gallery',
-                                style: TextStyle(
-                                  fontFamily: 'Epilogue',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.6,
-                                  color: context.colors.text,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
-
-          ///
-          /// DATE & TIME TITLE
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 8),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Text(
-                  'Date & time',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
-                    color: context.colors.text,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
-
-          ///
-          /// DATE
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 6,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 12),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Material(
-                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(listTileRadius),
-                  child: InkWell(
-                    onTap: () => handleOnPressed(
-                      onPressed: () => mealController.updateDateViaPicker(context),
-                    ),
-                    borderRadius: BorderRadius.circular(listTileRadius),
-                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                    splashColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
+                        padding: const EdgeInsets.all(22),
+                        backgroundColor: context.colors.protein,
+                        foregroundColor: context.colors.buttonText,
+                        disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
+                        disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ///
-                                /// TITLE
-                                ///
-                                Text(
-                                  'Date'.toUpperCase(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 1.2,
-                                    color: context.colors.text.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-
-                                ///
-                                /// DATE
-                                ///
-                                Text(
-                                  date,
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.6,
-                                    color: context.colors.text,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          ///
-                          /// ICON
-                          ///
-                          PhosphorIcon(
-                            PhosphorIconsBold.calendarPlus,
-                            size: 28,
-                            color: context.colors.protein,
-                          ),
-                        ],
+                      child: const Text(
+                        'Log meal',
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
 
-          ///
-          /// TIME
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 7,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 12),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Material(
-                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(listTileRadius),
-                  child: InkWell(
-                    onTap: () => handleOnPressed(
-                      onPressed: () => mealController.updateTimeViaPicker(context),
-                    ),
-                    borderRadius: BorderRadius.circular(listTileRadius),
-                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                    splashColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ///
-                                /// TITLE
-                                ///
-                                Text(
-                                  'Time'.toUpperCase(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 1.2,
-                                    color: context.colors.text.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-
-                                ///
-                                /// TIME
-                                ///
-                                Text(
-                                  time,
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.6,
-                                    color: context.colors.text,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          ///
-                          /// ICON
-                          ///
-                          PhosphorIcon(
-                            PhosphorIconsBold.clock,
-                            size: 28,
-                            color: context.colors.protein,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+            ///
+            /// BOTTOM SPACING
+            ///
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: getBottomSpacing(context),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
-
-          ///
-          /// SAVE BUTTON
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 8,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 14),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: validation
-                        ? () => handleOnPressed(
-                            onPressed: () {
-                              /// Get `words` from [TextEditingController]
-                              final words = mealController.textEditingController.text.trim();
-
-                              /// Dismiss sheet
-                              Navigator.of(context).pop(
-                                (
-                                  words: words,
-                                  dateTime: getMealDateTime(
-                                    mealDate: mealDate,
-                                    mealTime: mealTime,
-                                  ),
-                                  imageFile: imageFile,
-                                ),
-                              );
-                            },
-                          )
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      padding: const EdgeInsets.all(22),
-                      backgroundColor: context.colors.protein,
-                      foregroundColor: context.colors.buttonText,
-                      disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
-                      disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
-                    ),
-                    child: const Text(
-                      'Log meal',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          ///
-          /// BOTTOM SPACING
-          ///
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: getBottomSpacing(context),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
