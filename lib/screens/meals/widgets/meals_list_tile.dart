@@ -42,10 +42,12 @@ class MealsListTile extends StatelessWidget {
       useTodayYesterdayTomorrow: false,
     );
 
-    final primaryColor = getCalorieValueColor(
-      nutrition: meal.nutrition,
-      context: context,
-    );
+    final primaryColor =
+        meal.color ??
+        getCalorieValueColor(
+          nutrition: meal.nutrition,
+          context: context,
+        );
 
     final imageBackgroundColor = isLoading
         ? context.colors.scaffoldBackground

@@ -76,12 +76,14 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
 
     final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
 
-    final primaryColor = getCalorieValueColor(
-      nutrition: widget.passedMeal.nutrition,
-      context: context,
-    );
+    final primaryColor =
+        widget.passedMeal.color ??
+        getCalorieValueColor(
+          nutrition: widget.passedMeal.nutrition,
+          context: context,
+        );
 
-    final imageBackgroundColor = hasError ? context.colors.delete : widget.passedMeal.color ?? primaryColor;
+    final imageBackgroundColor = hasError ? context.colors.delete : primaryColor;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),

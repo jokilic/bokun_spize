@@ -229,7 +229,6 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                     ///
                     if (food.nutrition.calories > 0)
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           ///
                           /// CALORIES VALUE
