@@ -317,7 +317,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(marginHorizontal),
                   child: Text(
-                    state.query.characters.length < SearchController.minimumSearchLength ? 'Enter at least 3 characters to search' : 'No meals found',
+                    state.query.characters.length < minimumSearchLength ? 'Enter at least 3 characters to search' : 'No meals found',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Epilogue',

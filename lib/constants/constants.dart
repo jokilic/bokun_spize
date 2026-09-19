@@ -4,3 +4,4 @@ const listTileIconRadius = 56.0;
 const nutritionValuesHeight = 7.0;
 const showImageMealListTile = false;
 const minimumSearchLength = 3;
+const minimumFuzzyScore = 80;

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -10,6 +9,7 @@ import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../util/search.dart';
 
 class SearchController extends ValueNotifier<({String query, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
   ///
@@ -87,22 +87,34 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
   /// METHODS
   ///
 
-  /// Normalizes casing, accents and whitespace for matching search text
-  String normalizeSearchText(String text) => removeDiacritics(text).toLowerCase().trim().replaceAll(RegExp(r'\s+'), ' ');
-
-  /// Debounces both typed and dictated text and clears results below the minimum length
+  /// Triggered when the user types something
   void onSearchTextChanged() {
-    final query = normalizeSearchText(textEditingController.text);
+    final query =
+        normalizeString(
+          textEditingController.text,
+        ).replaceAll(
+          RegExp(r'\s+'),
+          ' ',
+        );
 
     if (isDisposed || query == value.query) {
       return;
     }
 
+    /// Restart debounce
     searchDebounce?.cancel();
     searchVersion++;
 
+    /// Check if search should happen
     final canSearch = query.characters.length >= minimumSearchLength;
-    value = (query: query, meals: const [], isLoading: canSearch, error: null);
+
+    /// Update state
+    value = (
+      query: query,
+      meals: const [],
+      isLoading: canSearch,
+      error: null,
+    );
 
     if (canSearch) {
       searchDebounce = Timer(
@@ -112,7 +124,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     }
   }
 
-  /// Loads the journal once per search sheet and matches every term across meal and food text
+  /// Loads the journal once per search sheet and ranks fuzzy matches across meal and food text
   Future<void> searchMeals() async {
     searchDebounce?.cancel();
 
@@ -122,11 +134,17 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
 
     final query = value.query;
     final version = ++searchVersion;
-    value = (query: query, meals: const [], isLoading: true, error: null);
+
+    value = (
+      query: query,
+      meals: const [],
+      isLoading: true,
+      error: null,
+    );
 
     try {
       mealsRequest ??= firebase.getMeals();
-      final meals = await mealsRequest!;
+      final meals = await mealsRequest;
 
       if (isDisposed || version != searchVersion) {
         return;
@@ -136,32 +154,83 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         throw StateError('Meals could not be loaded');
       }
 
-      final terms = query.split(' ');
-      final results = meals.where((meal) {
-        if (meal.isLoading) {
-          return false;
+      final terms = tokenizeString(query);
+      final matches = <({Meal meal, int score})>[];
+
+      for (final meal in meals) {
+        if (meal.isLoading || terms.isEmpty) {
+          continue;
         }
 
-        final searchableText = normalizeSearchText(
-          [
-            meal.name ?? '',
-            meal.originalText ?? '',
-            ...?meal.foods?.map((food) => food.name),
-          ].join(' '),
-        );
+        final searchableText = [
+          meal.name ?? '',
+          meal.originalText ?? '',
+          ...?meal.foods?.map((food) => food.name),
+        ].join(' ');
 
-        return terms.every(searchableText.contains);
-      }).toList();
+        final scores = terms
+            .map(
+              (term) => getFuzzyScore(
+                term,
+                searchableText,
+              ),
+            )
+            .toList();
 
-      value = (query: query, meals: results, isLoading: false, error: null);
+        /// Require every term to match so unrelated words cannot inflate the total score
+        if (scores.every((score) => score >= minimumFuzzyScore)) {
+          matches.add(
+            (
+              meal: meal,
+              score: scores.fold<int>(
+                0,
+                (total, score) => total + score,
+              ),
+            ),
+          );
+        }
+      }
+
+      /// Show the strongest matches first and prefer recent meals when scores are equal
+      matches.sort((a, b) {
+        final scoreOrder = b.score.compareTo(a.score);
+        return scoreOrder != 0
+            ? scoreOrder
+            : b.meal.createdAt.compareTo(
+                a.meal.createdAt,
+              );
+      });
+
+      final results = matches
+          .map(
+            (match) => match.meal,
+          )
+          .toList();
+
+      value = (
+        query: query,
+        meals: results,
+        isLoading: false,
+        error: null,
+      );
     } catch (error) {
       if (isDisposed || version != searchVersion) {
         return;
       }
 
       mealsRequest = null;
-      log('Searching meals failed', error: error);
-      value = (query: query, meals: const [], isLoading: false, error: 'Meals could not be loaded. Please try again.');
+
+      log(
+        'Searching meals failed',
+        error: error,
+      );
+
+      value = (
+        query: query,
+        meals: const [],
+        isLoading: false,
+        error: 'Meals could not be loaded. Please try again.',
+      );
     }
   }
 
