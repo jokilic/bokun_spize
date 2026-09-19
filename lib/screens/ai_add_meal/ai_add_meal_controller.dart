@@ -84,6 +84,8 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
     textFocusNode
       ..removeListener(stopSpeechToTextIfTextFieldFocused)
       ..dispose();
+
+    super.dispose();
   }
 
   ///

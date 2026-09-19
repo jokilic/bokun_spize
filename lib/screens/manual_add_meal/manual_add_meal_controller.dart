@@ -20,8 +20,7 @@ import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
-class ManualAddMealController
-    extends ValueNotifier<({bool validation, List<Food>? foods, DateTime mealDate, DateTime mealTime, File? imageFile, String? imageStoragePath})>
+class ManualAddMealController extends ValueNotifier<({bool validation, List<Food>? foods, DateTime mealDate, DateTime mealTime, File? imageFile, String? imageStoragePath})>
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -133,6 +132,8 @@ class ManualAddMealController
     proteinFocusNode.dispose();
     carbsFocusNode.dispose();
     fatsFocusNode.dispose();
+
+    super.dispose();
   }
 
   ///

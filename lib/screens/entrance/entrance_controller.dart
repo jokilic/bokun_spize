@@ -83,6 +83,8 @@ class EntranceController
     registerEmailFocusNode.dispose();
     registerPasswordFocusNode.dispose();
     registerNameFocusNode.dispose();
+
+    super.dispose();
   }
 
   ///

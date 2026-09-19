@@ -9,10 +9,12 @@ import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/text_field_widget.dart';
 import 'search_controller.dart';
+import 'widgets/search_error.dart';
 
 class SearchScreen extends WatchingStatefulWidget {
   @override
@@ -29,6 +31,7 @@ class _SearchScreenState extends State<SearchScreen> {
         firebase: getIt.get<FirebaseService>(),
         speechToText: getIt.get<SpeechToTextService>(),
       ),
+      afterRegister: (controller) => controller.init(),
     );
   }
 
@@ -42,6 +45,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final searchController = getIt.get<SearchController>();
 
+    /// Reference to `state`
+    final state = watchIt<SearchController>().value;
     final speechToTextState = watchIt<SpeechToTextService>().value;
 
     final available = speechToTextState.available;
@@ -219,7 +224,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         controller: searchController.textEditingController,
                         focusNode: searchController.focusNode,
                         onChanged: (_) => searchController.stopSpeechToTextIfListening(),
-                        onSubmitted: (_) {},
+                        onSubmitted: (_) => searchController.searchMeals(),
+                        textInputAction: TextInputAction.search,
                         title: 'Search terms',
                         hintText: 'What you need?',
                         textColor: context.colors.text,
@@ -282,7 +288,78 @@ class _SearchScreenState extends State<SearchScreen> {
             ///
             /// RESULTS
             ///
-            SliverList.builder(),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            ),
+            if (state.isLoading)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: context.colors.text,
+                    ),
+                  ),
+                ),
+              )
+            else if (state.error != null) ...[
+              SearchError(error: state.error!),
+              SliverToBoxAdapter(
+                child: Center(
+                  child: TextButton(
+                    onPressed: searchController.searchMeals,
+                    child: const Text('Try again'),
+                  ),
+                ),
+              ),
+            ] else if (state.meals.isEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(marginHorizontal),
+                  child: Text(
+                    state.query.characters.length < SearchController.minimumSearchLength ? 'Enter at least 3 characters to search' : 'No meals found',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 14,
+                      color: context.colors.text.withValues(alpha: 0.75),
+                    ),
+                  ),
+                ),
+              )
+            else
+              SliverList.builder(
+                itemCount: state.meals.length,
+                itemBuilder: (context, index) {
+                  final meal = state.meals[index];
+
+                  return Padding(
+                    key: ValueKey(meal.id),
+                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal, vertical: 6),
+                    child: ListTile(
+                      tileColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                      ),
+                      leading: Text(meal.emoji ?? '🍽️', style: const TextStyle(fontSize: 28)),
+                      title: Text(
+                        meal.name ?? meal.originalText ?? 'Meal',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontFamily: 'Epilogue', color: context.colors.text),
+                      ),
+                      subtitle: Text(
+                        getDateString(
+                          date: meal.createdAt,
+                          dateFormat: 'dd MMM yyyy, HH:mm',
+                          useTodayYesterdayTomorrow: false,
+                        ),
+                        style: TextStyle(color: context.colors.text.withValues(alpha: 0.75)),
+                      ),
+                    ),
+                  );
+                },
+              ),
 
             ///
             /// BOTTOM SPACING
