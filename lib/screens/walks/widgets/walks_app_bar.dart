@@ -38,7 +38,7 @@ class WalksAppBar extends StatelessWidget {
           /// ICON
           ///
           IconButton(
-            onPressed: null,
+            onPressed: () {},
             icon: const PhosphorIcon(
               PhosphorIconsBold.footprints,
               size: 24,

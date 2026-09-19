@@ -43,7 +43,7 @@ dependencies:
   flutter_displaymode: 0.7.0
   flutter_swipe_action_cell: 3.1.9
   fuzzywuzzy: 1.2.0
-  get_it: 9.2.1
+  get_it: 9.3.0
   google_sign_in: 7.2.0
   health: 13.3.2
   image: 4.10.1
@@ -59,7 +59,7 @@ dependencies:
   speech_to_text: 7.5.0
   string_similarity: 2.2.0
   uuid: 4.6.0
-  watch_it: 2.4.2
+  watch_it: 2.5.0
 
   calendar_date_picker2:
     git:

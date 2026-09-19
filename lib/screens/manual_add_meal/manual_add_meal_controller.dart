@@ -21,7 +21,7 @@ import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
 class ManualAddMealController
-    extends ValueNotifier<({bool validation, String? speechToTextWords, List<Food>? foods, DateTime mealDate, DateTime mealTime, File? imageFile, String? imageStoragePath})>
+    extends ValueNotifier<({bool validation, List<Food>? foods, DateTime mealDate, DateTime mealTime, File? imageFile, String? imageStoragePath})>
     implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -38,7 +38,6 @@ class ManualAddMealController
   }) : super(
          (
            validation: false,
-           speechToTextWords: null,
            foods: null,
            mealDate: DateTime.now(),
            mealTime: DateTime.now(),
@@ -51,7 +50,6 @@ class ManualAddMealController
   /// INIT
   ///
 
-  /// Initializes the form with the passed meal and registers validation listeners
   void init() {
     final meal = passedMeal;
     final mealTime = meal != null && !isCopyingMeal
@@ -246,18 +244,8 @@ class ManualAddMealController
 
     /// [SpeechToText] was disabled, start listening
     if (!speechToText.value.isListening) {
-      /// Reset `state`
-      updateState(
-        speechToTextWords: null,
-      );
-
       await speechToText.startListening(
         onResult: (words) {
-          /// Update `state`
-          updateState(
-            speechToTextWords: words,
-          );
-
           /// Add new `words` to [TextEditingController]
           if (currentText.isNotEmpty) {
             nameTextEditingController.text = '$currentText $words';
@@ -435,7 +423,6 @@ class ManualAddMealController
   /// Updates `state`
   void updateState({
     bool? validation,
-    Object? speechToTextWords = nullStateNoChange,
     Object? foods = nullStateNoChange,
     DateTime? mealDate,
     DateTime? mealTime,
@@ -443,7 +430,6 @@ class ManualAddMealController
     Object? imageStoragePath = nullStateNoChange,
   }) => value = (
     validation: validation ?? value.validation,
-    speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
     foods: identical(foods, nullStateNoChange)
         ? value.foods
         : foods == null

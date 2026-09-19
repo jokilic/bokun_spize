@@ -60,7 +60,7 @@ class MealsAppBar extends StatelessWidget {
           /// ICON
           ///
           IconButton(
-            onPressed: null,
+            onPressed: () {},
             icon: const PhosphorIcon(
               PhosphorIconsBold.bowlFood,
               size: 24,
