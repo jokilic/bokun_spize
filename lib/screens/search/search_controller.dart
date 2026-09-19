@@ -90,6 +90,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
 
   /// Triggered when the user types something
   void onSearchTextChanged() {
+    /// Calculate proper `query`
     final query =
         normalizeString(
           textEditingController.text,
@@ -102,7 +103,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
       return;
     }
 
-    /// Restart debounce
+    /// Cancel debounce
     searchDebounce?.cancel();
     searchVersion++;
 
@@ -117,6 +118,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
       error: null,
     );
 
+    /// Restart debounce
     if (canSearch) {
       searchDebounce = Timer(
         BokunSpizeDurations.searchDelay,
@@ -125,8 +127,9 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     }
   }
 
-  /// Loads the journal once per search sheet and ranks fuzzy matches across meal and food text
+  /// Triggers search logic
   Future<void> searchMeals() async {
+    /// Cancel debounce
     searchDebounce?.cancel();
 
     if (isDisposed || value.query.characters.length < minimumSearchLength) {
@@ -136,6 +139,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     final query = value.query;
     final version = ++searchVersion;
 
+    /// Update state
     updateState(
       query: query,
       meals: const [],
@@ -144,6 +148,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     );
 
     try {
+      // TODO: Explain these two lines
       mealsRequest ??= firebase.getMeals();
       final meals = await mealsRequest;
 
@@ -152,6 +157,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
       }
 
       if (meals == null) {
+        // TODO: Why is this a StateError, not an updateState(error: ...)?
         throw StateError('Meals could not be loaded');
       }
 
@@ -159,16 +165,21 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
       final matches = <({Meal meal, int score})>[];
 
       for (final meal in meals) {
+        /// Ignore loading meals
         if (meal.isLoading || terms.isEmpty) {
           continue;
         }
 
+        /// Include meal names, original texts and foods
         final searchableText = [
           meal.name ?? '',
           meal.originalText ?? '',
-          ...?meal.foods?.map((food) => food.name),
+          ...?meal.foods?.map(
+            (food) => food.name,
+          ),
         ].join(' ');
 
+        /// Calculate result scores
         final scores = terms
             .map(
               (term) => getFuzzyScore(
@@ -193,21 +204,26 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
       }
 
       /// Show the strongest matches first and prefer recent meals when scores are equal
-      matches.sort((a, b) {
-        final scoreOrder = b.score.compareTo(a.score);
-        return scoreOrder != 0
-            ? scoreOrder
-            : b.meal.createdAt.compareTo(
-                a.meal.createdAt,
-              );
-      });
+      matches.sort(
+        (a, b) {
+          final scoreOrder = b.score.compareTo(a.score);
 
+          return scoreOrder != 0
+              ? scoreOrder
+              : b.meal.createdAt.compareTo(
+                  a.meal.createdAt,
+                );
+        },
+      );
+
+      /// Generate `results`
       final results = matches
           .map(
             (match) => match.meal,
           )
           .toList();
 
+      /// Update state with `results`
       updateState(
         query: query,
         meals: results,
