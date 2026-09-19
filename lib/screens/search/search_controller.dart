@@ -9,6 +9,7 @@ import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../util/null_state.dart';
 import '../../util/search.dart';
 
 class SearchController extends ValueNotifier<({String query, List<Meal> meals, bool isLoading, String? error})> implements Disposable {
@@ -109,7 +110,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     final canSearch = query.characters.length >= minimumSearchLength;
 
     /// Update state
-    value = (
+    updateState(
       query: query,
       meals: const [],
       isLoading: canSearch,
@@ -135,7 +136,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     final query = value.query;
     final version = ++searchVersion;
 
-    value = (
+    updateState(
       query: query,
       meals: const [],
       isLoading: true,
@@ -207,7 +208,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
           )
           .toList();
 
-      value = (
+      updateState(
         query: query,
         meals: results,
         isLoading: false,
@@ -225,7 +226,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         error: error,
       );
 
-      value = (
+      updateState(
         query: query,
         meals: const [],
         isLoading: false,
@@ -291,4 +292,17 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
       await speechToText.stopListening();
     }
   }
+
+  /// Updates `state`
+  void updateState({
+    String? query,
+    List<Meal>? meals,
+    bool? isLoading,
+    Object? error = nullStateNoChange,
+  }) => value = (
+    query: query ?? value.query,
+    meals: meals != null ? List<Meal>.unmodifiable(meals) : value.meals,
+    isLoading: isLoading ?? value.isLoading,
+    error: identical(error, nullStateNoChange) ? value.error : error as String?,
+  );
 }
