@@ -8,11 +8,9 @@ import '../../../theme/extensions.dart';
 
 class SearchError extends StatelessWidget {
   final String error;
-  final VoidCallback onRetryPressed;
 
   const SearchError({
     required this.error,
-    required this.onRetryPressed,
   });
 
   @override
@@ -73,12 +71,6 @@ class SearchError extends StatelessWidget {
                 color: context.colors.text.withValues(alpha: 0.75),
               ),
               textAlign: TextAlign.center,
-            ),
-            // TODO: Maybe remove this
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: onRetryPressed,
-              child: const Text('Try again'),
             ),
           ],
         ),

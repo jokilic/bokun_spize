@@ -25,6 +25,7 @@ class TextFieldWidget extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final double textFieldFontSize;
   final bool obscureText;
+  final bool autofocus;
 
   const TextFieldWidget({
     required this.controller,
@@ -48,6 +49,7 @@ class TextFieldWidget extends StatelessWidget {
     this.autofillHints,
     this.textFieldFontSize = 20,
     this.obscureText = false,
+    this.autofocus = false,
   });
 
   @override
@@ -101,6 +103,7 @@ class TextFieldWidget extends StatelessWidget {
                 ///
                 Expanded(
                   child: TextFieldBody(
+                    autofocus: autofocus,
                     obscureText: obscureText,
                     autofillHints: autofillHints,
                     minLines: minLines,

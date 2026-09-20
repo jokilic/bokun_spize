@@ -74,292 +74,297 @@ class _SearchScreenState extends State<SearchScreen> {
       borderRadius: BorderRadius.circular(listTileRadius),
       child: ColoredBox(
         color: context.colors.scaffoldBackground,
-        child: CustomScrollView(
-          shrinkWrap: true,
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
-            ),
+        child: AnimatedSize(
+          duration: BokunSpizeDurations.animation,
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.topCenter,
+          child: CustomScrollView(
+            shrinkWrap: true,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 24),
+              ),
 
-            ///
-            /// TITLE & CLOSE BUTTON
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 10),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ///
-                      /// PLACEHOLDER BUTTON
-                      ///
-                      Opacity(
-                        opacity: 0,
-                        child: IgnorePointer(
-                          child: IconButton(
-                            onPressed: null,
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.x,
-                              size: 22,
-                            ),
-                            style: IconButton.styleFrom(
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              padding: const EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                              foregroundColor: context.colors.text,
-                            ),
-                          ),
-                        ),
+              ///
+              /// TITLE & CLOSE BUTTON
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
                       ),
-
-                      ///
-                      /// TITLE
-                      ///
-                      Expanded(
-                        child: Text(
-                          'Search meals',
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-
-                      ///
-                      /// CLOSE BUTTON
-                      ///
-                      IconButton(
-                        onPressed: Navigator.of(context).pop,
-                        icon: const PhosphorIcon(
-                          PhosphorIconsBold.x,
-                          size: 22,
-                        ),
-                        style: IconButton.styleFrom(
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: const EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                          foregroundColor: context.colors.text,
-                        ),
+                      MoveEffect(
+                        begin: Offset(0, 10),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
                       ),
                     ],
-                  ),
-                ),
-              ),
-            ),
-
-            ///
-            /// SUBTITLE
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 2,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 8),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: Text(
-                    'Find anything from your journal',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
-            ),
-
-            ///
-            /// TEXT FIELD & SPEECH TO TEXT
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 12),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: Stack(
-                    children: [
-                      ///
-                      /// TEXT FIELD
-                      ///
-                      TextFieldWidget(
-                        controller: searchController.textEditingController,
-                        focusNode: searchController.focusNode,
-                        onChanged: (_) => searchController.stopSpeechToTextIfListening(),
-                        onSubmitted: (_) => searchController.searchMeals(),
-                        textInputAction: TextInputAction.search,
-                        title: 'Search',
-                        hintText: 'What you need?',
-                        textColor: context.colors.text,
-                      ),
-
-                      ///
-                      /// SPEECH TO TEXT ICON
-                      ///
-                      Positioned(
-                        bottom: 8,
-                        right: 8,
-                        child: Animate(
-                          onPlay: (controller) {
-                            if (isListening) {
-                              controller.loop(
-                                reverse: true,
-                                min: 0.6,
-                              );
-                            }
-                          },
-                          effects: [
-                            if (isListening)
-                              const FadeEffect(
-                                duration: BokunSpizeDurations.speechToTextShimmer,
-                                curve: Curves.easeIn,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ///
+                        /// PLACEHOLDER BUTTON
+                        ///
+                        Opacity(
+                          opacity: 0,
+                          child: IgnorePointer(
+                            child: IconButton(
+                              onPressed: null,
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.x,
+                                size: 22,
                               ),
-                          ],
-                          child: IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              searchController.onSpeechToTextPressed(
-                                locale: 'en',
-                                speechToTextAvailable: available,
-                              );
+                              style: IconButton.styleFrom(
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                padding: const EdgeInsets.all(10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                foregroundColor: context.colors.text,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        ///
+                        /// TITLE
+                        ///
+                        Expanded(
+                          child: Text(
+                            'Search meals',
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              height: 1.2,
+                              letterSpacing: 0.6,
+                              color: context.colors.text,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+
+                        ///
+                        /// CLOSE BUTTON
+                        ///
+                        IconButton(
+                          onPressed: Navigator.of(context).pop,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.x,
+                            size: 22,
+                          ),
+                          style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            foregroundColor: context.colors.text,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              ///
+              /// SUBTITLE
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 8),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Text(
+                      'Find anything from your journal',
+                      style: TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: context.colors.text,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 32),
+              ),
+
+              ///
+              /// TEXT FIELD & SPEECH TO TEXT
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 12),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Stack(
+                      children: [
+                        ///
+                        /// TEXT FIELD
+                        ///
+                        TextFieldWidget(
+                          autofocus: true,
+                          controller: searchController.textEditingController,
+                          focusNode: searchController.focusNode,
+                          onChanged: (_) => searchController.stopSpeechToTextIfListening(),
+                          onSubmitted: (_) => searchController.searchMeals(),
+                          textInputAction: TextInputAction.search,
+                          title: 'Search',
+                          hintText: 'What you need?',
+                          textColor: context.colors.text,
+                        ),
+
+                        ///
+                        /// SPEECH TO TEXT ICON
+                        ///
+                        Positioned(
+                          bottom: 8,
+                          right: 8,
+                          child: Animate(
+                            onPlay: (controller) {
+                              if (isListening) {
+                                controller.loop(
+                                  reverse: true,
+                                  min: 0.6,
+                                );
+                              }
                             },
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.microphone,
-                              size: 22,
-                            ),
-                            style: IconButton.styleFrom(
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              elevation: 0,
-                              padding: const EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
+                            effects: [
+                              if (isListening)
+                                const FadeEffect(
+                                  duration: BokunSpizeDurations.speechToTextShimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                            ],
+                            child: IconButton(
+                              onPressed: () {
+                                HapticFeedback.lightImpact();
+                                searchController.onSpeechToTextPressed(
+                                  locale: 'en',
+                                  speechToTextAvailable: available,
+                                );
+                              },
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.microphone,
+                                size: 22,
                               ),
-                              backgroundColor: isListening ? context.colors.delete : context.colors.listTileBackground.withValues(alpha: 0.5),
-                              foregroundColor: isListening ? context.colors.listTileBackground : context.colors.delete,
+                              style: IconButton.styleFrom(
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                elevation: 0,
+                                padding: const EdgeInsets.all(10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                backgroundColor: isListening ? context.colors.delete : context.colors.listTileBackground.withValues(alpha: 0.5),
+                                foregroundColor: isListening ? context.colors.listTileBackground : context.colors.delete,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 10),
-            ),
-
-            ///
-            /// SUCCESS
-            ///
-            if (meals.isNotEmpty)
-              SearchSuccess(
-                meals: meals,
-                onPressed: (meal) {
-                  HapticFeedback.lightImpact();
-                  showBlurredModalBottomSheet(
-                    context: context,
-                    builder: (context) => ViewMealScreen(
-                      passedMeal: meal,
-                      onDeletePressed: () => widget.onDeletePressed(meal),
-                      onEditPressed: () => widget.onEditPressed(meal),
-                      onCopyPressed: () => widget.onCopyPressed(meal),
-                    ),
-                  );
-                },
-                onDeletePressed: widget.onDeletePressed,
-                onEditPressed: widget.onEditPressed,
-                onCopyPressed: widget.onCopyPressed,
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 10),
               ),
 
-            ///
-            /// EMPTY
-            ///
-            // if (!isLoading && meals.isEmpty && error == null)
-            //   SearchEmpty(
-            //     query: query,
-            //   ),
+              ///
+              /// SUCCESS
+              ///
+              if (meals.isNotEmpty)
+                SearchSuccess(
+                  meals: meals,
+                  onPressed: (meal) {
+                    HapticFeedback.lightImpact();
+                    showBlurredModalBottomSheet(
+                      context: context,
+                      builder: (context) => ViewMealScreen(
+                        passedMeal: meal,
+                        onDeletePressed: () => widget.onDeletePressed(meal),
+                        onEditPressed: () => widget.onEditPressed(meal),
+                        onCopyPressed: () => widget.onCopyPressed(meal),
+                      ),
+                    );
+                  },
+                  onDeletePressed: widget.onDeletePressed,
+                  onEditPressed: widget.onEditPressed,
+                  onCopyPressed: widget.onCopyPressed,
+                ),
 
-            ///
-            /// LOADING
-            ///
-            if (isLoading) SearchLoading(),
+              ///
+              /// EMPTY
+              ///
+              // if (!isLoading && meals.isEmpty && error == null)
+              //   SearchEmpty(
+              //     query: query,
+              //   ),
 
-            ///
-            /// ERROR
-            ///
-            if (!isLoading && error != null)
-              SearchError(
-                error: error,
-                onRetryPressed: searchController.searchMeals,
+              ///
+              /// LOADING
+              ///
+              if (isLoading) SearchLoading(),
+
+              ///
+              /// ERROR
+              ///
+              if (!isLoading && error != null)
+                SearchError(
+                  error: error,
+                ),
+
+              ///
+              /// BOTTOM SPACING
+              ///
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: getBottomSpacing(context),
+                ),
               ),
-
-            ///
-            /// BOTTOM SPACING
-            ///
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: getBottomSpacing(context),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
