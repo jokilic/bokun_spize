@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
+import '../../constants/constants.dart';
+import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
@@ -54,7 +57,6 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-
         SizedBox(
           height: 68,
           width: 68,
@@ -79,6 +81,99 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
       ],
+    ),
+    body: Animate(
+      effects: const [
+        FadeEffect(
+          duration: BokunSpizeDurations.stateTransition,
+          curve: Curves.easeOut,
+        ),
+        MoveEffect(
+          begin: Offset(0, 18),
+          end: Offset.zero,
+          duration: BokunSpizeDurations.stateTransition,
+          curve: Curves.easeOutCubic,
+        ),
+        ScaleEffect(
+          begin: Offset(0.985, 0.985),
+          end: Offset(1, 1),
+          alignment: Alignment.topCenter,
+          duration: BokunSpizeDurations.stateTransition,
+          curve: Curves.easeOutCubic,
+        ),
+      ],
+      child: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal * 4,
+                vertical: 12,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.stateTransition,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 24),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.stateTransition,
+                      curve: Curves.easeOutCubic,
+                    ),
+                    ScaleEffect(
+                      begin: Offset(0.96, 0.96),
+                      end: Offset(1, 1),
+                      alignment: Alignment.topCenter,
+                      duration: BokunSpizeDurations.stateTransition,
+                      curve: Curves.easeOutBack,
+                    ),
+                  ],
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 104),
+                      PhosphorIcon(
+                        PhosphorIconsBold.user,
+                        color: context.colors.delete,
+                        size: 88,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Account is not done',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: context.colors.text,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'It will be done soon...',
+                        style: TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.6,
+                          color: context.colors.text.withValues(alpha: 0.75),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }

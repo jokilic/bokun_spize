@@ -6,7 +6,6 @@
 
 ### Screens
     - [ ] `AccountScreen`
-    - [ ] `SearchScreen`
 
 ### Firebase
     - [ ] Update database permissions
