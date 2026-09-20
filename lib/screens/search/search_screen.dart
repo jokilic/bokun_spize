@@ -6,17 +6,31 @@ import 'package:watch_it/watch_it.dart';
 
 import '../../constants/constants.dart';
 import '../../constants/durations.dart';
+import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
-import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
+import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/text_field_widget.dart';
+import '../view_meal/view_meal_screen.dart';
 import 'search_controller.dart';
 import 'widgets/search_error.dart';
+import 'widgets/search_loading.dart';
+import 'widgets/search_success.dart';
 
 class SearchScreen extends WatchingStatefulWidget {
+  final Function(Meal meal) onDeletePressed;
+  final Function(Meal meal) onEditPressed;
+  final Function(Meal meal) onCopyPressed;
+
+  const SearchScreen({
+    required this.onDeletePressed,
+    required this.onEditPressed,
+    required this.onCopyPressed,
+  });
+
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
@@ -51,6 +65,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final available = speechToTextState.available;
     final isListening = speechToTextState.isListening;
+
+    final error = state.error;
+    final isLoading = state.isLoading;
+    final meals = state.meals;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -226,7 +244,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         onChanged: (_) => searchController.stopSpeechToTextIfListening(),
                         onSubmitted: (_) => searchController.searchMeals(),
                         textInputAction: TextInputAction.search,
-                        title: 'Search terms',
+                        title: 'Search',
                         hintText: 'What you need?',
                         textColor: context.colors.text,
                       ),
@@ -284,81 +302,53 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-
-            ///
-            /// RESULTS
-            ///
             const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
+              child: SizedBox(height: 10),
             ),
-            if (state.isLoading)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: context.colors.text,
-                    ),
-                  ),
-                ),
-              )
-            else if (state.error != null) ...[
-              SearchError(error: state.error!),
-              SliverToBoxAdapter(
-                child: Center(
-                  child: TextButton(
-                    onPressed: searchController.searchMeals,
-                    child: const Text('Try again'),
-                  ),
-                ),
-              ),
-            ] else if (state.meals.isEmpty)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(marginHorizontal),
-                  child: Text(
-                    state.query.characters.length < minimumSearchLength ? 'Enter at least 3 characters to search' : 'No meals found',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      color: context.colors.text.withValues(alpha: 0.75),
-                    ),
-                  ),
-                ),
-              )
-            else
-              SliverList.builder(
-                itemCount: state.meals.length,
-                itemBuilder: (context, index) {
-                  final meal = state.meals[index];
 
-                  return Padding(
-                    key: ValueKey(meal.id),
-                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal, vertical: 6),
-                    child: ListTile(
-                      tileColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(listTileRadius),
-                      ),
-                      leading: Text(meal.emoji ?? '🍽️', style: const TextStyle(fontSize: 28)),
-                      title: Text(
-                        meal.name ?? meal.originalText ?? 'Meal',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontFamily: 'Epilogue', color: context.colors.text),
-                      ),
-                      subtitle: Text(
-                        getDateString(
-                          date: meal.createdAt,
-                          dateFormat: 'dd MMM yyyy, HH:mm',
-                          useTodayYesterdayTomorrow: false,
-                        ),
-                        style: TextStyle(color: context.colors.text.withValues(alpha: 0.75)),
-                      ),
+            ///
+            /// SUCCESS
+            ///
+            if (meals.isNotEmpty)
+              SearchSuccess(
+                meals: meals,
+                onPressed: (meal) {
+                  HapticFeedback.lightImpact();
+                  showBlurredModalBottomSheet(
+                    context: context,
+                    builder: (context) => ViewMealScreen(
+                      passedMeal: meal,
+                      onDeletePressed: () => widget.onDeletePressed(meal),
+                      onEditPressed: () => widget.onEditPressed(meal),
+                      onCopyPressed: () => widget.onCopyPressed(meal),
                     ),
                   );
                 },
+                onDeletePressed: widget.onDeletePressed,
+                onEditPressed: widget.onEditPressed,
+                onCopyPressed: widget.onCopyPressed,
+              ),
+
+            ///
+            /// EMPTY
+            ///
+            // if (!isLoading && meals.isEmpty && error == null)
+            //   SearchEmpty(
+            //     query: query,
+            //   ),
+
+            ///
+            /// LOADING
+            ///
+            if (isLoading) SearchLoading(),
+
+            ///
+            /// ERROR
+            ///
+            if (!isLoading && error != null)
+              SearchError(
+                error: error,
+                onRetryPressed: searchController.searchMeals,
               ),
 
             ///

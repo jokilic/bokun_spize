@@ -208,7 +208,31 @@ class _MealsScreenState extends State<MealsScreen> {
                     HapticFeedback.lightImpact();
                     showBlurredModalBottomSheet(
                       context: context,
-                      builder: (context) => SearchScreen(),
+                      builder: (context) => SearchScreen(
+                        onDeletePressed: (meal) {
+                          HapticFeedback.lightImpact();
+                          mealsController.deleteMeal(
+                            meal: meal,
+                            context: context,
+                          );
+                        },
+                        onEditPressed: (meal) {
+                          HapticFeedback.lightImpact();
+                          mealsController.onAddManualMealPressed(
+                            context,
+                            passedMeal: meal,
+                            isCopyingMeal: false,
+                          );
+                        },
+                        onCopyPressed: (meal) {
+                          HapticFeedback.lightImpact();
+                          mealsController.onAddManualMealPressed(
+                            context,
+                            passedMeal: meal,
+                            isCopyingMeal: true,
+                          );
+                        },
+                      ),
                     );
                   },
                   shortDayString: getDateString(
@@ -241,12 +265,11 @@ class _MealsScreenState extends State<MealsScreen> {
                         context: context,
                         builder: (context) => ViewMealScreen(
                           passedMeal: meal,
-                          onCopyPressed: () {
+                          onDeletePressed: () {
                             HapticFeedback.lightImpact();
-                            mealsController.onAddManualMealPressed(
-                              context,
-                              passedMeal: meal,
-                              isCopyingMeal: true,
+                            mealsController.deleteMeal(
+                              meal: meal,
+                              context: context,
                             );
                           },
                           onEditPressed: () {
@@ -257,14 +280,22 @@ class _MealsScreenState extends State<MealsScreen> {
                               isCopyingMeal: false,
                             );
                           },
-                          onDeletePressed: () {
+                          onCopyPressed: () {
                             HapticFeedback.lightImpact();
-                            mealsController.deleteMeal(
-                              meal: meal,
-                              context: context,
+                            mealsController.onAddManualMealPressed(
+                              context,
+                              passedMeal: meal,
+                              isCopyingMeal: true,
                             );
                           },
                         ),
+                      );
+                    },
+                    onDeletePressed: (meal) {
+                      HapticFeedback.lightImpact();
+                      mealsController.deleteMeal(
+                        meal: meal,
+                        context: context,
                       );
                     },
                     onEditPressed: (meal) {
@@ -273,13 +304,6 @@ class _MealsScreenState extends State<MealsScreen> {
                         context,
                         passedMeal: meal,
                         isCopyingMeal: false,
-                      );
-                    },
-                    onDeletePressed: (meal) {
-                      HapticFeedback.lightImpact();
-                      mealsController.deleteMeal(
-                        meal: meal,
-                        context: context,
                       );
                     },
                     onCopyPressed: (meal) {

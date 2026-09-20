@@ -22,15 +22,15 @@ import 'widgets/view_meal_food_list_tile.dart';
 
 class ViewMealScreen extends WatchingStatefulWidget {
   final Meal passedMeal;
-  final Function() onCopyPressed;
-  final Function() onEditPressed;
   final Function() onDeletePressed;
+  final Function() onEditPressed;
+  final Function() onCopyPressed;
 
   const ViewMealScreen({
     required this.passedMeal,
-    required this.onCopyPressed,
-    required this.onEditPressed,
     required this.onDeletePressed,
+    required this.onEditPressed,
+    required this.onCopyPressed,
   });
 
   @override

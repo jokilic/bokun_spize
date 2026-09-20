@@ -148,7 +148,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     );
 
     try {
-      // TODO: Explain these two lines
+      /// Get `meals` from [Firebase]
       mealsRequest ??= firebase.getMeals();
       final meals = await mealsRequest;
 
@@ -156,9 +156,11 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         return;
       }
 
+      /// Error happened
       if (meals == null) {
-        // TODO: Why is this a StateError, not an updateState(error: ...)?
-        throw StateError('Meals could not be loaded');
+        throw StateError(
+          'Meals could not be loaded',
+        );
       }
 
       final terms = tokenizeString(query);

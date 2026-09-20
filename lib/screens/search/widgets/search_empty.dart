@@ -6,13 +6,11 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
 
-class SearchError extends StatelessWidget {
-  final String error;
-  final VoidCallback onRetryPressed;
+class SearchEmpty extends StatelessWidget {
+  final String query;
 
-  const SearchError({
-    required this.error,
-    required this.onRetryPressed,
+  const SearchEmpty({
+    required this.query,
   });
 
   @override
@@ -46,13 +44,13 @@ class SearchError extends StatelessWidget {
           children: [
             const SizedBox(height: 24),
             PhosphorIcon(
-              PhosphorIconsBold.warningOctagon,
-              color: context.colors.delete,
+              PhosphorIconsBold.magnifyingGlass,
+              color: context.colors.protein,
               size: 88,
             ),
             const SizedBox(height: 16),
             Text(
-              'Erroro has happendo',
+              query.characters.length < minimumSearchLength ? 'Search your meal journal' : 'No meals found',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 20,
@@ -64,7 +62,7 @@ class SearchError extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              error,
+              query.characters.length < minimumSearchLength ? 'Enter at least $minimumSearchLength characters to search' : 'Try a different meal name or ingredient',
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 14,
@@ -73,12 +71,6 @@ class SearchError extends StatelessWidget {
                 color: context.colors.text.withValues(alpha: 0.75),
               ),
               textAlign: TextAlign.center,
-            ),
-            // TODO: Maybe remove this
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: onRetryPressed,
-              child: const Text('Try again'),
             ),
           ],
         ),
