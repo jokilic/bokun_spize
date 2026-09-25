@@ -194,7 +194,7 @@ class NavigationBarWidget extends WatchingWidget {
             selectedIcon: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: context.colors.delete,
+                color: context.colors.account,
                 shape: BoxShape.circle,
               ),
               child: userPhoto != null

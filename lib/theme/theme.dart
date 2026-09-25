@@ -50,6 +50,7 @@ class BokunSpizeTheme {
     protein: BokunSpizeColors.green,
     carbs: BokunSpizeColors.blue,
     fat: BokunSpizeColors.bordeaux,
+    account: BokunSpizeColors.turquoise,
   );
 
   // static BokunSpizeTextThemesExtension getLightTextTheme() => getTextThemesExtension(
@@ -102,6 +103,7 @@ class BokunSpizeTheme {
     protein: BokunSpizeColors.green,
     carbs: BokunSpizeColors.blue,
     fat: BokunSpizeColors.bordeaux,
+    account: BokunSpizeColors.turquoise,
   );
 
   // static BokunSpizeTextThemesExtension getDarkTextTheme() => getTextThemesExtension(

@@ -24,6 +24,7 @@ abstract class BokunSpizeColors {
   static const green = Color(0xFF3B7D5E);
   static const blue = Color(0xFF4F5094);
   static const bordeaux = Color(0xFF885A89);
+  static const turquoise = Color(0xFFC6AE82);
   static const red = Color(0xFF9D5C63);
 }
 
@@ -36,6 +37,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
   final Color protein;
   final Color carbs;
   final Color fat;
+  final Color account;
 
   BokunSpizeColorsExtension({
     required this.scaffoldBackground,
@@ -46,6 +48,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     required this.protein,
     required this.carbs,
     required this.fat,
+    required this.account,
   });
 
   @override
@@ -58,6 +61,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     Color? protein,
     Color? carbs,
     Color? fat,
+    Color? account,
   }) => BokunSpizeColorsExtension(
     scaffoldBackground: scaffoldBackground ?? this.scaffoldBackground,
     listTileBackground: listTileBackground ?? this.listTileBackground,
@@ -67,6 +71,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
     protein: protein ?? this.protein,
     carbs: carbs ?? this.carbs,
     fat: fat ?? this.fat,
+    account: account ?? this.account,
   );
 
   @override
@@ -87,6 +92,7 @@ class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension
       protein: Color.lerp(protein, other.protein, t)!,
       carbs: Color.lerp(carbs, other.carbs, t)!,
       fat: Color.lerp(fat, other.fat, t)!,
+      account: Color.lerp(account, other.account, t)!,
     );
   }
 }

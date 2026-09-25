@@ -6,6 +6,12 @@
 
 ### Screens
     - [ ] `AccountScreen`
+        - [ ] `UserMetricsSheet`
+        - [ ] Theme
+        - [ ] Language
+        - [ ] Logout
+        - [ ] Delete account
+        - [ ] Version
 
 ### Firebase
     - [ ] Update database permissions
