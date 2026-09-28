@@ -58,7 +58,7 @@ class AccountAppBar extends StatelessWidget {
               fixedSize: const Size.square(52),
               minimumSize: const Size.square(52),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.all(8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
