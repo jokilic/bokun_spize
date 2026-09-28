@@ -37,8 +37,8 @@ class AccountAppBar extends StatelessWidget {
                 ? ClipOval(
                     child: CachedNetworkImage(
                       imageUrl: userPhoto!,
-                      height: 24,
-                      width: 24,
+                      height: 52,
+                      width: 52,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => const PhosphorIcon(
                         PhosphorIconsBold.user,
@@ -55,9 +55,10 @@ class AccountAppBar extends StatelessWidget {
                     size: 24,
                   ),
             style: IconButton.styleFrom(
-              minimumSize: Size.zero,
+              fixedSize: const Size.square(52),
+              minimumSize: const Size.square(52),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: const EdgeInsets.all(14),
+              padding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),

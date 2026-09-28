@@ -10,7 +10,6 @@ class AccountListTile extends StatelessWidget {
   final Color iconBackgroundColor;
   final String title;
   final String subtitle;
-  final Widget trailingWidget;
 
   const AccountListTile({
     required this.onPressed,
@@ -18,7 +17,6 @@ class AccountListTile extends StatelessWidget {
     required this.iconBackgroundColor,
     required this.title,
     required this.subtitle,
-    required this.trailingWidget,
   });
 
   @override
@@ -103,12 +101,6 @@ class AccountListTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 20),
-
-                ///
-                /// TRAILING WIDGET
-                ///
-                trailingWidget,
               ],
             ),
           ),

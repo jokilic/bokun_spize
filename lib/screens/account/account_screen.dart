@@ -8,6 +8,7 @@ import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
+import '../../util/spacing.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import '../meals/meals_controller.dart';
 import '../walks/walks_controller.dart';
@@ -18,7 +19,7 @@ import 'widgets/account_list_tile.dart';
 // TODO: Staggered animation like other screens & sheets
 
 class AccountScreen extends StatelessWidget {
-  /// Cancels user-specific listeners before Firebase sign-out
+  /// Cancels user-specific listeners and signs-out
   Future<void> handleLogOut() async {
     unRegisterIfNotDisposed<MealsController>();
     unRegisterIfNotDisposed<WeightsController>();
@@ -76,19 +77,21 @@ class AccountScreen extends StatelessWidget {
               ),
 
               ///
+              /// SPACING
+              ///
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 4),
+              ),
+
+              ///
               /// USER METRICS
               ///
               AccountListTile(
                 onPressed: () {},
                 icon: PhosphorIconsBold.personSimple,
-                iconBackgroundColor: context.colors.account,
+                iconBackgroundColor: context.colors.carbs,
                 title: 'User metrics',
                 subtitle: 'Height, weight, etc.',
-                trailingWidget: Container(
-                  height: 28,
-                  width: 28,
-                  color: Colors.yellow,
-                ),
               ),
 
               ///
@@ -97,13 +100,50 @@ class AccountScreen extends StatelessWidget {
               AccountListTile(
                 onPressed: () {},
                 icon: PhosphorIconsBold.palette,
-                iconBackgroundColor: context.colors.delete,
+                iconBackgroundColor: context.colors.fat,
                 title: 'Theme',
                 subtitle: 'App-wide colors',
-                trailingWidget: Container(
-                  height: 28,
-                  width: 28,
-                  color: Colors.red,
+              ),
+
+              ///
+              /// LANGUAGE
+              ///
+              AccountListTile(
+                onPressed: () {},
+                icon: PhosphorIconsBold.globeStand,
+                iconBackgroundColor: context.colors.protein,
+                title: 'Language',
+                subtitle: 'App-wide language',
+              ),
+
+              ///
+              /// LOGOUT
+              ///
+              AccountListTile(
+                onPressed: handleLogOut,
+                icon: PhosphorIconsBold.signOut,
+                iconBackgroundColor: context.colors.delete,
+                title: 'Logout',
+                subtitle: 'Sign out of the app',
+              ),
+
+              ///
+              /// DELETE ACCOUNT
+              ///
+              AccountListTile(
+                onPressed: () {},
+                icon: PhosphorIconsBold.trash,
+                iconBackgroundColor: context.colors.delete,
+                title: 'Delete account',
+                subtitle: 'Remove your account',
+              ),
+
+              ///
+              /// BOTTOM SPACING
+              ///
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: getBottomSpacing(context),
                 ),
               ),
             ],
