@@ -21,7 +21,7 @@ class AccountAppBar extends StatelessWidget {
     backgroundColor: context.colors.scaffoldBackground,
     elevation: 0,
     scrolledUnderElevation: 0,
-    expandedHeight: 192,
+    expandedHeight: 200,
     leadingWidth: double.infinity,
     leading: Padding(
       padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -33,10 +33,27 @@ class AccountAppBar extends StatelessWidget {
           ///
           IconButton(
             onPressed: () {},
-            icon: const PhosphorIcon(
-              PhosphorIconsBold.user,
-              size: 24,
-            ),
+            icon: userPhoto != null
+                ? ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: userPhoto!,
+                      height: 24,
+                      width: 24,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => const PhosphorIcon(
+                        PhosphorIconsBold.user,
+                        size: 24,
+                      ),
+                      errorBuilder: (context, error, stackTrace) => const PhosphorIcon(
+                        PhosphorIconsBold.user,
+                        size: 24,
+                      ),
+                    ),
+                  )
+                : const PhosphorIcon(
+                    PhosphorIconsBold.user,
+                    size: 24,
+                  ),
             style: IconButton.styleFrom(
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -191,8 +208,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                       letterSpacing: 1.2,
                       color: context.colors.text,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
 
                   ///
                   /// NAME
@@ -201,32 +219,19 @@ class FadingFlexibleTitle extends StatelessWidget {
                     name ?? '--',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
-                      fontSize: 30,
+                      fontSize: 40,
                       fontWeight: FontWeight.w800,
                       height: 1.2,
                       letterSpacing: 1.2,
                       color: context.colors.account,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                 ],
               ),
             ),
-
-            ///
-            /// USER PHOTO
-            ///
-            if (userPhoto != null)
-              ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: userPhoto!,
-                  height: 42,
-                  width: 42,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => const SizedBox.shrink(),
-                  errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-                ),
-              ),
           ],
         ),
       ),

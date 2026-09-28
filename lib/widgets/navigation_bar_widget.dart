@@ -204,8 +204,16 @@ class NavigationBarWidget extends WatchingWidget {
                         height: 24,
                         width: 24,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => const SizedBox.shrink(),
-                        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                        placeholder: (context, url) => PhosphorIcon(
+                          PhosphorIconsBold.user,
+                          color: context.colors.buttonText,
+                          size: 24,
+                        ),
+                        errorBuilder: (context, error, stackTrace) => PhosphorIcon(
+                          PhosphorIconsBold.user,
+                          color: context.colors.buttonText,
+                          size: 24,
+                        ),
                       ),
                     )
                   : PhosphorIcon(

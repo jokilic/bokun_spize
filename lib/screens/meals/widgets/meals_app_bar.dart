@@ -49,7 +49,7 @@ class MealsAppBar extends StatelessWidget {
     backgroundColor: context.colors.scaffoldBackground,
     elevation: 0,
     scrolledUnderElevation: 0,
-    expandedHeight: 240,
+    expandedHeight: 260,
     leadingWidth: double.infinity,
     leading: Padding(
       padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -258,7 +258,6 @@ class FadingFlexibleTitle extends StatelessWidget {
     required this.dailyFat,
   });
 
-  /// Builds the fading daily summary with current nutrition values
   @override
   Widget build(BuildContext context) {
     final settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
@@ -359,6 +358,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                     letterSpacing: 1.2,
                     color: context.colors.text,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             if (isLoading) const SizedBox(height: 8),
@@ -455,6 +456,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                         letterSpacing: 1.2,
                         color: context.colors.text,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
               ],

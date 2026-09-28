@@ -236,6 +236,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                         letterSpacing: 1.2,
                         color: context.colors.text,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   if (isLoading) const SizedBox(height: 8),
 
@@ -331,6 +333,8 @@ class FadingFlexibleTitle extends StatelessWidget {
                               letterSpacing: 1.2,
                               color: context.colors.text,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                     ],

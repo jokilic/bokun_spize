@@ -24,7 +24,7 @@ abstract class BokunSpizeColors {
   static const green = Color(0xFF3B7D5E);
   static const blue = Color(0xFF4F5094);
   static const bordeaux = Color(0xFF885A89);
-  static const turquoise = Color(0xFFC6AE82);
+  static const black = Color(0xFF333138);
   static const red = Color(0xFF9D5C63);
 }
 
