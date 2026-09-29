@@ -48,11 +48,9 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    /// References to services & controllers
     final storageService = getIt.get<StorageService>();
     final weightsController = getIt.get<WeightsController>();
 
-    /// Reference to `state`
     final state = watchIt<WeightsController>().value;
 
     final error = state.error;

@@ -27,6 +27,8 @@ class WalksScreen extends WatchingStatefulWidget {
 }
 
 class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
+  // TODO: Explain why do we use observer and have `didChangeAppLifecycleState`
+
   @override
   void initState() {
     super.initState();
@@ -67,11 +69,9 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    /// References to services & controllers
     final storageService = getIt.get<StorageService>();
     final walksController = getIt.get<WalksController>();
 
-    /// Reference to `state`
     final state = watchIt<WalksController>().value;
 
     final error = state.error;

@@ -15,17 +15,41 @@ import '../../widgets/navigation_bar_widget.dart';
 import '../meals/meals_controller.dart';
 import '../walks/walks_controller.dart';
 import '../weights/weights_controller.dart';
+import 'account_controller.dart';
 import 'widgets/account_app_bar.dart';
 import 'widgets/account_list_tile.dart';
 
 // TODO: Staggered animation like other screens & sheets
 
-class AccountScreen extends WatchingWidget {
+class AccountScreen extends WatchingStatefulWidget {
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    registerIfNotInitialized<AccountController>(
+      () => AccountController(
+        firebase: getIt.get<FirebaseService>(),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // unRegisterIfNotDisposed<MealsController>();
+    super.dispose();
+  }
+
   /// Cancels user-specific listeners and signs-out
   Future<void> handleLogOut() async {
     unRegisterIfNotDisposed<MealsController>();
     unRegisterIfNotDisposed<WeightsController>();
     unRegisterIfNotDisposed<WalksController>();
+    unRegisterIfNotDisposed<AccountController>();
 
     await getIt.get<FirebaseService>().logOut();
   }
@@ -33,6 +57,7 @@ class AccountScreen extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseService = getIt.get<FirebaseService>();
+    final accountController = getIt.get<AccountController>();
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
@@ -104,7 +129,7 @@ class AccountScreen extends WatchingWidget {
               /// THEME
               ///
               AccountListTile(
-                onPressed: () {},
+                onPressed: () => accountController.openThemeSheet(context),
                 icon: PhosphorIconsBold.palette,
                 iconBackgroundColor: context.colors.fat,
                 title: 'Theme',

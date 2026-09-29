@@ -50,10 +50,8 @@ class _MealsScreenState extends State<MealsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    /// References to services & controllers
     final mealsController = getIt.get<MealsController>();
 
-    /// Reference to `state`
     final state = watchIt<MealsController>().value;
 
     final requestedDate = state.requestedDate;
