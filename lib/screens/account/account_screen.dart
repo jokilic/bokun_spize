@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
+import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
@@ -18,7 +20,7 @@ import 'widgets/account_list_tile.dart';
 
 // TODO: Staggered animation like other screens & sheets
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends WatchingWidget {
   /// Cancels user-specific listeners and signs-out
   Future<void> handleLogOut() async {
     unRegisterIfNotDisposed<MealsController>();
@@ -32,10 +34,13 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseService = getIt.get<FirebaseService>();
 
-    // TODO: We need to use `name` from database instead of `String? get userName => auth.currentUser?.displayName`
+    /// Listens to any changes in `userMetrics` from [Firebase]
+    final userMetrics = watchStream<FirebaseService, UserMetrics?>(
+      (firebaseService) => firebaseService.listenToUserMetrics(),
+    ).data;
+
     final email = firebaseService.userEmail;
-    // final name = firebaseService.userName;
-    const name = 'Some name here';
+    final name = userMetrics?.name;
     // final userPhoto = firebaseService.userPhoto;
     const userPhoto = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Danny_DeVito_by_Gage_Skidmore.jpg/250px-Danny_DeVito_by_Gage_Skidmore.jpg';
 

@@ -6,6 +6,7 @@
 
 ### Screens
     - [ ] `AccountScreen`
+        - [ ] Edit user name (show sheet with `TextField`)
         - [ ] `UserMetricsSheet`
         - [ ] Theme
         - [ ] Language
