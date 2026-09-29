@@ -363,9 +363,10 @@ class FirebaseService {
         return (user: null, error: 'errorUnknown');
       }
 
-      await firestore.collection('users').doc(user.uid).set({
-        'name': name,
-      });
+      await saveProviderUserName(
+        user: user,
+        providerName: name,
+      );
 
       return (user: user, error: null);
     } on FirebaseAuthException catch (error) {

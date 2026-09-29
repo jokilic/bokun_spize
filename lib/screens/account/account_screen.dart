@@ -32,6 +32,7 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseService = getIt.get<FirebaseService>();
 
+    // TODO: We need to use `name` from database instead of `String? get userName => auth.currentUser?.displayName`
     final email = firebaseService.userEmail;
     // final name = firebaseService.userName;
     const name = 'Some name here';
