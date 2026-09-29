@@ -189,6 +189,11 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(credential);
 
+      await saveProviderUserName(
+        user: userCredential.user,
+        providerName: user.displayName,
+      );
+
       return (user: userCredential.user, error: null);
     } on GoogleSignInException catch (error) {
       final errorMessage = switch (error.code) {
@@ -250,6 +255,25 @@ class FirebaseService {
       );
 
       final userCredential = await auth.signInWithCredential(oauthCredential);
+
+      final appleName =
+          [
+                credential.givenName,
+                credential.familyName,
+              ]
+              .whereType<String>()
+              .map(
+                (part) => part.trim(),
+              )
+              .where(
+                (part) => part.isNotEmpty,
+              )
+              .join(' ');
+
+      await saveProviderUserName(
+        user: userCredential.user,
+        providerName: appleName,
+      );
 
       return (user: userCredential.user, error: null);
     } on SignInWithAppleAuthorizationException catch (error) {
@@ -366,6 +390,36 @@ class FirebaseService {
       );
       return (user: null, error: 'Register error $error');
     }
+  }
+
+  /// Saves available provider name without replacing existing user name
+  Future<void> saveProviderUserName({
+    required User? user,
+    required String? providerName,
+  }) async {
+    if (user == null) {
+      return;
+    }
+
+    final displayName = user.displayName?.trim();
+    final name = (displayName?.isNotEmpty ?? false) ? displayName : providerName?.trim();
+
+    if (name == null || name.isEmpty) {
+      return;
+    }
+
+    final document = firestore.collection('users').doc(user.uid);
+    final snapshot = await document.get();
+    final existingName = snapshot.data()?['name'] as String?;
+
+    if (existingName != null && existingName.trim().isNotEmpty) {
+      return;
+    }
+
+    await document.set(
+      {'name': name},
+      SetOptions(merge: true),
+    );
   }
 
   /// Deletes the current user's data and Firebase account
