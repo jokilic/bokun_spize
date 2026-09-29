@@ -216,6 +216,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   /// NAME
                   ///
+                  // TODO: Can this name have a max fontSize of 40 and scale to lower if it overflows
                   Text(
                     name ?? '--',
                     style: TextStyle(

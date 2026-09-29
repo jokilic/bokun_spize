@@ -21,20 +21,20 @@ class AccountController {
   );
 
   /// Opens [ThemeSheet]
-  Future<void> openThemeSheet(BuildContext context) async => showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => ThemeSheet(),
-  );
+  // Future<void> openThemeSheet(BuildContext context) async => showBlurredModalBottomSheet(
+  //   context: context,
+  //   builder: (context) => ThemeSheet(),
+  // );
 
-  /// Opens [LanguageSheet]
-  Future<void> openLanguageSheet(BuildContext context) async => showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => LanguageSheet(),
-  );
+  // /// Opens [LanguageSheet]
+  // Future<void> openLanguageSheet(BuildContext context) async => showBlurredModalBottomSheet(
+  //   context: context,
+  //   builder: (context) => LanguageSheet(),
+  // );
 
-  /// Opens [DeleteAccountSheet]
-  Future<void> openDeleteAccountSheet(BuildContext context) async => showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => DeleteAccountSheet(),
-  );
+  // /// Opens [DeleteAccountSheet]
+  // Future<void> openDeleteAccountSheet(BuildContext context) async => showBlurredModalBottomSheet(
+  //   context: context,
+  //   builder: (context) => DeleteAccountSheet(),
+  // );
 }

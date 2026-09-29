@@ -34,7 +34,7 @@ class AccountScreen extends StatelessWidget {
 
     final email = firebaseService.userEmail;
     // final name = firebaseService.userName;
-    const name = 'Josip';
+    const name = 'Some name here';
     // final userPhoto = firebaseService.userPhoto;
     const userPhoto = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Danny_DeVito_by_Gage_Skidmore.jpg/250px-Danny_DeVito_by_Gage_Skidmore.jpg';
 
