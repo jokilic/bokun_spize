@@ -26,14 +26,10 @@ class WalksScreen extends WatchingStatefulWidget {
   State<WalksScreen> createState() => _WalksScreenState();
 }
 
-class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
-  // TODO: Explain why do we use observer and have `didChangeAppLifecycleState`
-
+class _WalksScreenState extends State<WalksScreen> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addObserver(this);
 
     registerIfNotInitialized<WalksController>(
       () => WalksController(
@@ -44,24 +40,7 @@ class _WalksScreenState extends State<WalksScreen> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    final walksController = getIt.get<WalksController>();
-
-    if (state == AppLifecycleState.resumed) {
-      walksController.resumeStepsRefresh();
-      return;
-    }
-
-    if (state == AppLifecycleState.inactive) {
-      return;
-    }
-
-    walksController.pauseStepsRefresh();
-  }
-
-  @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     getIt.get<WalksController>().pauseStepsRefresh();
     // unRegisterIfNotDisposed<WalksController>();
     super.dispose();

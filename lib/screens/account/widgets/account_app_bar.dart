@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -21,7 +22,7 @@ class AccountAppBar extends StatelessWidget {
     backgroundColor: context.colors.scaffoldBackground,
     elevation: 0,
     scrolledUnderElevation: 0,
-    expandedHeight: 200,
+    expandedHeight: 192,
     leadingWidth: double.infinity,
     leading: Padding(
       padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -216,8 +217,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   /// NAME
                   ///
-                  // TODO: Can this name have a max fontSize of 40 and scale to lower if it overflows
-                  Text(
+                  AutoSizeText(
                     name ?? '--',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
@@ -227,7 +227,9 @@ class FadingFlexibleTitle extends StatelessWidget {
                       letterSpacing: 1.2,
                       color: context.colors.account,
                     ),
-                    maxLines: 1,
+                    minFontSize: 16,
+                    maxFontSize: 32,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
