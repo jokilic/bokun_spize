@@ -278,7 +278,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 24),
             ),
 
             ///

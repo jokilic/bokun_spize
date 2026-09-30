@@ -230,7 +230,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 24),
             ),
 
             ///

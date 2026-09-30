@@ -276,7 +276,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 24),
             ),
 
             ///

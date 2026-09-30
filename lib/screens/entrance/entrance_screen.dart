@@ -289,7 +289,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 32),
+                    child: SizedBox(height: 24),
                   ),
 
                   ///

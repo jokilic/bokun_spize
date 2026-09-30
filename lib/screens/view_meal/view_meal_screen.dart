@@ -472,7 +472,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 24),
             ),
 
             ///

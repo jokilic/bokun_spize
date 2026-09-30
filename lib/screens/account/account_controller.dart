@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../../services/firebase_service.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
-import 'widgets/theme_sheet.dart';
+import 'widgets/theme/theme_sheet.dart';
 import 'widgets/user_metrics_sheet.dart';
 
-class AccountController {
+enum Language {
+  en,
+  hr,
+}
+
+enum Theme {
+  light,
+  dark,
+  system,
+}
+
+class AccountController extends ValueNotifier<({Theme theme, Language language})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -14,7 +25,10 @@ class AccountController {
 
   AccountController({
     required this.firebase,
-  });
+  }) : super((
+         theme: Theme.light,
+         language: Language.en,
+       ));
 
   ///
   /// METHODS
@@ -46,4 +60,13 @@ class AccountController {
   //   context: context,
   //   builder: (context) => DeleteAccountSheet(),
   // );
+
+  /// Updates `state`
+  void updateState({
+    Theme? theme,
+    Language? language,
+  }) => value = (
+    theme: theme ?? value.theme,
+    language: language ?? value.language,
+  );
 }

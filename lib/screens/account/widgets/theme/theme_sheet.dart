@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/constants.dart';
-import '../../../constants/durations.dart';
-import '../../../theme/extensions.dart';
-import '../../../util/spacing.dart';
+import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
+import '../../../../theme/extensions.dart';
+import '../../../../util/spacing.dart';
+import 'widgets/theme_list_tile.dart';
 
 // TODO: Staggered animation like other screens & sheets
 
@@ -166,14 +167,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
+            child: SizedBox(height: 24),
           ),
 
           ///
           /// LIGHT THEME
           ///
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
             sliver: SliverToBoxAdapter(
               child: Animate(
                 delay: BokunSpizeDurations.stateTransitionStagger * 2,
@@ -190,13 +194,85 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                // TODO: List tile here
-                child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: context.colors.fat,
+                child: ThemeListTile(
+                  onPressed: () {},
+                  isActive: true,
+                  color: context.colors.protein,
+                  icon: PhosphorIconsBold.sun,
+                  title: 'Light theme',
+                  subtitle: 'Lightness in your life',
+                ),
+              ),
+            ),
+          ),
+
+          ///
+          /// DARK THEME
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
                   ),
+                  ScaleEffect(
+                    begin: Offset(0.98, 0.98),
+                    end: Offset(1, 1),
+                    alignment: Alignment.topCenter,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: ThemeListTile(
+                  onPressed: () {},
+                  isActive: false,
+                  color: context.colors.carbs,
+                  icon: PhosphorIconsBold.moon,
+                  title: 'Dark theme',
+                  subtitle: 'Darkness in your life',
+                ),
+              ),
+            ),
+          ),
+
+          ///
+          /// SYSTEM THEME
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  ScaleEffect(
+                    begin: Offset(0.98, 0.98),
+                    end: Offset(1, 1),
+                    alignment: Alignment.topCenter,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: ThemeListTile(
+                  onPressed: () {},
+                  isActive: false,
+                  color: context.colors.fat,
+                  icon: PhosphorIconsBold.deviceMobileCamera,
+                  title: 'System theme',
+                  subtitle: 'Theme from your phone',
                 ),
               ),
             ),

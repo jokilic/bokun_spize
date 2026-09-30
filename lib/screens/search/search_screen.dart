@@ -214,7 +214,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 32),
+                child: SizedBox(height: 24),
               ),
 
               ///

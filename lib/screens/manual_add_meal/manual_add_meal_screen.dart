@@ -270,7 +270,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 24),
             ),
 
             ///

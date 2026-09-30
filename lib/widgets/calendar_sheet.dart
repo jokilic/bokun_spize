@@ -172,7 +172,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
+            child: SizedBox(height: 24),
           ),
 
           ///

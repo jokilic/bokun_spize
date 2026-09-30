@@ -59,6 +59,11 @@ class _AccountScreenState extends State<AccountScreen> {
     final firebaseService = getIt.get<FirebaseService>();
     final accountController = getIt.get<AccountController>();
 
+    final state = watchIt<AccountController>().value;
+
+    final theme = state.theme;
+    final language = state.language;
+
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
       (firebaseService) => firebaseService.listenToUserMetrics(),
