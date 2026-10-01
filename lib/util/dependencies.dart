@@ -62,19 +62,25 @@ void unRegisterIfNotDisposed<T extends Object>({
   }
 }
 
-// TODO: This function should return Locale? from initializeLocalization()
-Future<void> initializeBeforeAppStart() async => await Future.wait(
-  [
-    SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp],
-    ),
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-    ),
-    initializeLocalization(),
-    initializeFirebase(),
-  ],
-);
+/// Initializes app dependencies and returns the active locale
+Future<Locale?> initializeBeforeAppStartReturnLocale() async {
+  final localization = initializeLocalization();
+
+  await Future.wait(
+    [
+      SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp],
+      ),
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge,
+      ),
+      localization,
+      initializeFirebase(),
+    ],
+  );
+
+  return localization;
+}
 
 /// Initialize [EasyLocalization] & return active `locale`
 Future<Locale?> initializeLocalization() async {
@@ -124,7 +130,7 @@ Future<void> initializeFirebase() async {
 
 /// Registers app services and loads saved preferences before the app starts
 Future<void> registerServices({
-  required String initialLanguageCode,
+  required Locale initialLocale,
 }) async {
   ///
   /// CACHE
@@ -162,7 +168,7 @@ Future<void> registerServices({
       () async {
         final storage = StorageService(
           sharedPreferences: SharedPreferencesAsync(),
-          initialLanguageCode: initialLanguageCode,
+          initialLanguageCode: initialLocale.languageCode,
         );
         await storage.init();
         return storage;

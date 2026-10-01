@@ -28,8 +28,12 @@ Future<void> main() async {
   );
 
   try {
-    await initializeBeforeAppStart();
-    await registerServices();
+    final locale = await initializeBeforeAppStartReturnLocale();
+    log('Hello -> $locale');
+    await registerServices(
+      // TODO: Think about hr locale as default
+      initialLocale: locale ?? const Locale('de'),
+    );
 
     runApp(
       BokunSpizeInit(),

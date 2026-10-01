@@ -71,6 +71,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
   );
 
   /// Opens [LanguageSheet]
+  // TODO: Why is it returning 'en' as initialLanguage if I use 'croatian'?
   Future<void> openLanguageSheet(
     BuildContext context, {
     required LanguageEnum initialLanguage,
@@ -78,11 +79,17 @@ class AccountController extends ValueNotifier<SettingsValues> {
     context: context,
     builder: (context) => LanguageSheet(
       initialLanguage: initialLanguage,
-      onLanguageChanged: (newLanguage) => context.setLocale(
-        Locale(
-          newLanguage.name,
-        ),
-      ),
+      onLanguageChanged: (newLanguage) {
+        context.setLocale(
+          Locale(
+            newLanguage.name,
+          ),
+        );
+
+        updateState(
+          language: newLanguage,
+        );
+      },
     ),
   );
 
