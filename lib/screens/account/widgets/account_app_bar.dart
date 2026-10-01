@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -84,9 +83,7 @@ class AccountAppBar extends StatelessWidget {
               child: IconButton(
                 onPressed: () {},
                 icon: Text(
-                  // TODO: Replace with proper value
-                  // 'Account',
-                  'testValue'.tr(),
+                  'Account',
                   style: TextStyle(
                     fontFamily: 'PlusJakartaSans',
                     fontSize: 18,

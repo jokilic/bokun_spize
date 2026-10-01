@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../../constants/constants.dart';
-import '../../../../constants/durations.dart';
-import '../../../../theme/extensions.dart';
-import '../../../../util/spacing.dart';
+import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
+import '../../../util/spacing.dart';
 import 'account_sheet_list_tile.dart';
-
-// TODO: Staggered animation like other screens & sheets
 
 class LanguageSheet extends StatefulWidget {
   final Locale initialLanguage;
@@ -184,11 +182,17 @@ class _LanguageSheetState extends State<LanguageSheet> {
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                delay: BokunSpizeDurations.stateTransitionStagger * 3,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
                   ),
                   ScaleEffect(
                     begin: Offset(0.98, 0.98),
@@ -222,11 +226,17 @@ class _LanguageSheetState extends State<LanguageSheet> {
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                delay: BokunSpizeDurations.stateTransitionStagger * 4,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
                   ),
                   ScaleEffect(
                     begin: Offset(0.98, 0.98),
@@ -260,7 +270,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,

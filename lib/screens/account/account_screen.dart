@@ -20,8 +20,6 @@ import 'account_controller.dart';
 import 'widgets/account_app_bar.dart';
 import 'widgets/account_list_tile.dart';
 
-// TODO: Staggered animation like other screens & sheets
-
 class AccountScreen extends WatchingStatefulWidget {
   @override
   State<AccountScreen> createState() => _AccountScreenState();
@@ -124,6 +122,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// USER METRICS
               ///
               AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger,
                 onPressed: () {},
                 icon: PhosphorIconsBold.personSimple,
                 iconBackgroundColor: context.colors.carbs,
@@ -135,6 +134,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// THEME
               ///
               AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
                 onPressed: () => accountController.openThemeSheet(
                   context,
                   initialTheme: theme,
@@ -149,6 +149,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LANGUAGE
               ///
               AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 3,
                 onPressed: () => accountController.openLanguageSheet(
                   context,
                 ),
@@ -162,6 +163,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LOGOUT
               ///
               AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
                 onPressed: handleLogOut,
                 icon: PhosphorIconsBold.signOut,
                 iconBackgroundColor: context.colors.delete,
@@ -173,6 +175,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// DELETE ACCOUNT
               ///
               AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
                 onPressed: () {},
                 icon: PhosphorIconsBold.trash,
                 iconBackgroundColor: context.colors.delete,

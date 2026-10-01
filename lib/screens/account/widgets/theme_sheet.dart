@@ -9,8 +9,6 @@ import '../../../util/spacing.dart';
 import '../account_controller.dart';
 import 'account_sheet_list_tile.dart';
 
-// TODO: Staggered animation like other screens & sheets
-
 class ThemeSheet extends StatefulWidget {
   final ThemeEnum initialTheme;
   final Function(ThemeEnum newTheme) onThemeChanged;
@@ -185,11 +183,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                delay: BokunSpizeDurations.stateTransitionStagger * 3,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
                   ),
                   ScaleEffect(
                     begin: Offset(0.98, 0.98),
@@ -223,11 +227,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                delay: BokunSpizeDurations.stateTransitionStagger * 4,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
                   ),
                   ScaleEffect(
                     begin: Offset(0.98, 0.98),
@@ -261,11 +271,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
                   ),
                   ScaleEffect(
                     begin: Offset(0.98, 0.98),
@@ -299,7 +315,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                delay: BokunSpizeDurations.stateTransitionStagger * 6,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
