@@ -8,9 +8,9 @@
     - [ ] `AccountScreen`
         - [ ] Edit user name (show sheet with `TextField`)
         - [ ] `UserMetricsSheet`
-        - [ ] Theme
+        - [x] Theme
         - [ ] Language
-        - [ ] Logout
+        - [x] Logout
         - [ ] Delete account
         - [ ] Version
 

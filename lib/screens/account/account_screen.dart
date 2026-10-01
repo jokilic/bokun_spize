@@ -150,7 +150,10 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LANGUAGE
               ///
               AccountListTile(
-                onPressed: () {},
+                onPressed: () => accountController.openLanguageSheet(
+                  context,
+                  initialLanguage: language,
+                ),
                 icon: PhosphorIconsBold.globeStand,
                 iconBackgroundColor: context.colors.protein,
                 title: 'Language',

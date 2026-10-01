@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../../constants/constants.dart';
-import '../../../../constants/durations.dart';
-import '../../../../theme/extensions.dart';
-import '../../../../util/spacing.dart';
-import '../../account_controller.dart';
-import 'widgets/theme_list_tile.dart';
+import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
+import '../../../util/spacing.dart';
+import '../account_controller.dart';
+import 'account_sheet_list_tile.dart';
 
 // TODO: Staggered animation like other screens & sheets
 
@@ -199,7 +199,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: ThemeListTile(
+                child: AccountSheetListTile(
                   onPressed: () => updateTheme(
                     ThemeEnum.light,
                   ),
@@ -237,7 +237,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: ThemeListTile(
+                child: AccountSheetListTile(
                   onPressed: () => updateTheme(
                     ThemeEnum.dark,
                   ),
@@ -275,7 +275,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child: ThemeListTile(
+                child: AccountSheetListTile(
                   onPressed: () => updateTheme(
                     ThemeEnum.system,
                   ),

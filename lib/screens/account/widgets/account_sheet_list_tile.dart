@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../../../constants/constants.dart';
-import '../../../../../constants/durations.dart';
-import '../../../../../theme/extensions.dart';
+import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
+import '../../../theme/extensions.dart';
 
-class ThemeListTile extends StatelessWidget {
+class AccountSheetListTile extends StatelessWidget {
   final Function() onPressed;
   final bool isActive;
   final Color color;
@@ -13,7 +13,7 @@ class ThemeListTile extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const ThemeListTile({
+  const AccountSheetListTile({
     required this.onPressed,
     required this.isActive,
     required this.color,
