@@ -35,6 +35,7 @@ dependencies:
   cached_network_image_ce: 4.13.1
   cloud_firestore: 6.10.0
   diacritic: 0.1.6
+  easy_localization: 3.0.8
   firebase_ai: 4.0.0
   firebase_auth: 6.7.0
   firebase_core: 4.15.0
@@ -77,44 +78,46 @@ flutter:
 
   assets:
     - assets/
+    - assets/fonts/
+    - assets/translations/
 
   fonts:
     - family: Epilogue
       fonts:
-        - asset: assets/Epilogue/Epilogue-Thin.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-Thin.ttf
           weight: 100
-        - asset: assets/Epilogue/Epilogue-ExtraLight.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-ExtraLight.ttf
           weight: 200
-        - asset: assets/Epilogue/Epilogue-Light.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-Light.ttf
           weight: 300
-        - asset: assets/Epilogue/Epilogue-Regular.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-Regular.ttf
           weight: 400
-        - asset: assets/Epilogue/Epilogue-Medium.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-Medium.ttf
           weight: 500
-        - asset: assets/Epilogue/Epilogue-SemiBold.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-SemiBold.ttf
           weight: 600
-        - asset: assets/Epilogue/Epilogue-Bold.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-Bold.ttf
           weight: 700
-        - asset: assets/Epilogue/Epilogue-ExtraBold.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-ExtraBold.ttf
           weight: 800
-        - asset: assets/Epilogue/Epilogue-Black.ttf
+        - asset: assets/fonts/Epilogue/Epilogue-Black.ttf
           weight: 900
 
     - family: PlusJakartaSans
       fonts:
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-ExtraLight.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-ExtraLight.ttf
           weight: 100
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-Light.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-Light.ttf
           weight: 200
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-Regular.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-Regular.ttf
           weight: 400
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-Medium.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-Medium.ttf
           weight: 500
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-SemiBold.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-SemiBold.ttf
           weight: 600
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-Bold.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-Bold.ttf
           weight: 700
-        - asset: assets/PlusJakartaSans/PlusJakartaSans-ExtraBold.ttf
+        - asset: assets/fonts/PlusJakartaSans/PlusJakartaSans-ExtraBold.ttf
           weight: 900
 
 # Run code generation - `flutter pub run build_runner build -d`
