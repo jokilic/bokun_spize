@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class StorageService extends ValueNotifier<({int weightsCalendarDays, int walksCalendarDays})> {
+import '../util/typedefs.dart';
+
+class StorageService extends ValueNotifier<({CalendarDays calendarDays, SettingsValues settingsValues})> {
   ///
   /// CONSTRUCTOR
   ///

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../services/firebase_service.dart';
+import '../../services/theme_service.dart';
+import '../../util/dependencies.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'widgets/theme/theme_sheet.dart';
 import 'widgets/user_metrics_sheet.dart';
@@ -44,8 +46,11 @@ class AccountController extends ValueNotifier<({ThemeEnum theme, LanguageEnum la
   Future<void> openThemeSheet(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => ThemeSheet(
-      // TODO: Get proper active ThemeEnum here, depending on current theme in main.dart (system, light or dark)
-      initialTheme: ThemeEnum.system,
+      initialTheme: switch (getIt<ThemeService>().value) {
+        ThemeMode.system => ThemeEnum.system,
+        ThemeMode.light => ThemeEnum.light,
+        ThemeMode.dark => ThemeEnum.dark,
+      },
       onThemeChanged: (newTheme) {},
     ),
   );
