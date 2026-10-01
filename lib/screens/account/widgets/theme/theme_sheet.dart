@@ -6,13 +6,14 @@ import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
+import '../../account_controller.dart';
 import 'widgets/theme_list_tile.dart';
 
 // TODO: Staggered animation like other screens & sheets
 
 class ThemeSheet extends StatefulWidget {
-  final ThemeData initialTheme;
-  final Function(ThemeData newTheme) onThemeChanged;
+  final ThemeEnum initialTheme;
+  final Function(ThemeEnum newTheme) onThemeChanged;
 
   const ThemeSheet({
     required this.initialTheme,

@@ -5,18 +5,18 @@ import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'widgets/theme/theme_sheet.dart';
 import 'widgets/user_metrics_sheet.dart';
 
-enum Language {
+enum LanguageEnum {
   en,
   hr,
 }
 
-enum Theme {
+enum ThemeEnum {
   light,
   dark,
   system,
 }
 
-class AccountController extends ValueNotifier<({Theme theme, Language language})> {
+class AccountController extends ValueNotifier<({ThemeEnum theme, LanguageEnum language})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -26,8 +26,8 @@ class AccountController extends ValueNotifier<({Theme theme, Language language})
   AccountController({
     required this.firebase,
   }) : super((
-         theme: Theme.light,
-         language: Language.en,
+         theme: ThemeEnum.system,
+         language: LanguageEnum.en,
        ));
 
   ///
@@ -44,7 +44,8 @@ class AccountController extends ValueNotifier<({Theme theme, Language language})
   Future<void> openThemeSheet(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => ThemeSheet(
-      initialTheme: ThemeData.dark(),
+      // TODO: Get proper active ThemeEnum here, depending on current theme in main.dart (system, light or dark)
+      initialTheme: ThemeEnum.system,
       onThemeChanged: (newTheme) {},
     ),
   );
@@ -63,8 +64,8 @@ class AccountController extends ValueNotifier<({Theme theme, Language language})
 
   /// Updates `state`
   void updateState({
-    Theme? theme,
-    Language? language,
+    ThemeEnum? theme,
+    LanguageEnum? language,
   }) => value = (
     theme: theme ?? value.theme,
     language: language ?? value.language,
