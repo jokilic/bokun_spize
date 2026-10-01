@@ -154,7 +154,9 @@ void registerServices() {
   ///
   if (!getIt.isRegistered<ThemeService>()) {
     getIt.registerLazySingleton(
-      ThemeService.new,
+      () => ThemeService(
+        storage: getIt.get<StorageService>(),
+      ),
     );
   }
 }
