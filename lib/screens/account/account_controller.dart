@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/firebase_service.dart';
@@ -77,9 +78,11 @@ class AccountController extends ValueNotifier<SettingsValues> {
     context: context,
     builder: (context) => LanguageSheet(
       initialLanguage: initialLanguage,
-      onLanguageChanged: (newLanguage) {
-        // TODO: Finish this
-      },
+      onLanguageChanged: (newLanguage) => context.setLocale(
+        Locale(
+          newLanguage.name,
+        ),
+      ),
     ),
   );
 

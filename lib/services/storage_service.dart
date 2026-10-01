@@ -12,9 +12,11 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
   ///
 
   final SharedPreferencesAsync sharedPreferences;
+  final String initialLanguageCode;
 
   StorageService({
     required this.sharedPreferences,
+    required this.initialLanguageCode,
   }) : super((
          calendarDays: (
            weightsCalendarDays: defaultCalendarDays,
@@ -22,6 +24,7 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
          ),
          settingsValues: (
            theme: ThemeEnum.system,
+           // TODO: Make util function to get `enum` from `String`
            language: LanguageEnum.en,
          ),
        ));

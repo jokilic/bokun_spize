@@ -32,7 +32,7 @@ Future<void> main() async {
     await registerServices();
 
     runApp(
-      BokunSpizeApp(),
+      BokunSpizeInit(),
     );
   } catch (error) {
     log(
@@ -42,7 +42,7 @@ Future<void> main() async {
   }
 }
 
-class BokunSpizeApp extends WatchingWidget {
+class BokunSpizeInit extends StatelessWidget {
   @override
   Widget build(BuildContext context) => EasyLocalization(
     useOnlyLangCode: true,
@@ -53,52 +53,57 @@ class BokunSpizeApp extends WatchingWidget {
     fallbackLocale: const Locale('hr'),
     path: 'assets/translations',
     assetLoader: const CodegenLoader(),
-    child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        initialData: FirebaseAuth.instance.currentUser,
-        builder: (_, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : BokunSpizeWidget(),
-      ),
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      onGenerateTitle: (_) => 'appName'.tr(),
-      themeMode: watchIt<ThemeService>().value,
-      theme: BokunSpizeTheme.light(),
-      darkTheme: BokunSpizeTheme.dark(),
-      themeAnimationCurve: Curves.easeIn,
-      themeAnimationDuration: BokunSpizeDurations.animation,
-      builder: (context, child) {
-        final overlayStyle = Theme.brightnessOf(context) == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
-
-        final appWidget =
-            child ??
-            const Scaffold(
-              body: SizedBox.shrink(),
-            );
-
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: overlayStyle.copyWith(
-            statusBarColor: Colors.transparent,
-            systemNavigationBarColor: Colors.transparent,
-          ),
-          child: kDebugMode
-              ? Banner(
-                  message: '',
-                  color: context.colors.fat,
-                  location: BannerLocation.topEnd,
-                  layoutDirection: TextDirection.ltr,
-                  child: appWidget,
-                )
-              : appWidget,
-        );
-      },
-    ),
+    child: BokunSpizeApp(),
   );
 }
 
-class BokunSpizeWidget extends WatchingWidget {
+class BokunSpizeApp extends WatchingWidget {
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      initialData: FirebaseAuth.instance.currentUser,
+      builder: (_, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : BokunSpizeScreen(),
+    ),
+    localizationsDelegates: context.localizationDelegates,
+    supportedLocales: context.supportedLocales,
+    locale: context.locale,
+    onGenerateTitle: (_) => 'appName'.tr(),
+    themeMode: watchIt<ThemeService>().value,
+    theme: BokunSpizeTheme.light(),
+    darkTheme: BokunSpizeTheme.dark(),
+    themeAnimationCurve: Curves.easeIn,
+    themeAnimationDuration: BokunSpizeDurations.animation,
+    builder: (context, child) {
+      final overlayStyle = Theme.brightnessOf(context) == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+
+      final appWidget =
+          child ??
+          const Scaffold(
+            body: SizedBox.shrink(),
+          );
+
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: overlayStyle.copyWith(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarColor: Colors.transparent,
+        ),
+        child: kDebugMode
+            ? Banner(
+                message: '',
+                color: context.colors.fat,
+                location: BannerLocation.topEnd,
+                layoutDirection: TextDirection.ltr,
+                child: appWidget,
+              )
+            : appWidget,
+      );
+    },
+  );
+}
+
+class BokunSpizeScreen extends WatchingWidget {
   @override
   Widget build(BuildContext context) => getIt.get<ScreenService>().getProperWidget(
     watchIt<ScreenService>().value,
