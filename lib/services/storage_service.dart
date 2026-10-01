@@ -12,11 +12,9 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
   ///
 
   final SharedPreferencesAsync sharedPreferences;
-  final String initialLanguageCode;
 
   StorageService({
     required this.sharedPreferences,
-    required this.initialLanguageCode,
   }) : super((
          calendarDays: (
            weightsCalendarDays: defaultCalendarDays,
@@ -24,8 +22,6 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
          ),
          settingsValues: (
            theme: ThemeEnum.system,
-           // TODO: Make util function to get `enum` from `String`
-           language: LanguageEnum.en,
          ),
        ));
 
@@ -41,10 +37,7 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
         sharedPreferences.getInt(walksCalendarDaysKey),
       ]);
 
-      final settingsValues = await Future.wait([
-        sharedPreferences.getString(themeKey),
-        sharedPreferences.getString(languageKey),
-      ]);
+      final savedTheme = await sharedPreferences.getString(themeKey);
 
       updateState(
         weightsCalendarDays: calendarDays.firstOrNull ?? defaultCalendarDays,
@@ -52,17 +45,10 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
         theme:
             ThemeEnum.values
                 .where(
-                  (theme) => theme.name == settingsValues.firstOrNull,
+                  (theme) => theme.name == savedTheme,
                 )
                 .firstOrNull ??
             defaultTheme,
-        language:
-            LanguageEnum.values
-                .where(
-                  (language) => language.name == settingsValues.lastOrNull,
-                )
-                .firstOrNull ??
-            defaultLanguage,
       );
     } catch (error) {
       log(
@@ -79,13 +65,11 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
   static const defaultCalendarDays = 7;
 
   static const defaultTheme = ThemeEnum.system;
-  static const defaultLanguage = LanguageEnum.en;
 
   static const weightsCalendarDaysKey = 'weightsCalendarDays';
   static const walksCalendarDaysKey = 'walksCalendarDays';
 
   static const themeKey = 'theme';
-  static const languageKey = 'language';
 
   ///
   /// METHODS
@@ -127,24 +111,11 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
     );
   }
 
-  /// Persists and updates the selected language
-  void setLanguage(LanguageEnum language) {
-    sharedPreferences.setString(
-      languageKey,
-      language.name,
-    );
-
-    updateState(
-      language: language,
-    );
-  }
-
   /// Updates `state`
   void updateState({
     int? weightsCalendarDays,
     int? walksCalendarDays,
     ThemeEnum? theme,
-    LanguageEnum? language,
   }) => value = (
     calendarDays: (
       weightsCalendarDays: weightsCalendarDays ?? value.calendarDays.weightsCalendarDays,
@@ -152,7 +123,6 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
     ),
     settingsValues: (
       theme: theme ?? value.settingsValues.theme,
-      language: language ?? value.settingsValues.language,
     ),
   );
 }

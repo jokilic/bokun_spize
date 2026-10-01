@@ -10,11 +10,6 @@ import 'widgets/language_sheet.dart';
 import 'widgets/theme_sheet.dart';
 import 'widgets/user_metrics_sheet.dart';
 
-enum LanguageEnum {
-  en,
-  hr,
-}
-
 enum ThemeEnum {
   light,
   dark,
@@ -37,7 +32,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
          theme: getThemeEnumFromMode(
            themeMode: theme.value,
          ),
-         language: LanguageEnum.en,
        ));
 
   ///
@@ -75,21 +69,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
     BuildContext context,
   ) async => showBlurredModalBottomSheet(
     context: context,
-    builder: (context) => LanguageSheet(
-      initialLanguage: LanguageEnum.values.byName(
-        context.locale.languageCode,
-      ),
-      onLanguageChanged: (newLanguage) {
-        context.setLocale(
-          Locale(
-            newLanguage.name,
-          ),
-        );
-
-        updateState(
-          language: newLanguage,
-        );
-      },
+    builder: (sheetContext) => LanguageSheet(
+      initialLanguage: context.locale,
+      onLanguageChanged: (newLanguage) => context.setLocale(newLanguage),
     ),
   );
 
@@ -102,9 +84,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
   /// Updates `state`
   void updateState({
     ThemeEnum? theme,
-    LanguageEnum? language,
   }) => value = (
     theme: theme ?? value.theme,
-    language: language ?? value.language,
   );
 }

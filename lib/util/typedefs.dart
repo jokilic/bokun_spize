@@ -12,4 +12,4 @@ typedef ReauthenticationResult = ({bool success, String? appleAuthorizationCode}
 
 typedef CalendarDays = ({int weightsCalendarDays, int walksCalendarDays});
 
-typedef SettingsValues = ({ThemeEnum theme, LanguageEnum language});
+typedef SettingsValues = ({ThemeEnum theme});

@@ -6,14 +6,13 @@ import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
-import '../account_controller.dart';
 import 'account_sheet_list_tile.dart';
 
 // TODO: Staggered animation like other screens & sheets
 
 class LanguageSheet extends StatefulWidget {
-  final LanguageEnum initialLanguage;
-  final Function(LanguageEnum newLanguage) onLanguageChanged;
+  final Locale initialLanguage;
+  final Function(Locale newLocale) onLanguageChanged;
 
   const LanguageSheet({
     required this.initialLanguage,
@@ -25,10 +24,10 @@ class LanguageSheet extends StatefulWidget {
 }
 
 class _LanguageSheetState extends State<LanguageSheet> {
-  late var selectedLanguageEnum = widget.initialLanguage;
+  late var selectedLanguage = widget.initialLanguage;
 
-  void updateLanguage(LanguageEnum newLanguageEnum) => setState(
-    () => selectedLanguageEnum = newLanguageEnum,
+  void updateLanguage(Locale newLanguage) => setState(
+    () => selectedLanguage = newLanguage,
   );
 
   @override
@@ -201,10 +200,10 @@ class _LanguageSheetState extends State<LanguageSheet> {
                 ],
                 child: AccountSheetListTile(
                   onPressed: () => updateLanguage(
-                    LanguageEnum.hr,
+                    const Locale('hr'),
                   ),
-                  isActive: selectedLanguageEnum == LanguageEnum.hr,
-                  color: selectedLanguageEnum == LanguageEnum.hr ? context.colors.protein : context.colors.scaffoldBackground,
+                  isActive: selectedLanguage.languageCode == 'hr',
+                  color: selectedLanguage.languageCode == 'hr' ? context.colors.protein : context.colors.scaffoldBackground,
                   emojiIcon: '🇭🇷',
                   title: 'Croatian',
                   subtitle: 'Use croatian language',
@@ -239,10 +238,10 @@ class _LanguageSheetState extends State<LanguageSheet> {
                 ],
                 child: AccountSheetListTile(
                   onPressed: () => updateLanguage(
-                    LanguageEnum.en,
+                    const Locale('en'),
                   ),
-                  isActive: selectedLanguageEnum == LanguageEnum.en,
-                  color: selectedLanguageEnum == LanguageEnum.en ? context.colors.protein : context.colors.scaffoldBackground,
+                  isActive: selectedLanguage.languageCode == 'en',
+                  color: selectedLanguage.languageCode == 'en' ? context.colors.protein : context.colors.scaffoldBackground,
                   emojiIcon: '🇬🇧',
                   title: 'English',
                   subtitle: 'Use english language',
@@ -278,7 +277,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onLanguageChanged(selectedLanguageEnum);
+                      widget.onLanguageChanged(selectedLanguage);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
