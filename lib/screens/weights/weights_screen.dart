@@ -57,7 +57,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
     final isLoading = state.isLoading;
     final weightTracks = state.weightTracks;
 
-    final graphCalendarDays = watchIt<StorageService>().value.weightsCalendarDays;
+    final graphCalendarDays = watchIt<StorageService>().value.calendarDays.weightsCalendarDays;
 
     /// Store last `weightTrack`
     final lastWeightTrack = weightTracks.firstOrNull;

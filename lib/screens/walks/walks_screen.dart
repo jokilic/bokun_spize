@@ -59,7 +59,7 @@ class _WalksScreenState extends State<WalksScreen> {
 
     final isWalking = state.isWalking;
 
-    final graphCalendarDays = watchIt<StorageService>().value.walksCalendarDays;
+    final graphCalendarDays = watchIt<StorageService>().value.calendarDays.walksCalendarDays;
 
     final stepsWithDate = [...?state.stepsWithDate]
       ..sort(
