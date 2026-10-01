@@ -27,7 +27,7 @@ Future<void> main() async {
 
   try {
     await initializeBeforeAppStart();
-    registerServices();
+    await registerServices();
 
     runApp(
       BokunSpizeApp(),

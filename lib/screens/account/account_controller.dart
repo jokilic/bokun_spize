@@ -55,9 +55,15 @@ class AccountController extends ValueNotifier<({ThemeEnum theme, LanguageEnum la
     context: context,
     builder: (context) => ThemeSheet(
       initialTheme: initialTheme,
-      onThemeChanged: (newTheme) => theme.updateTheme(
-        newThemeEnum: newTheme,
-      ),
+      onThemeChanged: (newTheme) {
+        theme.updateTheme(
+          newThemeEnum: newTheme,
+        );
+
+        updateState(
+          theme: newTheme,
+        );
+      },
     ),
   );
 

@@ -78,8 +78,8 @@ Future<void> initializeFirebase() async {
   );
 }
 
-/// Register app services and initialize `Firebase` cleanup
-void registerServices() {
+/// Registers app services and loads saved preferences before the app starts
+Future<void> registerServices() async {
   ///
   /// CACHE
   ///
@@ -112,13 +112,19 @@ void registerServices() {
   /// STORAGE
   ///
   if (!getIt.isRegistered<StorageService>()) {
-    getIt.registerLazySingleton(
-      () => StorageService(
-        sharedPreferences: SharedPreferencesAsync(),
-      ),
-      onCreated: (storage) => storage.init(),
+    getIt.registerLazySingletonAsync<StorageService>(
+      () async {
+        final storage = StorageService(
+          sharedPreferences: SharedPreferencesAsync(),
+        );
+        await storage.init();
+        return storage;
+      },
     );
   }
+
+  /// Load `StorageService` so `ThemeService` can access it synchronously
+  await getIt.getAsync<StorageService>();
 
   ///
   /// SPEECH TO TEXT
