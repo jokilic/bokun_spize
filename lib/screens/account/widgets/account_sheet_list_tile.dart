@@ -9,7 +9,8 @@ class AccountSheetListTile extends StatelessWidget {
   final Function() onPressed;
   final bool isActive;
   final Color color;
-  final IconData icon;
+  final IconData? icon;
+  final String? emojiIcon;
   final String title;
   final String subtitle;
 
@@ -17,9 +18,10 @@ class AccountSheetListTile extends StatelessWidget {
     required this.onPressed,
     required this.isActive,
     required this.color,
-    required this.icon,
     required this.title,
     required this.subtitle,
+    this.icon,
+    this.emojiIcon,
   });
 
   @override
@@ -47,13 +49,35 @@ class AccountSheetListTile extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: Container(
-                padding: const EdgeInsets.all(listTileIconRadius / 4),
+                width: listTileIconRadius,
+                height: listTileIconRadius,
+                alignment: Alignment.center,
                 color: color.withValues(alpha: 0.25),
-                child: PhosphorIcon(
-                  icon,
-                  color: color,
-                  size: listTileIconRadius / 2,
-                ),
+                child: icon != null
+                    ? PhosphorIcon(
+                        icon!,
+                        color: color,
+                        size: listTileIconRadius / 2,
+                      )
+                    : emojiIcon != null
+                    ? Text(
+                        emojiIcon!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: listTileIconRadius / 2,
+                          height: 1,
+                          leadingDistribution: TextLeadingDistribution.even,
+                          fontWeight: FontWeight.w500,
+                          color: context.colors.text.withValues(alpha: 0.7),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : const SizedBox(
+                        height: listTileIconRadius / 2,
+                        width: listTileIconRadius / 2,
+                      ),
               ),
             ),
             const SizedBox(width: 20),
