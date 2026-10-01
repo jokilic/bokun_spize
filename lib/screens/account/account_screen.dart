@@ -64,7 +64,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final state = watchIt<AccountController>().value;
 
     final theme = state.theme;
-    final language = state.language;
 
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
@@ -152,7 +151,6 @@ class _AccountScreenState extends State<AccountScreen> {
               AccountListTile(
                 onPressed: () => accountController.openLanguageSheet(
                   context,
-                  initialLanguage: language,
                 ),
                 icon: PhosphorIconsBold.globeStand,
                 iconBackgroundColor: context.colors.protein,
