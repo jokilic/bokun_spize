@@ -25,7 +25,11 @@ class ThemeSheet extends StatefulWidget {
 }
 
 class _ThemeSheetState extends State<ThemeSheet> {
-  late var selectedThemeData = widget.initialTheme;
+  late var selectedThemeEnum = widget.initialTheme;
+
+  void updateTheme(ThemeEnum newThemeEnum) => setState(
+    () => selectedThemeEnum = newThemeEnum,
+  );
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -196,8 +200,10 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: ThemeListTile(
-                  onPressed: () {},
-                  isActive: true,
+                  onPressed: () => updateTheme(
+                    ThemeEnum.light,
+                  ),
+                  isActive: selectedThemeEnum == ThemeEnum.light,
                   color: context.colors.protein,
                   icon: PhosphorIconsBold.sun,
                   title: 'Light theme',
@@ -232,8 +238,10 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: ThemeListTile(
-                  onPressed: () {},
-                  isActive: false,
+                  onPressed: () => updateTheme(
+                    ThemeEnum.dark,
+                  ),
+                  isActive: selectedThemeEnum == ThemeEnum.dark,
                   color: context.colors.carbs,
                   icon: PhosphorIconsBold.moon,
                   title: 'Dark theme',
@@ -268,8 +276,10 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: ThemeListTile(
-                  onPressed: () {},
-                  isActive: false,
+                  onPressed: () => updateTheme(
+                    ThemeEnum.system,
+                  ),
+                  isActive: selectedThemeEnum == ThemeEnum.system,
                   color: context.colors.fat,
                   icon: PhosphorIconsBold.deviceMobileCamera,
                   title: 'System theme',
@@ -306,7 +316,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onThemeChanged(selectedThemeData);
+                      widget.onThemeChanged(selectedThemeEnum);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(

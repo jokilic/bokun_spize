@@ -8,6 +8,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
+import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -34,6 +35,7 @@ class _AccountScreenState extends State<AccountScreen> {
     registerIfNotInitialized<AccountController>(
       () => AccountController(
         firebase: getIt.get<FirebaseService>(),
+        theme: getIt.get<ThemeService>(),
       ),
     );
   }
@@ -134,7 +136,10 @@ class _AccountScreenState extends State<AccountScreen> {
               /// THEME
               ///
               AccountListTile(
-                onPressed: () => accountController.openThemeSheet(context),
+                onPressed: () => accountController.openThemeSheet(
+                  context,
+                  initialTheme: theme,
+                ),
                 icon: PhosphorIconsBold.palette,
                 iconBackgroundColor: context.colors.fat,
                 title: 'Theme',

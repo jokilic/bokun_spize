@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
-import '../../util/dependencies.dart';
+import '../../util/theme.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'widgets/theme/theme_sheet.dart';
 import 'widgets/user_metrics_sheet.dart';
@@ -23,12 +23,17 @@ class AccountController extends ValueNotifier<({ThemeEnum theme, LanguageEnum la
   /// CONSTRUCTOR
   ///
 
+  // TODO: Firebase perhaps not necessary
   final FirebaseService firebase;
+  final ThemeService theme;
 
   AccountController({
     required this.firebase,
+    required this.theme,
   }) : super((
-         theme: ThemeEnum.system,
+         theme: getThemeEnumFromMode(
+           themeMode: theme.value,
+         ),
          language: LanguageEnum.en,
        ));
 
@@ -43,15 +48,16 @@ class AccountController extends ValueNotifier<({ThemeEnum theme, LanguageEnum la
   );
 
   /// Opens [ThemeSheet]
-  Future<void> openThemeSheet(BuildContext context) async => showBlurredModalBottomSheet(
+  Future<void> openThemeSheet(
+    BuildContext context, {
+    required ThemeEnum initialTheme,
+  }) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => ThemeSheet(
-      initialTheme: switch (getIt<ThemeService>().value) {
-        ThemeMode.system => ThemeEnum.system,
-        ThemeMode.light => ThemeEnum.light,
-        ThemeMode.dark => ThemeEnum.dark,
-      },
-      onThemeChanged: (newTheme) {},
+      initialTheme: initialTheme,
+      onThemeChanged: (newTheme) => theme.updateTheme(
+        newThemeEnum: newTheme,
+      ),
     ),
   );
 

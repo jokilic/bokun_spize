@@ -25,7 +25,12 @@ class ThemeService extends ValueNotifier<ThemeMode> {
 
   /// Updates active `theme` & stores in `Storage`
   void updateTheme({required ThemeEnum newThemeEnum}) {
-    // TODO: Implement this method properly, as the comment states
-    // value = value != ThemeMode.light ? ThemeMode.light : ThemeMode.dark;
+    value = getThemeModeFromEnum(
+      themeEnum: newThemeEnum,
+    );
+
+    storage.setTheme(
+      newThemeEnum,
+    );
   }
 }
