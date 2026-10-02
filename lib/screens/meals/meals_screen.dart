@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -236,10 +237,12 @@ class _MealsScreenState extends State<MealsScreen> {
                   shortDayString: getDateString(
                     date: currentlyVisibleDate,
                     dateFormat: 'dd MMM',
+                    languageCode: context.locale.languageCode,
                   ),
                   fullDayString: getDateString(
                     date: currentlyVisibleDate,
                     dateFormat: 'EEEE, dd.MM.yyyy.',
+                    languageCode: context.locale.languageCode,
                   ),
                   currentCalories: currentCalories,
                   currentProtein: currentProtein,

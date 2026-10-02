@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
@@ -40,6 +41,7 @@ class SearchListTile extends StatelessWidget {
       date: meal.createdAt,
       dateFormat: 'HH:mm',
       useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
     );
 
     final primaryColor =

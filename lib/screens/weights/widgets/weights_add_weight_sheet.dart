@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -131,12 +132,14 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     final date = getDateString(
       date: selectedDateTime,
       dateFormat: 'dd.MM.yyyy.',
+      languageCode: context.locale.languageCode,
     );
 
     final time = getDateString(
       date: selectedDateTime,
       dateFormat: 'HH:mm',
       useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
     );
 
     return ClipRRect(

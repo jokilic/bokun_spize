@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -155,6 +156,7 @@ class _WalksScreenState extends State<WalksScreen> {
                       ? getDateString(
                           date: latestStepsWithDate.dateTime,
                           dateFormat: 'EEEE, dd.MM.yyyy.',
+                          languageCode: context.locale.languageCode,
                         )
                       : 'Vrijeme ne postoji',
                   currentSteps: latestStepsWithDate?.steps,

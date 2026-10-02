@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -98,12 +99,14 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     final date = getDateString(
       date: mealDate,
       dateFormat: 'dd.MM.yyyy.',
+      languageCode: context.locale.languageCode,
     );
 
     final time = getDateString(
       date: mealTime,
       dateFormat: 'HH:mm',
       useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
     );
 
     final isCopyingMeal = widget.isCopyingMeal;
@@ -337,7 +340,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                 onPressed: () {
                                   HapticFeedback.lightImpact();
                                   mealController.onSpeechToTextPressed(
-                                    locale: 'en',
+                                    languageCode: context.locale.languageCode,
                                     speechToTextAvailable: available,
                                   );
                                 },

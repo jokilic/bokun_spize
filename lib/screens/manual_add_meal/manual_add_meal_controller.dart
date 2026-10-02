@@ -233,7 +233,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
 
   /// Triggered when the user presses [SpeechToText] button
   Future<void> onSpeechToTextPressed({
-    required String locale,
+    required String languageCode,
     required bool speechToTextAvailable,
   }) async {
     if (!speechToTextAvailable) {
@@ -254,7 +254,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
             nameTextEditingController.text = words;
           }
         },
-        locale: locale,
+        locale: languageCode,
       );
     }
     /// [SpeechToText] was enabled, stop listening

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -360,6 +361,7 @@ class WeightsGraphWidget extends StatelessWidget {
                   date: weightTrack.dateTime,
                   dateFormat: 'MMM d, yyyy',
                   useTodayYesterdayTomorrow: false,
+                  languageCode: context.locale.languageCode,
                 );
 
                 return LineTooltipItem(
@@ -422,6 +424,7 @@ class WeightsGraphWidget extends StatelessWidget {
                 hasSinglePosition: hasSinglePosition,
                 isSingleDay: isSingleDay,
                 labelColor: context.colors.text,
+                languageCode: context.locale.languageCode,
               ),
             ),
           ),
@@ -482,6 +485,7 @@ class WeightsGraphWidget extends StatelessWidget {
     required bool hasSinglePosition,
     required bool isSingleDay,
     required Color labelColor,
+    required String languageCode,
   }) {
     final isSinglePositionTitle = hasSinglePosition && value.abs() < 0.001;
     final isLastTitle = (value - meta.max).abs() < 0.001;
@@ -500,6 +504,7 @@ class WeightsGraphWidget extends StatelessWidget {
     final label = getDateString(
       date: dateTime,
       dateFormat: 'MMM dd',
+      languageCode: languageCode,
     ).toUpperCase();
 
     return SideTitleWidget(

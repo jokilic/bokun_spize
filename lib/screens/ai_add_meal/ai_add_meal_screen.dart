@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -82,12 +83,14 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
     final date = getDateString(
       date: mealDate,
       dateFormat: 'dd.MM.yyyy.',
+      languageCode: context.locale.languageCode,
     );
 
     final time = getDateString(
       date: mealTime,
       dateFormat: 'HH:mm',
       useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
     );
 
     return ClipRRect(
@@ -295,7 +298,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                             onPressed: () {
                               HapticFeedback.lightImpact();
                               mealController.onSpeechToTextPressed(
-                                locale: 'en',
+                                locale: context.locale.languageCode,
                                 speechToTextAvailable: available,
                               );
                             },

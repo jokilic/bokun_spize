@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -91,6 +92,7 @@ class WalksListTile extends StatelessWidget {
                               getDateString(
                                 date: stepWithDate.dateTime,
                                 dateFormat: 'dd MMM',
+                                languageCode: context.locale.languageCode,
                               ),
                             ) ??
                             '--',
@@ -114,6 +116,7 @@ class WalksListTile extends StatelessWidget {
                                 date: stepWithDate.dateTime,
                                 dateFormat: 'EEEE',
                                 useTodayYesterdayTomorrow: false,
+                                languageCode: context.locale.languageCode,
                               ),
                             ) ??
                             '--',

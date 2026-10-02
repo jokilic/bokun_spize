@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -114,6 +115,7 @@ class WeightsListTile extends StatelessWidget {
                                   getDateString(
                                     date: weightTrack.dateTime,
                                     dateFormat: 'EEE, dd MMM',
+                                    languageCode: context.locale.languageCode,
                                   ),
                                 ) ??
                                 '--',
@@ -136,6 +138,7 @@ class WeightsListTile extends StatelessWidget {
                               date: weightTrack.dateTime,
                               dateFormat: 'HH:mm',
                               useTodayYesterdayTomorrow: false,
+                              languageCode: context.locale.languageCode,
                             ),
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',

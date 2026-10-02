@@ -273,7 +273,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
 
   /// Triggered when the user presses [SpeechToText] button
   Future<void> onSpeechToTextPressed({
-    required String locale,
+    required String languageCode,
     required bool speechToTextAvailable,
   }) async {
     if (!speechToTextAvailable) {
@@ -302,7 +302,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
             textEditingController.text = words;
           }
         },
-        locale: locale,
+        locale: languageCode,
       );
     }
     /// [SpeechToText] was enabled, stop listening

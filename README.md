@@ -7,9 +7,9 @@
 ### Screens
     - [ ] `AccountScreen`
         - [ ] Edit user name (show sheet with `TextField`)
-        - [ ] `UserMetricsSheet`
+        - [ ] UserMetricsSheet
         - [x] Theme
-        - [ ] Language
+        - [x] Language
         - [x] Logout
         - [ ] Delete account
         - [ ] Version
@@ -25,7 +25,6 @@
 
 ### Localization
     - [ ] Localize `Strings`
-    - [ ] Replace hardcoded 'en' with `context.locale.languageCode`
 
 # Bokun spize 🥗
 

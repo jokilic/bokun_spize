@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -280,7 +281,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               onPressed: () {
                                 HapticFeedback.lightImpact();
                                 searchController.onSpeechToTextPressed(
-                                  locale: 'en',
+                                  languageCode: context.locale.languageCode,
                                   speechToTextAvailable: available,
                                 );
                               },

@@ -16,7 +16,7 @@ DateTime roundUpToFiveMinuteInterval(DateTime dateTime) {
 String getDateString({
   required DateTime date,
   required String dateFormat,
-  String languageCode = 'en',
+  required String languageCode,
   bool useTodayYesterdayTomorrow = true,
 }) {
   final now = DateTime.now();
