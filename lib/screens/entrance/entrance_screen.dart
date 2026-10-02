@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     /// Non-successful logic
     showSnackbar(
       context,
-      text: result.error ?? 'errorUnknown',
+      text: result.error ?? 'entranceErrorUnknown'.tr(),
       icon: PhosphorIconsBold.warningOctagon,
     );
   }
@@ -102,7 +103,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     if (result.success && result.error == null) {
       showSnackbar(
         context,
-        text: 'Password reset email sent',
+        text: 'entrancePasswordResetEmailSent'.tr(),
         icon: PhosphorIconsBold.envelopeSimple,
       );
       return;
@@ -111,7 +112,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     /// Non-successful logic
     showSnackbar(
       context,
-      text: result.error ?? 'errorUnknown',
+      text: result.error ?? 'entranceErrorUnknown'.tr(),
       icon: PhosphorIconsBold.warningOctagon,
     );
   }
@@ -236,7 +237,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 22),
                           child: Text(
-                            'Welcome',
+                            'entranceTitle'.tr(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 30,
@@ -276,7 +277,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           ),
                         ],
                         child: Text(
-                          'Track your everyday meals, weight & walks',
+                          'entranceSubtitle'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 16,
@@ -420,7 +421,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           ),
                         ],
                         child: Text(
-                          'Or connect with'.toUpperCase(),
+                          'entranceOrConnectWith'.tr().toUpperCase(),
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,
@@ -494,8 +495,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                   disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
                                   disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                                 ),
-                                label: const Text(
-                                  'Google',
+                                label: Text(
+                                  'entranceGoogle'.tr(),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -534,8 +535,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                   disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
                                   disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                                 ),
-                                label: const Text(
-                                  'Apple',
+                                label: Text(
+                                  'entranceApple'.tr(),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -586,14 +587,14 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           child: Text.rich(
                             key: ValueKey(showLogin),
                             TextSpan(
-                              text: showLogin ? 'New to Bokun spize?' : 'You have an account?',
+                              text: showLogin ? 'entranceNewToBokunSpize'.tr() : 'entranceYouHaveAnAccount'.tr(),
                               children: [
                                 const WidgetSpan(
                                   child: SizedBox(width: 4),
                                 ),
                                 TextSpan(
                                   recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
-                                  text: showLogin ? 'Create an account' : 'Sign in',
+                                  text: showLogin ? 'entranceCreateAnAccount'.tr() : 'entranceSignIn'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 16,

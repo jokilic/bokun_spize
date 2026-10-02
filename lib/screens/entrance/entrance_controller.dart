@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -138,7 +139,7 @@ class EntranceController
     if (isLoading) {
       return (
         user: null,
-        error: 'Already loading',
+        error: 'entranceErrorLoading'.tr(),
       );
     }
 
@@ -182,7 +183,14 @@ class EntranceController
       updateState(
         emailIsLoading: false,
       );
-      return (user: null, error: '$error');
+      return (
+        user: null,
+        error: '$error',
+      );
+    } finally {
+      updateState(
+        emailIsLoading: false,
+      );
     }
   }
 
@@ -193,7 +201,7 @@ class EntranceController
     if (isLoading) {
       return (
         success: false,
-        error: 'Already loading',
+        error: 'entranceErrorLoading'.tr(),
       );
     }
 
@@ -213,7 +221,13 @@ class EntranceController
         'Password reset email failed',
         error: error,
       );
-      return (success: false, error: '$error');
+      updateState(
+        emailIsLoading: false,
+      );
+      return (
+        success: false,
+        error: '$error',
+      );
     } finally {
       updateState(
         emailIsLoading: false,
@@ -228,7 +242,7 @@ class EntranceController
     if (isLoading) {
       return (
         user: null,
-        error: 'Already loading',
+        error: 'entranceErrorLoading'.tr(),
       );
     }
 
@@ -250,16 +264,6 @@ class EntranceController
 
       /// Successful registration
       if (registerResult.user != null && registerResult.error == null) {
-        /// Store `isLoggedIn` into [Hive]
-        // await hive.writeSettings(
-        //   hive.getSettings().copyWith(
-        //     isLoggedIn: true,
-        //   ),
-        // );
-
-        /// Fetch all data from [Firebase] & store into [Hive]
-        // await getFirebaseDataIntoHive();
-
         updateState(
           emailIsLoading: false,
         );
@@ -284,7 +288,14 @@ class EntranceController
       updateState(
         emailIsLoading: false,
       );
-      return (user: null, error: '$error');
+      return (
+        user: null,
+        error: '$error',
+      );
+    } finally {
+      updateState(
+        emailIsLoading: false,
+      );
     }
   }
 
@@ -295,7 +306,7 @@ class EntranceController
     if (isLoading) {
       return (
         user: null,
-        error: 'Already loading',
+        error: 'entranceErrorLoading'.tr(),
       );
     }
 
@@ -308,16 +319,6 @@ class EntranceController
 
       /// Successful login
       if (loginResult.user != null && loginResult.error == null) {
-        /// Store `isLoggedIn` into [Hive]
-        // await hive.writeSettings(
-        //   hive.getSettings().copyWith(
-        //     isLoggedIn: true,
-        //   ),
-        // );
-
-        /// Fetch all data from [Firebase] & store into [Hive]
-        // await getFirebaseDataIntoHive();
-
         updateState(
           googleIsLoading: false,
         );
@@ -342,7 +343,14 @@ class EntranceController
       updateState(
         googleIsLoading: false,
       );
-      return (user: null, error: '$error');
+      return (
+        user: null,
+        error: '$error',
+      );
+    } finally {
+      updateState(
+        googleIsLoading: false,
+      );
     }
   }
 
@@ -353,7 +361,7 @@ class EntranceController
     if (isLoading) {
       return (
         user: null,
-        error: 'Already loading',
+        error: 'entranceErrorLoading'.tr(),
       );
     }
 
@@ -390,7 +398,14 @@ class EntranceController
       updateState(
         appleIsLoading: false,
       );
-      return (user: null, error: '$error');
+      return (
+        user: null,
+        error: '$error',
+      );
+    } finally {
+      updateState(
+        appleIsLoading: false,
+      );
     }
   }
 

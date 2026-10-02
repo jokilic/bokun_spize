@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_lambdas
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/constants.dart';
@@ -41,8 +42,8 @@ class EntranceRegister extends StatelessWidget {
         child: TextFieldWidget(
           controller: emailTextEditingController,
           focusNode: emailFocusNode,
-          title: 'Email address',
-          hintText: 'name@example.com',
+          title: 'entranceRegisterEmailTitle'.tr(),
+          hintText: 'entranceRegisterEmailHint'.tr(),
           onSubmitted: (_) => passwordFocusNode.requestFocus(),
           textColor: context.colors.text,
           autofillHints: const [AutofillHints.email],
@@ -62,7 +63,7 @@ class EntranceRegister extends StatelessWidget {
           obscureText: true,
           controller: passwordTextEditingController,
           focusNode: passwordFocusNode,
-          title: 'Password',
+          title: 'entranceRegisterPasswordTitle'.tr(),
           hintText: '•' * 8,
           onSubmitted: (_) => nameFocusNode.requestFocus(),
           textColor: context.colors.text,
@@ -82,8 +83,8 @@ class EntranceRegister extends StatelessWidget {
         child: TextFieldWidget(
           controller: nameTextEditingController,
           focusNode: nameFocusNode,
-          title: 'Name',
-          hintText: 'Jack',
+          title: 'entranceRegisterNameTitle'.tr(),
+          hintText: 'entranceRegisterNameHint'.tr(),
           onSubmitted: (_) {
             if (!validated || emailIsLoading) {
               return;
@@ -124,8 +125,8 @@ class EntranceRegister extends StatelessWidget {
               disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
               disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
             ),
-            child: const Text(
-              'Register',
+            child: Text(
+              'entranceRegisterButton'.tr(),
               textAlign: TextAlign.center,
             ),
           ),
