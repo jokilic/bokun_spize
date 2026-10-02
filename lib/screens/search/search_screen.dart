@@ -142,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ///
                         Expanded(
                           child: Text(
-                            'Search meals',
+                            'searchTitle'.tr(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 26,
@@ -202,7 +202,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ],
                     child: Text(
-                      'Find anything from your journal',
+                      'searchSubtitle'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 16,
@@ -250,8 +250,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           onChanged: (_) => searchController.stopSpeechToTextIfListening(),
                           onSubmitted: (_) => searchController.searchMeals(),
                           textInputAction: TextInputAction.search,
-                          title: 'Search',
-                          hintText: 'What you need?',
+                          title: 'searchTextFieldTitle'.tr(),
+                          hintText: 'searchTextFieldHint'.tr(),
                           textColor: context.colors.text,
                         ),
 

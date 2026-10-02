@@ -399,7 +399,7 @@ class MealsListTile extends StatelessWidget {
                           ),
                         ] else
                           Text(
-                            'kcal'.toUpperCase(),
+                            'caloriesUnit'.tr().toUpperCase(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 12,

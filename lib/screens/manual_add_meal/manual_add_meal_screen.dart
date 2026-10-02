@@ -200,7 +200,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ///
                       Expanded(
                         child: Text(
-                          isCopyingMeal ? 'Copy meal' : (isEditingMeal ? 'Edit meal' : 'Log meal'),
+                          isCopyingMeal ? 'manualAddMealCopyTitle'.tr() : (isEditingMeal ? 'manualAddMealEditTitle'.tr() : 'manualAddMealTitle'.tr()),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -260,7 +260,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ],
                   child: Text(
-                    isEditingMeal ? 'Update meal in your journal' : 'New meal in your journal',
+                    isEditingMeal ? 'manualAddMealEditSubtitle'.tr() : 'manualAddMealSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -308,8 +308,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                           focusNode: mealController.nameFocusNode,
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                           onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
-                          title: 'Meal name',
-                          hintText: isCopyingMeal ? 'Meal has no name' : 'What was it?',
+                          title: 'manualAddMealTextFieldTitle'.tr(),
+                          hintText: isCopyingMeal ? 'manualAddMealTextFieldCopyHint'.tr() : 'manualAddMealTextFieldHint'.tr(),
                           textColor: context.colors.text,
                         ),
 
@@ -554,7 +554,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    key: ValueKey('meal-image-empty-${widget.isCopyingMeal}'),
+                    key: ValueKey(
+                      'meal-image-empty-${widget.isCopyingMeal}',
+                    ),
                     delay: BokunSpizeDurations.stateTransitionStagger * imageAnimationStep,
                     effects: const [
                       FadeEffect(
@@ -610,7 +612,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Meal has no image',
+                                  'manualAddMealNoImage'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 14,
@@ -658,7 +660,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        'Camera',
+                                        'manualAddMealCamera'.tr(),
                                         style: TextStyle(
                                           fontFamily: 'Epilogue',
                                           fontSize: 14,
@@ -703,7 +705,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        'Gallery',
+                                        'manualAddMealGallery'.tr(),
                                         style: TextStyle(
                                           fontFamily: 'Epilogue',
                                           fontSize: 14,
@@ -748,7 +750,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ),
                     ],
                     child: Text(
-                      'Nutritional values',
+                      'manualAddMealNutritionalValuesTitle'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 18,
@@ -790,9 +792,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       focusNode: mealController.caloriesFocusNode,
                       onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                       onSubmitted: (_) => mealController.proteinFocusNode.requestFocus(),
-                      title: 'Calories',
-                      hintText: '0',
-                      rightText: 'kcal',
+                      title: 'manualAddMealTextFieldTitleCalories'.tr(),
+                      hintText: 'zeroHint'.tr(),
+                      rightText: 'caloriesUnit'.tr(),
                       textColor: context.colors.protein,
                       keyboardType: TextInputType.number,
                     ),
@@ -836,9 +838,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             focusNode: mealController.proteinFocusNode,
                             onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                             onSubmitted: (_) => mealController.carbsFocusNode.requestFocus(),
-                            title: 'Protein',
-                            hintText: '0',
-                            rightText: 'g',
+                            title: 'manualAddMealTextFieldTitleProtein'.tr(),
+                            hintText: 'zeroHint'.tr(),
+                            rightText: 'gramUnit'.tr(),
                             textColor: context.colors.protein,
                             keyboardType: TextInputType.number,
                           ),
@@ -854,9 +856,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             focusNode: mealController.carbsFocusNode,
                             onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                             onSubmitted: (_) => mealController.fatsFocusNode.requestFocus(),
-                            title: 'Carbs',
-                            hintText: '0',
-                            rightText: 'g',
+                            title: 'manualAddMealTextFieldTitleCarbs'.tr(),
+                            hintText: 'zeroHint'.tr(),
+                            rightText: 'gramUnit'.tr(),
                             textColor: context.colors.carbs,
                             keyboardType: TextInputType.number,
                           ),
@@ -870,9 +872,9 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             enabled: !isCopyingMeal,
                             controller: mealController.fatsTextEditingController,
                             focusNode: mealController.fatsFocusNode,
-                            title: 'Fats',
-                            hintText: '0',
-                            rightText: 'g',
+                            title: 'manualAddMealTextFieldTitleFats'.tr(),
+                            hintText: 'zeroHint'.tr(),
+                            rightText: 'gramUnit'.tr(),
                             textColor: context.colors.fat,
                             keyboardType: TextInputType.number,
                           ),
@@ -907,7 +909,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ),
                     ],
                     child: Text(
-                      'Foods',
+                      'manualAddMealFoodsTitle'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 18,
@@ -1032,8 +1034,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                           disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
                           disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                         ),
-                        label: const Text(
-                          'Add food',
+                        label: Text(
+                          'manualAddMealAddFoodButton'.tr(),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -1066,7 +1068,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ],
                   child: Text(
-                    'Date & time',
+                    'manualAddMealDateTimeTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
@@ -1133,7 +1135,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'Date'.toUpperCase(),
+                                    'manualAddMealDateTitle'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -1232,7 +1234,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'Time'.toUpperCase(),
+                                    'manualAddMealTimeTitle'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -1353,7 +1355,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        isEditingMeal ? 'Save changes' : 'Log meal',
+                        isEditingMeal ? 'manualAddMealEditButton'.tr() : 'manualAddMealButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

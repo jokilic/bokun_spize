@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -127,7 +128,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
               currentlyVisibleDate: null,
               meals: const [],
               isLoading: false,
-              error: 'Meals could not be loaded.',
+              error: 'mealsErrorCouldNotBeLoaded'.tr(),
             );
           },
         );
@@ -151,7 +152,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Delete failed',
+        text: 'mealsErrorDeleteFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -162,7 +163,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     context: context,
     builder: (context) => CalendarSheet(
       showConfirmButton: false,
-      subtitle: 'View your activity and progress',
+      subtitle: 'mealsCalendarSubtitle'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.requestedDate,
       onDateChanged: (newDate) {
@@ -204,7 +205,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Add failed',
+        text: 'mealsErrorAddFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -311,8 +312,8 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     /// Keep errors while allowing fallback AI model to recover
     final errors = [
       if (aiResult == null) ...?result.errors,
-      if (aiResult != null && meal == null) 'Meal failed decoding',
-      if (imageFile != null && imageStoragePath == null) 'Image failed to save',
+      if (aiResult != null && meal == null) 'mealsErrorMealFailedDecoding'.tr(),
+      if (imageFile != null && imageStoragePath == null) 'mealsErrorImageFailedSave'.tr(),
     ];
 
     return (
@@ -374,7 +375,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: isEditingMeal ? 'Update failed' : 'Add failed',
+        text: isEditingMeal ? 'mealsErrorUpdateFailed'.tr() : 'mealsErrorAddFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -530,7 +531,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         foods: result.foods,
         imageStoragePath: imageStoragePath,
         isLoading: false,
-        errors: imageUploadFailed ? ['Image upload failed'] : null,
+        errors: imageUploadFailed ? ['mealsErrorImageUploadFailed'.tr()] : null,
       ),
       success: !imageUploadFailed,
     );

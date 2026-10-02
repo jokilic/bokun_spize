@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -50,7 +51,7 @@ class SearchEmpty extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              query.characters.length < minimumSearchLength ? 'Search your meal journal' : 'No meals found',
+              query.characters.length < minimumSearchLength ? 'searchEmptyTitle'.tr() : 'searchEmptyNoMealsFoundTitle'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 20,
@@ -62,7 +63,11 @@ class SearchEmpty extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              query.characters.length < minimumSearchLength ? 'Enter at least $minimumSearchLength characters to search' : 'Try a different meal name or ingredient',
+              query.characters.length < minimumSearchLength
+                  ? 'searchEmptySubtitle'.tr(
+                      args: ['$minimumSearchLength'],
+                    )
+                  : 'searchEmptyNoMealsFoundSubtitle'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 14,

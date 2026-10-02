@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -394,7 +395,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
     context: context,
     builder: (context) => CalendarSheet(
       showConfirmButton: true,
-      subtitle: passedMeal != null && !isCopyingMeal ? 'Day of meal' : 'Day of new meal',
+      subtitle: passedMeal != null && !isCopyingMeal ? 'manualAddMealCalendarSheetEditSubtitle'.tr() : 'manualAddMealCalendarSheetSubtitle'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
@@ -410,7 +411,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => TimeSheet(
-      subtitle: passedMeal != null && !isCopyingMeal ? 'Time of meal' : 'Time of new meal',
+      subtitle: passedMeal != null && !isCopyingMeal ? 'manualAddMealTimeSheetEditSubtitle'.tr() : 'manualAddMealTimeSheetSubtitle'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {

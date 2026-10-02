@@ -1,4 +1,5 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -448,7 +449,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   Transform.translate(
                     offset: const Offset(0, 6),
                     child: Text(
-                      dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} kcal' : 'kcal',
+                      dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} ${'caloriesUnit'.tr()}' : 'caloriesUnit'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 12,
@@ -577,7 +578,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// TITLE
                             ///
                             Text(
-                              'Protein'.toUpperCase(),
+                              'mealsAppBarProtein'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 8,
@@ -633,7 +634,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// TITLE
                             ///
                             Text(
-                              'Carbs'.toUpperCase(),
+                              'mealsAppBarCarbs'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 8,
@@ -689,7 +690,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// TITLE
                             ///
                             Text(
-                              'Fats'.toUpperCase(),
+                              'mealsAppBarFats'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 8,
@@ -758,7 +759,7 @@ class FadingFlexibleTitle extends StatelessWidget {
     return AnimatedDigitWidget(
       value: num.parse(formattedValue),
       fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
-      suffix: 'g',
+      suffix: 'gramUnit'.tr(),
       loop: false,
       duration: BokunSpizeDurations.animation,
       curve: Curves.easeIn,

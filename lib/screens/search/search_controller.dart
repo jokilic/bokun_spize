@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -248,7 +249,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         query: query,
         meals: const [],
         isLoading: false,
-        error: 'Meals could not be loaded. Please try again.',
+        error: 'searchErrorMealsCouldNotBeLoaded'.tr(),
       );
     }
   }

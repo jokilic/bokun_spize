@@ -13,15 +13,13 @@ import '../../models/meal/meal.dart';
 import '../../theme/extensions.dart';
 import '../../util/color.dart';
 import '../../util/date_time.dart';
-import '../../util/dependencies.dart';
 import '../../util/format.dart';
 import '../../util/spacing.dart';
 import '../../widgets/animated_nutrition_bar.dart';
 import '../../widgets/meal_image.dart';
-import 'view_meal_controller.dart';
 import 'widgets/view_meal_food_list_tile.dart';
 
-class ViewMealScreen extends WatchingStatefulWidget {
+class ViewMealScreen extends WatchingWidget {
   final Meal passedMeal;
   final Function() onDeletePressed;
   final Function() onEditPressed;
@@ -35,35 +33,15 @@ class ViewMealScreen extends WatchingStatefulWidget {
   });
 
   @override
-  State<ViewMealScreen> createState() => _ViewMealScreenState();
-}
-
-class _ViewMealScreenState extends State<ViewMealScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    registerIfNotInitialized<ViewMealController>(
-      ViewMealController.new,
-    );
-  }
-
-  @override
-  void dispose() {
-    unRegisterIfNotDisposed<ViewMealController>();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final mealName = widget.passedMeal.name ?? widget.passedMeal.originalText ?? '--';
-    final createdAt = widget.passedMeal.createdAt;
+    final mealName = passedMeal.name ?? passedMeal.originalText ?? '--';
+    final createdAt = passedMeal.createdAt;
 
-    final emoji = widget.passedMeal.emoji;
-    final imageStoragePath = widget.passedMeal.imageStoragePath;
+    final emoji = passedMeal.emoji;
+    final imageStoragePath = passedMeal.imageStoragePath;
 
-    final nutrition = widget.passedMeal.nutrition;
-    final foods = widget.passedMeal.foods;
+    final nutrition = passedMeal.nutrition;
+    final foods = passedMeal.foods;
 
     final protein = nutrition?.protein ?? 0.0;
     final carbs = nutrition?.carbs ?? 0.0;
@@ -75,12 +53,12 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
 
     final totalBarWeight = proteinBarWeight + carbsBarWeight + fatBarWeight;
 
-    final hasError = widget.passedMeal.errors?.isNotEmpty ?? false;
+    final hasError = passedMeal.errors?.isNotEmpty ?? false;
 
     final primaryColor =
-        widget.passedMeal.color ??
+        passedMeal.color ??
         getCalorieValueColor(
-          nutrition: widget.passedMeal.nutrition,
+          nutrition: passedMeal.nutrition,
           context: context,
         );
 
@@ -228,7 +206,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     PopupMenuItem<VoidCallback>(
                                       value: () {
                                         Navigator.of(context).pop();
-                                        widget.onCopyPressed();
+                                        onCopyPressed();
                                       },
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -241,7 +219,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              'Copy',
+                                              'viewMealCopy'.tr(),
                                               style: TextStyle(
                                                 fontFamily: 'Epilogue',
                                                 fontSize: 16,
@@ -260,7 +238,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     PopupMenuItem<VoidCallback>(
                                       value: () {
                                         Navigator.of(context).pop();
-                                        widget.onEditPressed();
+                                        onEditPressed();
                                       },
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -273,7 +251,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              'Edit',
+                                              'viewMealEdit'.tr(),
                                               style: TextStyle(
                                                 fontFamily: 'Epilogue',
                                                 fontSize: 16,
@@ -292,7 +270,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                     PopupMenuItem<VoidCallback>(
                                       value: () {
                                         Navigator.of(context).pop();
-                                        widget.onDeletePressed();
+                                        onDeletePressed();
                                       },
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -305,7 +283,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              'Delete',
+                                              'viewMealDelete'.tr(),
                                               style: TextStyle(
                                                 fontFamily: 'Epilogue',
                                                 fontSize: 16,
@@ -499,7 +477,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                     ),
                   ],
                   child: Text(
-                    'Nutritional values',
+                    'viewMealNutritionalValuesTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
