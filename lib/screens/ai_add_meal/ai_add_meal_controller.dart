@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -258,7 +259,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
     context: context,
     builder: (context) => CalendarSheet(
       showConfirmButton: true,
-      subtitle: 'Day of new meal',
+      subtitle: 'aiAddMealCalendarSheetSubtitle'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
@@ -274,7 +275,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => TimeSheet(
-      subtitle: 'Time of new meal',
+      subtitle: 'aiAddMealTimeSheetSubtitle'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {

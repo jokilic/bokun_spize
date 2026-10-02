@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -126,8 +127,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 onPressed: () {},
                 icon: PhosphorIconsBold.personSimple,
                 iconBackgroundColor: context.colors.carbs,
-                title: 'User metrics',
-                subtitle: 'Height, weight, etc.',
+                title: 'accountUserMetricsTitle'.tr(),
+                subtitle: 'accountUserMetricsSubtitle'.tr(),
               ),
 
               ///
@@ -141,8 +142,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 icon: PhosphorIconsBold.palette,
                 iconBackgroundColor: context.colors.fat,
-                title: 'Theme',
-                subtitle: 'App-wide colors',
+                title: 'accountThemeTitle'.tr(),
+                subtitle: 'accountThemeSubtitle'.tr(),
               ),
 
               ///
@@ -155,8 +156,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 icon: PhosphorIconsBold.globeStand,
                 iconBackgroundColor: context.colors.protein,
-                title: 'Language',
-                subtitle: 'App-wide language',
+                title: 'accountLanguageTitle'.tr(),
+                subtitle: 'accountLanguageSubtitle'.tr(),
               ),
 
               ///
@@ -167,8 +168,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 onPressed: handleLogOut,
                 icon: PhosphorIconsBold.signOut,
                 iconBackgroundColor: context.colors.delete,
-                title: 'Logout',
-                subtitle: 'Sign out of the app',
+                title: 'accountLogoutTitle'.tr(),
+                subtitle: 'accountLogoutSubtitle'.tr(),
               ),
 
               ///
@@ -179,8 +180,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 onPressed: () {},
                 icon: PhosphorIconsBold.trash,
                 iconBackgroundColor: context.colors.delete,
-                title: 'Delete account',
-                subtitle: 'Remove your account',
+                title: 'accountDeleteAccountTitle'.tr(),
+                subtitle: 'accountDeleteAccountSubtitle'.tr(),
               ),
 
               ///

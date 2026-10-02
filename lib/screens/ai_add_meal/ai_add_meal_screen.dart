@@ -160,7 +160,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                       ///
                       Expanded(
                         child: Text(
-                          'Log meal',
+                          'aiAddMealTitle'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -220,7 +220,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     ),
                   ],
                   child: Text(
-                    'New meal in your journal',
+                    'aiAddMealSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -267,8 +267,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         controller: mealController.textEditingController,
                         focusNode: mealController.textFocusNode,
                         onChanged: (_) => mealController.stopSpeechToTextIfListening(),
-                        title: 'Describe your meal',
-                        hintText: 'What was it?',
+                        title: 'aiAddMealTextFieldTitle'.tr(),
+                        hintText: 'aiAddMealTextFieldHint'.tr(),
                         textColor: context.colors.text,
                       ),
 
@@ -494,7 +494,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Camera',
+                                  'aiAddMealCamera'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 14,
@@ -539,7 +539,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Gallery',
+                                  'aiAddMealGallery'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 14,
@@ -583,7 +583,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     ),
                   ],
                   child: Text(
-                    'Date & time',
+                    'aiAddMealDateTimeTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
@@ -650,7 +650,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'Date'.toUpperCase(),
+                                    'aiAddMealDate'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -749,7 +749,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'Time'.toUpperCase(),
+                                    'aiAddMealTime'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -854,8 +854,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
-                      child: const Text(
-                        'Log meal',
+                      child: Text(
+                        'aiAddMealButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

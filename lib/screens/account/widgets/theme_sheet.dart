@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -99,7 +100,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        'Theme',
+                        'accountThemeSheetTitle'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -159,7 +160,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: Text(
-                  'Choose app colors',
+                  'accountThemeSheetSubtitle'.tr(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -219,8 +220,8 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   isActive: selectedTheme == ThemeEnum.light,
                   color: context.colors.protein,
                   icon: PhosphorIconsBold.sun,
-                  title: 'Light theme',
-                  subtitle: 'Lightness in your life',
+                  title: 'accountThemeSheetLightThemeTitle'.tr(),
+                  subtitle: 'accountThemeSheetLightThemeSubtitle'.tr(),
                 ),
               ),
             ),
@@ -270,8 +271,8 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   isActive: selectedTheme == ThemeEnum.dark,
                   color: context.colors.carbs,
                   icon: PhosphorIconsBold.moon,
-                  title: 'Dark theme',
-                  subtitle: 'Darkness in your life',
+                  title: 'accountThemeSheetDarkThemeTitle'.tr(),
+                  subtitle: 'accountThemeSheetDarkThemeSubtitle'.tr(),
                 ),
               ),
             ),
@@ -321,8 +322,8 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   isActive: selectedTheme == ThemeEnum.system,
                   color: context.colors.fat,
                   icon: PhosphorIconsBold.deviceMobileCamera,
-                  title: 'System theme',
-                  subtitle: 'Theme from your phone',
+                  title: 'accountThemeSheetSystemThemeTitle'.tr(),
+                  subtitle: 'accountThemeSheetSystemThemeSubtitle'.tr(),
                 ),
               ),
             ),
@@ -371,8 +372,8 @@ class _ThemeSheetState extends State<ThemeSheet> {
                         backgroundColor: context.colors.protein,
                         foregroundColor: context.colors.buttonText,
                       ),
-                      child: const Text(
-                        'Confirm',
+                      child: Text(
+                        'accountThemeSheetButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

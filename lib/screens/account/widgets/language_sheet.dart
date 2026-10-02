@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -98,7 +99,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        'Language',
+                        'accountLanguageSheetTitle'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -158,7 +159,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
                   ),
                 ],
                 child: Text(
-                  'Choose app language',
+                  'accountLanguageSheetSubtitle'.tr(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -218,8 +219,8 @@ class _LanguageSheetState extends State<LanguageSheet> {
                   isActive: selectedLanguage.languageCode == 'hr',
                   color: selectedLanguage.languageCode == 'hr' ? context.colors.protein : context.colors.scaffoldBackground,
                   emojiIcon: '🇭🇷',
-                  title: 'Croatian',
-                  subtitle: 'Use croatian language',
+                  title: 'accountLanguageSheetCroatianTitle'.tr(),
+                  subtitle: 'accountLanguageSheetCroatianSubtitle'.tr(),
                 ),
               ),
             ),
@@ -269,8 +270,8 @@ class _LanguageSheetState extends State<LanguageSheet> {
                   isActive: selectedLanguage.languageCode == 'en',
                   color: selectedLanguage.languageCode == 'en' ? context.colors.protein : context.colors.scaffoldBackground,
                   emojiIcon: '🇬🇧',
-                  title: 'English',
-                  subtitle: 'Use english language',
+                  title: 'accountLanguageSheetEnglishTitle'.tr(),
+                  subtitle: 'accountLanguageSheetEnglishSubtitle'.tr(),
                 ),
               ),
             ),
@@ -319,8 +320,8 @@ class _LanguageSheetState extends State<LanguageSheet> {
                         backgroundColor: context.colors.protein,
                         foregroundColor: context.colors.buttonText,
                       ),
-                      child: const Text(
-                        'Confirm',
+                      child: Text(
+                        'accountLanguageSheetButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),
