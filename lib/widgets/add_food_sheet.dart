@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -203,7 +204,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       ///
                       Expanded(
                         child: Text(
-                          isEditingFood ? 'Edit food' : 'Add food',
+                          isEditingFood ? 'addFoodTitleEdit'.tr() : 'addFoodTitleAdd'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -263,7 +264,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     ),
                   ],
                   child: Text(
-                    isEditingFood ? 'Update food in your meal' : 'New food in your meal',
+                    isEditingFood ? 'addFoodSubtitleEdit'.tr() : 'addFoodSubtitleAdd'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -303,8 +304,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     controller: nameTextEditingController,
                     focusNode: nameFocusNode,
                     onSubmitted: (_) => quantityFocusNode.requestFocus(),
-                    title: 'Food name',
-                    hintText: 'What was it?',
+                    title: 'addFoodTextFieldTitleName'.tr(),
+                    hintText: 'addFoodTextFieldHintName'.tr(),
                     textColor: context.colors.text,
                     autocorrect: true,
                   ),
@@ -336,7 +337,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     ),
                   ],
                   child: Text(
-                    'Serving size',
+                    'addFoodServingTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
@@ -384,8 +385,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                           controller: quantityTextEditingController,
                           focusNode: quantityFocusNode,
                           onSubmitted: (_) => unitFocusNode.requestFocus(),
-                          title: 'Quantity',
-                          hintText: '0',
+                          title: 'addFoodTextFieldTitleQuantity'.tr(),
+                          hintText: 'addFoodTextFieldHintQuantity'.tr(),
                           textColor: context.colors.text,
                           keyboardType: TextInputType.number,
                         ),
@@ -400,8 +401,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                           controller: unitTextEditingController,
                           focusNode: unitFocusNode,
                           onSubmitted: (_) => caloriesFocusNode.requestFocus(),
-                          title: 'Unit',
-                          hintText: 'grams',
+                          title: 'addFoodTextFieldTitleUnit'.tr(),
+                          hintText: 'addFoodTextFieldHintUnit'.tr(),
                           textColor: context.colors.text,
                           textCapitalization: TextCapitalization.none,
                         ),
@@ -436,7 +437,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     ),
                   ],
                   child: Text(
-                    'Nutritional values',
+                    'addFoodNutritionalValuesTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
@@ -476,9 +477,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     controller: caloriesTextEditingController,
                     focusNode: caloriesFocusNode,
                     onSubmitted: (_) => proteinFocusNode.requestFocus(),
-                    title: 'Calories',
-                    hintText: '0',
-                    rightText: 'kcal',
+                    title: 'addFoodTextFieldTitleCalories'.tr(),
+                    hintText: 'addFoodTextFieldHintCalories'.tr(),
+                    rightText: 'addFoodTextFieldRightTextCalories'.tr(),
                     textColor: context.colors.protein,
                     keyboardType: TextInputType.number,
                   ),
@@ -520,9 +521,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                           controller: proteinTextEditingController,
                           focusNode: proteinFocusNode,
                           onSubmitted: (_) => carbsFocusNode.requestFocus(),
-                          title: 'Protein',
-                          hintText: '0',
-                          rightText: 'g',
+                          title: 'addFoodTextFieldTitleProtein'.tr(),
+                          hintText: 'addFoodTextFieldHintProtein'.tr(),
+                          rightText: 'addFoodTextFieldRightTextProtein'.tr(),
                           textColor: context.colors.protein,
                           keyboardType: TextInputType.number,
                         ),
@@ -536,9 +537,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                           controller: carbsTextEditingController,
                           focusNode: carbsFocusNode,
                           onSubmitted: (_) => fatsFocusNode.requestFocus(),
-                          title: 'Carbs',
-                          hintText: '0',
-                          rightText: 'g',
+                          title: 'addFoodTextFieldTitleCarbs'.tr(),
+                          hintText: 'addFoodTextFieldHintCarbs'.tr(),
+                          rightText: 'addFoodTextFieldRightTextCarbs'.tr(),
                           textColor: context.colors.carbs,
                           keyboardType: TextInputType.number,
                         ),
@@ -551,9 +552,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                         child: TextFieldWidget(
                           controller: fatsTextEditingController,
                           focusNode: fatsFocusNode,
-                          title: 'Fats',
-                          hintText: '0',
-                          rightText: 'g',
+                          title: 'addFoodTextFieldTitleFats'.tr(),
+                          hintText: 'addFoodTextFieldHintFats'.tr(),
+                          rightText: 'addFoodTextFieldRightTextFats'.tr(),
                           textColor: context.colors.fat,
                           keyboardType: TextInputType.number,
                         ),
@@ -634,7 +635,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        isEditingFood ? 'Save changes' : 'Add to meal',
+                        isEditingFood ? 'addFoodButtonEdit'.tr() : 'addFoodButtonAdd'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),
