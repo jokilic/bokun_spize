@@ -578,7 +578,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// TITLE
                             ///
                             Text(
-                              'mealsAppBarProtein'.tr().toUpperCase(),
+                              'protein'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 8,
@@ -634,7 +634,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// TITLE
                             ///
                             Text(
-                              'mealsAppBarCarbs'.tr().toUpperCase(),
+                              'carbs'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 8,
@@ -690,7 +690,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             /// TITLE
                             ///
                             Text(
-                              'mealsAppBarFats'.tr().toUpperCase(),
+                              'fats'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 8,

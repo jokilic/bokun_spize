@@ -553,7 +553,7 @@ class ViewMealScreen extends WatchingWidget {
                             Transform.translate(
                               offset: const Offset(0, 8),
                               child: Text(
-                                'kcal',
+                                'caloriesUnit'.tr(),
                                 style: TextStyle(
                                   fontFamily: 'Epilogue',
                                   fontSize: 12 * 1.5,
@@ -647,7 +647,7 @@ class ViewMealScreen extends WatchingWidget {
                                       /// TITLE
                                       ///
                                       Text(
-                                        'Protein'.toUpperCase(),
+                                        'protein'.tr().toUpperCase(),
                                         style: TextStyle(
                                           fontFamily: 'PlusJakartaSans',
                                           fontSize: 8 * 1.5,
@@ -703,7 +703,7 @@ class ViewMealScreen extends WatchingWidget {
                                       /// TITLE
                                       ///
                                       Text(
-                                        'Carbs'.toUpperCase(),
+                                        'carbs'.tr().toUpperCase(),
                                         style: TextStyle(
                                           fontFamily: 'PlusJakartaSans',
                                           fontSize: 8 * 1.5,
@@ -759,7 +759,7 @@ class ViewMealScreen extends WatchingWidget {
                                       /// TITLE
                                       ///
                                       Text(
-                                        'Fats'.toUpperCase(),
+                                        'fats'.tr().toUpperCase(),
                                         style: TextStyle(
                                           fontFamily: 'PlusJakartaSans',
                                           fontSize: 8 * 1.5,
@@ -825,7 +825,7 @@ class ViewMealScreen extends WatchingWidget {
                       ),
                     ],
                     child: Text(
-                      'Foods',
+                      'viewMealFoodsTitle'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 18,
@@ -902,7 +902,7 @@ class ViewMealScreen extends WatchingWidget {
     return AnimatedDigitWidget(
       value: num.parse(formattedValue),
       fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
-      suffix: 'g',
+      suffix: 'gramUnit'.tr(),
       loop: false,
       duration: BokunSpizeDurations.animation,
       curve: Curves.easeIn,

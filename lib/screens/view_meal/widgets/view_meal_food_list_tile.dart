@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -132,7 +133,7 @@ class ViewMealFoodListTile extends StatelessWidget {
                               text: food.nutrition.protein > 0
                                   ? '${formatNutritionValue(
                                       food.nutrition.protein,
-                                    )}g'
+                                    )}${'gramUnit'.tr()}'
                                   : null,
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
@@ -149,7 +150,7 @@ class ViewMealFoodListTile extends StatelessWidget {
                                   text: food.nutrition.carbs > 0
                                       ? '${formatNutritionValue(
                                           food.nutrition.carbs,
-                                        )}g'
+                                        )}${'gramUnit'.tr()}'
                                       : null,
                                   style: TextStyle(
                                     fontFamily: 'PlusJakartaSans',
@@ -166,7 +167,7 @@ class ViewMealFoodListTile extends StatelessWidget {
                                   text: food.nutrition.fat > 0
                                       ? '${formatNutritionValue(
                                           food.nutrition.fat,
-                                        )}g'
+                                        )}${'gramUnit'.tr()}'
                                       : null,
                                   style: TextStyle(
                                     fontFamily: 'PlusJakartaSans',
@@ -215,7 +216,7 @@ class ViewMealFoodListTile extends StatelessWidget {
                         /// CALORIES UNIT
                         ///
                         Text(
-                          'kcal'.toUpperCase(),
+                          'caloriesUnit'.tr().toUpperCase(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 12,

@@ -171,7 +171,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                 text: food.nutrition.protein > 0
                                     ? '${formatNutritionValue(
                                         food.nutrition.protein,
-                                      )}g'
+                                      )}${'gramUnit'.tr()}'
                                     : null,
                                 style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
@@ -188,7 +188,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                     text: food.nutrition.carbs > 0
                                         ? '${formatNutritionValue(
                                             food.nutrition.carbs,
-                                          )}g'
+                                          )}${'gramUnit'.tr()}'
                                         : null,
                                     style: TextStyle(
                                       fontFamily: 'PlusJakartaSans',
@@ -205,7 +205,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                     text: food.nutrition.fat > 0
                                         ? '${formatNutritionValue(
                                             food.nutrition.fat,
-                                          )}g'
+                                          )}${'gramUnit'.tr()}'
                                         : null,
                                     style: TextStyle(
                                       fontFamily: 'PlusJakartaSans',
