@@ -142,7 +142,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 icon: PhosphorIconsBold.palette,
                 iconBackgroundColor: context.colors.fat,
-                title: 'accountThemeTitle'.tr(),
+                title: 'theme'.tr(),
                 subtitle: 'accountThemeSubtitle'.tr(),
               ),
 
@@ -156,7 +156,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 icon: PhosphorIconsBold.globeStand,
                 iconBackgroundColor: context.colors.protein,
-                title: 'accountLanguageTitle'.tr(),
+                title: 'language'.tr(),
                 subtitle: 'accountLanguageSubtitle'.tr(),
               ),
 

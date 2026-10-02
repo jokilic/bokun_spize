@@ -128,7 +128,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
               currentlyVisibleDate: null,
               meals: const [],
               isLoading: false,
-              error: 'mealsErrorCouldNotBeLoaded'.tr(),
+              error: 'mealsCouldNotBeLoaded'.tr(),
             );
           },
         );
@@ -152,7 +152,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'mealsErrorDeleteFailed'.tr(),
+        text: 'deleteFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

@@ -131,7 +131,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'weightsErrorDeleteFailed'.tr(),
+        text: 'deleteFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

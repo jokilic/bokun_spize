@@ -249,7 +249,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         query: query,
         meals: const [],
         isLoading: false,
-        error: 'searchErrorMealsCouldNotBeLoaded'.tr(),
+        error: 'mealsCouldNotBeLoaded'.tr(),
       );
     }
   }

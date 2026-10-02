@@ -99,7 +99,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        'accountLanguageSheetTitle'.tr(),
+                        'language'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,

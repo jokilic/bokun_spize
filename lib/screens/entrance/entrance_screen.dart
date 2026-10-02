@@ -594,7 +594,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                 ),
                                 TextSpan(
                                   recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
-                                  text: showLogin ? 'entranceCreateAnAccount'.tr() : 'entranceSignIn'.tr(),
+                                  text: showLogin ? 'entranceCreateAnAccount'.tr() : 'signIn'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 16,

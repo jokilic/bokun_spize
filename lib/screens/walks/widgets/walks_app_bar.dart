@@ -71,7 +71,7 @@ class WalksAppBar extends StatelessWidget {
               child: IconButton(
                 onPressed: () {},
                 icon: Text(
-                  'walksAppBarTitle'.tr(),
+                  'walks'.tr(),
                   style: TextStyle(
                     fontFamily: 'PlusJakartaSans',
                     fontSize: 18,
@@ -326,7 +326,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         Transform.translate(
                           offset: const Offset(0, 6),
                           child: Text(
-                            'walksAppBarUnit'.tr(),
+                            'steps'.tr(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 12,

@@ -100,7 +100,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        'accountThemeSheetTitle'.tr(),
+                        'theme'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,

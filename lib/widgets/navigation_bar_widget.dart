@@ -92,7 +92,7 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'navigationBarWeights'.tr().toUpperCase(),
+                  'weights'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -131,7 +131,7 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'navigationBarWalks'.tr().toUpperCase(),
+                  'walks'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -182,7 +182,7 @@ class NavigationBarWidget extends WatchingWidget {
                   ),
                 const SizedBox(height: 8),
                 Text(
-                  'navigationBarAccount'.tr().toUpperCase(),
+                  'account'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,

@@ -909,7 +909,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ),
                     ],
                     child: Text(
-                      'manualAddMealFoodsTitle'.tr(),
+                      'foods'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 18,
@@ -1068,7 +1068,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ],
                   child: Text(
-                    'manualAddMealDateTimeTitle'.tr(),
+                    'dateTime'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
@@ -1355,7 +1355,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        isEditingMeal ? 'manualAddMealEditButton'.tr() : 'logMeal'.tr(),
+                        isEditingMeal ? 'saveChanges'.tr() : 'logMeal'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

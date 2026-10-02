@@ -84,7 +84,7 @@ class AccountAppBar extends StatelessWidget {
               child: IconButton(
                 onPressed: () {},
                 icon: Text(
-                  'accountAppBarTitle'.tr(),
+                  'account'.tr(),
                   style: TextStyle(
                     fontFamily: 'PlusJakartaSans',
                     fontSize: 18,

@@ -71,7 +71,7 @@ class WeightsAppBar extends StatelessWidget {
               child: IconButton(
                 onPressed: () {},
                 icon: Text(
-                  'weightsAppBarTitle'.tr(),
+                  'weights'.tr(),
                   style: TextStyle(
                     fontFamily: 'PlusJakartaSans',
                     fontSize: 18,

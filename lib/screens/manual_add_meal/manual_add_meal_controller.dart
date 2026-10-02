@@ -395,7 +395,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
     context: context,
     builder: (context) => CalendarSheet(
       showConfirmButton: true,
-      subtitle: passedMeal != null && !isCopyingMeal ? 'manualAddMealCalendarSheetEditSubtitle'.tr() : 'manualAddMealCalendarSheetSubtitle'.tr(),
+      subtitle: passedMeal != null && !isCopyingMeal ? 'manualAddMealCalendarSheetEditSubtitle'.tr() : 'dayOfNewMeal'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
@@ -411,7 +411,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => TimeSheet(
-      subtitle: passedMeal != null && !isCopyingMeal ? 'manualAddMealTimeSheetEditSubtitle'.tr() : 'manualAddMealTimeSheetSubtitle'.tr(),
+      subtitle: passedMeal != null && !isCopyingMeal ? 'manualAddMealTimeSheetEditSubtitle'.tr() : 'timeOfNewMeal'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {

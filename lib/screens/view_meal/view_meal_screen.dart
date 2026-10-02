@@ -251,7 +251,7 @@ class ViewMealScreen extends WatchingWidget {
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              'viewMealEdit'.tr(),
+                                              'edit'.tr(),
                                               style: TextStyle(
                                                 fontFamily: 'Epilogue',
                                                 fontSize: 16,
@@ -825,7 +825,7 @@ class ViewMealScreen extends WatchingWidget {
                       ),
                     ],
                     child: Text(
-                      'viewMealFoodsTitle'.tr(),
+                      'foods'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 18,

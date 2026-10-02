@@ -259,7 +259,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
     context: context,
     builder: (context) => CalendarSheet(
       showConfirmButton: true,
-      subtitle: 'aiAddMealCalendarSheetSubtitle'.tr(),
+      subtitle: 'dayOfNewMeal'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealDate,
       onDateChanged: (newDate) {
@@ -275,7 +275,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => TimeSheet(
-      subtitle: 'aiAddMealTimeSheetSubtitle'.tr(),
+      subtitle: 'timeOfNewMeal'.tr(),
       primaryColor: context.colors.protein,
       dateValue: value.mealTime,
       onTimeChanged: (newTime) {

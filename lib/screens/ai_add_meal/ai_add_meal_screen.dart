@@ -583,7 +583,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                     ),
                   ],
                   child: Text(
-                    'aiAddMealDateTimeTitle'.tr(),
+                    'dateTime'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,

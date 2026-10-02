@@ -40,8 +40,8 @@ class EntranceLogin extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: TextFieldWidget(
           controller: emailTextEditingController,
-          title: 'entranceLoginEmailTitle'.tr(),
-          hintText: 'entranceLoginEmailHint'.tr(),
+          title: 'emailAddress'.tr(),
+          hintText: 'emailHint'.tr(),
           onSubmitted: (_) => passwordFocusNode.requestFocus(),
           textColor: context.colors.text,
           autofillHints: const [AutofillHints.email],
@@ -66,7 +66,7 @@ class EntranceLogin extends StatelessWidget {
               obscureText: true,
               controller: passwordTextEditingController,
               focusNode: passwordFocusNode,
-              title: 'entranceLoginPasswordTitle'.tr(),
+              title: 'password'.tr(),
               hintText: '•' * 8,
               onSubmitted: (_) {
                 if (!validated || emailIsLoading) {
@@ -158,7 +158,7 @@ class EntranceLogin extends StatelessWidget {
               disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
             ),
             child: Text(
-              'entranceLoginButton'.tr(),
+              'signIn'.tr(),
               textAlign: TextAlign.center,
             ),
           ),
