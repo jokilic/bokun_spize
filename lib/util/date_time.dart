@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:intl/intl.dart';
 
 /// Rounds a date and time up to the next five-minute interval
@@ -28,15 +29,15 @@ String getDateString({
 
   if (useTodayYesterdayTomorrow) {
     if (dayDifference == 0) {
-      return 'Today';
+      return 'today'.tr();
     }
 
     if (dayDifference == -1) {
-      return 'Yesterday';
+      return 'yesterday'.tr();
     }
 
     if (dayDifference == 1) {
-      return 'Tomorrow';
+      return 'tomorrow'.tr();
     }
   }
 

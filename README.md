@@ -15,6 +15,7 @@
         - [ ] Version
 
 ### Firebase
+    - [ ] Use `webp` instead of `jpg` for images
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Perhaps anonymous sign-in
@@ -25,6 +26,7 @@
 
 ### Localization
     - [ ] Localize `Strings`
+    - [ ] Check all `log` and think if they should show as snackbars
 
 # Bokun spize 🥗
 

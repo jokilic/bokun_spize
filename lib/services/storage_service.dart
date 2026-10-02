@@ -21,7 +21,7 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
            walksCalendarDays: defaultCalendarDays,
          ),
          settingsValues: (
-           theme: ThemeEnum.system,
+           theme: defaultTheme,
          ),
        ));
 
@@ -63,7 +63,6 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
   ///
 
   static const defaultCalendarDays = 7;
-
   static const defaultTheme = ThemeEnum.system;
 
   static const weightsCalendarDaysKey = 'weightsCalendarDays';

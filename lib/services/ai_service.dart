@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,7 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
 
   String? initializedLanguageCode;
 
+  // TODO: Check how to remotely get these values (from my root Firestore or similar)
   final modelNames = [
     'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
@@ -56,6 +58,7 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   /// Builds meal extraction instructions for the requested language
+  // TODO: Check how to remotely get this value (from my root Firestore or similar)
   String getSystemInstruction({required String languageCode}) =>
       '''
 You will receive text and / or image describing what the user ate.
@@ -328,7 +331,7 @@ JSON structure to follow strictly:
 
     /// Text and image don't exist, return
     if (textPart == null && imagePart == null) {
-      errors.add('No text and image');
+      errors.add('aiErrorNoTextImage'.tr());
       return (
         aiResult: null,
         errors: errors,
@@ -351,7 +354,7 @@ JSON structure to follow strictly:
     ];
 
     if (value.isEmpty) {
-      errors.add('No available models');
+      errors.add('aiErrorNoModels'.tr());
 
       return (
         aiResult: null,
@@ -366,14 +369,24 @@ JSON structure to follow strictly:
         final result = response.text;
 
         if (result == null) {
-          errors.add("Model ${model.model.name} didn't find a result");
+          errors.add(
+            'aiErrorModelNoResult'.tr(
+              args: [model.model.name],
+            ),
+          );
           continue;
         }
 
         aiResult = result;
         break;
       } catch (e) {
-        final error = e.toString().contains('quota') ? 'Quota of model ${model.model.name} is exceeded, try later' : 'Error with model ${model.model.name}: $e';
+        final error = e.toString().contains('quota')
+            ? 'aiErrorModelQuota'.tr(
+                args: [model.model.name],
+              )
+            : 'aiErrorModelError'.tr(
+                args: [model.model.name, '$e'],
+              );
         errors.add(error);
       }
     }

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -107,16 +108,19 @@ class FirebaseService {
         password: password,
       );
 
-      return (user: user.user, error: null);
+      return (
+        user: user.user,
+        error: null,
+      );
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
-        'invalid-email' => 'errorEmailInvalid',
-        'user-disabled' => 'errorAccountDisabled',
-        'user-not-found' => 'errorUserNotFound',
-        'wrong-password' => 'errorPasswordWrong',
-        'invalid-credential' => 'errorInvalidCredential',
-        'too-many-requests' => 'errorTooManyRequests',
-        'operation-not-allowed' => 'errorOperationNotAllowed',
+        'invalid-email' => 'firebaseErrorEmailInvalid'.tr(),
+        'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
+        'user-not-found' => 'firebaseErrorUserNotFound'.tr(),
+        'wrong-password' => 'firebaseErrorPasswordWrong'.tr(),
+        'invalid-credential' => 'firebaseErrorInvalidCredential'.tr(),
+        'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
+        'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         _ => error.code,
       };
 
@@ -124,13 +128,21 @@ class FirebaseService {
         'Email sign in failed',
         error: error,
       );
-      return (user: null, error: errorMessage);
+      return (
+        user: null,
+        error: errorMessage,
+      );
     } catch (error) {
       log(
         'Email sign in failed',
         error: error,
       );
-      return (user: null, error: 'Login error $error');
+      return (
+        user: null,
+        error: 'firebaseErrorLoginError'.tr(
+          args: ['$error'],
+        ),
+      );
     }
   }
 
@@ -141,14 +153,17 @@ class FirebaseService {
     try {
       await auth.sendPasswordResetEmail(email: email);
 
-      return (success: true, error: null);
+      return (
+        success: true,
+        error: null,
+      );
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
-        'invalid-email' => 'errorEmailInvalid',
-        'user-disabled' => 'errorAccountDisabled',
-        'user-not-found' => 'errorUserNotFound',
-        'too-many-requests' => 'errorTooManyRequests',
-        'operation-not-allowed' => 'errorOperationNotAllowed',
+        'invalid-email' => 'firebaseErrorEmailInvalid'.tr(),
+        'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
+        'user-not-found' => 'firebaseErrorUserNotFound'.tr(),
+        'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
+        'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         _ => error.code,
       };
 
@@ -156,13 +171,21 @@ class FirebaseService {
         'Password reset email failed',
         error: error,
       );
-      return (success: false, error: errorMessage);
+      return (
+        success: false,
+        error: errorMessage,
+      );
     } catch (error) {
       log(
         'Password reset email failed',
         error: error,
       );
-      return (success: false, error: 'Password reset error $error');
+      return (
+        success: false,
+        error: 'firebaseErrorPasswordResetError'.tr(
+          args: ['$error'],
+        ),
+      );
     }
   }
 
@@ -172,7 +195,10 @@ class FirebaseService {
       await googleSignIn.initialize();
 
       if (!googleSignIn.supportsAuthenticate()) {
-        return (user: null, error: 'errorOperationNotAllowed');
+        return (
+          user: null,
+          error: 'firebaseErrorOperationNotAllowed'.tr(),
+        );
       }
 
       final user = await googleSignIn.authenticate();
@@ -180,7 +206,10 @@ class FirebaseService {
       final idToken = googleAuth.idToken;
 
       if (idToken == null || idToken.isEmpty) {
-        return (user: null, error: 'errorInvalidCredential');
+        return (
+          user: null,
+          error: 'firebaseErrorInvalidCredential'.tr(),
+        );
       }
 
       final credential = GoogleAuthProvider.credential(
@@ -194,30 +223,36 @@ class FirebaseService {
         providerName: user.displayName,
       );
 
-      return (user: userCredential.user, error: null);
+      return (
+        user: userCredential.user,
+        error: null,
+      );
     } on GoogleSignInException catch (error) {
       final errorMessage = switch (error.code) {
-        GoogleSignInExceptionCode.unknownError => 'errorUnknown',
-        GoogleSignInExceptionCode.canceled => 'errorGoogleCanceled',
-        GoogleSignInExceptionCode.interrupted => 'errorGoogleInterrupted',
-        GoogleSignInExceptionCode.clientConfigurationError => 'errorGoogleClientConfigurationError',
-        GoogleSignInExceptionCode.providerConfigurationError => 'errorGoogleProviderConfigurationError',
-        GoogleSignInExceptionCode.uiUnavailable => 'errorGoogleUIUnavailable',
-        GoogleSignInExceptionCode.userMismatch => 'errorGoogleUserMismatch',
+        GoogleSignInExceptionCode.unknownError => 'firebaseGoogleErrorUnknown'.tr(),
+        GoogleSignInExceptionCode.canceled => 'firebaseGoogleErrorCanceled'.tr(),
+        GoogleSignInExceptionCode.interrupted => 'firebaseGoogleErrorInterrupted'.tr(),
+        GoogleSignInExceptionCode.clientConfigurationError => 'firebaseGoogleErrorClientConfigurationError'.tr(),
+        GoogleSignInExceptionCode.providerConfigurationError => 'firebaseGoogleErrorProviderConfigurationError'.tr(),
+        GoogleSignInExceptionCode.uiUnavailable => 'firebaseGoogleErrorUIUnavailable'.tr(),
+        GoogleSignInExceptionCode.userMismatch => 'firebaseGoogleErrorUserMismatch'.tr(),
       };
 
       log(
         'Google sign in failed',
         error: error,
       );
-      return (user: null, error: errorMessage);
+      return (
+        user: null,
+        error: errorMessage,
+      );
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
-        'account-exists-with-different-credential' => 'errorInvalidCredential',
-        'invalid-credential' => 'errorInvalidCredential',
-        'user-disabled' => 'errorAccountDisabled',
-        'operation-not-allowed' => 'errorOperationNotAllowed',
-        'too-many-requests' => 'errorTooManyRequests',
+        'account-exists-with-different-credential' => 'firebaseErrorAccountExistsWithDifferentCredential'.tr(),
+        'invalid-credential' => 'firebaseErrorInvalidCredential'.tr(),
+        'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
+        'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
+        'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         _ => error.code,
       };
 
@@ -231,7 +266,12 @@ class FirebaseService {
         'Google sign in failed',
         error: error,
       );
-      return (user: null, error: 'Google sign-in error $error');
+      return (
+        user: null,
+        error: 'firebaseGoogleErrorLoginError'.tr(
+          args: ['$error'],
+        ),
+      );
     }
   }
 
@@ -246,7 +286,10 @@ class FirebaseService {
       );
 
       if (credential.identityToken == null || credential.identityToken!.isEmpty) {
-        return (user: null, error: 'errorInvalidCredential');
+        return (
+          user: null,
+          error: 'firebaseErrorInvalidCredential'.tr(),
+        );
       }
 
       final oauthCredential = OAuthProvider('apple.com').credential(
@@ -275,18 +318,21 @@ class FirebaseService {
         providerName: appleName,
       );
 
-      return (user: userCredential.user, error: null);
+      return (
+        user: userCredential.user,
+        error: null,
+      );
     } on SignInWithAppleAuthorizationException catch (error) {
       final errorMessage = switch (error.code) {
-        AuthorizationErrorCode.canceled => 'errorAppleCanceled',
-        AuthorizationErrorCode.failed => 'errorAppleFailed',
-        AuthorizationErrorCode.invalidResponse => 'errorAppleInvalidResponse',
-        AuthorizationErrorCode.notHandled => 'errorAppleNotHandled',
-        AuthorizationErrorCode.notInteractive => 'errorAppleNotInteractive',
-        AuthorizationErrorCode.unknown => 'errorUnknown',
-        AuthorizationErrorCode.credentialExport => 'errorAppleCredentialExport',
-        AuthorizationErrorCode.credentialImport => 'errorAppleCredentialImport',
-        AuthorizationErrorCode.matchedExcludedCredential => 'errorAppleMatchedExcludedCredential',
+        AuthorizationErrorCode.canceled => 'firebaseAppleErrorCanceled'.tr(),
+        AuthorizationErrorCode.failed => 'firebaseAppleErrorFailed'.tr(),
+        AuthorizationErrorCode.invalidResponse => 'firebaseAppleErrorInvalidResponse'.tr(),
+        AuthorizationErrorCode.notHandled => 'firebaseAppleErrorNotHandled'.tr(),
+        AuthorizationErrorCode.notInteractive => 'firebaseAppleErrorNotInteractive'.tr(),
+        AuthorizationErrorCode.unknown => 'firebaseAppleErrorUnknown'.tr(),
+        AuthorizationErrorCode.credentialExport => 'firebaseAppleErrorCredentialExport'.tr(),
+        AuthorizationErrorCode.credentialImport => 'firebaseAppleErrorCredentialImport'.tr(),
+        AuthorizationErrorCode.matchedExcludedCredential => 'firebaseAppleErrorMatchedExcludedCredential'.tr(),
       };
 
       log(
@@ -296,11 +342,11 @@ class FirebaseService {
       return (user: null, error: errorMessage);
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
-        'account-exists-with-different-credential' => 'errorInvalidCredential',
-        'invalid-credential' => 'errorInvalidCredential',
-        'user-disabled' => 'errorAccountDisabled',
-        'operation-not-allowed' => 'errorOperationNotAllowed',
-        'too-many-requests' => 'errorTooManyRequests',
+        'account-exists-with-different-credential' => 'firebaseErrorAccountExistsWithDifferentCredential'.tr(),
+        'invalid-credential' => 'firebaseErrorInvalidCredential'.tr(),
+        'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
+        'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
+        'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         _ => error.code,
       };
 
@@ -308,13 +354,21 @@ class FirebaseService {
         'Apple sign in failed',
         error: error,
       );
-      return (user: null, error: errorMessage);
+      return (
+        user: null,
+        error: errorMessage,
+      );
     } catch (error) {
       log(
         'Apple sign in failed',
         error: error,
       );
-      return (user: null, error: 'Apple sign-in error $error');
+      return (
+        user: null,
+        error: 'firebaseAppleErrorLoginError'.tr(
+          args: ['$error'],
+        ),
+      );
     }
   }
 
@@ -323,11 +377,14 @@ class FirebaseService {
     try {
       final userCredential = await auth.signInAnonymously();
 
-      return (user: userCredential.user, error: null);
+      return (
+        user: userCredential.user,
+        error: null,
+      );
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
-        'operation-not-allowed' => 'errorOperationNotAllowed',
-        'too-many-requests' => 'errorTooManyRequests',
+        'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
+        'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         _ => error.code,
       };
 
@@ -335,13 +392,21 @@ class FirebaseService {
         'Anonymous sign in failed',
         error: error,
       );
-      return (user: null, error: errorMessage);
+      return (
+        user: null,
+        error: errorMessage,
+      );
     } catch (error) {
       log(
         'Anonymous sign in failed',
         error: error,
       );
-      return (user: null, error: 'Anonymous sign-in error $error');
+      return (
+        user: null,
+        error: 'firebaseAnonymousErrorLoginError'.tr(
+          args: ['$error'],
+        ),
+      );
     }
   }
 
@@ -360,7 +425,10 @@ class FirebaseService {
       final user = userCredential.user;
 
       if (user == null) {
-        return (user: null, error: 'errorUnknown');
+        return (
+          user: null,
+          error: 'firebaseErrorUserNull'.tr(),
+        );
       }
 
       await saveProviderUserName(
@@ -368,14 +436,17 @@ class FirebaseService {
         providerName: name,
       );
 
-      return (user: user, error: null);
+      return (
+        user: user,
+        error: null,
+      );
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
-        'email-already-in-use' => 'errorEmailInUse',
-        'invalid-email' => 'errorEmailInvalid',
-        'operation-not-allowed' => 'errorOperationNotAllowed',
-        'weak-password' => 'errorWeakPassword',
-        'too-many-requests' => 'errorTooManyRequests',
+        'email-already-in-use' => 'firebaseErrorEmailAlreadyInUse'.tr(),
+        'invalid-email' => 'firebaseErrorEmailInvalid'.tr(),
+        'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
+        'weak-password' => 'firebaseErrorWeakPassword'.tr(),
+        'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         _ => error.code,
       };
 
@@ -383,13 +454,21 @@ class FirebaseService {
         'Email registration failed',
         error: error,
       );
-      return (user: null, error: errorMessage);
+      return (
+        user: null,
+        error: errorMessage,
+      );
     } catch (error) {
       log(
         'Email registration failed',
         error: error,
       );
-      return (user: null, error: 'Register error $error');
+      return (
+        user: null,
+        error: 'firebaseErrorRegisterError'.tr(
+          args: ['$error'],
+        ),
+      );
     }
   }
 
