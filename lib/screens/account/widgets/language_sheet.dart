@@ -11,10 +11,12 @@ import 'account_sheet_list_tile.dart';
 class LanguageSheet extends StatefulWidget {
   final Locale initialLanguage;
   final Function(Locale newLocale) onLanguageChanged;
+  final bool showConfirmButton;
 
   const LanguageSheet({
     required this.initialLanguage,
     required this.onLanguageChanged,
+    required this.showConfirmButton,
   });
 
   @override
@@ -203,9 +205,16 @@ class _LanguageSheetState extends State<LanguageSheet> {
                   ),
                 ],
                 child: AccountSheetListTile(
-                  onPressed: () => updateLanguage(
-                    const Locale('hr'),
-                  ),
+                  onPressed: () {
+                    updateLanguage(
+                      const Locale('hr'),
+                    );
+
+                    if (!widget.showConfirmButton) {
+                      widget.onLanguageChanged(selectedLanguage);
+                      Navigator.of(context).pop();
+                    }
+                  },
                   isActive: selectedLanguage.languageCode == 'hr',
                   color: selectedLanguage.languageCode == 'hr' ? context.colors.protein : context.colors.scaffoldBackground,
                   emojiIcon: '🇭🇷',
@@ -247,9 +256,16 @@ class _LanguageSheetState extends State<LanguageSheet> {
                   ),
                 ],
                 child: AccountSheetListTile(
-                  onPressed: () => updateLanguage(
-                    const Locale('en'),
-                  ),
+                  onPressed: () {
+                    updateLanguage(
+                      const Locale('en'),
+                    );
+
+                    if (!widget.showConfirmButton) {
+                      widget.onLanguageChanged(selectedLanguage);
+                      Navigator.of(context).pop();
+                    }
+                  },
                   isActive: selectedLanguage.languageCode == 'en',
                   color: selectedLanguage.languageCode == 'en' ? context.colors.protein : context.colors.scaffoldBackground,
                   emojiIcon: '🇬🇧',
@@ -259,58 +275,60 @@ class _LanguageSheetState extends State<LanguageSheet> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
 
           ///
           /// SAVE BUTTON
           ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 14),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onLanguageChanged(selectedLanguage);
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      padding: const EdgeInsets.all(22),
-                      backgroundColor: context.colors.protein,
-                      foregroundColor: context.colors.buttonText,
+          if (widget.showConfirmButton) ...[
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
                     ),
-                    child: const Text(
-                      'Confirm',
-                      textAlign: TextAlign.center,
+                    MoveEffect(
+                      begin: Offset(0, 14),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        widget.onLanguageChanged(selectedLanguage);
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        padding: const EdgeInsets.all(22),
+                        backgroundColor: context.colors.protein,
+                        foregroundColor: context.colors.buttonText,
+                      ),
+                      child: const Text(
+                        'Confirm',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
 
           ///
           /// BOTTOM SPACING

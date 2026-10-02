@@ -257,6 +257,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => CalendarSheet(
+      showConfirmButton: true,
       subtitle: 'Day of new meal',
       primaryColor: context.colors.protein,
       dateValue: value.mealDate,

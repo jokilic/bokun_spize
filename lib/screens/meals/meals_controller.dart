@@ -161,6 +161,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => CalendarSheet(
+      showConfirmButton: false,
       subtitle: 'View your activity and progress',
       primaryColor: context.colors.protein,
       dateValue: value.requestedDate,
@@ -168,7 +169,6 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         HapticFeedback.lightImpact();
         updateDate(newDate);
       },
-      showConfirmButton: false,
     ),
   );
 

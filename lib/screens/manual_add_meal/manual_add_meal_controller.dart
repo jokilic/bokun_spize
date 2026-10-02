@@ -393,6 +393,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => CalendarSheet(
+      showConfirmButton: true,
       subtitle: passedMeal != null && !isCopyingMeal ? 'Day of meal' : 'Day of new meal',
       primaryColor: context.colors.protein,
       dateValue: value.mealDate,

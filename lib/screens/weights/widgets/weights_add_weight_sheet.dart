@@ -91,6 +91,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => CalendarSheet(
+      showConfirmButton: true,
       subtitle: 'Day of new weight',
       primaryColor: context.colors.carbs,
       dateValue: selectedDateTime,

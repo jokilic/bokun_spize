@@ -13,15 +13,15 @@ class CalendarSheet extends StatefulWidget {
   final Color primaryColor;
   final DateTime dateValue;
   final Function(DateTime newDate) onDateChanged;
-  final bool showConfirmButton;
   final String subtitle;
+  final bool showConfirmButton;
 
   const CalendarSheet({
     required this.primaryColor,
     required this.dateValue,
     required this.onDateChanged,
     required this.subtitle,
-    this.showConfirmButton = true,
+    required this.showConfirmButton,
   });
 
   @override

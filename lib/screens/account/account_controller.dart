@@ -51,6 +51,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
   }) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => ThemeSheet(
+      showConfirmButton: false,
       initialTheme: initialTheme,
       onThemeChanged: (newTheme) {
         theme.updateTheme(
@@ -70,6 +71,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
   ) async => showBlurredModalBottomSheet(
     context: context,
     builder: (sheetContext) => LanguageSheet(
+      showConfirmButton: false,
       initialLanguage: context.locale,
       onLanguageChanged: (newLanguage) => context.setLocale(newLanguage),
     ),

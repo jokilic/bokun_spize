@@ -12,10 +12,12 @@ import 'account_sheet_list_tile.dart';
 class ThemeSheet extends StatefulWidget {
   final ThemeEnum initialTheme;
   final Function(ThemeEnum newTheme) onThemeChanged;
+  final bool showConfirmButton;
 
   const ThemeSheet({
     required this.initialTheme,
     required this.onThemeChanged,
+    required this.showConfirmButton,
   });
 
   @override
@@ -23,10 +25,10 @@ class ThemeSheet extends StatefulWidget {
 }
 
 class _ThemeSheetState extends State<ThemeSheet> {
-  late var selectedThemeEnum = widget.initialTheme;
+  late var selectedTheme = widget.initialTheme;
 
-  void updateTheme(ThemeEnum newThemeEnum) => setState(
-    () => selectedThemeEnum = newThemeEnum,
+  void updateTheme(ThemeEnum newTheme) => setState(
+    () => selectedTheme = newTheme,
   );
 
   @override
@@ -204,10 +206,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: AccountSheetListTile(
-                  onPressed: () => updateTheme(
-                    ThemeEnum.light,
-                  ),
-                  isActive: selectedThemeEnum == ThemeEnum.light,
+                  onPressed: () {
+                    updateTheme(
+                      ThemeEnum.light,
+                    );
+
+                    if (!widget.showConfirmButton) {
+                      widget.onThemeChanged(selectedTheme);
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  isActive: selectedTheme == ThemeEnum.light,
                   color: context.colors.protein,
                   icon: PhosphorIconsBold.sun,
                   title: 'Light theme',
@@ -248,10 +257,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: AccountSheetListTile(
-                  onPressed: () => updateTheme(
-                    ThemeEnum.dark,
-                  ),
-                  isActive: selectedThemeEnum == ThemeEnum.dark,
+                  onPressed: () {
+                    updateTheme(
+                      ThemeEnum.dark,
+                    );
+
+                    if (!widget.showConfirmButton) {
+                      widget.onThemeChanged(selectedTheme);
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  isActive: selectedTheme == ThemeEnum.dark,
                   color: context.colors.carbs,
                   icon: PhosphorIconsBold.moon,
                   title: 'Dark theme',
@@ -292,10 +308,17 @@ class _ThemeSheetState extends State<ThemeSheet> {
                   ),
                 ],
                 child: AccountSheetListTile(
-                  onPressed: () => updateTheme(
-                    ThemeEnum.system,
-                  ),
-                  isActive: selectedThemeEnum == ThemeEnum.system,
+                  onPressed: () {
+                    updateTheme(
+                      ThemeEnum.system,
+                    );
+
+                    if (!widget.showConfirmButton) {
+                      widget.onThemeChanged(selectedTheme);
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  isActive: selectedTheme == ThemeEnum.system,
                   color: context.colors.fat,
                   icon: PhosphorIconsBold.deviceMobileCamera,
                   title: 'System theme',
@@ -304,58 +327,60 @@ class _ThemeSheetState extends State<ThemeSheet> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
 
           ///
           /// SAVE BUTTON
           ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 6,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 14),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onThemeChanged(selectedThemeEnum);
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      padding: const EdgeInsets.all(22),
-                      backgroundColor: context.colors.protein,
-                      foregroundColor: context.colors.buttonText,
+          if (widget.showConfirmButton) ...[
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
                     ),
-                    child: const Text(
-                      'Confirm',
-                      textAlign: TextAlign.center,
+                    MoveEffect(
+                      begin: Offset(0, 14),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        widget.onThemeChanged(selectedTheme);
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Epilogue',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        padding: const EdgeInsets.all(22),
+                        backgroundColor: context.colors.protein,
+                        foregroundColor: context.colors.buttonText,
+                      ),
+                      child: const Text(
+                        'Confirm',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
 
           ///
           /// BOTTOM SPACING
