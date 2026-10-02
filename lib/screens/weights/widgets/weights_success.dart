@@ -47,7 +47,7 @@ class WeightsSuccess extends StatelessWidget {
               ),
             ],
             child: Text(
-              'weightsRecentLogs'.tr(),
+              'recentLogs'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 24,

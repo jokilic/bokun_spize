@@ -359,7 +359,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                         foregroundColor: context.colors.buttonText,
                       ),
                       child: Text(
-                        'calendarSheetButton'.tr(),
+                        'confirm'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

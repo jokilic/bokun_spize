@@ -69,7 +69,7 @@ class WalksGraph extends StatelessWidget {
               else
                 Expanded(
                   child: Text(
-                    'walksRecentProgressTitle'.tr(),
+                    'recentProgress'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
@@ -126,7 +126,7 @@ class WalksGraph extends StatelessWidget {
                         (calendarDays) => PopupMenuItem<int>(
                           value: calendarDays,
                           child: Text(
-                            'walksCalendarDays'.tr(
+                            'calendarDays'.tr(
                               args: ['$calendarDays'],
                             ),
                             style: TextStyle(
@@ -156,7 +156,7 @@ class WalksGraph extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'walksCalendarDays'.tr(
+                            'calendarDays'.tr(
                               args: ['$calendarDays'],
                             ),
                             style: TextStyle(

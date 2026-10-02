@@ -373,7 +373,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                         foregroundColor: context.colors.buttonText,
                       ),
                       child: Text(
-                        'accountThemeSheetButton'.tr(),
+                        'confirm'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

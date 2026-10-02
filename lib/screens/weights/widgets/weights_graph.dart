@@ -69,7 +69,7 @@ class WeightsGraph extends StatelessWidget {
               else
                 Expanded(
                   child: Text(
-                    'weightsRecentProgressTitle'.tr(),
+                    'recentProgress'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
@@ -126,7 +126,7 @@ class WeightsGraph extends StatelessWidget {
                         (calendarDays) => PopupMenuItem<int>(
                           value: calendarDays,
                           child: Text(
-                            'weightsCalendarDays'.tr(
+                            'calendarDays'.tr(
                               args: ['$calendarDays'],
                             ),
                             style: TextStyle(
@@ -156,7 +156,7 @@ class WeightsGraph extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'weightsCalendarDays'.tr(
+                            'calendarDays'.tr(
                               args: ['$calendarDays'],
                             ),
                             style: TextStyle(

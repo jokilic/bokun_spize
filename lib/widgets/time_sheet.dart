@@ -294,7 +294,7 @@ class _TimeSheetState extends State<TimeSheet> {
                       foregroundColor: context.colors.buttonText,
                     ),
                     child: Text(
-                      'timeSheetButton'.tr(),
+                      'confirm'.tr(),
                       textAlign: TextAlign.center,
                     ),
                   ),

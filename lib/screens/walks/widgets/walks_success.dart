@@ -46,7 +46,7 @@ class WalksSuccess extends StatelessWidget {
               ),
             ],
             child: Text(
-              'walksRecentLogs'.tr(),
+              'recentLogs'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 24,

@@ -200,7 +200,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ///
                       Expanded(
                         child: Text(
-                          isCopyingMeal ? 'manualAddMealCopyTitle'.tr() : (isEditingMeal ? 'manualAddMealEditTitle'.tr() : 'manualAddMealTitle'.tr()),
+                          isCopyingMeal ? 'manualAddMealCopyTitle'.tr() : (isEditingMeal ? 'manualAddMealEditTitle'.tr() : 'logMeal'.tr()),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -309,7 +309,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                           onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
                           title: 'manualAddMealTextFieldTitle'.tr(),
-                          hintText: isCopyingMeal ? 'manualAddMealTextFieldCopyHint'.tr() : 'manualAddMealTextFieldHint'.tr(),
+                          hintText: isCopyingMeal ? 'manualAddMealTextFieldCopyHint'.tr() : 'whatWasIt'.tr(),
                           textColor: context.colors.text,
                         ),
 
@@ -660,7 +660,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        'manualAddMealCamera'.tr(),
+                                        'camera'.tr(),
                                         style: TextStyle(
                                           fontFamily: 'Epilogue',
                                           fontSize: 14,
@@ -705,7 +705,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        'manualAddMealGallery'.tr(),
+                                        'gallery'.tr(),
                                         style: TextStyle(
                                           fontFamily: 'Epilogue',
                                           fontSize: 14,
@@ -750,7 +750,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ),
                     ],
                     child: Text(
-                      'manualAddMealNutritionalValuesTitle'.tr(),
+                      'nutritionalValues'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 18,
@@ -1135,7 +1135,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'manualAddMealDateTitle'.tr().toUpperCase(),
+                                    'date'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -1234,7 +1234,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'manualAddMealTimeTitle'.tr().toUpperCase(),
+                                    'time'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -1355,7 +1355,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        isEditingMeal ? 'manualAddMealEditButton'.tr() : 'manualAddMealButton'.tr(),
+                        isEditingMeal ? 'manualAddMealEditButton'.tr() : 'logMeal'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

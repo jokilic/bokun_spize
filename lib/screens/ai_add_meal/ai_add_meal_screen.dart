@@ -160,7 +160,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                       ///
                       Expanded(
                         child: Text(
-                          'aiAddMealTitle'.tr(),
+                          'logMeal'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -268,7 +268,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         focusNode: mealController.textFocusNode,
                         onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                         title: 'aiAddMealTextFieldTitle'.tr(),
-                        hintText: 'aiAddMealTextFieldHint'.tr(),
+                        hintText: 'whatWasIt'.tr(),
                         textColor: context.colors.text,
                       ),
 
@@ -494,7 +494,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'aiAddMealCamera'.tr(),
+                                  'camera'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 14,
@@ -539,7 +539,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'aiAddMealGallery'.tr(),
+                                  'gallery'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 14,
@@ -650,7 +650,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'aiAddMealDate'.tr().toUpperCase(),
+                                    'date'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -749,7 +749,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    'aiAddMealTime'.tr().toUpperCase(),
+                                    'time'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -855,7 +855,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        'aiAddMealButton'.tr(),
+                        'logMeal'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

@@ -305,7 +305,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     focusNode: nameFocusNode,
                     onSubmitted: (_) => quantityFocusNode.requestFocus(),
                     title: 'addFoodTextFieldTitleName'.tr(),
-                    hintText: 'addFoodTextFieldHintName'.tr(),
+                    hintText: 'whatWasIt'.tr(),
                     textColor: context.colors.text,
                     autocorrect: true,
                   ),
@@ -437,7 +437,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     ),
                   ],
                   child: Text(
-                    'addFoodNutritionalValuesTitle'.tr(),
+                    'nutritionalValues'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,

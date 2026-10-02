@@ -321,7 +321,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
                         foregroundColor: context.colors.buttonText,
                       ),
                       child: Text(
-                        'accountLanguageSheetButton'.tr(),
+                        'confirm'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

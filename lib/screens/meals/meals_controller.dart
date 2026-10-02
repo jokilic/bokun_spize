@@ -205,7 +205,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'mealsErrorAddFailed'.tr(),
+        text: 'addFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -375,7 +375,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: isEditingMeal ? 'mealsErrorUpdateFailed'.tr() : 'mealsErrorAddFailed'.tr(),
+        text: isEditingMeal ? 'updateFailed'.tr() : 'addFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

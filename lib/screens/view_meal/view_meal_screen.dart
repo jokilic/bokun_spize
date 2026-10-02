@@ -477,7 +477,7 @@ class ViewMealScreen extends WatchingWidget {
                     ),
                   ],
                   child: Text(
-                    'viewMealNutritionalValuesTitle'.tr(),
+                    'nutritionalValues'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
