@@ -68,5 +68,13 @@
     "addFoodTextFieldHintFats": "0",
     "addFoodTextFieldRightTextFats": "g",
     "addFoodButtonEdit": "Save changes",
-    "addFoodButtonAdd": "Add to meal"
+    "addFoodButtonAdd": "Add to meal",
+    "calendarSheetTitle": "Select date",
+    "calendarSheetButton": "Confirm",
+    "navigationBarMeals": "Meals",
+    "navigationBarWeights": "Weights",
+    "navigationBarWalks": "Walks",
+    "navigationBarAccount": "Account",
+    "timeSheetTitle": "Select time",
+    "timeSheetButton": "Confirm",
 }

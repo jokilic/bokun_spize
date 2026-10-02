@@ -1,4 +1,5 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -52,7 +53,7 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Meals'.toUpperCase(),
+                  'navigationBarMeals'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -91,7 +92,7 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Weights'.toUpperCase(),
+                  'navigationBarWeights'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -130,7 +131,7 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Walks'.toUpperCase(),
+                  'navigationBarWalks'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,
@@ -181,7 +182,7 @@ class NavigationBarWidget extends WatchingWidget {
                   ),
                 const SizedBox(height: 8),
                 Text(
-                  'Account'.toUpperCase(),
+                  'navigationBarAccount'.tr().toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 12,

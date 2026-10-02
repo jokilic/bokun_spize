@@ -1,7 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../constants/constants.dart';
@@ -99,7 +99,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        'Select date',
+                        'calendarSheetTitle'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -358,8 +358,8 @@ class _CalendarSheetState extends State<CalendarSheet> {
                         backgroundColor: widget.primaryColor,
                         foregroundColor: context.colors.buttonText,
                       ),
-                      child: const Text(
-                        'Confirm',
+                      child: Text(
+                        'calendarSheetButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

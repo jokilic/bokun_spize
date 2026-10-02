@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -97,7 +98,7 @@ class _TimeSheetState extends State<TimeSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        'Select time',
+                        'timeSheetTitle'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -228,7 +229,7 @@ class _TimeSheetState extends State<TimeSheet> {
                     dateOption: DateTimePickerOption(
                       dateFormat: DateFormat(
                         'HH:mm',
-                        Localizations.localeOf(context).languageCode,
+                        context.locale.languageCode,
                       ),
                       minDate: DateTime(2020),
                       maxDate: DateTime(2050),
@@ -293,8 +294,8 @@ class _TimeSheetState extends State<TimeSheet> {
                       backgroundColor: widget.primaryColor,
                       foregroundColor: context.colors.buttonText,
                     ),
-                    child: const Text(
-                      'Confirm',
+                    child: Text(
+                      'timeSheetButton'.tr(),
                       textAlign: TextAlign.center,
                     ),
                   ),
