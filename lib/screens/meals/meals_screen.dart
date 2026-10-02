@@ -207,7 +207,7 @@ class _MealsScreenState extends State<MealsScreen> {
                     HapticFeedback.lightImpact();
                     showBlurredModalBottomSheet(
                       context: context,
-                      builder: (context) => SearchScreen(
+                      builder: (sheetContext) => SearchScreen(
                         onDeletePressed: (meal) {
                           HapticFeedback.lightImpact();
                           mealsController.deleteMeal(

@@ -92,6 +92,11 @@ class SearchListTile extends StatelessWidget {
             SwipeAction(
               onTap: (handler) async {
                 await handler(false);
+                if (!context.mounted) {
+                  return;
+                }
+
+                Navigator.of(context).pop();
                 await onCopyPressed();
               },
               color: context.colors.protein,
@@ -104,6 +109,11 @@ class SearchListTile extends StatelessWidget {
             SwipeAction(
               onTap: (handler) async {
                 await handler(false);
+                if (!context.mounted) {
+                  return;
+                }
+
+                Navigator.of(context).pop();
                 await onEditPressed();
               },
               color: context.colors.carbs,
@@ -120,7 +130,12 @@ class SearchListTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
               onTap: isLoading || hasError ? null : onPressed,
-              onLongPress: isLoading || hasError ? null : onEditPressed,
+              onLongPress: isLoading || hasError
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                      onEditPressed();
+                    },
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,

@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:intl/intl.dart';
 
 /// Rounds a date and time up to the next five-minute interval
 DateTime roundUpToFiveMinuteInterval(DateTime dateTime) {
