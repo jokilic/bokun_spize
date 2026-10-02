@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -71,7 +72,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
         updateState(
           weightTracks: weightTracks ?? const [],
           isLoading: false,
-          error: weightTracks == null ? 'Weight tracks could not be loaded.' : null,
+          error: weightTracks == null ? 'weightsErrorTracksCouldNotBeLoaded'.tr() : null,
         );
       },
       onError: (error) {
@@ -83,7 +84,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
         updateState(
           weightTracks: const [],
           isLoading: false,
-          error: 'Weight tracks could not be loaded.',
+          error: 'weightsErrorTracksCouldNotBeLoaded'.tr(),
         );
       },
     );
@@ -111,7 +112,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Add failed',
+        text: 'weightsErrorAddFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -130,7 +131,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'Delete failed',
+        text: 'weightsErrorDeleteFailed'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

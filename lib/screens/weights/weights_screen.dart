@@ -170,7 +170,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                           dateFormat: 'EEEE, dd.MM.yyyy.',
                           languageCode: context.locale.languageCode,
                         )
-                      : 'Unesi težinu',
+                      : 'weightsErrorNoWeights'.tr(),
                   currentWeight: lastWeightTrack?.weight,
                   weightChange: weightChange,
                   weightChangeWithinDays: weightChangeWithinDays,

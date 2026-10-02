@@ -69,7 +69,7 @@ class WalksGraph extends StatelessWidget {
               else
                 Expanded(
                   child: Text(
-                    'Recent progress',
+                    'walksRecentProgressTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
@@ -126,7 +126,9 @@ class WalksGraph extends StatelessWidget {
                         (calendarDays) => PopupMenuItem<int>(
                           value: calendarDays,
                           child: Text(
-                            '$calendarDays days',
+                            'walksCalendarDays'.tr(
+                              args: ['$calendarDays'],
+                            ),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
@@ -154,7 +156,9 @@ class WalksGraph extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '$calendarDays days',
+                            'walksCalendarDays'.tr(
+                              args: ['$calendarDays'],
+                            ),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
@@ -242,7 +246,7 @@ class WalksGraphWidget extends StatelessWidget {
                     : visibleStepsWithDate.isEmpty
                     ? Center(
                         child: Text(
-                          'No step data for the graph',
+                          'walksNoStepData'.tr(),
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,
@@ -373,7 +377,9 @@ class WalksGraphWidget extends StatelessWidget {
                   children: [
                     const TextSpan(text: '\n'),
                     TextSpan(
-                      text: '$steps steps',
+                      text: 'walksSteps'.tr(
+                        args: [steps],
+                      ),
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 14,

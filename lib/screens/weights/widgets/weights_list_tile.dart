@@ -177,7 +177,7 @@ class WeightsListTile extends StatelessWidget {
                                 child: SizedBox(width: 4),
                               ),
                               TextSpan(
-                                text: 'kg',
+                                text: 'kilogram'.tr(),
                                 style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
                                   fontSize: 12,
@@ -211,7 +211,7 @@ class WeightsListTile extends StatelessWidget {
                               ),
                               const SizedBox(width: 2),
                               Text(
-                                '${weightChange!.abs().toStringAsFixed(1)}kg',
+                                '${weightChange!.abs().toStringAsFixed(1)}${'kilogram'.tr()}',
                                 style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
                                   fontSize: 14,

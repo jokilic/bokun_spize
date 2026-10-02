@@ -157,7 +157,7 @@ class WalksListTile extends StatelessWidget {
                             child: SizedBox(width: 4),
                           ),
                           TextSpan(
-                            text: 'steps',
+                            text: 'walksStepsListTile'.tr(),
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
                               fontSize: 12,
@@ -203,7 +203,7 @@ class WalksListTile extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 3),
                                 Text(
-                                  'Walking now',
+                                  'walksWalkingNow'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'PlusJakartaSans',
                                     fontSize: 14,

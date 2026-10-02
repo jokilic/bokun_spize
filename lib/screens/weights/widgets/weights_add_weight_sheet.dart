@@ -93,7 +93,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
     context: context,
     builder: (context) => CalendarSheet(
       showConfirmButton: true,
-      subtitle: 'Day of new weight',
+      subtitle: 'weightsAddWeightCalendarSubtitle'.tr(),
       primaryColor: context.colors.carbs,
       dateValue: selectedDateTime,
       onDateChanged: (newDate) => setState(
@@ -112,7 +112,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   Future<void> updateTimeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
     context: context,
     builder: (context) => TimeSheet(
-      subtitle: 'Time of new weight',
+      subtitle: 'weightsAddWeightTimeSubtitle'.tr(),
       primaryColor: context.colors.carbs,
       dateValue: selectedDateTime,
       onTimeChanged: (newTime) => setState(
@@ -209,7 +209,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       ///
                       Expanded(
                         child: Text(
-                          'Log weight',
+                          'weightsAddWeightTitle'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -269,7 +269,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                     ),
                   ],
                   child: Text(
-                    'New weight in your journal',
+                    'weightsAddWeightSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -351,7 +351,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                             text: selectedWeight.toStringAsFixed(1),
                           ),
                           TextSpan(
-                            text: ' kg',
+                            text: 'kilogram'.tr(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 22,
@@ -598,8 +598,8 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                         backgroundColor: context.colors.carbs,
                         foregroundColor: context.colors.buttonText,
                       ),
-                      child: const Text(
-                        'Save weight',
+                      child: Text(
+                        'weightsAddWeightButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

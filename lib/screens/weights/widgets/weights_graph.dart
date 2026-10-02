@@ -69,7 +69,7 @@ class WeightsGraph extends StatelessWidget {
               else
                 Expanded(
                   child: Text(
-                    'Recent progress',
+                    'weightsRecentProgressTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 24,
@@ -126,7 +126,9 @@ class WeightsGraph extends StatelessWidget {
                         (calendarDays) => PopupMenuItem<int>(
                           value: calendarDays,
                           child: Text(
-                            '$calendarDays days',
+                            'weightsCalendarDays'.tr(
+                              args: ['$calendarDays'],
+                            ),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
@@ -154,7 +156,9 @@ class WeightsGraph extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '$calendarDays days',
+                            'weightsCalendarDays'.tr(
+                              args: ['$calendarDays'],
+                            ),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 16,
@@ -242,7 +246,7 @@ class WeightsGraphWidget extends StatelessWidget {
                     : visibleWeightTracks.isEmpty
                     ? Center(
                         child: Text(
-                          'Unesi težinu za prikaz grafa',
+                          'weightsNoWeightTracks'.tr(),
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14,
@@ -375,7 +379,7 @@ class WeightsGraphWidget extends StatelessWidget {
                   children: [
                     const TextSpan(text: '\n'),
                     TextSpan(
-                      text: '${weightTrack.weight.toStringAsFixed(1)} kg',
+                      text: '${weightTrack.weight.toStringAsFixed(1)} ${'kilogram'.tr()}',
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 14,

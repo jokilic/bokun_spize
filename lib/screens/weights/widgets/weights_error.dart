@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -50,7 +51,7 @@ class WeightsError extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Erroro has happendo',
+              'weightsErrorTitle'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 20,

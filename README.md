@@ -27,6 +27,7 @@
 ### Localization
     - [ ] Localize `Strings`
     - [ ] Check all `log` and think if they should show as snackbars
+    - [ ] Check all `dateFormat:`
 
 # Bokun spize 🥗
 

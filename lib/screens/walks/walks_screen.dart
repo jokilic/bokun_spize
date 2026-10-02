@@ -158,7 +158,7 @@ class _WalksScreenState extends State<WalksScreen> {
                           dateFormat: 'EEEE, dd.MM.yyyy.',
                           languageCode: context.locale.languageCode,
                         )
-                      : 'Vrijeme ne postoji',
+                      : 'walksErrorNoSteps'.tr(),
                   currentSteps: latestStepsWithDate?.steps,
                   stepsChange: stepsChange,
                   stepsChangeWithinDays: stepsChangeWithinDays,
@@ -204,7 +204,7 @@ class _WalksScreenState extends State<WalksScreen> {
                 ///
                 if (!isLoading && (error != null || (permissionAuthorized != null && !permissionAuthorized)))
                   WalksError(
-                    error: error ?? 'Proper permission was not granted',
+                    error: error ?? 'walksErrorProperPermissionNotGranted'.tr(),
                     permissionAuthorized: permissionAuthorized,
                   ),
 

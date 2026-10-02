@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -247,7 +248,7 @@ class WalksController
 
         return (
           granted: false,
-          error: 'Activity recognition permission was not granted.',
+          error: 'walksErrorActivityPermissionNotGranted'.tr(),
         );
       }
 
@@ -260,7 +261,7 @@ class WalksController
       if (!healthConnectAvailable) {
         return (
           granted: false,
-          error: 'Health Connect is not available on this device.',
+          error: 'walksErrorHealthConnectNotAvailable'.tr(),
         );
       }
     }
@@ -283,7 +284,7 @@ class WalksController
 
     return (
       granted: granted,
-      error: granted ? null : 'Step access was not granted.',
+      error: granted ? null : 'walksErrorStepAccessNotGranted'.tr(),
     );
   }
 
@@ -331,7 +332,7 @@ class WalksController
       if (!permissionResult.granted) {
         updateState(
           permissionAuthorized: false,
-          error: permissionResult.error ?? 'Step access is unavailable.',
+          error: permissionResult.error ?? 'walksErrorStepAccessUnavailable'.tr(),
         );
         return;
       }

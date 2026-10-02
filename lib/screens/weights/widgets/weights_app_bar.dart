@@ -1,4 +1,5 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -70,7 +71,7 @@ class WeightsAppBar extends StatelessWidget {
               child: IconButton(
                 onPressed: () {},
                 icon: Text(
-                  'Weights',
+                  'weightsAppBarTitle'.tr(),
                   style: TextStyle(
                     fontFamily: 'PlusJakartaSans',
                     fontSize: 18,
@@ -343,7 +344,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         Transform.translate(
                           offset: const Offset(0, 6),
                           child: Text(
-                            'kg',
+                            'kilogram'.tr(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
                               fontSize: 12,
@@ -380,7 +381,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       ),
                       const SizedBox(width: 2),
                       Text(
-                        '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}kg',
+                        '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}${'kilogram'.tr()}',
                         style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 12,
@@ -395,9 +396,11 @@ class FadingFlexibleTitle extends StatelessWidget {
                   if (weightChangeWithinDays != null)
                     Text(
                       switch (weightChangeWithinDays) {
-                        0 => 'vs today',
-                        1 => 'vs yesterday',
-                        final int days => 'vs last $days days',
+                        0 => 'vsToday'.tr(),
+                        1 => 'vsYesterday'.tr(),
+                        final int days => 'vsLastDays'.tr(
+                          args: ['$days'],
+                        ),
                         null => '-',
                       },
                       style: TextStyle(

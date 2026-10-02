@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -44,7 +45,7 @@ class WalksEmpty extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Walk journal is empty',
+              'walksEmptyTitle'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 20,
@@ -56,7 +57,7 @@ class WalksEmpty extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Try refreshing by pressing the corner icon',
+              'walksEmptySubtitle'.tr(),
               style: TextStyle(
                 fontFamily: 'Epilogue',
                 fontSize: 14,
