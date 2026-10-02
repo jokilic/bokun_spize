@@ -222,7 +222,7 @@ static const Map<String,dynamic> _hr = {
   "account": "Račun",
   "calories": "Kalorije",
   "protein": "Proteini",
-  "carbs": "Ugljikohidrati",
+  "carbs": "Uglj.",
   "fats": "Masti",
   "confirm": "Potvrdi",
   "camera": "Kamera",
