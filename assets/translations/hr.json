@@ -173,7 +173,7 @@
     "walksErrorTitle": "Pogreška u dnevniku hodanja",
     "walksNoStepData": "Nema podataka o koracima za graf",
     "walksSteps": "{} koraka",
-    "walksWalkingNow": "Sad hodaš",
+    "walksWalkingNow": "Hodaš...",
     "weightsErrorTracksCouldNotBeLoaded": "Zapisi težine nisu se mogli učitati",
     "weightsErrorNoWeights": "Unesi težinu",
     "weightsAddWeightCalendarSubtitle": "Dan nove težine",
@@ -186,5 +186,8 @@
     "weightsErrorTitle": "Pogreška u dnevniku težine",
     "weightsNoWeightTracks": "Dodaj težinu za prikaz grafa",
     "accountNameSheetTitle": "Tvoje ime",
-    "accountNameSheetSubtitle": "Promijeni svoje ime"
+    "accountNameSheetSubtitle": "Promijeni svoje ime",
+    "accountDeleteSheetTitle": "Izbriši račun",
+    "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
+    "accountDeleteSheetTextField": "Napiši '{}'"
 }

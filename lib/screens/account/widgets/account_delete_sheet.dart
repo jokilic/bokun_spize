@@ -105,8 +105,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        // TODO: Localize
-                        'Delete account',
+                        'accountDeleteSheetTitle'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -166,8 +165,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                   ),
                 ],
                 child: Text(
-                  // TODO: Localize
-                  'Some subtitle',
+                  'accountDeleteSheetSubtitle'.tr(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -184,7 +182,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
           ),
 
           ///
-          /// NAME FIELD
+          /// DELETE CONFIRMATION FIELD
           ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(
@@ -216,13 +214,12 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                 child: TextFieldWidget(
                   controller: textEditingController,
                   hintText: widget.deleteWord,
-                  // TODO: Localize
-                  title: 'Some title',
+                  title: 'accountDeleteSheetTextField'.tr(
+                    args: [widget.deleteWord],
+                  ),
                   textColor: context.colors.text,
-                  keyboardType: TextInputType.name,
-                  textCapitalization: TextCapitalization.words,
+                  textCapitalization: TextCapitalization.none,
                   textInputAction: TextInputAction.done,
-                  autofillHints: const [AutofillHints.name],
                   onChanged: (_) => setState(
                     () {},
                   ),
@@ -232,7 +229,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
           ),
 
           ///
-          /// SAVE BUTTON
+          /// DELETE BUTTON
           ///
           const SliverToBoxAdapter(
             child: SizedBox(height: 32),
@@ -257,7 +254,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: textEditingController.text.trim().isEmpty
+                    onPressed: textEditingController.text.isEmpty || textEditingController.text != widget.deleteWord
                         ? null
                         : () {
                             widget.onDeletePressed();
@@ -275,9 +272,8 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                       backgroundColor: context.colors.account,
                       foregroundColor: context.colors.buttonText,
                     ),
-                    child: const Text(
-                      // TODO: Localize
-                      'Delete',
+                    child: Text(
+                      'confirm'.tr(),
                       textAlign: TextAlign.center,
                     ),
                   ),

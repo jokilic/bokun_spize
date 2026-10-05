@@ -173,7 +173,7 @@
     "walksErrorTitle": "Error in walk journal",
     "walksNoStepData": "No step data for the graph",
     "walksSteps": "{} steps",
-    "walksWalkingNow": "Walking now",
+    "walksWalkingNow": "Walking...",
     "weightsErrorTracksCouldNotBeLoaded": "Weight entries could not be loaded",
     "weightsErrorNoWeights": "Enter weight",
     "weightsAddWeightCalendarSubtitle": "Day of new weight",
@@ -186,5 +186,8 @@
     "weightsErrorTitle": "Error in weight journal",
     "weightsNoWeightTracks": "Add weight to show graph",
     "accountNameSheetTitle": "Your name",
-    "accountNameSheetSubtitle": "Change your name"
+    "accountNameSheetSubtitle": "Change your name",
+    "accountDeleteSheetTitle": "Delete account",
+    "accountDeleteSheetSubtitle": "Confirm account deletion",
+    "accountDeleteSheetTextField": "Write '{}'"
 }

@@ -189,7 +189,7 @@ class CodegenLoader extends AssetLoader{
   "walksErrorTitle": "Error in walk journal",
   "walksNoStepData": "No step data for the graph",
   "walksSteps": "{} steps",
-  "walksWalkingNow": "Walking now",
+  "walksWalkingNow": "Walking...",
   "weightsErrorTracksCouldNotBeLoaded": "Weight entries could not be loaded",
   "weightsErrorNoWeights": "Enter weight",
   "weightsAddWeightCalendarSubtitle": "Day of new weight",
@@ -202,7 +202,10 @@ class CodegenLoader extends AssetLoader{
   "weightsErrorTitle": "Error in weight journal",
   "weightsNoWeightTracks": "Add weight to show graph",
   "accountNameSheetTitle": "Your name",
-  "accountNameSheetSubtitle": "Change your name"
+  "accountNameSheetSubtitle": "Change your name",
+  "accountDeleteSheetTitle": "Delete account",
+  "accountDeleteSheetSubtitle": "Confirm account deletion",
+  "accountDeleteSheetTextField": "Write '{}'"
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -379,7 +382,7 @@ static const Map<String,dynamic> _hr = {
   "walksErrorTitle": "Pogreška u dnevniku hodanja",
   "walksNoStepData": "Nema podataka o koracima za graf",
   "walksSteps": "{} koraka",
-  "walksWalkingNow": "Sad hodaš",
+  "walksWalkingNow": "Hodaš...",
   "weightsErrorTracksCouldNotBeLoaded": "Zapisi težine nisu se mogli učitati",
   "weightsErrorNoWeights": "Unesi težinu",
   "weightsAddWeightCalendarSubtitle": "Dan nove težine",
@@ -392,7 +395,10 @@ static const Map<String,dynamic> _hr = {
   "weightsErrorTitle": "Pogreška u dnevniku težine",
   "weightsNoWeightTracks": "Dodaj težinu za prikaz grafa",
   "accountNameSheetTitle": "Tvoje ime",
-  "accountNameSheetSubtitle": "Promijeni svoje ime"
+  "accountNameSheetSubtitle": "Promijeni svoje ime",
+  "accountDeleteSheetTitle": "Izbriši račun",
+  "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
+  "accountDeleteSheetTextField": "Napiši '{}'"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }
