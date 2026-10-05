@@ -18,6 +18,7 @@
         - [x] Version
 
 ### Firebase
+    - [ ] Add `DateTime` of first user registration
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Analytics
