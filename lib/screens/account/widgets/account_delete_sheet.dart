@@ -11,7 +11,7 @@ import '../../../widgets/text_field_widget.dart';
 
 class AccountDeleteSheet extends StatefulWidget {
   final String deleteWord;
-  final Future<bool> Function(String? password) onDeletePressed;
+  final Function(String? password) onDeletePressed;
   final bool requiresPassword;
 
   const AccountDeleteSheet({
@@ -28,8 +28,6 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
   late final TextEditingController confirmController;
   late final TextEditingController passwordController;
   late final FocusNode passwordFocusNode;
-
-  var isDeleting = false;
 
   @override
   void initState() {
@@ -49,38 +47,18 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
     super.dispose();
   }
 
-  /// Keeps the sheet open for retries and prevents duplicate deletion requests
-  Future<void> deleteAccount() async {
-    if (isDeleting) {
-      return;
-    }
-
-    setState(
-      () => isDeleting = true,
-    );
+  void deleteAccount() {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    try {
-      final deleted = await widget.onDeletePressed(
-        widget.requiresPassword ? passwordController.text.trim() : null,
-      );
+    final password = widget.requiresPassword ? passwordController.text.trim() : null;
 
-      if (deleted && mounted) {
-        Navigator.of(context).pop();
-      }
-    } finally {
-      if (mounted) {
-        setState(
-          () => isDeleting = false,
-        );
-      }
-    }
+    widget.onDeletePressed(password);
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final validation =
-        isDeleting || confirmController.text.isEmpty || confirmController.text != widget.deleteWord || (widget.requiresPassword && passwordController.text.length < 8);
+    final validation = confirmController.text.isEmpty || confirmController.text != widget.deleteWord || (widget.requiresPassword && passwordController.text.length < 8);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -166,7 +144,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                       /// CLOSE BUTTON
                       ///
                       IconButton(
-                        onPressed: isDeleting ? null : Navigator.of(context).pop,
+                        onPressed: Navigator.of(context).pop,
                         icon: const PhosphorIcon(
                           PhosphorIconsBold.x,
                           size: 22,
@@ -253,7 +231,6 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                     ),
                   ],
                   child: TextFieldWidget(
-                    enabled: !isDeleting,
                     controller: confirmController,
                     title: 'accountDeleteSheetTextField'.tr(
                       args: [widget.deleteWord],
@@ -280,19 +257,40 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
-                  child: TextFieldWidget(
-                    obscureText: true,
-                    enabled: !isDeleting,
-                    controller: passwordController,
-                    focusNode: passwordFocusNode,
-                    title: 'password'.tr(),
-                    hintText: '•' * 8,
-                    textColor: context.colors.text,
-                    autofillHints: const [AutofillHints.password],
-                    keyboardType: TextInputType.visiblePassword,
-                    textCapitalization: TextCapitalization.none,
-                    textInputAction: TextInputAction.go,
-                    onChanged: (_) => setState(() {}),
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 18),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                      ScaleEffect(
+                        begin: Offset(0.98, 0.98),
+                        end: Offset(1, 1),
+                        alignment: Alignment.topCenter,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: TextFieldWidget(
+                      obscureText: true,
+                      controller: passwordController,
+                      focusNode: passwordFocusNode,
+                      title: 'password'.tr(),
+                      hintText: '•' * 8,
+                      textColor: context.colors.text,
+                      autofillHints: const [AutofillHints.password],
+                      keyboardType: TextInputType.visiblePassword,
+                      textCapitalization: TextCapitalization.none,
+                      textInputAction: TextInputAction.go,
+                      onChanged: (_) => setState(() {}),
+                    ),
                   ),
                 ),
               ),
@@ -308,7 +306,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (widget.requiresPassword ? 5 : 4),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
