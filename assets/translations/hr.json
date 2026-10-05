@@ -197,5 +197,7 @@
     "accountContactSheetSubtitle": "Pošalji mi poruku",
     "accountContactSheetTextFieldTitle": "Tvoja poruka",
     "accountContactSheetTextFieldHint": "Napiši nešto...",
-    "accountContactSheetButton": "Pošalji poruku"
+    "accountContactSheetButton": "Pošalji poruku",
+    "accountContactSendSuccess": "Poruka poslana!",
+    "accountContactSendFailure": "Slanje poruke nije uspjelo"
 }

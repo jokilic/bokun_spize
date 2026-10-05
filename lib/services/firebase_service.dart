@@ -99,7 +99,11 @@ class FirebaseService {
   /// Adds a contact message to the root `contactMessages` collection in [Firebase]
   Future<bool> writeContactMessage({required ContactMessage contactMessage}) async {
     try {
-      await firestore.collection('contactMessages').add(contactMessage.toMap());
+      await firestore
+          .collection('contactMessages')
+          .add(
+            contactMessage.toMap(),
+          );
 
       return true;
     } catch (error) {

@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../models/contact_message/contact_message.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../util/app_version.dart';
 import '../../util/device_info.dart';
+import '../../util/snackbars.dart';
 import '../../util/theme.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
@@ -134,8 +136,18 @@ class AccountController extends ValueNotifier<SettingsValues> {
           createdAt: createdAt,
         );
 
-        await firebase.writeContactMessage(
+        final success = await firebase.writeContactMessage(
           contactMessage: contactMessage,
+        );
+
+        if (!context.mounted) {
+          return;
+        }
+
+        showSnackbar(
+          context,
+          text: success ? 'accountContactSendSuccess'.tr() : 'accountContactSendFailure'.tr(),
+          icon: success ? PhosphorIconsBold.checkCircle : PhosphorIconsBold.warningOctagon,
         );
       },
     ),
