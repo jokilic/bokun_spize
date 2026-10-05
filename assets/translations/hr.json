@@ -10,6 +10,7 @@
     "dayOfNewMeal": "Dan novog obroka",
     "timeOfNewMeal": "Vrijeme novog obroka",
     "mealsCouldNotBeLoaded": "Obroci se nisu mogli učitati",
+    "name": "Ime",
     "edit": "Uredi",
     "foods": "Namirnice",
     "walks": "Hodanje",
@@ -130,7 +131,6 @@
     "entranceYouHaveAnAccount": "Već imaš račun?",
     "entranceCreateAnAccount": "Izradi račun",
     "entranceLoginForgot": "Zaboravio si?",
-    "entranceRegisterNameTitle": "Ime",
     "entranceRegisterNameHint": "Ivan",
     "entranceRegisterButton": "Registriraj se",
     "manualAddMealCopyTitle": "Kopiraj obrok",
@@ -183,5 +183,7 @@
     "weightsEmptyTitle": "Dnevnik težine je prazan",
     "weightsEmptySubtitle": "Dodaj prvo mjerenje težine pritiskom na ikonu u kutu",
     "weightsErrorTitle": "Pogreška u dnevniku težine",
-    "weightsNoWeightTracks": "Dodaj težinu za prikaz grafa"
+    "weightsNoWeightTracks": "Dodaj težinu za prikaz grafa",
+    "accountNameSheetTitle": "Tvoje ime",
+    "accountNameSheetSubtitle": "Promijeni svoje ime"
 }

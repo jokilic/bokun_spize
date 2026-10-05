@@ -83,7 +83,7 @@ class EntranceRegister extends StatelessWidget {
         child: TextFieldWidget(
           controller: nameTextEditingController,
           focusNode: nameFocusNode,
-          title: 'entranceRegisterNameTitle'.tr(),
+          title: 'name'.tr(),
           hintText: 'entranceRegisterNameHint'.tr(),
           onSubmitted: (_) {
             if (!validated || emailIsLoading) {

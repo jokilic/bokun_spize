@@ -116,9 +116,16 @@ class _AccountScreenState extends State<AccountScreen> {
                     context: context,
                     builder: (sheetContext) => AccountNameSheet(
                       initialName: name,
-                      onSavePressed: (meal) {
+                      onSavePressed: (newName) async {
+                        final trimmedName = newName.trim();
+                        if (trimmedName.isEmpty || trimmedName == name) {
+                          return;
+                        }
+
                         HapticFeedback.lightImpact();
-                        // TODO: Update `name` in `Firebase`
+                        await firebaseService.updateUserName(
+                          newName: trimmedName,
+                        );
                       },
                     ),
                   );

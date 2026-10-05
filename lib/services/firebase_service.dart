@@ -832,6 +832,34 @@ class FirebaseService {
     }
   }
 
+  /// Updates only the `name` in the current user's document in [Firebase]
+  Future<bool> updateUserName({required String newName}) async {
+    final name = newName.trim();
+    if (name.isEmpty) {
+      return false;
+    }
+
+    try {
+      final user = auth.currentUser;
+      if (user == null) {
+        return false;
+      }
+
+      await firestore.collection('users').doc(user.uid).set(
+        {'name': name},
+        SetOptions(merge: true),
+      );
+
+      return true;
+    } catch (error) {
+      log(
+        'Updating user name failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
   /// Updates `userMetrics` in the current user's document in [Firebase]
   Future<bool> updateUserMetrics({required UserMetrics newUserMetrics}) async {
     try {

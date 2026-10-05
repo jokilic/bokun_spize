@@ -125,7 +125,7 @@ class AccountAppBar extends StatelessWidget {
           IconButton(
             onPressed: onEditPressed,
             icon: const PhosphorIcon(
-              PhosphorIconsBold.magnifyingGlass,
+              PhosphorIconsBold.pencilSimple,
               size: 24,
             ),
             style: IconButton.styleFrom(

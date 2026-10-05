@@ -26,6 +26,7 @@ class CodegenLoader extends AssetLoader{
   "dayOfNewMeal": "Day of new meal",
   "timeOfNewMeal": "Time of new meal",
   "mealsCouldNotBeLoaded": "Meals could not be loaded",
+  "name": "Name",
   "edit": "Edit",
   "foods": "Foods",
   "walks": "Walks",
@@ -146,7 +147,6 @@ class CodegenLoader extends AssetLoader{
   "entranceYouHaveAnAccount": "Already have an account?",
   "entranceCreateAnAccount": "Create an account",
   "entranceLoginForgot": "Forgot?",
-  "entranceRegisterNameTitle": "Name",
   "entranceRegisterNameHint": "Jack",
   "entranceRegisterButton": "Register",
   "manualAddMealCopyTitle": "Copy meal",
@@ -199,7 +199,9 @@ class CodegenLoader extends AssetLoader{
   "weightsEmptyTitle": "Weight journal is empty",
   "weightsEmptySubtitle": "Add your first weight by pressing the corner icon",
   "weightsErrorTitle": "Error in weight journal",
-  "weightsNoWeightTracks": "Add weight to show graph"
+  "weightsNoWeightTracks": "Add weight to show graph",
+  "accountNameSheetTitle": "Your name",
+  "accountNameSheetSubtitle": "Change your name"
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -213,6 +215,7 @@ static const Map<String,dynamic> _hr = {
   "dayOfNewMeal": "Dan novog obroka",
   "timeOfNewMeal": "Vrijeme novog obroka",
   "mealsCouldNotBeLoaded": "Obroci se nisu mogli učitati",
+  "name": "Ime",
   "edit": "Uredi",
   "foods": "Namirnice",
   "walks": "Hodanje",
@@ -333,7 +336,6 @@ static const Map<String,dynamic> _hr = {
   "entranceYouHaveAnAccount": "Već imaš račun?",
   "entranceCreateAnAccount": "Izradi račun",
   "entranceLoginForgot": "Zaboravio si?",
-  "entranceRegisterNameTitle": "Ime",
   "entranceRegisterNameHint": "Ivan",
   "entranceRegisterButton": "Registriraj se",
   "manualAddMealCopyTitle": "Kopiraj obrok",
@@ -386,7 +388,9 @@ static const Map<String,dynamic> _hr = {
   "weightsEmptyTitle": "Dnevnik težine je prazan",
   "weightsEmptySubtitle": "Dodaj prvo mjerenje težine pritiskom na ikonu u kutu",
   "weightsErrorTitle": "Pogreška u dnevniku težine",
-  "weightsNoWeightTracks": "Dodaj težinu za prikaz grafa"
+  "weightsNoWeightTracks": "Dodaj težinu za prikaz grafa",
+  "accountNameSheetTitle": "Tvoje ime",
+  "accountNameSheetSubtitle": "Promijeni svoje ime"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }

@@ -7,6 +7,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
+import '../../../widgets/text_field_widget.dart';
 
 class AccountNameSheet extends StatefulWidget {
   final String? initialName;
@@ -22,6 +23,20 @@ class AccountNameSheet extends StatefulWidget {
 }
 
 class _AccountNameSheetState extends State<AccountNameSheet> {
+  late final TextEditingController nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
@@ -90,8 +105,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                     ///
                     Expanded(
                       child: Text(
-                        // TODO: Localize
-                        'Your name',
+                        'accountNameSheetTitle'.tr(),
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -151,8 +165,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                   ),
                 ],
                 child: Text(
-                  // TODO: Localize
-                  'Some subtitle here',
+                  'accountNameSheetSubtitle'.tr(),
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -169,7 +182,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
           ),
 
           ///
-          /// LIGHT THEME
+          /// NAME FIELD
           ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(
@@ -198,9 +211,19 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                child:
-                    // TODO: `TextFieldWidget` here
-                    const SizedBox.shrink(),
+                child: TextFieldWidget(
+                  controller: nameController,
+                  hintText: widget.initialName,
+                  title: 'name'.tr(),
+                  textColor: context.colors.text,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.done,
+                  autofillHints: const [AutofillHints.name],
+                  onChanged: (_) => setState(
+                    () {},
+                  ),
+                ),
               ),
             ),
           ),
@@ -231,11 +254,14 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: Proper value here
-                      widget.onSavePressed('pass proper value here');
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: nameController.text.trim().isEmpty
+                        ? null
+                        : () {
+                            widget.onSavePressed(
+                              nameController.text.trim(),
+                            );
+                            Navigator.of(context).pop();
+                          },
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       shape: const StadiumBorder(),

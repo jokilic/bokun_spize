@@ -7,7 +7,7 @@
 ### Screens
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
-        - [ ] Edit user name (show sheet with `TextField`)
+        - [x] Edit user name (show sheet with `TextField`)
         - [ ] UserMetricsSheet
         - [x] Theme
         - [x] Language
