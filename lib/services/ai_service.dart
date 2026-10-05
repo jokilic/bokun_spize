@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -277,33 +276,29 @@ JSON structure to follow strictly:
       modelNames
         ..clear()
         ..addAll(names);
-
-      log('Model names from Firebase -> $modelNames');
     }
-
-    log('Default model names -> $modelNames');
   }
 
-  /// Initialize `Gemini` backend models for requested `languageCode`
+  /// Initializes `Gemini` models for requested `languageCode`, skipping models that fail
   void initializeGemini({required String languageCode}) {
-    try {
-      final generativeModels = <GenerativeModel>[];
+    final generativeModels = <GenerativeModel>[];
 
-      for (final model in modelNames) {
+    for (final model in modelNames) {
+      try {
         generativeModels.add(
           initializeGenerativeModel(
             model: model,
             languageCode: languageCode,
           ),
         );
+      } catch (e) {
+        debugPrint('Failed to initialize AI model "$model": $e');
       }
-
-      updateState(
-        generativeModels: generativeModels,
-      );
-    } catch (e) {
-      updateState();
     }
+
+    updateState(
+      generativeModels: generativeModels,
+    );
   }
 
   /// Initializes `generativeModel` with passed model name and `languageCode`

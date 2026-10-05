@@ -18,6 +18,7 @@ class Meal {
   final bool isLoading;
   final List<String>? errors;
   final String? imageStoragePath;
+  final String? methodOfCreation;
 
   Meal({
     required this.id,
