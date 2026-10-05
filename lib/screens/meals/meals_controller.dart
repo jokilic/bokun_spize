@@ -293,7 +293,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       ],
     );
 
-    final result = results.first! as ({String? aiResult, List<String>? errors});
+    final result = results.first! as TriggerAIResult;
     final imageStoragePath = results.last as String?;
 
     final aiResult = result.aiResult;
@@ -320,6 +320,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       meal: (meal ?? loadingMeal).copyWith(
         errors: errors.isEmpty ? null : errors,
         imageStoragePath: imageStoragePath,
+        methodOfCreation: result.modelName,
         isLoading: false,
       ),
       success: meal != null && errors.isEmpty,
@@ -418,6 +419,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       final loadingMeal = Meal(
         id: newMealId,
         createdAt: dateTime,
+        methodOfCreation: 'manual',
         isLoading: true,
       );
 
@@ -526,6 +528,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         emoji: loadingMeal.emoji,
         color: loadingMeal.color,
         originalText: loadingMeal.originalText,
+        methodOfCreation: loadingMeal.methodOfCreation,
         name: result.name,
         nutrition: result.nutrition,
         foods: result.foods,

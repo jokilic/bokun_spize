@@ -233,7 +233,7 @@ static const Map<String,dynamic> _hr = {
   "recentProgress": "Nedavni napredak",
   "recentLogs": "Nedavni zapisi",
   "nutritionalValues": "Nutritivne vrijednosti",
-  "whatWasIt": "Što treba?",
+  "whatWasIt": "Što si mislio?",
   "addFailed": "Dodavanje nije uspjelo",
   "deleteFailed": "Brisanje nije uspjelo",
   "caloriesUnit": "kcal",

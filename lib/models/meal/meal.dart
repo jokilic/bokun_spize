@@ -32,6 +32,7 @@ class Meal {
     this.foods,
     this.errors,
     this.imageStoragePath,
+    this.methodOfCreation,
   });
 
   Meal copyWith({
@@ -46,6 +47,7 @@ class Meal {
     bool? isLoading,
     List<String>? errors,
     String? imageStoragePath,
+    String? methodOfCreation,
   }) => Meal(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -58,6 +60,7 @@ class Meal {
     isLoading: isLoading ?? this.isLoading,
     errors: errors ?? this.errors,
     imageStoragePath: imageStoragePath ?? this.imageStoragePath,
+    methodOfCreation: methodOfCreation ?? this.methodOfCreation,
   );
 
   factory Meal.fromMap(
@@ -80,6 +83,7 @@ class Meal {
     isLoading: isLoading,
     errors: errors,
     imageStoragePath: imageStoragePath,
+    methodOfCreation: map['methodOfCreation'] as String?,
   );
 
   String toJson() => json.encode(toMap());
@@ -96,11 +100,12 @@ class Meal {
     'isLoading': isLoading,
     'errors': errors,
     'imageStoragePath': imageStoragePath,
+    'methodOfCreation': methodOfCreation,
   };
 
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, methodOfCreation: $methodOfCreation)';
 
   @override
   bool operator ==(Object other) =>
@@ -116,7 +121,8 @@ class Meal {
           originalText == other.originalText &&
           isLoading == other.isLoading &&
           errors == other.errors &&
-          imageStoragePath == other.imageStoragePath;
+          imageStoragePath == other.imageStoragePath &&
+          methodOfCreation == other.methodOfCreation;
 
   @override
   int get hashCode =>
@@ -129,5 +135,6 @@ class Meal {
       originalText.hashCode ^
       isLoading.hashCode ^
       errors.hashCode ^
-      imageStoragePath.hashCode;
+      imageStoragePath.hashCode ^
+      methodOfCreation.hashCode;
 }

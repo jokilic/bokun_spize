@@ -6,6 +6,7 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 
 import '../util/meal_image.dart';
+import '../util/typedefs.dart';
 import 'firebase_service.dart';
 
 class AIService extends ValueNotifier<List<GenerativeModel>> {
@@ -320,8 +321,8 @@ JSON structure to follow strictly:
     ),
   );
 
-  /// Trigger `AI` with text and image prompts in requested `languageCode`, return its result and errors
-  Future<({String? aiResult, List<String>? errors})> triggerAI({
+  /// Trigger `AI` with text and image prompts in requested `languageCode`, return its result, model name, and errors
+  Future<TriggerAIResult> triggerAI({
     required String? textPrompt,
     required File? imageFile,
     required String languageCode,
@@ -352,6 +353,7 @@ JSON structure to follow strictly:
       errors.add('aiErrorNoTextImage'.tr());
       return (
         aiResult: null,
+        modelName: null,
         errors: errors,
       );
     }
@@ -376,11 +378,13 @@ JSON structure to follow strictly:
 
       return (
         aiResult: null,
+        modelName: null,
         errors: errors,
       );
     }
 
     String? aiResult;
+    String? modelName;
     for (final model in value) {
       try {
         final response = await model.generateContent(contents);
@@ -396,6 +400,7 @@ JSON structure to follow strictly:
         }
 
         aiResult = result;
+        modelName = model.model.name;
         break;
       } catch (e) {
         final error = e.toString().contains('quota')
@@ -411,6 +416,7 @@ JSON structure to follow strictly:
 
     return (
       aiResult: aiResult,
+      modelName: modelName,
       errors: errors,
     );
   }
