@@ -120,15 +120,13 @@ class _AccountScreenState extends State<AccountScreen> {
                     builder: (sheetContext) => AccountNameSheet(
                       initialName: name,
                       onSavePressed: (newName) {
-                        final trimmedName = newName.trim();
-
-                        if (trimmedName.isEmpty || trimmedName == name) {
+                        if (newName.isEmpty || newName == name) {
                           return;
                         }
 
                         HapticFeedback.lightImpact();
                         accountController.updateUserName(
-                          newName: trimmedName,
+                          newName: newName,
                         );
                       },
                     ),
@@ -212,12 +210,16 @@ class _AccountScreenState extends State<AccountScreen> {
                       deleteWord: 'accountDeleteSheetWord'.tr(),
                       requiresPassword: firebaseService.authProvider == AuthProvider.email,
                       onDeletePressed: (password) async {
-                        final deleted = await firebaseService.deleteUser(
+                        unawaited(
+                          HapticFeedback.lightImpact(),
+                        );
+
+                        final isDeleted = await firebaseService.deleteUser(
                           email: firebaseService.userEmail,
                           password: password,
                         );
 
-                        if (deleted) {
+                        if (isDeleted) {
                           await handleLogOut();
                         } else if (mounted) {
                           showSnackbar(
@@ -226,8 +228,6 @@ class _AccountScreenState extends State<AccountScreen> {
                             icon: PhosphorIconsBold.warningCircle,
                           );
                         }
-
-                        return deleted;
                       },
                     ),
                   );

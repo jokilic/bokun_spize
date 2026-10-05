@@ -58,7 +58,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final validation =
+    final validated =
         confirmController.text.isEmpty ||
         confirmController.text.toLowerCase() != widget.deleteWord.toLowerCase() ||
         (widget.requiresPassword && passwordController.text.length < 8);
@@ -287,6 +287,13 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                       focusNode: passwordFocusNode,
                       title: 'password'.tr(),
                       hintText: '•' * 8,
+                      onSubmitted: (_) {
+                        if (!validated) {
+                          return;
+                        }
+
+                        deleteAccount();
+                      },
                       textColor: context.colors.text,
                       autofillHints: const [AutofillHints.password],
                       keyboardType: TextInputType.visiblePassword,
@@ -325,7 +332,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: validation ? null : deleteAccount,
+                      onPressed: validated ? null : deleteAccount,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
