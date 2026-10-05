@@ -208,8 +208,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   showBlurredModalBottomSheet(
                     context: context,
                     builder: (sheetContext) => AccountDeleteSheet(
-                      // TODO: Update this word
-                      deleteWord: 'deletee',
+                      deleteWord: 'accountDeleteSheetWord'.tr(),
                       onDeletePressed: () {
                         // TODO: Trigger account deletion in Firebase (delete all images, all meals, weightTracks (everything in Firestore for the user)) and finally the user altogether
                       },

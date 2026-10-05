@@ -189,5 +189,6 @@
     "accountNameSheetSubtitle": "Promijeni svoje ime",
     "accountDeleteSheetTitle": "Izbriši račun",
     "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
-    "accountDeleteSheetTextField": "Napiši '{}'"
+    "accountDeleteSheetTextField": "Napiši '{}'",
+    "accountDeleteSheetWord": "izbriši moj račun"
 }

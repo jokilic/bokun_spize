@@ -189,5 +189,6 @@
     "accountNameSheetSubtitle": "Change your name",
     "accountDeleteSheetTitle": "Delete account",
     "accountDeleteSheetSubtitle": "Confirm account deletion",
-    "accountDeleteSheetTextField": "Write '{}'"
+    "accountDeleteSheetTextField": "Write '{}'",
+    "accountDeleteSheetWord": "delete my account"
 }

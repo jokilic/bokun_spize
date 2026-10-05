@@ -205,7 +205,8 @@ class CodegenLoader extends AssetLoader{
   "accountNameSheetSubtitle": "Change your name",
   "accountDeleteSheetTitle": "Delete account",
   "accountDeleteSheetSubtitle": "Confirm account deletion",
-  "accountDeleteSheetTextField": "Write '{}'"
+  "accountDeleteSheetTextField": "Write '{}'",
+  "accountDeleteSheetWord": "delete my account"
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -398,7 +399,8 @@ static const Map<String,dynamic> _hr = {
   "accountNameSheetSubtitle": "Promijeni svoje ime",
   "accountDeleteSheetTitle": "Izbriši račun",
   "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
-  "accountDeleteSheetTextField": "Napiši '{}'"
+  "accountDeleteSheetTextField": "Napiši '{}'",
+  "accountDeleteSheetWord": "izbriši moj račun"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }
