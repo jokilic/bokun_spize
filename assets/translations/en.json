@@ -198,6 +198,6 @@
     "accountContactSheetTextFieldTitle": "Your message",
     "accountContactSheetTextFieldHint": "Write something...",
     "accountContactSheetButton": "Send message",
-    "accountContactSendSuccess": "Message sent!",
+    "accountContactSendSuccess": "Message sent",
     "accountContactSendFailure": "Couldn't send message"
 }

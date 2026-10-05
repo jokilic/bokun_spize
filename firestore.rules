@@ -120,7 +120,7 @@ service cloud.firestore {
 
     // Validate contact messages using the fields serialized by the app
     function isValidContactMessage(data) {
-      let fields = ['message', 'userUid', 'userEmail', 'appVersion', 'platformData', 'createdAt'];
+      let fields = ['message', 'userUid', 'userEmail', 'appVersion', 'platform', 'createdAt'];
       let email = request.auth.token.get('email', null);
 
       return data.keys().hasAll(fields)
@@ -134,8 +134,8 @@ service cloud.firestore {
         && data.userEmail == (email == null ? '--' : email)
         && data.appVersion is string
         && data.appVersion.size() <= 200
-        && data.platformData is string
-        && data.platformData.size() <= 10000
+        && data.platform is string
+        && data.platform.size() <= 10000
         && data.createdAt is string
         && data.createdAt.size() > 0
         && data.createdAt.size() <= 64;

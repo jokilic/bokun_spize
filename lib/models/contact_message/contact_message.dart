@@ -5,7 +5,7 @@ class ContactMessage {
   final String userUid;
   final String userEmail;
   final String appVersion;
-  final String platformData;
+  final String platform;
   final DateTime createdAt;
 
   ContactMessage({
@@ -13,7 +13,7 @@ class ContactMessage {
     required this.userUid,
     required this.userEmail,
     required this.appVersion,
-    required this.platformData,
+    required this.platform,
     required this.createdAt,
   });
 
@@ -25,7 +25,7 @@ class ContactMessage {
     userUid: map['userUid'],
     userEmail: map['userEmail'],
     appVersion: map['appVersion'],
-    platformData: map['platformData'],
+    platform: map['platform'],
     createdAt: createdAt,
   );
 
@@ -36,12 +36,12 @@ class ContactMessage {
     'userUid': userUid,
     'userEmail': userEmail,
     'appVersion': appVersion,
-    'platformData': platformData,
+    'platform': platform,
     'createdAt': createdAt.toIso8601String(),
   };
 
   @override
-  String toString() => 'ContactMessage(message: $message, userUid: $userUid, userEmail: $userEmail, appVersion: $appVersion, platformData: $platformData, createdAt: $createdAt)';
+  String toString() => 'ContactMessage(message: $message, userUid: $userUid, userEmail: $userEmail, appVersion: $appVersion, platform: $platform, createdAt: $createdAt)';
 
   @override
   bool operator ==(Object other) =>
@@ -52,9 +52,9 @@ class ContactMessage {
           userUid == other.userUid &&
           userEmail == other.userEmail &&
           appVersion == other.appVersion &&
-          platformData == other.platformData &&
+          platform == other.platform &&
           createdAt == other.createdAt;
 
   @override
-  int get hashCode => message.hashCode ^ userUid.hashCode ^ userEmail.hashCode ^ appVersion.hashCode ^ platformData.hashCode ^ createdAt.hashCode;
+  int get hashCode => message.hashCode ^ userUid.hashCode ^ userEmail.hashCode ^ appVersion.hashCode ^ platform.hashCode ^ createdAt.hashCode;
 }

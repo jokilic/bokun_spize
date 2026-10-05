@@ -132,7 +132,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
           userUid: userUid,
           userEmail: userEmail,
           appVersion: metadata[0] ?? '--',
-          platformData: metadata[1] ?? '--',
+          platform: metadata[1] ?? '--',
           createdAt: createdAt,
         );
 
