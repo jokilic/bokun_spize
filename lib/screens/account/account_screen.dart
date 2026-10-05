@@ -23,6 +23,7 @@ import '../walks/walks_controller.dart';
 import '../weights/weights_controller.dart';
 import 'account_controller.dart';
 import 'widgets/account_app_bar.dart';
+import 'widgets/account_delete_sheet.dart';
 import 'widgets/account_list_tile.dart';
 import 'widgets/account_name_sheet.dart';
 
@@ -119,6 +120,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       initialName: name,
                       onSavePressed: (newName) {
                         final trimmedName = newName.trim();
+
                         if (trimmedName.isEmpty || trimmedName == name) {
                           return;
                         }
@@ -201,7 +203,19 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               AccountListTile(
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
-                onPressed: () {},
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  showBlurredModalBottomSheet(
+                    context: context,
+                    builder: (sheetContext) => AccountDeleteSheet(
+                      // TODO: Update this word
+                      deleteWord: 'deletee',
+                      onDeletePressed: () {
+                        // TODO: Trigger account deletion in Firebase (delete all images, all meals, weightTracks (everything in Firestore for the user)) and finally the user altogether
+                      },
+                    ),
+                  );
+                },
                 icon: PhosphorIconsBold.trash,
                 iconBackgroundColor: context.colors.delete,
                 title: 'accountDeleteAccountTitle'.tr(),

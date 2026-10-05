@@ -135,6 +135,7 @@
     "entranceRegisterButton": "Registriraj se",
     "manualAddMealCopyTitle": "Kopiraj obrok",
     "manualAddMealEditTitle": "Uredi obrok",
+    "manualAddMealSubtitle": "Dodaj obrok u dnevnik",
     "manualAddMealEditSubtitle": "Ažuriraj obrok u dnevniku",
     "manualAddMealTextFieldTitle": "Naziv obroka",
     "manualAddMealTextFieldCopyHint": "Obrok nema naziv",

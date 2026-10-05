@@ -135,6 +135,7 @@
     "entranceRegisterButton": "Register",
     "manualAddMealCopyTitle": "Copy meal",
     "manualAddMealEditTitle": "Edit meal",
+    "manualAddMealSubtitle": "Add meal in your journal",
     "manualAddMealEditSubtitle": "Update meal in your journal",
     "manualAddMealTextFieldTitle": "Meal name",
     "manualAddMealTextFieldCopyHint": "Meal has no name",
