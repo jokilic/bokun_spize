@@ -22,12 +22,7 @@
 
 ### Notifications
     - [ ] Notifications reminding to weight
-    - [ ] Notifications analyzing previous meal day
-
-### Localization
-    - [ ] Localize `Strings`
-    - [ ] Check all `log` and think if they should show as snackbars
-    - [ ] Check all `dateFormat:`
+    - [ ] Notifications analyzing previous day (meals, weight, walks)
 
 # Bokun spize 🥗
 

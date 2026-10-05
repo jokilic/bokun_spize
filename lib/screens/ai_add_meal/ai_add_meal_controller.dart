@@ -205,16 +205,14 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
         height: squareSize,
       );
 
-      await File(image.path).writeAsBytes(
-        img.encodeJpg(
-          squareImage,
-          quality: 50,
-        ),
-      );
-
-      /// Copy image into app storage
+      /// Encode the cropped image as WebP and save it into app storage
       final imageFile = await persistImage(
         imagePath: image.path,
+        webpBytes: img.encodeWebP(
+          squareImage,
+          lossless: false,
+          quality: 50,
+        ),
       );
 
       /// Update `state` with new image
@@ -232,14 +230,14 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
     /// Trigger `imagePicker`
     final image = await imagePicker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 50,
+      imageQuality: 100,
       maxHeight: 1000,
       maxWidth: 1000,
     );
 
     /// Image is picked, update `state`
     if (image != null) {
-      /// Copy image into app storage
+      /// Convert the selected image to `WebP` and save it into app storage
       final imageFile = await persistImage(
         imagePath: image.path,
       );

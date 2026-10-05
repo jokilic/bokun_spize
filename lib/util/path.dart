@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
+/// Returns the app storage directory for supported platforms
 Future<Directory?> getProperDirectory() async {
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
     final directory = await getApplicationDocumentsDirectory();
@@ -17,19 +20,30 @@ Future<Directory?> getProperDirectory() async {
   return null;
 }
 
-/// Copies image into app storage so it's paths remain valid later
+/// Saves a `WebP` image into app storage so its path remains valid later
 Future<File> persistImage({
   required String imagePath,
+  Uint8List? webpBytes,
 }) async {
-  final appDirectory = await getProperDirectory();
+  final appDirectory = await getProperDirectory() ?? await getTemporaryDirectory();
 
-  if (appDirectory == null) {
-    return File(imagePath);
+  if (webpBytes == null) {
+    final decodedImage = img.decodeImage(await File(imagePath).readAsBytes());
+
+    if (decodedImage == null) {
+      throw const FormatException('Unable to decode meal image');
+    }
+
+    webpBytes = img.encodeWebP(
+      img.bakeOrientation(decodedImage),
+      lossless: false,
+      quality: 50,
+    );
   }
 
   final persistedImage = File(
-    '${appDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.jpg',
+    '${appDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.webp',
   );
 
-  return File(imagePath).copy(persistedImage.path);
+  return persistedImage.writeAsBytes(webpBytes);
 }

@@ -359,7 +359,7 @@ class WalksGraphWidget extends StatelessWidget {
 
                 final date = getDateString(
                   date: stepWithDate.dateTime,
-                  dateFormat: 'MMM d, yyyy',
+                  dateFormat: 'dd MMM',
                   useTodayYesterdayTomorrow: false,
                   languageCode: context.locale.languageCode,
                 );
@@ -507,7 +507,7 @@ class WalksGraphWidget extends StatelessWidget {
           );
     final label = getDateString(
       date: dateTime,
-      dateFormat: 'MMM d',
+      dateFormat: 'dd MMM',
       languageCode: languageCode,
     ).toUpperCase();
 

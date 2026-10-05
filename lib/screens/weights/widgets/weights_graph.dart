@@ -363,7 +363,7 @@ class WeightsGraphWidget extends StatelessWidget {
 
                 final date = getDateString(
                   date: weightTrack.dateTime,
-                  dateFormat: 'MMM d, yyyy',
+                  dateFormat: 'dd MMM',
                   useTodayYesterdayTomorrow: false,
                   languageCode: context.locale.languageCode,
                 );
