@@ -185,10 +185,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
           /// NAME FIELD
           ///
           SliverPadding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: marginHorizontal,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
                 delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -220,9 +217,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.done,
                   autofillHints: const [AutofillHints.name],
-                  onChanged: (_) => setState(
-                    () {},
-                  ),
+                  onChanged: (_) => setState(() {}),
                 ),
               ),
             ),

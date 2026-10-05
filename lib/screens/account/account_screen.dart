@@ -15,6 +15,7 @@ import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
 import '../../util/dependencies.dart';
+import '../../util/snackbars.dart';
 import '../../util/spacing.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/navigation_bar_widget.dart';
@@ -209,8 +210,24 @@ class _AccountScreenState extends State<AccountScreen> {
                     context: context,
                     builder: (sheetContext) => AccountDeleteSheet(
                       deleteWord: 'accountDeleteSheetWord'.tr(),
-                      onDeletePressed: () {
-                        // TODO: Trigger account deletion in Firebase (delete all images, all meals, weightTracks (everything in Firestore for the user)) and finally the user altogether
+                      requiresPassword: firebaseService.authProvider == AuthProvider.email,
+                      onDeletePressed: (password) async {
+                        final deleted = await firebaseService.deleteUser(
+                          email: firebaseService.userEmail,
+                          password: password,
+                        );
+
+                        if (deleted) {
+                          await handleLogOut();
+                        } else if (mounted) {
+                          showSnackbar(
+                            context,
+                            text: 'entranceErrorUnknown'.tr(),
+                            icon: PhosphorIconsBold.warningCircle,
+                          );
+                        }
+
+                        return deleted;
                       },
                     ),
                   );
