@@ -35,6 +35,15 @@ class _ContactSheetState extends State<ContactSheet> {
     super.dispose();
   }
 
+  void sendMessage() {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    widget.onSendPressed(
+      messageController.text.trim(),
+    );
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final validated = messageController.text.trim().isNotEmpty;
@@ -248,11 +257,7 @@ class _ContactSheetState extends State<ContactSheet> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: validated
-                          ? () => widget.onSendPressed(
-                              messageController.text.trim(),
-                            )
-                          : null,
+                      onPressed: validated ? sendMessage : null,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
