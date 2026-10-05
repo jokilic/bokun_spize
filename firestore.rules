@@ -118,6 +118,36 @@ service cloud.firestore {
         && data.weight <= 1000;
     }
 
+    // Validate contact messages using the fields serialized by the app
+    function isValidContactMessage(data) {
+      let fields = ['message', 'userUid', 'userEmail', 'appVersion', 'platformData', 'createdAt'];
+      let email = request.auth.token.get('email', null);
+
+      return data.keys().hasAll(fields)
+        && data.keys().hasOnly(fields)
+        && data.message is string
+        && data.message.size() > 0
+        && data.message.size() <= 50000
+        && data.userUid is string
+        && data.userUid == request.auth.uid
+        && data.userEmail is string
+        && data.userEmail == (email == null ? '--' : email)
+        && data.appVersion is string
+        && data.appVersion.size() <= 200
+        && data.platformData is string
+        && data.platformData.size() <= 10000
+        && data.createdAt is string
+        && data.createdAt.size() > 0
+        && data.createdAt.size() <= 64;
+    }
+
+    // Allow authenticated submissions while keeping messages inaccessible to clients
+    match /contactMessages/{messageId} {
+      allow create: if request.auth != null
+        && isValidContactMessage(request.resource.data);
+      allow read, update, delete: if false;
+    }
+
     // Allow signed-in clients to fetch AI configuration managed by administrators
     match /config/ai {
       allow get: if request.auth != null;
