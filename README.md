@@ -15,7 +15,6 @@
         - [ ] Version
 
 ### Firebase
-    - [ ] Use `webp` instead of `jpg` for images
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Perhaps anonymous sign-in
@@ -23,6 +22,9 @@
 ### Notifications
     - [ ] Notifications reminding to weight
     - [ ] Notifications analyzing previous day (meals, weight, walks)
+
+### In-app purchases
+    - [ ] Research & initial implementation
 
 # Bokun spize 🥗
 
