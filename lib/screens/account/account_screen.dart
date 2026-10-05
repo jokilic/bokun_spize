@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
@@ -13,6 +14,7 @@ import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
+import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import '../meals/meals_controller.dart';
 import '../walks/walks_controller.dart';
@@ -20,6 +22,7 @@ import '../weights/weights_controller.dart';
 import 'account_controller.dart';
 import 'widgets/account_app_bar.dart';
 import 'widgets/account_list_tile.dart';
+import 'widgets/account_name_sheet.dart';
 
 class AccountScreen extends WatchingStatefulWidget {
   @override
@@ -107,6 +110,19 @@ class _AccountScreenState extends State<AccountScreen> {
               /// APP BAR
               ///
               AccountAppBar(
+                onEditPressed: () {
+                  HapticFeedback.lightImpact();
+                  showBlurredModalBottomSheet(
+                    context: context,
+                    builder: (sheetContext) => AccountNameSheet(
+                      initialName: name,
+                      onSavePressed: (meal) {
+                        HapticFeedback.lightImpact();
+                        // TODO: Update `name` in `Firebase`
+                      },
+                    ),
+                  );
+                },
                 email: email,
                 name: name,
                 userPhoto: userPhoto,

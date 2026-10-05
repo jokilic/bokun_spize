@@ -8,11 +8,13 @@ import '../../../constants/constants.dart';
 import '../../../theme/extensions.dart';
 
 class AccountAppBar extends StatelessWidget {
+  final Function() onEditPressed;
   final String? email;
   final String? name;
   final String? userPhoto;
 
   const AccountAppBar({
+    required this.onEditPressed,
     required this.email,
     required this.name,
     required this.userPhoto,
@@ -117,31 +119,26 @@ class AccountAppBar extends StatelessWidget {
           ),
 
           ///
-          /// PLACEHOLDER ICON
+          /// ICON
           ///
           const SizedBox(width: 14),
-          Opacity(
-            opacity: 0,
-            child: IgnorePointer(
-              child: IconButton(
-                onPressed: null,
-                icon: const PhosphorIcon(
-                  PhosphorIconsBold.magnifyingGlass,
-                  size: 24,
-                ),
-                style: IconButton.styleFrom(
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.all(14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                  foregroundColor: context.colors.account,
-                  disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                  disabledForegroundColor: context.colors.account,
-                ),
+          IconButton(
+            onPressed: onEditPressed,
+            icon: const PhosphorIcon(
+              PhosphorIconsBold.magnifyingGlass,
+              size: 24,
+            ),
+            style: IconButton.styleFrom(
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
               ),
+              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+              foregroundColor: context.colors.protein,
+              disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+              disabledForegroundColor: context.colors.protein,
             ),
           ),
         ],

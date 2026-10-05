@@ -5,11 +5,13 @@
     - [ ] Animations
 
 ### Screens
+    - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
         - [ ] Edit user name (show sheet with `TextField`)
         - [ ] UserMetricsSheet
         - [x] Theme
         - [x] Language
+        - [ ] Contact me (show sheet with `TextField`)
         - [x] Logout
         - [ ] Delete account
         - [ ] Version
@@ -17,6 +19,8 @@
 ### Firebase
     - [ ] Update database permissions
     - [ ] Firebase App Check
+    - [ ] Analytics
+    - [ ] Crashlytics
     - [ ] Perhaps anonymous sign-in
 
 ### Notifications
