@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../models/contact_message/contact_message.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../util/theme.dart';
@@ -109,7 +110,15 @@ class AccountController extends ValueNotifier<SettingsValues> {
     context: context,
     builder: (sheetContext) => ContactSheet(
       onSendPressed: (message) {
-        // TODO: Implement
+        // TODO: Generate this
+        final contactMessage = ContactMessage(
+          message: message,
+          userUid: userUid,
+          userEmail: userEmail,
+          appVersion: appVersion,
+          platformData: platformData,
+          createdAt: createdAt,
+        );
       },
     ),
   );
