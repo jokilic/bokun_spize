@@ -274,6 +274,10 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(credential);
 
+      await saveUserRegistrationDate(
+        user: userCredential.user,
+      );
+
       await saveProviderUserName(
         user: userCredential.user,
         providerName: user.displayName,
@@ -354,6 +358,10 @@ class FirebaseService {
       );
 
       final userCredential = await auth.signInWithCredential(oauthCredential);
+
+      await saveUserRegistrationDate(
+        user: userCredential.user,
+      );
 
       final appleName =
           [
@@ -487,6 +495,10 @@ class FirebaseService {
         );
       }
 
+      await saveUserRegistrationDate(
+        user: user,
+      );
+
       await saveProviderUserName(
         user: user,
         providerName: name,
@@ -526,6 +538,30 @@ class FirebaseService {
         ),
       );
     }
+  }
+
+  /// Saves the first registration date without replacing an existing date
+  Future<void> saveUserRegistrationDate({required User? user}) async {
+    if (user == null) {
+      return;
+    }
+
+    final document = firestore.collection('users').doc(user.uid);
+    final registeredAt = user.metadata.creationTime ?? DateTime.now();
+
+    await firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(document);
+
+      if (snapshot.data()?['registeredAt'] != null) {
+        return;
+      }
+
+      transaction.set(
+        document,
+        {'registeredAt': Timestamp.fromDate(registeredAt)},
+        SetOptions(merge: true),
+      );
+    });
   }
 
   /// Saves available provider name without replacing existing user name

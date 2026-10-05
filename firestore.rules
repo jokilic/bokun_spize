@@ -10,6 +10,7 @@ service cloud.firestore {
       return value == null || (value is string && value.size() <= maxLength);
     }
 
+    // Validate profile fields and optional first registration timestamp
     function isValidUserDocument(data) {
       let metricFields = [
         'age',
@@ -23,13 +24,12 @@ service cloud.firestore {
         'dailyFat',
       ];
 
-      let isRegistrationDocument = data.keys().hasAll(['name'])
-        && data.keys().hasOnly(['name'])
-        && data.name is string
-        && data.name.size() <= 200;
+      let isRegistrationDocument = data.keys().hasAny(['name', 'registeredAt'])
+        && data.keys().hasOnly(['name', 'registeredAt'])
+        && (!('name' in data) || (data.name is string && data.name.size() <= 200));
 
       let isMetricsDocument = data.keys().hasAll(metricFields)
-        && data.keys().hasOnly(metricFields.concat(['name']))
+        && data.keys().hasOnly(metricFields.concat(['name', 'registeredAt']))
         && (!('name' in data) || (data.name is string && data.name.size() <= 200))
         && data.age is int
         && data.age > 0
@@ -55,7 +55,8 @@ service cloud.firestore {
         && data.dailyFat is number
         && data.dailyFat >= 0;
 
-      return isRegistrationDocument || isMetricsDocument;
+      return (!('registeredAt' in data) || data.registeredAt is timestamp)
+        && (isRegistrationDocument || isMetricsDocument);
     }
 
     function isValidNutrition(data) {
