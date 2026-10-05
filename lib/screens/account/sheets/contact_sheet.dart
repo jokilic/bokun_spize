@@ -219,6 +219,7 @@ class _ContactSheetState extends State<ContactSheet> {
                     ),
                   ],
                   child: TextFieldWidget(
+                    autofocus: true,
                     minLines: 3,
                     maxLines: 3,
                     controller: messageController,

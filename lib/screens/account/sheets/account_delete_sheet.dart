@@ -27,7 +27,7 @@ class AccountDeleteSheet extends StatefulWidget {
 class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
   late final TextEditingController confirmController;
   late final TextEditingController passwordController;
-  late final FocusNode passwordFocusNode;
+  late final FocusNode confirmFocusNode;
 
   @override
   void initState() {
@@ -35,14 +35,14 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
 
     confirmController = TextEditingController();
     passwordController = TextEditingController();
-    passwordFocusNode = FocusNode();
+    confirmFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     confirmController.dispose();
     passwordController.dispose();
-    passwordFocusNode.dispose();
+    confirmFocusNode.dispose();
 
     super.dispose();
   }
@@ -235,24 +235,19 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                       ),
                     ],
                     child: TextFieldWidget(
+                      autofocus: widget.requiresPassword,
                       obscureText: true,
                       controller: passwordController,
-                      focusNode: passwordFocusNode,
                       title: 'password'.tr(),
                       hintText: '•' * 8,
-                      onSubmitted: (_) {
-                        if (!validated) {
-                          return;
-                        }
-
-                        deleteAccount();
-                      },
+                      onSubmitted: (_) => confirmFocusNode.requestFocus(),
                       textColor: context.colors.text,
                       autofillHints: const [AutofillHints.password],
                       keyboardType: TextInputType.visiblePassword,
                       textCapitalization: TextCapitalization.none,
                       textInputAction: TextInputAction.go,
                       onChanged: (_) => setState(() {}),
+                      textFieldFontSize: 18,
                     ),
                   ),
                 ),
@@ -290,12 +285,20 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                     ),
                   ],
                   child: TextFieldWidget(
+                    autofocus: !widget.requiresPassword,
                     controller: confirmController,
+                    focusNode: confirmFocusNode,
                     title: 'accountDeleteSheetTextFieldTitle'.tr(
                       args: [widget.deleteWord],
                     ),
                     hintText: widget.deleteWord,
-                    onSubmitted: (_) => passwordFocusNode.requestFocus(),
+                    onSubmitted: (_) {
+                      if (!validated) {
+                        return;
+                      }
+
+                      deleteAccount();
+                    },
                     textColor: context.colors.text,
                     textCapitalization: TextCapitalization.none,
                     textInputAction: widget.requiresPassword ? TextInputAction.next : TextInputAction.done,

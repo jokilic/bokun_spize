@@ -223,6 +223,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                     ),
                   ],
                   child: TextFieldWidget(
+                    autofocus: true,
                     controller: nameController,
                     title: 'name'.tr(),
                     hintText: widget.initialName,
@@ -267,10 +268,10 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: validated
-                          ? null
-                          : () => onSavePressed(
+                          ? () => onSavePressed(
                               validated: validated,
-                            ),
+                            )
+                          : null,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),

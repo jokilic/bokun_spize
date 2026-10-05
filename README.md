@@ -8,11 +8,12 @@
 ### Screens
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
-        - [x] Edit user name (show sheet with `TextField`)
+        - [x] Edit user name
         - [ ] UserMetricsSheet
         - [x] Theme
         - [x] Language
-        - [ ] Contact me (show sheet with `TextField`)
+        - [ ] Notifications
+        - [x] Contact me
         - [x] Logout
         - [x] Delete account
         - [x] Version

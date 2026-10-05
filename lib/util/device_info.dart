@@ -1,9 +1,7 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 
-import '../models/contact_message/android_device_data.dart';
-
-/// Return the Android model, iOS machine identifier, or web user agent
+/// Return info about device running the app
 Future<String?> getDeviceInfo() async {
   try {
     final deviceInfo = DeviceInfoPlugin();
@@ -15,14 +13,7 @@ Future<String?> getDeviceInfo() async {
 
     if (defaultTargetPlatform == TargetPlatform.android) {
       final androidInfo = await deviceInfo.androidInfo;
-
-      return AndroidDeviceData(
-        brand: androidInfo.brand,
-        device: androidInfo.device,
-        manufacturer: androidInfo.manufacturer,
-        model: androidInfo.model,
-        name: androidInfo.name,
-      ).toJson();
+      return androidInfo.name;
     }
 
     if (defaultTargetPlatform == TargetPlatform.iOS) {
