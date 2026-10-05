@@ -271,7 +271,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
                         fontWeight: FontWeight.w800,
                       ),
                       padding: const EdgeInsets.all(22),
-                      backgroundColor: context.colors.protein,
+                      backgroundColor: context.colors.account,
                       foregroundColor: context.colors.buttonText,
                     ),
                     child: Text(

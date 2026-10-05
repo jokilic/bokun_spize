@@ -14,7 +14,7 @@
         - [ ] Contact me (show sheet with `TextField`)
         - [x] Logout
         - [ ] Delete account
-        - [ ] Version
+        - [x] Version
 
 ### Firebase
     - [ ] Update database permissions
