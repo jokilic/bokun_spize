@@ -58,7 +58,10 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final validation = confirmController.text.isEmpty || confirmController.text != widget.deleteWord || (widget.requiresPassword && passwordController.text.length < 8);
+    final validation =
+        confirmController.text.isEmpty ||
+        confirmController.text.toLowerCase() != widget.deleteWord.toLowerCase() ||
+        (widget.requiresPassword && passwordController.text.length < 8);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),

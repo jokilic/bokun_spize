@@ -14,7 +14,7 @@
         - [x] Language
         - [ ] Contact me (show sheet with `TextField`)
         - [x] Logout
-        - [ ] Delete account
+        - [x] Delete account
         - [x] Version
 
 ### Firebase
