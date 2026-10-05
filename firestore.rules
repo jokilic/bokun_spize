@@ -116,6 +116,11 @@ service cloud.firestore {
         && data.weight <= 1000;
     }
 
+    // Allow signed-in clients to fetch AI configuration managed by administrators
+    match /config/ai {
+      allow get: if request.auth != null;
+    }
+
     match /users/{userId} {
       allow read, delete: if isOwner(userId);
       allow create, update: if isOwner(userId)

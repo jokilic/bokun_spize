@@ -186,6 +186,7 @@ Future<void> registerServices() async {
     getIt.registerLazySingleton(
       () => AIService(
         ai: FirebaseAI.googleAI(),
+        firebase: getIt.get<FirebaseService>(),
       ),
     );
   }

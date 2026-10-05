@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 
 import '../util/meal_image.dart';
+import 'firebase_service.dart';
 
 class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
@@ -13,16 +15,21 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   final FirebaseAI ai;
+  final FirebaseService firebase;
 
   AIService({
     required this.ai,
+    required this.firebase,
   }) : super([]);
 
   ///
   /// INIT
   ///
 
-  void init({required String languageCode}) {
+  /// Loads remote model names before initializing models for the requested language
+  Future<void> init({required String languageCode}) async {
+    await (modelNamesLoading ??= loadModelNames());
+
     if (initialized && initializedLanguageCode == languageCode) {
       return;
     }
@@ -43,7 +50,8 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
 
   String? initializedLanguageCode;
 
-  // TODO: Check how to remotely get these values (from my root Firestore or similar)
+  Future<void>? modelNamesLoading;
+
   final modelNames = [
     'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
@@ -261,6 +269,21 @@ JSON structure to follow strictly:
   /// METHODS
   ///
 
+  /// Loads remote model names, retaining defaults when unavailable
+  Future<void> loadModelNames() async {
+    final names = await firebase.getAIModelNames();
+
+    if (names != null && names.isNotEmpty) {
+      modelNames
+        ..clear()
+        ..addAll(names);
+
+      log('Model names from Firebase -> $modelNames');
+    }
+
+    log('Default model names -> $modelNames');
+  }
+
   /// Initialize `Gemini` backend models for requested `languageCode`
   void initializeGemini({required String languageCode}) {
     try {
@@ -339,7 +362,7 @@ JSON structure to follow strictly:
     }
 
     /// Models are created on first valid AI request and refreshed when `languageCode` changes
-    init(
+    await init(
       languageCode: languageCode,
     );
 

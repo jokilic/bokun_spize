@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
 
+import '../constants/durations.dart';
 import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
@@ -93,6 +94,41 @@ class FirebaseService {
   ///
   /// METHODS
   ///
+
+  /// Reads the ordered `modelNames` array from `config/ai`, returning `null` when unavailable
+  Future<List<String>?> getAIModelNames() async {
+    try {
+      final snapshot = await firestore
+          .doc('config/ai')
+          .get()
+          .timeout(
+            BokunSpizeDurations.firebaseTimeout,
+          );
+
+      final remoteModelNames = snapshot.data()?['modelNames'];
+
+      if (remoteModelNames is! List) {
+        return null;
+      }
+
+      return remoteModelNames
+          .whereType<String>()
+          .map(
+            (name) => name.trim(),
+          )
+          .where(
+            (name) => name.isNotEmpty,
+          )
+          .toSet()
+          .toList();
+    } catch (error) {
+      log(
+        'Loading remote AI model names failed',
+        error: error,
+      );
+      return null;
+    }
+  }
 
   /// Logs user out of [Firebase]
   Future<void> logOut() async => auth.signOut();

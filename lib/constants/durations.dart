@@ -6,4 +6,5 @@ class BokunSpizeDurations {
   static const speechToTextShimmer = Duration(milliseconds: 1250);
   static const stepsRefreshInterval = Duration(seconds: 2);
   static const searchDelay = Duration(milliseconds: 350);
+  static const firebaseTimeout = Duration(seconds: 5);
 }
