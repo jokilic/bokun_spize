@@ -10,6 +10,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
 
 import '../constants/durations.dart';
+import '../models/contact_message/contact_message.dart';
 import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
@@ -94,6 +95,21 @@ class FirebaseService {
   ///
   /// METHODS
   ///
+
+  /// Adds a contact message to the root `contactMessages` collection in [Firebase]
+  Future<bool> writeContactMessage({required ContactMessage contactMessage}) async {
+    try {
+      await firestore.collection('contactMessages').add(contactMessage.toMap());
+
+      return true;
+    } catch (error) {
+      log(
+        'Writing contact message failed',
+        error: error,
+      );
+      return false;
+    }
+  }
 
   /// Reads the ordered `modelNames` array from `config/ai`, returning `null` when unavailable
   Future<List<String>?> getAIModelNames() async {

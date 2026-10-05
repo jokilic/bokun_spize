@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import '../../models/contact_message/contact_message.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
+import '../../util/app_version.dart';
+import '../../util/device_info.dart';
 import '../../util/theme.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
@@ -109,15 +111,31 @@ class AccountController extends ValueNotifier<SettingsValues> {
   Future<void> openContactSheet(BuildContext context) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (sheetContext) => ContactSheet(
-      onSendPressed: (message) {
-        // TODO: Generate this
+      onSendPressed: (message) async {
+        unawaited(
+          HapticFeedback.lightImpact(),
+        );
+
+        final userUid = firebase.userUid ?? '--';
+        final userEmail = firebase.userEmail ?? '--';
+
+        final createdAt = DateTime.now();
+        final metadata = await Future.wait<String?>([
+          getAppVersion(),
+          getDeviceInfo(),
+        ]);
+
         final contactMessage = ContactMessage(
           message: message,
           userUid: userUid,
           userEmail: userEmail,
-          appVersion: appVersion,
-          platformData: platformData,
+          appVersion: metadata[0] ?? '--',
+          platformData: metadata[1] ?? '--',
           createdAt: createdAt,
+        );
+
+        await firebase.writeContactMessage(
+          contactMessage: contactMessage,
         );
       },
     ),
