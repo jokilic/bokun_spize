@@ -7,11 +7,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
+import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/app_version.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
@@ -116,14 +118,14 @@ class _AccountScreenState extends State<AccountScreen> {
                     context: context,
                     builder: (sheetContext) => AccountNameSheet(
                       initialName: name,
-                      onSavePressed: (newName) async {
+                      onSavePressed: (newName) {
                         final trimmedName = newName.trim();
                         if (trimmedName.isEmpty || trimmedName == name) {
                           return;
                         }
 
                         HapticFeedback.lightImpact();
-                        await firebaseService.updateUserName(
+                        firebaseService.updateUserName(
                           newName: trimmedName,
                         );
                       },
@@ -205,6 +207,81 @@ class _AccountScreenState extends State<AccountScreen> {
                 iconBackgroundColor: context.colors.delete,
                 title: 'accountDeleteAccountTitle'.tr(),
                 subtitle: 'accountDeleteAccountSubtitle'.tr(),
+              ),
+
+              ///
+              /// SPACING
+              ///
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 6),
+              ),
+
+              ///
+              /// APP NAME & VERSION
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.stateTransition,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 18),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.stateTransition,
+                        curve: Curves.easeOutCubic,
+                      ),
+                      ScaleEffect(
+                        begin: Offset(0.98, 0.98),
+                        end: Offset(1, 1),
+                        alignment: Alignment.topCenter,
+                        duration: BokunSpizeDurations.stateTransition,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: FutureBuilder(
+                      future: getAppVersion(),
+                      builder: (_, snapshot) {
+                        final version = snapshot.data;
+
+                        if (version != null) {
+                          return Text.rich(
+                            TextSpan(
+                              text: 'appName'.tr(),
+                              children: [
+                                WidgetSpan(
+                                  child: PhosphorIcon(
+                                    PhosphorIconsBold.dotOutline,
+                                    size: 16,
+                                    color: context.colors.text.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'v$version',
+                                ),
+                              ],
+                            ),
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: context.colors.text.withValues(alpha: 0.7),
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                ),
               ),
 
               ///
