@@ -7,7 +7,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
-import 'account_sheet_list_tile.dart';
+import '../widgets/account_sheet_list_tile.dart';
 
 class LanguageSheet extends StatefulWidget {
   final Locale initialLanguage;

@@ -1,14 +1,19 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../util/theme.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
-import 'widgets/language_sheet.dart';
-import 'widgets/theme_sheet.dart';
-import 'widgets/user_metrics_sheet.dart';
+import 'sheets/account_delete_sheet.dart';
+import 'sheets/account_name_sheet.dart';
+import 'sheets/language_sheet.dart';
+import 'sheets/theme_sheet.dart';
+import 'sheets/user_metrics_sheet.dart';
 
 enum ThemeEnum {
   light,
@@ -37,8 +42,29 @@ class AccountController extends ValueNotifier<SettingsValues> {
   /// METHODS
   ///
 
+  /// Opens [AccountNameSheet]
+  Future<void> onEditNamePressed(
+    BuildContext context, {
+    required String? initialName,
+  }) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => AccountNameSheet(
+      initialName: initialName,
+      onSavePressed: (newName) {
+        if (newName.isEmpty || newName == initialName) {
+          return;
+        }
+
+        HapticFeedback.lightImpact();
+        firebase.updateUserName(
+          newName: newName,
+        );
+      },
+    ),
+  );
+
   /// Opens [UserMetricsSheet]
-  Future<void> openUserMetricsSheet(BuildContext context) async => showBlurredModalBottomSheet(
+  Future<void> openUserMetricsSheet(BuildContext context) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (context) => UserMetricsSheet(),
   );
@@ -47,7 +73,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
   Future<void> openThemeSheet(
     BuildContext context, {
     required ThemeEnum initialTheme,
-  }) async => showBlurredModalBottomSheet(
+  }) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (context) => ThemeSheet(
       showConfirmButton: false,
@@ -66,25 +92,40 @@ class AccountController extends ValueNotifier<SettingsValues> {
 
   /// Opens [LanguageSheet] with the active app language selected
   Future<void> openLanguageSheet(
-    BuildContext context,
-  ) async => showBlurredModalBottomSheet(
+    BuildContext context, {
+    required Locale initialLanguage,
+  }) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (sheetContext) => LanguageSheet(
       showConfirmButton: false,
-      initialLanguage: context.locale,
-      onLanguageChanged: (newLanguage) => context.setLocale(newLanguage),
+      initialLanguage: initialLanguage,
+      onLanguageChanged: context.setLocale,
     ),
   );
 
-  // /// Opens [DeleteAccountSheet]
-  // Future<void> openDeleteAccountSheet(BuildContext context) async => showBlurredModalBottomSheet(
-  //   context: context,
-  //   builder: (context) => DeleteAccountSheet(),
-  // );
+  /// Opens [DeleteAccountSheet]
+  Future<void> openDeleteAccountSheet(
+    BuildContext context, {
+    required bool requiresPassword,
+    required Function(bool isDeleted) onHandleDelete,
+  }) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => AccountDeleteSheet(
+      deleteWord: 'accountDeleteSheetWord'.tr(),
+      requiresPassword: requiresPassword,
+      onDeletePressed: (password) async {
+        unawaited(
+          HapticFeedback.lightImpact(),
+        );
 
-  /// Updates `name` in [Firebase]
-  Future<void> updateUserName({required String newName}) async => await firebase.updateUserName(
-    newName: newName,
+        final isDeleted = await firebase.deleteUser(
+          email: firebase.userEmail,
+          password: password,
+        );
+
+        onHandleDelete(isDeleted);
+      },
+    ),
   );
 
   /// Updates `state`

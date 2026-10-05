@@ -17,16 +17,13 @@ import '../../util/app_version.dart';
 import '../../util/dependencies.dart';
 import '../../util/snackbars.dart';
 import '../../util/spacing.dart';
-import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/navigation_bar_widget.dart';
 import '../meals/meals_controller.dart';
 import '../walks/walks_controller.dart';
 import '../weights/weights_controller.dart';
 import 'account_controller.dart';
 import 'widgets/account_app_bar.dart';
-import 'widgets/account_delete_sheet.dart';
 import 'widgets/account_list_tile.dart';
-import 'widgets/account_name_sheet.dart';
 
 class AccountScreen extends WatchingStatefulWidget {
   @override
@@ -115,21 +112,9 @@ class _AccountScreenState extends State<AccountScreen> {
               AccountAppBar(
                 onEditPressed: () {
                   HapticFeedback.lightImpact();
-                  showBlurredModalBottomSheet(
-                    context: context,
-                    builder: (sheetContext) => AccountNameSheet(
-                      initialName: name,
-                      onSavePressed: (newName) {
-                        if (newName.isEmpty || newName == name) {
-                          return;
-                        }
-
-                        HapticFeedback.lightImpact();
-                        accountController.updateUserName(
-                          newName: newName,
-                        );
-                      },
-                    ),
+                  accountController.onEditNamePressed(
+                    context,
+                    initialName: name,
                   );
                 },
                 email: email,
@@ -161,10 +146,13 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               AccountListTile(
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
-                onPressed: () => accountController.openThemeSheet(
-                  context,
-                  initialTheme: theme,
-                ),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  accountController.openThemeSheet(
+                    context,
+                    initialTheme: theme,
+                  );
+                },
                 icon: PhosphorIconsBold.palette,
                 iconBackgroundColor: context.colors.fat,
                 title: 'theme'.tr(),
@@ -176,9 +164,28 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               AccountListTile(
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 3,
-                onPressed: () => accountController.openLanguageSheet(
-                  context,
-                ),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  accountController.openLanguageSheet(
+                    context,
+                    initialLanguage: context.locale,
+                  );
+                },
+                icon: PhosphorIconsBold.globeStand,
+                iconBackgroundColor: context.colors.protein,
+                title: 'language'.tr(),
+                subtitle: 'accountLanguageSubtitle'.tr(),
+              ),
+
+              ///
+              /// CONTACT
+              ///
+              AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  // accountController.openContactSheet(context);
+                },
                 icon: PhosphorIconsBold.globeStand,
                 iconBackgroundColor: context.colors.protein,
                 title: 'language'.tr(),
@@ -189,8 +196,11 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LOGOUT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
-                onPressed: handleLogOut,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  handleLogOut();
+                },
                 icon: PhosphorIconsBold.signOut,
                 iconBackgroundColor: context.colors.delete,
                 title: 'accountLogoutTitle'.tr(),
@@ -201,35 +211,23 @@ class _AccountScreenState extends State<AccountScreen> {
               /// DELETE ACCOUNT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  showBlurredModalBottomSheet(
-                    context: context,
-                    builder: (sheetContext) => AccountDeleteSheet(
-                      deleteWord: 'accountDeleteSheetWord'.tr(),
-                      requiresPassword: firebaseService.authProvider == AuthProvider.email,
-                      onDeletePressed: (password) async {
-                        unawaited(
-                          HapticFeedback.lightImpact(),
+                  accountController.openDeleteAccountSheet(
+                    context,
+                    requiresPassword: firebaseService.authProvider == AuthProvider.email,
+                    onHandleDelete: (isDeleted) {
+                      if (isDeleted) {
+                        handleLogOut();
+                      } else if (mounted) {
+                        showSnackbar(
+                          context,
+                          text: 'entranceErrorUnknown'.tr(),
+                          icon: PhosphorIconsBold.warningCircle,
                         );
-
-                        final isDeleted = await firebaseService.deleteUser(
-                          email: firebaseService.userEmail,
-                          password: password,
-                        );
-
-                        if (isDeleted) {
-                          await handleLogOut();
-                        } else if (mounted) {
-                          showSnackbar(
-                            context,
-                            text: 'entranceErrorUnknown'.tr(),
-                            icon: PhosphorIconsBold.warningCircle,
-                          );
-                        }
-                      },
-                    ),
+                      }
+                    },
                   );
                 },
                 icon: PhosphorIconsBold.trash,
@@ -255,7 +253,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                    delay: BokunSpizeDurations.stateTransitionStagger * 7,
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,

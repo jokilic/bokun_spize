@@ -212,7 +212,7 @@ static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
   "theme": "Tema",
   "language": "Jezik",
-  "signIn": "Prijava",
+  "signIn": "Prijavi se",
   "emailAddress": "Adresa e-pošte",
   "emailHint": "ime@primjer.com",
   "password": "Lozinka",
