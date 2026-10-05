@@ -410,7 +410,7 @@ static const Map<String,dynamic> _hr = {
   "accountNameSheetSubtitle": "Promijeni svoje ime",
   "accountDeleteSheetTitle": "Izbriši račun",
   "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
-  "accountDeleteSheetTextField": "Napiši '{}'",
+  "accountDeleteSheetTextFieldTitle": "Napiši '{}'",
   "accountDeleteSheetWord": "izbriši moj račun",
   "accountContactSheetTitle": "Kontakt",
   "accountContactSheetSubtitle": "Pošalji mi poruku",
