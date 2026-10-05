@@ -196,5 +196,6 @@
     "accountContactSheetTitle": "Contact me",
     "accountContactSheetSubtitle": "Send me a message",
     "accountContactSheetTextFieldTitle": "Your message",
-    "accountContactSheetTextFieldHint": "Write something..."
+    "accountContactSheetTextFieldHint": "Write something...",
+    "accountContactSheetButton": "Send message"
 }

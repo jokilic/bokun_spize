@@ -59,9 +59,9 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
   @override
   Widget build(BuildContext context) {
     final validated =
-        confirmController.text.isEmpty ||
-        confirmController.text.toLowerCase() != widget.deleteWord.toLowerCase() ||
-        (widget.requiresPassword && passwordController.text.length < 8);
+        confirmController.text.isNotEmpty &&
+        confirmController.text.toLowerCase() == widget.deleteWord.toLowerCase() &&
+        (!widget.requiresPassword || passwordController.text.length >= 8);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -332,7 +332,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: validated ? null : deleteAccount,
+                      onPressed: validated ? deleteAccount : null,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),

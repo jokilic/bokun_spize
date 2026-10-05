@@ -249,10 +249,10 @@ class _ContactSheetState extends State<ContactSheet> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: validated
-                          ? null
-                          : () => widget.onSendPressed(
+                          ? () => widget.onSendPressed(
                               messageController.text.trim(),
-                            ),
+                            )
+                          : null,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
@@ -265,9 +265,8 @@ class _ContactSheetState extends State<ContactSheet> {
                         backgroundColor: context.colors.account,
                         foregroundColor: context.colors.buttonText,
                       ),
-                      child: const Text(
-                        // TODO: Localize
-                        'Send message',
+                      child: Text(
+                        'accountContactSheetButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

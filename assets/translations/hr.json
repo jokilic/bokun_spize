@@ -196,5 +196,6 @@
     "accountContactSheetTitle": "Kontakt",
     "accountContactSheetSubtitle": "Pošalji mi poruku",
     "accountContactSheetTextFieldTitle": "Tvoja poruka",
-    "accountContactSheetTextFieldHint": "Napiši nešto..."
+    "accountContactSheetTextFieldHint": "Napiši nešto...",
+    "accountContactSheetButton": "Pošalji poruku"
 }

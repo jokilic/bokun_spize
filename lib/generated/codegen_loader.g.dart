@@ -212,7 +212,8 @@ class CodegenLoader extends AssetLoader{
   "accountContactSheetTitle": "Contact me",
   "accountContactSheetSubtitle": "Send me a message",
   "accountContactSheetTextFieldTitle": "Your message",
-  "accountContactSheetTextFieldHint": "Write something..."
+  "accountContactSheetTextFieldHint": "Write something...",
+  "accountContactSheetButton": "Send message"
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -412,7 +413,8 @@ static const Map<String,dynamic> _hr = {
   "accountContactSheetTitle": "Kontakt",
   "accountContactSheetSubtitle": "Pošalji mi poruku",
   "accountContactSheetTextFieldTitle": "Tvoja poruka",
-  "accountContactSheetTextFieldHint": "Napiši nešto..."
+  "accountContactSheetTextFieldHint": "Napiši nešto...",
+  "accountContactSheetButton": "Pošalji poruku"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }
