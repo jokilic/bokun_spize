@@ -3,6 +3,7 @@
 ### Theme
     - [ ] Replace all `TextStyle()`
     - [ ] Animations
+    - [ ] Think about `constants.dart`
 
 ### Screens
     - [ ] Add Meal screens - show dismissible widgets with info

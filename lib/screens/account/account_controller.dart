@@ -21,7 +21,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
   /// CONSTRUCTOR
   ///
 
-  // TODO: Firebase perhaps not necessary
   final FirebaseService firebase;
   final ThemeService theme;
 
@@ -82,6 +81,11 @@ class AccountController extends ValueNotifier<SettingsValues> {
   //   context: context,
   //   builder: (context) => DeleteAccountSheet(),
   // );
+
+  /// Updates `name` in [Firebase]
+  Future<void> updateUserName({required String newName}) async => await firebase.updateUserName(
+    newName: newName,
+  );
 
   /// Updates `state`
   void updateState({

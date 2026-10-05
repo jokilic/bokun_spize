@@ -111,6 +111,7 @@ JSON structure to follow strictly:
 ''';
 
   /// Build `JSON` response schema for requested `languageCode`
+  // TODO: Check how to remotely get this value (from my root Firestore or similar) (keep in mind this is a Schema so perhaps we should save it as JSON and then decode it back to Schema)
   Schema getResponseSchema({required String languageCode}) => Schema.object(
     title: 'Meal',
     description: 'Meal JSON schema',

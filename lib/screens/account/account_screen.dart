@@ -76,8 +76,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     final email = firebaseService.userEmail;
     final name = userMetrics?.name;
-    // final userPhoto = firebaseService.userPhoto;
-    const userPhoto = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Danny_DeVito_by_Gage_Skidmore.jpg/250px-Danny_DeVito_by_Gage_Skidmore.jpg';
+    final userPhoto = firebaseService.userPhoto;
 
     return Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
@@ -125,7 +124,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         }
 
                         HapticFeedback.lightImpact();
-                        firebaseService.updateUserName(
+                        accountController.updateUserName(
                           newName: trimmedName,
                         );
                       },
