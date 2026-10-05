@@ -101,6 +101,8 @@
     "accountUserMetricsSubtitle": "Visina, težina itd.",
     "accountThemeSubtitle": "Boje aplikacije",
     "accountLanguageSubtitle": "Jezik aplikacije",
+    "accountContactMeTitle": "Kontakt",
+    "accountContactMeSubtitle": "Pošalji mi poruku",
     "accountLogoutTitle": "Odjava",
     "accountLogoutSubtitle": "Odjavi se iz aplikacije",
     "accountDeleteAccountTitle": "Izbriši račun",
@@ -190,5 +192,9 @@
     "accountDeleteSheetTitle": "Izbriši račun",
     "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
     "accountDeleteSheetTextField": "Napiši '{}'",
-    "accountDeleteSheetWord": "izbriši moj račun"
+    "accountDeleteSheetWord": "izbriši moj račun",
+    "accountContactSheetTitle": "Kontakt",
+    "accountContactSheetSubtitle": "Pošalji mi poruku",
+    "accountContactSheetTextFieldTitle": "Tvoja poruka",
+    "accountContactSheetTextFieldHint": "Napiši nešto..."
 }

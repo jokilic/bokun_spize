@@ -184,12 +184,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  // accountController.openContactSheet(context);
+                  accountController.openContactSheet(context);
                 },
-                icon: PhosphorIconsBold.globeStand,
-                iconBackgroundColor: context.colors.protein,
-                title: 'language'.tr(),
-                subtitle: 'accountLanguageSubtitle'.tr(),
+                icon: PhosphorIconsBold.envelopeSimple,
+                iconBackgroundColor: context.colors.carbs,
+                title: 'accountContactMeTitle'.tr(),
+                subtitle: 'accountContactMeSubtitle'.tr(),
               ),
 
               ///
@@ -231,7 +231,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   );
                 },
                 icon: PhosphorIconsBold.trash,
-                iconBackgroundColor: context.colors.delete,
+                iconBackgroundColor: context.colors.text,
                 title: 'accountDeleteAccountTitle'.tr(),
                 subtitle: 'accountDeleteAccountSubtitle'.tr(),
               ),

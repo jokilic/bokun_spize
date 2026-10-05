@@ -117,6 +117,8 @@ class CodegenLoader extends AssetLoader{
   "accountUserMetricsSubtitle": "Height, weight, etc.",
   "accountThemeSubtitle": "App-wide colors",
   "accountLanguageSubtitle": "App-wide language",
+  "accountContactMeTitle": "Contact",
+  "accountContactMeSubtitle": "Send me a message",
   "accountLogoutTitle": "Logout",
   "accountLogoutSubtitle": "Sign out of the app",
   "accountDeleteAccountTitle": "Delete account",
@@ -205,8 +207,12 @@ class CodegenLoader extends AssetLoader{
   "accountNameSheetSubtitle": "Change your name",
   "accountDeleteSheetTitle": "Delete account",
   "accountDeleteSheetSubtitle": "Confirm account deletion",
-  "accountDeleteSheetTextField": "Write '{}'",
-  "accountDeleteSheetWord": "delete my account"
+  "accountDeleteSheetTextFieldTitle": "Write '{}'",
+  "accountDeleteSheetWord": "delete my account",
+  "accountContactSheetTitle": "Contact me",
+  "accountContactSheetSubtitle": "Send me a message",
+  "accountContactSheetTextFieldTitle": "Your message",
+  "accountContactSheetTextFieldHint": "Write something..."
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -311,6 +317,8 @@ static const Map<String,dynamic> _hr = {
   "accountUserMetricsSubtitle": "Visina, težina itd.",
   "accountThemeSubtitle": "Boje aplikacije",
   "accountLanguageSubtitle": "Jezik aplikacije",
+  "accountContactMeTitle": "Kontakt",
+  "accountContactMeSubtitle": "Pošalji mi poruku",
   "accountLogoutTitle": "Odjava",
   "accountLogoutSubtitle": "Odjavi se iz aplikacije",
   "accountDeleteAccountTitle": "Izbriši račun",
@@ -400,7 +408,11 @@ static const Map<String,dynamic> _hr = {
   "accountDeleteSheetTitle": "Izbriši račun",
   "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
   "accountDeleteSheetTextField": "Napiši '{}'",
-  "accountDeleteSheetWord": "izbriši moj račun"
+  "accountDeleteSheetWord": "izbriši moj račun",
+  "accountContactSheetTitle": "Kontakt",
+  "accountContactSheetSubtitle": "Pošalji mi poruku",
+  "accountContactSheetTextFieldTitle": "Tvoja poruka",
+  "accountContactSheetTextFieldHint": "Napiši nešto..."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }

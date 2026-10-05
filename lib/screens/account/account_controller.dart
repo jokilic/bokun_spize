@@ -11,6 +11,7 @@ import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'sheets/account_delete_sheet.dart';
 import 'sheets/account_name_sheet.dart';
+import 'sheets/contact_sheet.dart';
 import 'sheets/language_sheet.dart';
 import 'sheets/theme_sheet.dart';
 import 'sheets/user_metrics_sheet.dart';
@@ -90,7 +91,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
     ),
   );
 
-  /// Opens [LanguageSheet] with the active app language selected
+  /// Opens [LanguageSheet]
   Future<void> openLanguageSheet(
     BuildContext context, {
     required Locale initialLanguage,
@@ -100,6 +101,16 @@ class AccountController extends ValueNotifier<SettingsValues> {
       showConfirmButton: false,
       initialLanguage: initialLanguage,
       onLanguageChanged: context.setLocale,
+    ),
+  );
+
+  /// Opens [ContactSheet]
+  Future<void> openContactSheet(BuildContext context) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => ContactSheet(
+      onSendPressed: (message) {
+        // TODO: Implement
+      },
     ),
   );
 

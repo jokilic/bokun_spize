@@ -291,7 +291,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                   ],
                   child: TextFieldWidget(
                     controller: confirmController,
-                    title: 'accountDeleteSheetTextField'.tr(
+                    title: 'accountDeleteSheetTextFieldTitle'.tr(
                       args: [widget.deleteWord],
                     ),
                     hintText: widget.deleteWord,

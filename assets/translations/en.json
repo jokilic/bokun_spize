@@ -101,6 +101,8 @@
     "accountUserMetricsSubtitle": "Height, weight, etc.",
     "accountThemeSubtitle": "App-wide colors",
     "accountLanguageSubtitle": "App-wide language",
+    "accountContactMeTitle": "Contact",
+    "accountContactMeSubtitle": "Send me a message",
     "accountLogoutTitle": "Logout",
     "accountLogoutSubtitle": "Sign out of the app",
     "accountDeleteAccountTitle": "Delete account",
@@ -189,6 +191,10 @@
     "accountNameSheetSubtitle": "Change your name",
     "accountDeleteSheetTitle": "Delete account",
     "accountDeleteSheetSubtitle": "Confirm account deletion",
-    "accountDeleteSheetTextField": "Write '{}'",
-    "accountDeleteSheetWord": "delete my account"
+    "accountDeleteSheetTextFieldTitle": "Write '{}'",
+    "accountDeleteSheetWord": "delete my account",
+    "accountContactSheetTitle": "Contact me",
+    "accountContactSheetSubtitle": "Send me a message",
+    "accountContactSheetTextFieldTitle": "Your message",
+    "accountContactSheetTextFieldHint": "Write something..."
 }
