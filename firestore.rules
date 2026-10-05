@@ -68,6 +68,7 @@ service cloud.firestore {
         && data.fat is number;
     }
 
+    // Validate meal fields while allowing creation metadata to be absent on older meals
     function isValidMeal(data, userId, mealId) {
       let fields = [
         'id',
@@ -84,7 +85,7 @@ service cloud.firestore {
       ];
 
       return data.keys().hasAll(fields)
-        && data.keys().hasOnly(fields)
+        && data.keys().hasOnly(fields.concat(['methodOfCreation']))
         && data.id is string
         && data.id == mealId
         && isOptionalString(data.name, 500)
@@ -94,6 +95,7 @@ service cloud.firestore {
         && (data.nutrition == null || isValidNutrition(data.nutrition))
         && (data.foods == null || (data.foods is list && data.foods.size() <= 200))
         && isOptionalString(data.originalText, 50000)
+        && isOptionalString(data.get('methodOfCreation', null), 200)
         && data.isLoading is bool
         && (data.errors == null || (data.errors is list && data.errors.size() <= 100))
         && (
