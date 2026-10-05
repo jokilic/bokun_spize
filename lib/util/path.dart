@@ -26,15 +26,16 @@ Future<File> persistImage({
   Uint8List? webpBytes,
 }) async {
   final appDirectory = await getProperDirectory() ?? await getTemporaryDirectory();
+  var encodedBytes = webpBytes;
 
-  if (webpBytes == null) {
+  if (encodedBytes == null) {
     final decodedImage = img.decodeImage(await File(imagePath).readAsBytes());
 
     if (decodedImage == null) {
       throw const FormatException('Unable to decode meal image');
     }
 
-    webpBytes = img.encodeWebP(
+    encodedBytes = img.encodeWebP(
       img.bakeOrientation(decodedImage),
       lossless: false,
       quality: 50,
@@ -45,5 +46,5 @@ Future<File> persistImage({
     '${appDirectory.path}/${DateTime.now().microsecondsSinceEpoch}.webp',
   );
 
-  return persistedImage.writeAsBytes(webpBytes);
+  return persistedImage.writeAsBytes(encodedBytes);
 }
