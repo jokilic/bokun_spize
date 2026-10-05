@@ -207,61 +207,14 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
             ),
 
             ///
-            /// DELETE TEXT FIELD
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 18),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                    ScaleEffect(
-                      begin: Offset(0.98, 0.98),
-                      end: Offset(1, 1),
-                      alignment: Alignment.topCenter,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: TextFieldWidget(
-                    controller: confirmController,
-                    title: 'accountDeleteSheetTextField'.tr(
-                      args: [widget.deleteWord],
-                    ),
-                    hintText: widget.deleteWord,
-                    onSubmitted: (_) => passwordFocusNode.requestFocus(),
-                    textColor: context.colors.text,
-                    textCapitalization: TextCapitalization.none,
-                    textInputAction: widget.requiresPassword ? TextInputAction.next : TextInputAction.done,
-                    onChanged: (_) => setState(() {}),
-                    textFieldFontSize: 18,
-                  ),
-                ),
-              ),
-            ),
-
-            ///
             /// PASSWORD TEXT FIELD
             ///
             if (widget.requiresPassword) ...[
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 20),
-              ),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                    delay: BokunSpizeDurations.stateTransitionStagger * 3,
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.animation,
@@ -304,7 +257,54 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                   ),
                 ),
               ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
             ],
+
+            ///
+            /// DELETE TEXT FIELD
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * (widget.requiresPassword ? 4 : 3),
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 18),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                    ScaleEffect(
+                      begin: Offset(0.98, 0.98),
+                      end: Offset(1, 1),
+                      alignment: Alignment.topCenter,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: TextFieldWidget(
+                    controller: confirmController,
+                    title: 'accountDeleteSheetTextField'.tr(
+                      args: [widget.deleteWord],
+                    ),
+                    hintText: widget.deleteWord,
+                    onSubmitted: (_) => passwordFocusNode.requestFocus(),
+                    textColor: context.colors.text,
+                    textCapitalization: TextCapitalization.none,
+                    textInputAction: widget.requiresPassword ? TextInputAction.next : TextInputAction.done,
+                    onChanged: (_) => setState(() {}),
+                    textFieldFontSize: 18,
+                  ),
+                ),
+              ),
+            ),
 
             ///
             /// DELETE BUTTON
