@@ -624,23 +624,8 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
   // Keep track of the DefaultTextStyle InheritedWidget value
   TextStyle? _defaultTextStyle;
 
-  /// mark dirty, rebuild widget
-  ///
-  /// 当触发以下回调时
-  /// [reassemble],
-  /// [didChangeDependencies],
-  /// [didChangeTextScaleFactor]
-  /// [didChangeAccessibilityFeatures],
-  /// 将需要被重建，
-  /// 会通过 [_markNeedRebuild] 变更成 `true`，
-  ///
-  /// 在 [build] 完成时，恢复为 `false', 以待下次重建
-  bool _dirty = false;
-
   /// the controller value or widget value
   num get currentValue => widget.controller?.value ?? widget.value!;
-
-  final List<_AnimatedSingleWidget> _widgets = [];
 
   num _value = 0.0;
 
@@ -657,9 +642,6 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
 
   /// is negative number
   bool get isNegative => _value.isNegative;
-
-  /// is first initial
-  late bool _firstScrollAnimate = widget.firstScrollAnimate;
 
   @override
   void initState() {
@@ -678,9 +660,8 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     value = currentValue;
   }
 
-  void _markNeedRebuild() {
-    _widgets.clear();
-    _dirty = true;
+  /// Refreshes the configuration while retaining mounted digit states
+  void refreshDigits() {
     _updateValue();
   }
 
@@ -696,7 +677,7 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     }
 
     if (_mediaQueryData?.textScaler != mq?.textScaler || _singleDigitData != sdp || dts != _defaultTextStyle) {
-      _markNeedRebuild();
+      refreshDigits();
     }
     _mediaQueryData = mq;
     _singleDigitData = sdp;
@@ -706,19 +687,19 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
   @override
   void reassemble() {
     super.reassemble();
-    _markNeedRebuild();
+    refreshDigits();
   }
 
   @override
   void didChangeAccessibilityFeatures() {
     super.didChangeAccessibilityFeatures();
-    _markNeedRebuild();
+    refreshDigits();
   }
 
   @override
   void didChangeTextScaleFactor() {
     super.didChangeTextScaleFactor();
-    _markNeedRebuild();
+    refreshDigits();
   }
 
   String _formatNum(String numstr, {int fractionDigits = 2}) {
@@ -765,19 +746,16 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     return result;
   }
 
+  /// Rebinds controller listeners and applies the current value and text style
   @override
   void didUpdateWidget(AnimatedDigitWidget oldWidget) {
-    widget.controller?.removeListener(_updateValue);
     super.didUpdateWidget(oldWidget);
-    widget.controller?.addListener(_updateValue);
-    if (widget.controller == null) {
-      _updateValue();
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_updateValue);
+      widget.controller?.addListener(_updateValue);
     }
-
-    if (widget._textStyle != oldWidget._textStyle) {
-      style = _defaultTextStyle!.merge(widget._textStyle);
-      _markNeedRebuild();
-    }
+    _value = currentValue;
+    style = _defaultTextStyle!.merge(widget._textStyle);
   }
 
   @override
@@ -789,23 +767,12 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBindingx.instance?.addPostFrameCallback((_) {
-      _firstScrollAnimate = true;
-    });
-
-    if (widget.valueColors != null) {
-      _singleDigitData = SingleDigitData(
-        useTextSize: true,
-        valueColors: widget.valueColors,
-      );
-    }
-
-    if (_dirty) {
-      _rebuild();
-    } else {
-      _update();
-    }
-    _dirty = false;
+    _singleDigitData = widget.valueColors == null
+        ? SingleDigitProvider.maybeOf(context)
+        : SingleDigitData(
+            useTextSize: true,
+            valueColors: widget.valueColors,
+          );
 
     // Wrap the rendered Row with AnimatedSize so that when children count/size changes
     // the overall width/height will animate smoothly instead of jump.
@@ -837,7 +804,7 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: _widgets,
+          children: buildDigits(),
         ),
       ),
       if (widget.suffix != null) _buildChangeTextColorWidget(widget.suffix!),
@@ -853,37 +820,28 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     return sdd._buildChangeTextColorWidget(context, val, style, null, widget.duration, widget.curve) ?? result;
   }
 
-  void _rebuild([String? value]) {
-    _widgets.clear();
-    var newValue = value ?? _getFormatValueAsString();
-    // 检查最小整数位数
-    if (widget.enableMinIntegerDigits && widget.fractionDigits == 0 && newValue.length < 2) {
-      newValue = newValue.padLeft(2, '0');
-    }
-    for (var i = 0; i < newValue.length; i++) {
-      _addAnimatedSingleWidget(newValue[i]);
-    }
-  }
-
-  void _update() {
-    var newValue = _getFormatValueAsString();
-    // 比较长度前先应用最小整数位补零，否则 0~9 会被误判为长度变化并反复重建。
-    if (widget.enableMinIntegerDigits && widget.fractionDigits == 0 && newValue.length < 2) {
-      newValue = newValue.padLeft(2, '0');
+  /// Preserves digit states by decimal place across value, formatting and style changes
+  List<Widget> buildDigits() {
+    var displayValue = _getFormatValueAsString();
+    if (widget.enableMinIntegerDigits && widget.fractionDigits == 0 && displayValue.length < 2) {
+      displayValue = displayValue.padLeft(2, '0');
     }
 
-    final lenNew = newValue.length;
-    final lenOld = _widgets.length;
-
-    if (lenNew != lenOld) {
-      _rebuild(newValue);
-      return;
+    final fractionStart = widget.fractionDigits > 0 ? displayValue.length - widget.fractionDigits : displayValue.length;
+    final integerEnd = widget.fractionDigits > 0 ? fractionStart - widget.decimalSeparator.length : displayValue.length;
+    var integerPlace = 0;
+    final keys = <Key>[];
+    for (var i = integerEnd - 1; i >= 0; i--) {
+      final isDigit = int.tryParse(displayValue[i]) != null;
+      keys.insert(0, ValueKey(isDigit ? 'integer:${integerPlace++}' : 'separator:$i'));
+    }
+    for (var i = integerEnd; i < displayValue.length; i++) {
+      keys.add(ValueKey(i < fractionStart ? 'decimal:${i - integerEnd}' : 'fraction:${i - fractionStart}'));
     }
 
-    for (var i = 0; i < (lenNew == 0 ? 1 : lenNew); i++) {
-      final curr = newValue[i];
-      _setValue(_widgets[i].key, curr);
-    }
+    return [
+      for (var i = 0; i < displayValue.length; i++) buildDigit(displayValue[i], keys[i]),
+    ];
   }
 
   Widget _buildNegativeSymbol() {
@@ -904,18 +862,9 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     );
   }
 
-  void _setValue(Key? _aswsKey, String value) {
-    assert(_aswsKey != null);
-    if (_aswsKey is GlobalKey<_AnimatedSingleWidgetState>) {
-      _aswsKey.currentState?.setValue(value);
-    }
-  }
-
-  void _addAnimatedSingleWidget(String value) {
-    _widgets.add(_buildSingleWidget(value));
-  }
-
-  _AnimatedSingleWidget _buildSingleWidget(String value) => _AnimatedSingleWidget(
+  /// Creates updated digit configuration with a stable identity
+  _AnimatedSingleWidget buildDigit(String value, Key key) => _AnimatedSingleWidget(
+    key: key,
     initialValue: value,
     textStyle: style,
     boxDecoration: widget.boxDecoration,
@@ -926,7 +875,7 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     loop: widget.loop,
     autoSize: widget.autoSize,
     animateAutoSize: widget.animateAutoSize,
-    firstScrollAnimate: _firstScrollAnimate,
+    firstScrollAnimate: widget.firstScrollAnimate,
     controller: widget.controller,
   );
 
@@ -976,6 +925,7 @@ class _AnimatedSingleWidget extends StatefulWidget {
   final AnimatedDigitController? controller;
 
   _AnimatedSingleWidget({
+    required Key key,
     required this.initialValue,
     required this.textStyle,
     required this.duration,
@@ -988,27 +938,55 @@ class _AnimatedSingleWidget extends StatefulWidget {
     this.autoSize = false,
     this.animateAutoSize = false,
     this.firstScrollAnimate = true,
-  }) : super(key: GlobalKey<_AnimatedSingleWidgetState>());
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _AnimatedSingleWidgetState();
 }
 
 class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
+  /// Initializes each digit once at zero or directly at its requested value
   @override
   void initState() {
     super.initState();
     data = widget.singleDigitData;
     currentValue = widget.initialValue;
     _initSize();
-    // print("--- $currentValue ${widget.firstScrollAnimate} ---");
-    // 当不需要初始滚动动画时
-    if (!widget.firstScrollAnimate) {
-      _jumpTo();
-    } else {
-      _animateTo();
+    if (widget.firstScrollAnimate) {
+      animateToValue();
+    } else if (isNumber) {
+      scrollOffset = int.parse(currentValue) * valueSize.height;
     }
   }
+
+  /// Updates the existing digit without replaying its initial animation
+  @override
+  void didUpdateWidget(covariant _AnimatedSingleWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final previousHeight = valueSize.height;
+    final valueChanged = currentValue != widget.initialValue;
+    data = widget.singleDigitData;
+    if (valueChanged) {
+      currentValue = widget.initialValue;
+    }
+    _initSize();
+
+    final geometryChanged = previousHeight != valueSize.height || oldWidget.loop != widget.loop;
+    if (geometryChanged && isNumber) {
+      // Keep the target aligned with its digit when text metrics change
+      scrollOffset = oldWidget.loop == widget.loop && previousHeight > 0 ? scrollOffset / previousHeight * valueSize.height : (int.tryParse(oldValue) ?? 0) * valueSize.height;
+    }
+    if (valueChanged) {
+      animateToValue();
+    } else if (geometryChanged && isNumber) {
+      if (oldWidget.loop != widget.loop) {
+        scrollOffset = int.parse(currentValue) * valueSize.height;
+      }
+      scheduleScroll(animate: false);
+    }
+  }
+
+  int animationTicket = 0;
 
   SingleDigitData? data;
 
@@ -1030,7 +1008,7 @@ class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
   Curve get _curve => widget.curve;
 
   /// 数字滚动控制
-  late final ScrollController scrollController = ScrollController();
+  late final ScrollController scrollController = ScrollController(initialScrollOffset: widget.firstScrollAnimate ? 0 : scrollOffset);
 
   /// 当前值(数字、符号、给定 [SingleDigitData.size])的尺寸大小
   Size valueSize = Size.zero;
@@ -1056,12 +1034,6 @@ class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
       _initSize();
       setState(() {});
     }
-  }
-
-  /// 设置一个新的值
-  void setValue(String newValue) {
-    currentValue = newValue;
-    _animateTo();
   }
 
   /// 是否为非数字的符号
@@ -1113,37 +1085,27 @@ class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
     return painter.size;
   }
 
-  /// 动画滚动到当前的数字
-  void _animateTo() {
+  /// Updates the target once for each real digit change
+  void animateToValue() {
     if (isNumber && oldValue != currentValue) {
-      WidgetsBindingx.instance?.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
-          _scrollTo();
-        }
-      });
+      _computeScrollOffset();
+      scheduleScroll(animate: true);
     }
   }
 
-  /// 跳的距离 [scrollOffset]
-  void _jumpTo() {
-    if (isNumber && oldValue != currentValue) {
-      WidgetsBindingx.instance?.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
-          _computeScrollOffset();
-          scrollController.jumpTo(scrollOffset);
-        }
-      });
-    }
-  }
-
-  /// 滚动到距离 [scrollOffset]
-  Future<void> _scrollTo() async {
-    _computeScrollOffset();
-    await scrollController.animateTo(
-      scrollOffset,
-      duration: _duration,
-      curve: _curve,
-    );
+  /// Applies only the latest pending scroll after the digit has been laid out
+  void scheduleScroll({required bool animate}) {
+    final ticket = ++animationTicket;
+    WidgetsBindingx.instance?.addPostFrameCallback((_) {
+      if (!mounted || ticket != animationTicket || !scrollController.hasClients) {
+        return;
+      }
+      if (animate) {
+        unawaited(scrollController.animateTo(scrollOffset, duration: _duration, curve: _curve));
+      } else {
+        scrollController.jumpTo(scrollOffset);
+      }
+    });
   }
 
   /// 计算需要滚动的距离 [scrollOffset]
@@ -1165,9 +1127,8 @@ class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
 
   @override
   void dispose() {
-    if (loop || isNumber) {
-      scrollController.dispose();
-    }
+    animationTicket++;
+    scrollController.dispose();
     super.dispose();
   }
 

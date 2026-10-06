@@ -218,20 +218,17 @@ class MealsAppBar extends StatelessWidget {
     flexibleSpace: FlexibleSpaceBar(
       centerTitle: false,
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-      title: DefaultTextStyle(
-        style: const TextStyle(),
-        child: FadingFlexibleTitle(
-          isLoading: isLoading,
-          fullDayString: fullDayString,
-          currentCalories: currentCalories,
-          currentProtein: currentProtein,
-          currentCarbs: currentCarbs,
-          currentFat: currentFat,
-          dailyCalories: dailyCalories,
-          dailyProtein: dailyProtein,
-          dailyCarbs: dailyCarbs,
-          dailyFat: dailyFat,
-        ),
+      title: FadingFlexibleTitle(
+        isLoading: isLoading,
+        fullDayString: fullDayString,
+        currentCalories: currentCalories,
+        currentProtein: currentProtein,
+        currentCarbs: currentCarbs,
+        currentFat: currentFat,
+        dailyCalories: dailyCalories,
+        dailyProtein: dailyProtein,
+        dailyCarbs: dailyCarbs,
+        dailyFat: dailyFat,
       ),
     ),
   );
