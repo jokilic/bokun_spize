@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:animated_digit/animated_digit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -15,6 +14,7 @@ import '../../util/color.dart';
 import '../../util/date_time.dart';
 import '../../util/format.dart';
 import '../../util/spacing.dart';
+import '../../widgets/animated_digit_widget.dart';
 import '../../widgets/animated_nutrition_bar.dart';
 import '../../widgets/meal_image.dart';
 import 'widgets/view_meal_food_list_tile.dart';

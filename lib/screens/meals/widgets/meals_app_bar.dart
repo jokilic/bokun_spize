@@ -1,4 +1,3 @@
-import 'package:animated_digit/animated_digit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -8,6 +7,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/format.dart';
+import '../../../widgets/animated_digit_widget.dart';
 import '../../../widgets/animated_nutrition_bar.dart';
 
 class MealsAppBar extends StatelessWidget {
