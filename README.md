@@ -19,6 +19,7 @@
         - [x] Version
 
 ### Firebase
+    - [ ] User -> IsAdmin - Then he can open contact messages
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Analytics

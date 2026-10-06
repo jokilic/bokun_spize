@@ -175,7 +175,7 @@
     "walksErrorTitle": "Pogreška u dnevniku hodanja",
     "walksNoStepData": "Nema podataka o koracima za graf",
     "walksSteps": "{} koraka",
-    "walksWalkingNow": "Hodaš...",
+    "walksWalkingNow": "Hodaš",
     "weightsErrorTracksCouldNotBeLoaded": "Zapisi težine nisu se mogli učitati",
     "weightsErrorNoWeights": "Unesi težinu",
     "weightsAddWeightCalendarSubtitle": "Dan nove težine",
@@ -196,7 +196,7 @@
     "accountContactSheetTitle": "Kontakt",
     "accountContactSheetSubtitle": "Pošalji mi poruku",
     "accountContactSheetTextFieldTitle": "Tvoja poruka",
-    "accountContactSheetTextFieldHint": "Napiši nešto...",
+    "accountContactSheetTextFieldHint": "Napiši mi nešto",
     "accountContactSheetButton": "Pošalji poruku",
     "accountContactSendSuccess": "Poruka poslana",
     "accountContactSendFailure": "Slanje poruke nije uspjelo"

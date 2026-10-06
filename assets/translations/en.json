@@ -175,7 +175,7 @@
     "walksErrorTitle": "Error in walk journal",
     "walksNoStepData": "No step data for the graph",
     "walksSteps": "{} steps",
-    "walksWalkingNow": "Walking...",
+    "walksWalkingNow": "Walking",
     "weightsErrorTracksCouldNotBeLoaded": "Weight entries could not be loaded",
     "weightsErrorNoWeights": "Enter weight",
     "weightsAddWeightCalendarSubtitle": "Day of new weight",
@@ -196,7 +196,7 @@
     "accountContactSheetTitle": "Contact me",
     "accountContactSheetSubtitle": "Send me a message",
     "accountContactSheetTextFieldTitle": "Your message",
-    "accountContactSheetTextFieldHint": "Write something...",
+    "accountContactSheetTextFieldHint": "Write something to me",
     "accountContactSheetButton": "Send message",
     "accountContactSendSuccess": "Message sent",
     "accountContactSendFailure": "Couldn't send message"
