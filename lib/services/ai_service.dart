@@ -26,9 +26,9 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   /// INIT
   ///
 
-  /// Loads remote model names before initializing models for the requested language
+  /// Loads remote AI configuration before initializing models for the requested language
   Future<void> init({required String languageCode}) async {
-    await (modelNamesLoading ??= loadModelNames());
+    await (configurationLoading ??= loadConfiguration());
 
     if (initialized && initializedLanguageCode == languageCode) {
       return;
@@ -50,7 +50,9 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
 
   String? initializedLanguageCode;
 
-  Future<void>? modelNamesLoading;
+  Future<void>? configurationLoading;
+
+  String? systemInstructionTemplate;
 
   final modelNames = [
     'gemini-3.5-flash-lite',
@@ -66,8 +68,8 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   /// Builds meal extraction instructions for the requested language
-  // TODO: Check how to remotely get this value (from my root Firestore or similar)
   String getSystemInstruction({required String languageCode}) =>
+      systemInstructionTemplate?.replaceAll('{languageCode}', languageCode) ??
       '''
 You will receive text and / or image describing what the user ate.
 Estimate nutrition and extract foods.
@@ -270,15 +272,18 @@ JSON structure to follow strictly:
   /// METHODS
   ///
 
-  /// Loads remote model names, retaining defaults when unavailable
-  Future<void> loadModelNames() async {
-    final names = await firebase.getAIModelNames();
+  /// Loads remote AI configuration, retaining defaults for unavailable values
+  Future<void> loadConfiguration() async {
+    final configuration = await firebase.getAIConfiguration();
+    final names = configuration?.modelNames;
 
     if (names != null && names.isNotEmpty) {
       modelNames
         ..clear()
         ..addAll(names);
     }
+
+    systemInstructionTemplate = configuration?.systemInstruction;
   }
 
   /// Initializes `Gemini` models for requested `languageCode`, skipping models that fail

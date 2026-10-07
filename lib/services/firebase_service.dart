@@ -115,8 +115,8 @@ class FirebaseService {
     }
   }
 
-  /// Reads the ordered `modelNames` array from `config/ai`, returning `null` when unavailable
-  Future<List<String>?> getAIModelNames() async {
+  /// Reads model names and the instruction template from `config/ai`, validating each independently
+  Future<({List<String>? modelNames, String? systemInstruction})?> getAIConfiguration() async {
     try {
       final snapshot = await firestore
           .doc('config/ai')
@@ -125,25 +125,30 @@ class FirebaseService {
             BokunSpizeDurations.firebaseTimeout,
           );
 
-      final remoteModelNames = snapshot.data()?['modelNames'];
+      final data = snapshot.data();
+      final remoteModelNames = data?['modelNames'];
+      final remoteSystemInstruction = data?['systemInstruction'];
 
-      if (remoteModelNames is! List) {
-        return null;
-      }
+      final modelNames = remoteModelNames is List
+          ? remoteModelNames
+                .whereType<String>()
+                .map(
+                  (name) => name.trim(),
+                )
+                .where(
+                  (name) => name.isNotEmpty,
+                )
+                .toSet()
+                .toList()
+          : null;
 
-      return remoteModelNames
-          .whereType<String>()
-          .map(
-            (name) => name.trim(),
-          )
-          .where(
-            (name) => name.isNotEmpty,
-          )
-          .toSet()
-          .toList();
+      return (
+        modelNames: modelNames,
+        systemInstruction: remoteSystemInstruction is String && remoteSystemInstruction.trim().isNotEmpty ? remoteSystemInstruction.trim() : null,
+      );
     } catch (error) {
       log(
-        'Loading remote AI model names failed',
+        'Loading remote AI configuration failed',
         error: error,
       );
       return null;
