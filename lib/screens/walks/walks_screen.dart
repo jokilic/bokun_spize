@@ -175,7 +175,7 @@ class _WalksScreenState extends State<WalksScreen> {
                       storageService.setWalksCalendarDays(newWalksCalendarDays);
                     },
                     dayEntries: walksController.graphCalendarDayOptions,
-                    stepsWithDate: stepsWithDate,
+                    stepsWithDate: completedStepsWithDate,
                     calendarDays: graphCalendarDays,
                   ),
 
