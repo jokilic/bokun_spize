@@ -163,6 +163,8 @@
     "searchErrorTitle": "Error in search",
     "viewMealCopy": "Copy",
     "viewMealDelete": "Delete",
+    "viewMealOriginalTextTitle": "Original text",
+    "viewMealOriginalTextTextField": "Meal description",
     "walksErrorActivityPermissionNotGranted": "Activity recognition permission was not granted",
     "walksErrorHealthConnectNotAvailable": "Health Connect is not available on this device",
     "walksErrorStepAccessNotGranted": "Step access was not granted",

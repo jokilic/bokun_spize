@@ -17,6 +17,7 @@ import '../../util/spacing.dart';
 import '../../widgets/animated_digit_widget.dart';
 import '../../widgets/animated_nutrition_bar.dart';
 import '../../widgets/meal_image.dart';
+import '../../widgets/text_field_widget.dart';
 import 'widgets/view_meal_food_list_tile.dart';
 
 class ViewMealScreen extends WatchingWidget {
@@ -42,6 +43,8 @@ class ViewMealScreen extends WatchingWidget {
 
     final nutrition = passedMeal.nutrition;
     final foods = passedMeal.foods;
+
+    final originalText = passedMeal.originalText;
 
     final protein = nutrition?.protein ?? 0.0;
     final carbs = nutrition?.carbs ?? 0.0;
@@ -801,7 +804,7 @@ class ViewMealScreen extends WatchingWidget {
 
             if (foods?.isNotEmpty ?? false) ...[
               const SliverToBoxAdapter(
-                child: SizedBox(height: 32),
+                child: SizedBox(height: 28),
               ),
 
               ///
@@ -838,7 +841,7 @@ class ViewMealScreen extends WatchingWidget {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
+                child: SizedBox(height: 8),
               ),
 
               ///
@@ -875,6 +878,68 @@ class ViewMealScreen extends WatchingWidget {
                     ),
                   );
                 },
+              ),
+            ],
+
+            ///
+            /// ORIGINAL TEXT TITLE
+            ///
+            if (originalText != null) ...[
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 24),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 8,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 8),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Text(
+                      'viewMealOriginalTextTitle'.tr(),
+                      style: TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6,
+                        color: context.colors.text,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+
+              ///
+              /// ORIGINAL TEXT TEXT FIELD
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                sliver: SliverToBoxAdapter(
+                  child: TextFieldWidget(
+                    enabled: false,
+                    minLines: 3,
+                    maxLines: 3,
+                    controller: TextEditingController(
+                      text: originalText,
+                    ),
+                    title: 'viewMealOriginalTextTextField'.tr(),
+                    hintText: 'whatWasIt'.tr(),
+                    textColor: context.colors.text,
+                  ),
+                ),
               ),
             ],
 

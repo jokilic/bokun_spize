@@ -163,6 +163,8 @@
     "searchErrorTitle": "Pogreška pri pretraživanju",
     "viewMealCopy": "Kopiraj",
     "viewMealDelete": "Izbriši",
+    "viewMealOriginalTextTitle": "Izvorni tekst",
+    "viewMealOriginalTextTextField": "Opis obroka",
     "walksErrorActivityPermissionNotGranted": "Dopuštenje za prepoznavanje aktivnosti nije odobreno",
     "walksErrorHealthConnectNotAvailable": "Health Connect nije dostupan na ovom uređaju",
     "walksErrorStepAccessNotGranted": "Pristup koracima nije odobren",

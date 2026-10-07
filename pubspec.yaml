@@ -22,7 +22,7 @@ version: 1.0.0+100
 #
 
 environment:
-  sdk: 3.13.4
+  sdk: 3.13.5
 
 dependencies:
   flutter:

@@ -1,3 +1,5 @@
+// ignore_for_file: use_setters_to_change_properties, parameter_assignments
+
 import 'dart:async';
 
 ///
@@ -840,7 +842,11 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
     }
 
     return [
-      for (var i = 0; i < displayValue.length; i++) buildDigit(displayValue[i], keys[i]),
+      for (var i = 0; i < displayValue.length; i++)
+        buildDigit(
+          displayValue[i],
+          keys[i],
+        ),
     ];
   }
 
@@ -863,7 +869,7 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
   }
 
   /// Creates updated digit configuration with a stable identity
-  _AnimatedSingleWidget buildDigit(String value, Key key) => _AnimatedSingleWidget(
+  AnimatedSingleWidget buildDigit(String value, Key key) => AnimatedSingleWidget(
     key: key,
     initialValue: value,
     textStyle: style,
@@ -887,7 +893,7 @@ class _AnimatedDigitWidgetState extends State<AnimatedDigitWidget> with WidgetsB
 }
 
 /// single
-class _AnimatedSingleWidget extends StatefulWidget {
+class AnimatedSingleWidget extends StatefulWidget {
   /// textStyle
   final TextStyle textStyle;
 
@@ -924,7 +930,7 @@ class _AnimatedSingleWidget extends StatefulWidget {
 
   final AnimatedDigitController? controller;
 
-  _AnimatedSingleWidget({
+  const AnimatedSingleWidget({
     required Key key,
     required this.initialValue,
     required this.textStyle,
@@ -941,10 +947,10 @@ class _AnimatedSingleWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _AnimatedSingleWidgetState();
+  State<StatefulWidget> createState() => AnimatedSingleWidgetState();
 }
 
-class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
+class AnimatedSingleWidgetState extends State<AnimatedSingleWidget> {
   /// Initializes each digit once at zero or directly at its requested value
   @override
   void initState() {
@@ -961,7 +967,7 @@ class _AnimatedSingleWidgetState extends State<_AnimatedSingleWidget> {
 
   /// Updates the existing digit without replaying its initial animation
   @override
-  void didUpdateWidget(covariant _AnimatedSingleWidget oldWidget) {
+  void didUpdateWidget(covariant AnimatedSingleWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     final previousHeight = valueSize.height;
     final valueChanged = currentValue != widget.initialValue;
