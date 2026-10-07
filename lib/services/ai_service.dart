@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 
+import '../util/ai_schema.dart';
 import '../util/meal_image.dart';
 import '../util/typedefs.dart';
 import 'firebase_service.dart';
@@ -53,6 +54,7 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   Future<void>? configurationLoading;
 
   String? systemInstructionTemplate;
+  Map<String, dynamic>? responseSchemaTemplate;
 
   final modelNames = [
     'gemini-3.5-flash-lite',
@@ -112,9 +114,37 @@ JSON structure to follow strictly:
 }
 ''';
 
-  /// Build `JSON` response schema for requested `languageCode`
-  // TODO: Check how to remotely get this value (from my root Firestore or similar) (keep in mind this is a Schema so perhaps we should save it as JSON and then decode it back to Schema)
-  Schema getResponseSchema({required String languageCode}) => Schema.object(
+  /// Builds the remote response schema or uses the default when invalid or incompatible
+  Schema getResponseSchema({required String languageCode}) {
+    final fallback = getDefaultResponseSchema(
+      languageCode: languageCode,
+    );
+    final template = responseSchemaTemplate;
+
+    if (template == null) {
+      return fallback;
+    }
+
+    try {
+      final schema = parseAISchema(
+        template,
+        languageCode: languageCode,
+      );
+
+      validateAISchemaCompatibility(
+        schema,
+        fallback,
+      );
+
+      return schema;
+    } catch (error) {
+      debugPrint('Invalid remote AI response schema, using default: $error');
+      return fallback;
+    }
+  }
+
+  /// Builds the default meal response schema for the requested language
+  Schema getDefaultResponseSchema({required String languageCode}) => Schema.object(
     title: 'Meal',
     description: 'Meal JSON schema',
     nullable: true,
@@ -284,6 +314,7 @@ JSON structure to follow strictly:
     }
 
     systemInstructionTemplate = configuration?.systemInstruction;
+    responseSchemaTemplate = configuration?.responseSchema;
   }
 
   /// Initializes `Gemini` models for requested `languageCode`, skipping models that fail

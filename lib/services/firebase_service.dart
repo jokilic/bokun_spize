@@ -14,6 +14,7 @@ import '../models/contact_message/contact_message.dart';
 import '../models/meal/meal.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
+import '../util/ai_schema.dart';
 import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
 import '../util/typedefs.dart';
@@ -115,8 +116,8 @@ class FirebaseService {
     }
   }
 
-  /// Reads model names and the instruction template from `config/ai`, validating each independently
-  Future<({List<String>? modelNames, String? systemInstruction})?> getAIConfiguration() async {
+  /// Reads model names, the instruction template, and the response schema from `config/ai`
+  Future<({List<String>? modelNames, String? systemInstruction, Map<String, dynamic>? responseSchema})?> getAIConfiguration() async {
     try {
       final snapshot = await firestore
           .doc('config/ai')
@@ -128,6 +129,7 @@ class FirebaseService {
       final data = snapshot.data();
       final remoteModelNames = data?['modelNames'];
       final remoteSystemInstruction = data?['systemInstruction'];
+      final remoteResponseSchema = data?['responseSchema'];
 
       final modelNames = remoteModelNames is List
           ? remoteModelNames
@@ -145,6 +147,9 @@ class FirebaseService {
       return (
         modelNames: modelNames,
         systemInstruction: remoteSystemInstruction is String && remoteSystemInstruction.trim().isNotEmpty ? remoteSystemInstruction.trim() : null,
+        responseSchema: decodeAIResponseSchema(
+          remoteResponseSchema,
+        ),
       );
     } catch (error) {
       log(
