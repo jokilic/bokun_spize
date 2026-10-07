@@ -13,13 +13,14 @@
         - [x] Theme
         - [x] Language
         - [ ] Notifications
+        - [ ] Contact messages (only for `isAdmin`)
         - [x] Contact me
         - [x] Logout
         - [x] Delete account
         - [x] Version
 
 ### Firebase
-    - [ ] User -> IsAdmin - Then he can open contact messages
+    - [ ] User -> `isAdmin` - Then he can open contact messages
     - [ ] Update database permissions
     - [ ] Firebase App Check
     - [ ] Analytics
