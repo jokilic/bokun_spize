@@ -36,8 +36,7 @@ class WalksGraph extends StatelessWidget {
         ),
         sliver: SliverToBoxAdapter(
           child: AnimatedSwitcher(
-            // duration: BokunSpizeDurations.stateTransition,
-            duration: Duration(seconds: 5),
+            duration: BokunSpizeDurations.stateTransition,
             switchInCurve: Curves.easeOut,
             switchOutCurve: Curves.easeIn,
             transitionBuilder: (child, animation) => FadeTransition(
@@ -110,7 +109,7 @@ class WalksGraph extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         color: context.colors.listTileBackground.withValues(alpha: 0.5),
                       ),
-                      height: 30,
+                      height: 32,
                       width: 104,
                     ),
                   )
@@ -189,6 +188,14 @@ class WalksGraph extends StatelessWidget {
       ),
 
       ///
+      /// SMALL LOADING SPACING
+      ///
+      if (isLoading)
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 2),
+        ),
+
+      ///
       /// GRAPH
       ///
       WalksGraphWidget(
@@ -232,8 +239,7 @@ class WalksGraphWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(listTileRadius),
             child: AnimatedSwitcher(
-              // duration: BokunSpizeDurations.stateTransition,
-              duration: Duration(seconds: 5),
+              duration: BokunSpizeDurations.stateTransition,
               switchInCurve: Curves.easeOut,
               switchOutCurve: Curves.easeIn,
               transitionBuilder: (child, animation) => FadeTransition(

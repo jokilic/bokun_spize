@@ -34,11 +34,6 @@
 ### In-app purchases
     - [ ] Research & initial implementation
 
-### Handling errors
-    - [ ] Better handle all errors
-    - [ ] Show snackbars
-    - [ ] Maybe a screen in `AccountScreen` with a list of previously recorded errors
-
 # Bokun spize 🥗
 
 🥗 **Bokun spize** is a simple fitness app made in **Flutter**. 👨‍💻
