@@ -69,6 +69,8 @@ class WalksController
 
   final graphCalendarDayOptions = [3, 7, 14, 30, 60, 90];
 
+  static const initialStepsDays = 5;
+
   final stepsHistory = const StepsHistory();
 
   Timer? stepsRefreshTimer;
@@ -78,6 +80,7 @@ class WalksController
   var isDisposed = false;
   var isStepsRefreshActive = false;
   var isRefreshingCurrentDaySteps = false;
+  var isFetchingRemainingStepHistory = false;
   var hasRequestedHistoryPermission = false;
 
   ///
@@ -308,9 +311,9 @@ class WalksController
     }
   }
 
-  /// Requests permission and fetches all accessible history in batches of calendar days
+  /// Requests permission and fetches the most recent step data before loading older history
   Future<void> refreshSteps() async {
-    if (isDisposed || value.isLoading) {
+    if (isDisposed || value.isLoading || isFetchingRemainingStepHistory) {
       return;
     }
 
@@ -350,52 +353,57 @@ class WalksController
 
       final now = DateTime.now();
       final today = DateUtils.dateOnly(now);
-      final earliestDate = await stepsHistory.getEarliestStepDate(now);
-      final historyStart = DateUtils.dateOnly(earliestDate ?? today);
+      final recentHistoryStart = DateTime(
+        today.year,
+        today.month,
+        today.day - initialStepsDays + 1,
+      );
       final stepsByDate = <DateTime, StepsWithDate>{
         today: StepsWithDate(dateTime: today, steps: 0),
       };
-      var batchEnd = now;
+      final recentSteps = await stepsHistory.getDailySteps(
+        recentHistoryStart,
+        now,
+      );
 
-      /// Load recent totals first and continue through empty periods to the oldest record
-      while (batchEnd.isAfter(historyStart)) {
-        if (isDisposed) {
-          return;
-        }
-
-        final proposedStart = DateTime(batchEnd.year, batchEnd.month, batchEnd.day - 365);
-        final batchStart = proposedStart.isBefore(historyStart) ? historyStart : proposedStart;
-        final batch = await stepsHistory.getDailySteps(batchStart, batchEnd);
-
-        if (isDisposed) {
-          return;
-        }
-
-        for (final entry in batch) {
-          final date = DateUtils.dateOnly(entry.dateTime);
-
-          /// Keep only past days with recorded steps, but always include today
-          if (entry.steps > 0 || date == today) {
-            stepsByDate[date] = StepsWithDate(dateTime: date, steps: entry.steps);
-          }
-        }
-
-        updateState(
-          stepsWithDate: stepsByDate.values.toList()..sort((a, b) => a.dateTime.compareTo(b.dateTime)),
-        );
-
-        batchEnd = batchStart;
+      if (isDisposed) {
+        return;
       }
 
-      /// Preserve today even when the health store has no recorded steps
+      for (final entry in recentSteps) {
+        final date = DateUtils.dateOnly(
+          entry.dateTime,
+        );
+
+        /// Keep only past days with recorded steps, but always include today
+        if (entry.steps > 0 || date == today) {
+          stepsByDate[date] = StepsWithDate(
+            dateTime: date,
+            steps: entry.steps,
+          );
+        }
+      }
+
+      /// Show the success state as soon as the five most recent calendar days are available
       updateState(
-        stepsWithDate: stepsByDate.values.toList()..sort((a, b) => a.dateTime.compareTo(b.dateTime)),
+        stepsWithDate: stepsByDate.values.toList()
+          ..sort(
+            (a, b) => a.dateTime.compareTo(
+              b.dateTime,
+            ),
+          ),
         permissionAuthorized: true,
+        isLoading: false,
         error: null,
       );
-    }
-    /// Some error fetching steps
-    catch (error) {
+
+      /// Trigger a fire-and-forget method which fetches remaining steps
+      unawaited(
+        fetchRemainingStepHistory(
+          historyEnd: recentHistoryStart,
+        ),
+      );
+    } catch (error) {
       updateState(
         error: error.toString(),
       );
@@ -403,6 +411,90 @@ class WalksController
       updateState(
         isLoading: false,
       );
+    }
+  }
+
+  /// Fetches all accessible history older than the initial five calendar days
+  Future<void> fetchRemainingStepHistory({
+    required DateTime historyEnd,
+  }) async {
+    if (isDisposed || isFetchingRemainingStepHistory) {
+      return;
+    }
+
+    isFetchingRemainingStepHistory = true;
+
+    try {
+      final earliestDate = await stepsHistory.getEarliestStepDate(
+        historyEnd,
+      );
+
+      if (isDisposed || earliestDate == null) {
+        return;
+      }
+
+      final historyStart = DateUtils.dateOnly(
+        earliestDate,
+      );
+      final historicalStepsByDate = <DateTime, StepsWithDate>{};
+      var batchEnd = historyEnd;
+
+      /// Fetch older totals in yearly batches without keeping the success screen loading
+      while (batchEnd.isAfter(historyStart)) {
+        if (isDisposed) {
+          return;
+        }
+
+        final proposedStart = DateTime(
+          batchEnd.year,
+          batchEnd.month,
+          batchEnd.day - 365,
+        );
+        final batchStart = proposedStart.isBefore(historyStart) ? historyStart : proposedStart;
+        final batch = await stepsHistory.getDailySteps(
+          batchStart,
+          batchEnd,
+        );
+
+        if (isDisposed) {
+          return;
+        }
+
+        for (final entry in batch) {
+          if (entry.steps > 0) {
+            final date = DateUtils.dateOnly(
+              entry.dateTime,
+            );
+            historicalStepsByDate[date] = StepsWithDate(
+              dateTime: date,
+              steps: entry.steps,
+            );
+          }
+        }
+
+        batchEnd = batchStart;
+      }
+
+      final allStepsByDate = <DateTime, StepsWithDate>{
+        ...historicalStepsByDate,
+        for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,
+      };
+
+      updateState(
+        stepsWithDate: allStepsByDate.values.toList()
+          ..sort(
+            (a, b) => a.dateTime.compareTo(
+              b.dateTime,
+            ),
+          ),
+      );
+    } catch (error) {
+      log(
+        'Fetching remaining step history failed',
+        error: error,
+      );
+    } finally {
+      isFetchingRemainingStepHistory = false;
     }
   }
 
