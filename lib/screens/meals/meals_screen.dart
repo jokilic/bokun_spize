@@ -151,6 +151,7 @@ class _MealsScreenState extends State<MealsScreen> {
                 ),
               ),
         body: Animate(
+          key: ValueKey(meals.isNotEmpty),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,

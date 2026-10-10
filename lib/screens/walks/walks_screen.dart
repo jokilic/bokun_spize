@@ -122,6 +122,7 @@ class _WalksScreenState extends State<WalksScreen> {
               )
             : null,
         body: Animate(
+          key: ValueKey(stepsWithDate.isNotEmpty),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,

@@ -6,6 +6,8 @@
     - [ ] Think about `constants.dart`
 
 ### Screens
+    - [ ] Dohvati prvih 5 dana pa onda fire-and-forget ostalih u Walks
+    - [ ] Testiraj editiranje unutar searcha
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
         - [x] Edit user name

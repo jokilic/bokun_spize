@@ -134,6 +134,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 ),
               ),
         body: Animate(
+          key: ValueKey(weightTracks.isNotEmpty),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,
