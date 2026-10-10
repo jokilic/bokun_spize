@@ -84,6 +84,14 @@ class _MealsScreenState extends State<MealsScreen> {
       (total, meal) => total + (meal.nutrition?.fat ?? 0),
     );
 
+    final animationKey = isLoading
+        ? 'meals-loading'
+        : meals.isNotEmpty
+        ? 'meals-success'
+        : error != null
+        ? 'meals-error'
+        : 'meals-empty';
+
     return ColoredBox(
       color: context.colors.scaffoldBackground,
       child: Scaffold(
@@ -151,7 +159,7 @@ class _MealsScreenState extends State<MealsScreen> {
                 ),
               ),
         body: Animate(
-          key: ValueKey(meals.isNotEmpty),
+          key: ValueKey(animationKey),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,

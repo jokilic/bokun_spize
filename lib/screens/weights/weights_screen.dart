@@ -76,6 +76,14 @@ class _WeightsScreenState extends State<WeightsScreen> {
       calendarDays: graphCalendarDays,
     );
 
+    final animationKey = isLoading
+        ? 'weights-loading'
+        : weightTracks.isNotEmpty
+        ? 'weights-success'
+        : error != null
+        ? 'weights-error'
+        : 'weights-empty';
+
     return ColoredBox(
       color: context.colors.scaffoldBackground,
       child: Scaffold(
@@ -134,7 +142,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 ),
               ),
         body: Animate(
-          key: ValueKey(weightTracks.isNotEmpty),
+          key: ValueKey(animationKey),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,

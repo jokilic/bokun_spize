@@ -92,6 +92,14 @@ class _WalksScreenState extends State<WalksScreen> {
       calendarDays: graphCalendarDays,
     );
 
+    final animationKey = isLoading
+        ? 'walks-loading'
+        : stepsWithDate.isNotEmpty
+        ? 'walks-success'
+        : error != null || permissionAuthorized == false
+        ? 'walks-error'
+        : 'walks-empty';
+
     return ColoredBox(
       color: context.colors.scaffoldBackground,
       child: Scaffold(
@@ -122,7 +130,7 @@ class _WalksScreenState extends State<WalksScreen> {
               )
             : null,
         body: Animate(
-          key: ValueKey(stepsWithDate.isNotEmpty),
+          key: ValueKey(animationKey),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,
