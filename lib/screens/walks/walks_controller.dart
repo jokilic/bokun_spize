@@ -353,14 +353,20 @@ class WalksController
 
       final now = DateTime.now();
       final today = DateUtils.dateOnly(now);
+
       final recentHistoryStart = DateTime(
         today.year,
         today.month,
         today.day - initialStepsDays + 1,
       );
+
       final stepsByDate = <DateTime, StepsWithDate>{
-        today: StepsWithDate(dateTime: today, steps: 0),
+        today: StepsWithDate(
+          dateTime: today,
+          steps: 0,
+        ),
       };
+
       final recentSteps = await stepsHistory.getDailySteps(
         recentHistoryStart,
         now,
@@ -465,6 +471,7 @@ class WalksController
             final date = DateUtils.dateOnly(
               entry.dateTime,
             );
+
             historicalStepsByDate[date] = StepsWithDate(
               dateTime: date,
               steps: entry.steps,
