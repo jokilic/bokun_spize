@@ -1272,33 +1272,10 @@ class FirebaseService {
   /// WEIGHT TRACKS
   ///
 
-  /// Fetches `weightTracks` from [Firebase]
-  Future<List<WeightTrack>?> getWeightTracks() async {
-    try {
-      final user = auth.currentUser;
-
-      if (user == null) {
-        return null;
-      }
-
-      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('weightTracks');
-
-      query = query.orderBy('dateTime', descending: true);
-
-      final snapshot = await query.get();
-
-      return snapshot.docs.map(parseWeightTrackDocument).whereType<WeightTrack>().toList();
-    } catch (error) {
-      log(
-        'Getting weight tracks failed',
-        error: error,
-      );
-      return null;
-    }
-  }
-
-  /// Listens for real-time changes to `weightTracks` in [Firebase]
-  Stream<List<WeightTrack>?> listenToWeightTracks() async* {
+  /// Listens to the latest ordered page of `weightTracks` from [Firebase]
+  Stream<List<WeightTrack>?> listenToLatestWeightTracks({
+    required int pageSize,
+  }) async* {
     try {
       final user = auth.currentUser;
 
@@ -1310,16 +1287,58 @@ class FirebaseService {
       Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('weightTracks');
 
       query = query.orderBy('dateTime', descending: true);
+      query = query.orderBy(FieldPath.documentId, descending: true);
 
-      await for (final snapshot in query.snapshots()) {
+      await for (final snapshot in query.limit(pageSize).snapshots()) {
         yield snapshot.docs.map(parseWeightTrackDocument).whereType<WeightTrack>().toList();
       }
     } catch (error) {
       log(
-        'Listening to weight tracks failed',
+        'Listening to latest weight tracks failed',
         error: error,
       );
       yield null;
+    }
+  }
+
+  /// Fetches one ordered page of `weightTracks` from [Firebase]
+  Future<({List<WeightTrack> weightTracks, WeightTrack? cursor, bool hasMore})?> getWeightTracksPage({
+    required int pageSize,
+    WeightTrack? startAfterWeightTrack,
+  }) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return null;
+      }
+
+      Query<Map<String, dynamic>> query = firestore.collection('users').doc(user.uid).collection('weightTracks');
+
+      query = query.orderBy('dateTime', descending: true);
+      query = query.orderBy(FieldPath.documentId, descending: true);
+
+      if (startAfterWeightTrack != null) {
+        query = query.startAfter([
+          Timestamp.fromDate(startAfterWeightTrack.dateTime),
+          startAfterWeightTrack.id,
+        ]);
+      }
+
+      final snapshot = await query.limit(pageSize).get();
+      final weightTracks = snapshot.docs.map(parseWeightTrackDocument).whereType<WeightTrack>().toList();
+
+      return (
+        weightTracks: weightTracks,
+        cursor: weightTracks.lastOrNull,
+        hasMore: snapshot.docs.length == pageSize,
+      );
+    } catch (error) {
+      log(
+        'Getting weight tracks page failed',
+        error: error,
+      );
+      return null;
     }
   }
 

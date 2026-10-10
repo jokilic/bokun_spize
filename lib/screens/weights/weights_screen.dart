@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,9 +31,14 @@ class WeightsScreen extends WatchingStatefulWidget {
 }
 
 class _WeightsScreenState extends State<WeightsScreen> {
+  late final ScrollController scrollController;
+
   @override
   void initState() {
     super.initState();
+
+    scrollController = ScrollController();
+    scrollController.addListener(onScroll);
 
     registerIfNotInitialized<WeightsController>(
       () => WeightsController(
@@ -43,8 +50,20 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
   @override
   void dispose() {
+    scrollController.removeListener(onScroll);
+    scrollController.dispose();
     // unRegisterIfNotDisposed<WeightsController>();
     super.dispose();
+  }
+
+  void onScroll() {
+    if (!scrollController.hasClients || scrollController.position.extentAfter > 600) {
+      return;
+    }
+
+    unawaited(
+      getIt.get<WeightsController>().loadMoreWeightTracks(),
+    );
   }
 
   @override
@@ -56,6 +75,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
     final error = state.error;
     final isLoading = state.isLoading;
+    final isLoadingMore = state.isLoadingMore;
     final weightTracks = state.weightTracks;
 
     final graphCalendarDays = watchIt<StorageService>().value.calendarDays.weightsCalendarDays;
@@ -165,6 +185,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
           child: SafeArea(
             bottom: false,
             child: CustomScrollView(
+              controller: scrollController,
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               physics: const BouncingScrollPhysics(),
               slivers: [
@@ -224,7 +245,12 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 ///
                 /// LOADING
                 ///
-                if (isLoading) WeightsLoading(),
+                if (isLoading) const WeightsLoading(),
+
+                ///
+                /// LOADING MORE
+                ///
+                if (isLoadingMore) const WeightsLoading(itemCount: 3),
 
                 ///
                 /// ERROR

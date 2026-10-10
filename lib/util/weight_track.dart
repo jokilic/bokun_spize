@@ -2,6 +2,20 @@ import 'dart:core';
 
 import '../models/weight_track/weight_track.dart';
 
+/// Deduplicates and sorts weight tracks using the Firestore query order
+List<WeightTrack> mergeWeightTracks(Iterable<WeightTrack> weightTracks) {
+  final weightTracksById = {
+    for (final weightTrack in weightTracks) weightTrack.id: weightTrack,
+  };
+
+  return weightTracksById.values.toList()..sort(
+    (a, b) {
+      final dateComparison = b.dateTime.compareTo(a.dateTime);
+      return dateComparison != 0 ? dateComparison : b.id.compareTo(a.id);
+    },
+  );
+}
+
 List<WeightTrack> getWeightTracksForGraph({
   required List<WeightTrack> weightTracks,
   required int calendarDays,

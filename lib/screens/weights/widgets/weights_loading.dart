@@ -5,9 +5,15 @@ import '../../../constants/durations.dart';
 import 'weights_list_tile_loading.dart';
 
 class WeightsLoading extends StatelessWidget {
+  final int itemCount;
+
+  const WeightsLoading({
+    this.itemCount = 8,
+  });
+
   @override
   Widget build(BuildContext context) => SliverList.builder(
-    itemCount: 8,
+    itemCount: itemCount,
     itemBuilder: (context, index) => Animate(
       key: ValueKey(index),
       delay: BokunSpizeDurations.stateTransitionStagger * index,
