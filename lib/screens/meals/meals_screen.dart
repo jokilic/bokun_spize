@@ -217,6 +217,38 @@ class _MealsScreenState extends State<MealsScreen> {
                     showBlurredModalBottomSheet(
                       context: context,
                       builder: (sheetContext) => SearchScreen(
+                        onMealPressed: (meal) {
+                          HapticFeedback.lightImpact();
+                          showBlurredModalBottomSheet(
+                            context: context,
+                            builder: (context) => ViewMealScreen(
+                              passedMeal: meal,
+                              onDeletePressed: () {
+                                HapticFeedback.lightImpact();
+                                mealsController.deleteMeal(
+                                  meal: meal,
+                                  context: context,
+                                );
+                              },
+                              onEditPressed: () {
+                                HapticFeedback.lightImpact();
+                                mealsController.onAddManualMealPressed(
+                                  context,
+                                  passedMeal: meal,
+                                  isCopyingMeal: false,
+                                );
+                              },
+                              onCopyPressed: () {
+                                HapticFeedback.lightImpact();
+                                mealsController.onAddManualMealPressed(
+                                  context,
+                                  passedMeal: meal,
+                                  isCopyingMeal: true,
+                                );
+                              },
+                            ),
+                          );
+                        },
                         onDeletePressed: (meal) {
                           HapticFeedback.lightImpact();
                           mealsController.deleteMeal(

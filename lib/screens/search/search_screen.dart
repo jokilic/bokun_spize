@@ -13,20 +13,20 @@ import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
-import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/text_field_widget.dart';
-import '../view_meal/view_meal_screen.dart';
 import 'search_controller.dart';
 import 'widgets/search_error.dart';
 import 'widgets/search_loading.dart';
 import 'widgets/search_success.dart';
 
 class SearchScreen extends WatchingStatefulWidget {
+  final Function(Meal meal) onMealPressed;
   final Function(Meal meal) onDeletePressed;
   final Function(Meal meal) onEditPressed;
   final Function(Meal meal) onCopyPressed;
 
   const SearchScreen({
+    required this.onMealPressed,
     required this.onDeletePressed,
     required this.onEditPressed,
     required this.onCopyPressed,
@@ -319,16 +319,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 SearchSuccess(
                   meals: meals,
                   onPressed: (meal) {
-                    HapticFeedback.lightImpact();
-                    showBlurredModalBottomSheet(
-                      context: context,
-                      builder: (context) => ViewMealScreen(
-                        passedMeal: meal,
-                        onDeletePressed: () => widget.onDeletePressed(meal),
-                        onEditPressed: () => widget.onEditPressed(meal),
-                        onCopyPressed: () => widget.onCopyPressed(meal),
-                      ),
-                    );
+                    widget.onMealPressed(meal);
+                    Navigator.of(context).pop();
                   },
                   onDeletePressed: widget.onDeletePressed,
                   onEditPressed: widget.onEditPressed,
