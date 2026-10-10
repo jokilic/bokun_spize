@@ -353,91 +353,105 @@ class FadingFlexibleTitle extends StatelessWidget {
             ///
             /// CHANGE WITHIN LAST X DAYS
             ///
-            if (isHistoryLoading)
-              Animate(
-                onPlay: (controller) => controller.loop(
-                  reverse: true,
-                  min: 0.6,
-                ),
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.shimmer,
-                    curve: Curves.easeIn,
-                  ),
-                ],
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const SizedBox(height: 4),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: context.colors.fat.withValues(alpha: 0.5),
-                      ),
-                      height: 12,
-                      width: 48,
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                      ),
-                      height: 8,
-                      width: 56,
-                    ),
-                  ],
-                ),
-              )
-            else if (stepsChange != null && !isLoading)
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      PhosphorIcon(
-                        stepsChange! > 0 ? PhosphorIconsBold.trendUp : PhosphorIconsBold.trendDown,
-                        color: changeColor,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        '${stepsChange! > 0 ? '+' : ''}${stepsChange!.round().toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
-                          color: changeColor,
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  if (stepsChangeWithinDays != null)
-                    Text(
-                      switch (stepsChangeWithinDays) {
-                        0 => 'vsToday'.tr(),
-                        1 => 'vsYesterday'.tr(),
-                        final int days => 'vsLastDays'.tr(
-                          args: ['$days'],
-                        ),
-                        null => '-',
-                      },
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.2,
-                        color: context.colors.text,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                ],
+            AnimatedSwitcher(
+              duration: BokunSpizeDurations.stateTransition,
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: child,
               ),
+              child: isHistoryLoading
+                  ? Animate(
+                      key: const ValueKey('walks-change-loading'),
+                      onPlay: (controller) => controller.loop(
+                        reverse: true,
+                        min: 0.6,
+                      ),
+                      effects: const [
+                        FadeEffect(
+                          duration: BokunSpizeDurations.shimmer,
+                          curve: Curves.easeIn,
+                        ),
+                      ],
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const SizedBox(height: 4),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: context.colors.fat.withValues(alpha: 0.5),
+                            ),
+                            height: 12,
+                            width: 48,
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                            ),
+                            height: 8,
+                            width: 56,
+                          ),
+                        ],
+                      ),
+                    )
+                  : stepsChange != null && !isLoading
+                  ? Column(
+                      key: const ValueKey('walks-change-success'),
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            PhosphorIcon(
+                              stepsChange! > 0 ? PhosphorIconsBold.trendUp : PhosphorIconsBold.trendDown,
+                              color: changeColor,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              '${stepsChange! > 0 ? '+' : ''}${stepsChange!.round().toStringAsFixed(0)}',
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                                color: changeColor,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        if (stepsChangeWithinDays != null)
+                          Text(
+                            switch (stepsChangeWithinDays) {
+                              0 => 'vsToday'.tr(),
+                              1 => 'vsYesterday'.tr(),
+                              final int days => 'vsLastDays'.tr(
+                                args: ['$days'],
+                              ),
+                              null => '-',
+                            },
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 8,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.2,
+                              color: context.colors.text,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                      ],
+                    )
+                  : const SizedBox.shrink(
+                      key: ValueKey('walks-change-empty'),
+                    ),
+            ),
           ],
         ),
       ),

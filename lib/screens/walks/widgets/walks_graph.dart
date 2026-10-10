@@ -35,144 +35,155 @@ class WalksGraph extends StatelessWidget {
           vertical: 12,
         ),
         sliver: SliverToBoxAdapter(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ///
-              /// GRAPH TITLE LOADING
-              ///
-              if (isLoading)
-                Animate(
-                  onPlay: (controller) => controller.loop(
-                    reverse: true,
-                    min: 0.6,
-                  ),
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.shimmer,
-                      curve: Curves.easeIn,
+          child: AnimatedSwitcher(
+            // duration: BokunSpizeDurations.stateTransition,
+            duration: Duration(seconds: 5),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+            child: Row(
+              key: ValueKey(isLoading),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ///
+                /// GRAPH TITLE LOADING
+                ///
+                if (isLoading)
+                  Animate(
+                    onPlay: (controller) => controller.loop(
+                      reverse: true,
+                      min: 0.6,
                     ),
-                  ],
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.shimmer,
+                        curve: Curves.easeIn,
+                      ),
+                    ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      ),
+                      height: 30,
+                      width: 144,
                     ),
-                    height: 30,
-                    width: 144,
-                  ),
-                )
-              ///
-              /// GRAPH TITLE
-              ///
-              else
-                Expanded(
-                  child: Text(
-                    'recentProgress'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
-                  ),
-                ),
-
-              ///
-              /// GRAPH BUTTON LOADING
-              ///
-              if (isLoading)
-                Animate(
-                  onPlay: (controller) => controller.loop(
-                    reverse: true,
-                    min: 0.6,
-                  ),
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.shimmer,
-                      curve: Curves.easeIn,
-                    ),
-                  ],
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                    ),
-                    height: 30,
-                    width: 104,
-                  ),
-                )
-              ///
-              /// GRAPH BUTTON
-              ///
-              else
-                PopupMenuButton<int>(
-                  menuPadding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  position: PopupMenuPosition.under,
-                  offset: const Offset(0, 8),
-                  elevation: 0,
-                  color: context.colors.listTileBackground,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  onSelected: onSelectedDays,
-                  itemBuilder: (context) => dayEntries
-                      .map(
-                        (calendarDays) => PopupMenuItem<int>(
-                          value: calendarDays,
-                          child: Text(
-                            'calendarDays'.tr(
-                              args: ['$calendarDays'],
-                            ),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.text,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  child: Container(
-                    decoration: ShapeDecoration(
-                      color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                      shape: const StadiumBorder(),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          PhosphorIcon(
-                            PhosphorIconsBold.caretDown,
-                            color: context.colors.text,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'calendarDays'.tr(
-                              args: ['$calendarDays'],
-                            ),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 16,
-                              height: 1.6,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.text,
-                            ),
-                          ),
-                        ],
+                  )
+                ///
+                /// GRAPH TITLE
+                ///
+                else
+                  Expanded(
+                    child: Text(
+                      'recentProgress'.tr(),
+                      style: TextStyle(
+                        fontFamily: 'Epilogue',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6,
+                        color: context.colors.text,
                       ),
                     ),
                   ),
-                ),
-            ],
+
+                ///
+                /// GRAPH BUTTON LOADING
+                ///
+                if (isLoading)
+                  Animate(
+                    onPlay: (controller) => controller.loop(
+                      reverse: true,
+                      min: 0.6,
+                    ),
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.shimmer,
+                        curve: Curves.easeIn,
+                      ),
+                    ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      ),
+                      height: 30,
+                      width: 104,
+                    ),
+                  )
+                ///
+                /// GRAPH BUTTON
+                ///
+                else
+                  PopupMenuButton<int>(
+                    menuPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    position: PopupMenuPosition.under,
+                    offset: const Offset(0, 8),
+                    elevation: 0,
+                    color: context.colors.listTileBackground,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    onSelected: onSelectedDays,
+                    itemBuilder: (context) => dayEntries
+                        .map(
+                          (calendarDays) => PopupMenuItem<int>(
+                            value: calendarDays,
+                            child: Text(
+                              'calendarDays'.tr(
+                                args: ['$calendarDays'],
+                              ),
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            PhosphorIcon(
+                              PhosphorIconsBold.caretDown,
+                              color: context.colors.text,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'calendarDays'.tr(
+                                args: ['$calendarDays'],
+                              ),
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 16,
+                                height: 1.6,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -220,50 +231,62 @@ class WalksGraphWidget extends StatelessWidget {
           aspectRatio: 1.8,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(listTileRadius),
-            child: Animate(
-              onPlay: (controller) {
-                if (isLoading) {
-                  controller.loop(
-                    reverse: true,
-                    min: 0.6,
-                  );
-                }
-              },
-              effects: [
-                if (isLoading)
-                  const FadeEffect(
-                    duration: BokunSpizeDurations.shimmer,
-                    curve: Curves.easeIn,
-                  ),
-              ],
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(listTileRadius),
-                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                ),
-                child: isLoading
-                    ? const SizedBox.shrink()
-                    : visibleStepsWithDate.isEmpty
-                    ? Center(
-                        child: Text(
-                          'walksNoStepData'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.text.withValues(alpha: 0.4),
-                          ),
+            child: AnimatedSwitcher(
+              // duration: BokunSpizeDurations.stateTransition,
+              duration: Duration(seconds: 5),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+              child: isLoading
+                  ? Animate(
+                      key: const ValueKey('walks-graph-loading'),
+                      onPlay: (controller) => controller.loop(
+                        reverse: true,
+                        min: 0.6,
+                      ),
+                      effects: const [
+                        FadeEffect(
+                          duration: BokunSpizeDurations.shimmer,
+                          curve: Curves.easeIn,
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                        child: buildLineChart(
-                          stepsWithDate: visibleStepsWithDate,
-                          calendarDays: calendarDays,
-                          context: context,
+                      ],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                          color: context.colors.listTileBackground.withValues(alpha: 0.5),
                         ),
                       ),
-              ),
+                    )
+                  : Container(
+                      key: const ValueKey('walks-graph-success'),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      ),
+                      child: visibleStepsWithDate.isEmpty
+                          ? Center(
+                              child: Text(
+                                'walksNoStepData'.tr(),
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.colors.text.withValues(alpha: 0.4),
+                                ),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                              child: buildLineChart(
+                                stepsWithDate: visibleStepsWithDate,
+                                calendarDays: calendarDays,
+                                context: context,
+                              ),
+                            ),
+                    ),
             ),
           ),
         ),
