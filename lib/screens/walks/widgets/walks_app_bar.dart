@@ -10,6 +10,7 @@ import '../../../widgets/animated_digit_widget.dart';
 
 class WalksAppBar extends StatelessWidget {
   final bool isLoading;
+  final bool isHistoryLoading;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
@@ -17,6 +18,7 @@ class WalksAppBar extends StatelessWidget {
 
   const WalksAppBar({
     required this.isLoading,
+    required this.isHistoryLoading,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -139,6 +141,7 @@ class WalksAppBar extends StatelessWidget {
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: FadingFlexibleTitle(
         isLoading: isLoading,
+        isHistoryLoading: isHistoryLoading,
         dayString: dayString,
         currentSteps: currentSteps,
         stepsChange: stepsChange,
@@ -150,6 +153,7 @@ class WalksAppBar extends StatelessWidget {
 
 class FadingFlexibleTitle extends StatelessWidget {
   final bool isLoading;
+  final bool isHistoryLoading;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
@@ -157,6 +161,7 @@ class FadingFlexibleTitle extends StatelessWidget {
 
   const FadingFlexibleTitle({
     required this.isLoading,
+    required this.isHistoryLoading,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -348,7 +353,44 @@ class FadingFlexibleTitle extends StatelessWidget {
             ///
             /// CHANGE WITHIN LAST X DAYS
             ///
-            if (stepsChange != null && !isLoading)
+            if (isHistoryLoading)
+              Animate(
+                onPlay: (controller) => controller.loop(
+                  reverse: true,
+                  min: 0.6,
+                ),
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.shimmer,
+                    curve: Curves.easeIn,
+                  ),
+                ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(height: 4),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: context.colors.fat.withValues(alpha: 0.5),
+                      ),
+                      height: 12,
+                      width: 48,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      ),
+                      height: 8,
+                      width: 56,
+                    ),
+                  ],
+                ),
+              )
+            else if (stepsChange != null && !isLoading)
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
