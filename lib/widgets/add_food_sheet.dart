@@ -600,6 +600,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                                   quantityTextEditingController.text.trim(),
                                 ),
                                 unit: unitTextEditingController.text.trim(),
+                                emoji: widget.passedFood?.emoji,
+                                color: widget.passedFood?.color,
                                 nutrition: Nutrition(
                                   calories: parseNumberForFood(
                                     caloriesTextEditingController.text.trim(),
