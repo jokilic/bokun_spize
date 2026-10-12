@@ -319,8 +319,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 SearchSuccess(
                   meals: meals,
                   onPressed: (meal) {
-                    widget.onMealPressed(meal);
                     Navigator.of(context).pop();
+                    widget.onMealPressed(meal);
                   },
                   onDeletePressed: widget.onDeletePressed,
                   onEditPressed: widget.onEditPressed,
