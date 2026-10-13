@@ -6,6 +6,12 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
+    }
+
     function isOptionalString(value, maxLength) {
       return value == null || (value is string && value.size() <= maxLength);
     }
@@ -25,11 +31,11 @@ service cloud.firestore {
       ];
 
       let isRegistrationDocument = data.keys().hasAny(['name', 'registeredAt'])
-        && data.keys().hasOnly(['name', 'registeredAt'])
+        && data.keys().hasOnly(['name', 'registeredAt', 'isAdmin'])
         && (!('name' in data) || (data.name is string && data.name.size() <= 200));
 
       let isMetricsDocument = data.keys().hasAll(metricFields)
-        && data.keys().hasOnly(metricFields.concat(['name', 'registeredAt']))
+        && data.keys().hasOnly(metricFields.concat(['name', 'registeredAt', 'isAdmin']))
         && (!('name' in data) || (data.name is string && data.name.size() <= 200))
         && data.age is int
         && data.age > 0
@@ -56,6 +62,7 @@ service cloud.firestore {
         && data.dailyFat >= 0;
 
       return (!('registeredAt' in data) || data.registeredAt is timestamp)
+        && (!('isAdmin' in data) || data.isAdmin is bool)
         && (isRegistrationDocument || isMetricsDocument);
     }
 
@@ -142,11 +149,12 @@ service cloud.firestore {
         && data.createdAt.size() <= 64;
     }
 
-    // Allow authenticated submissions while keeping messages inaccessible to clients
+    // Allow authenticated submissions and admin-only reads
     match /contactMessages/{messageId} {
       allow create: if request.auth != null
         && isValidContactMessage(request.resource.data);
-      allow read, update, delete: if false;
+      allow read: if isAdmin();
+      allow update, delete: if false;
     }
 
     // Allow signed-in clients to fetch AI configuration managed by administrators
@@ -156,7 +164,11 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read, delete: if isOwner(userId);
-      allow create, update: if isOwner(userId)
+      allow create: if isOwner(userId)
+        && !request.resource.data.keys().hasAny(['isAdmin'])
+        && isValidUserDocument(request.resource.data);
+      allow update: if isOwner(userId)
+        && request.resource.data.get('isAdmin', false) == resource.data.get('isAdmin', false)
         && isValidUserDocument(request.resource.data);
 
       match /meals/{mealId} {

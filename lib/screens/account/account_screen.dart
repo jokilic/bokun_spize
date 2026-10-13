@@ -195,19 +195,20 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               /// MESSAGES
               ///
-              AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  accountController.openMessagesSheet(context);
-                },
-                icon: PhosphorIconsBold.chatCircleText,
-                iconBackgroundColor: context.colors.protein,
-                // TODO: Localize
-                title: 'Messages',
-                // TODO: Localize
-                subtitle: 'See user messages',
-              ),
+              if (userMetrics?.isAdmin ?? false)
+                AccountListTile(
+                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    accountController.openMessagesSheet(context);
+                  },
+                  icon: PhosphorIconsBold.chatCircleText,
+                  iconBackgroundColor: context.colors.protein,
+                  // TODO: Localize
+                  title: 'Messages',
+                  // TODO: Localize
+                  subtitle: 'See user messages',
+                ),
 
               ///
               /// LOGOUT
