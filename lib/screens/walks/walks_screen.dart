@@ -32,9 +32,12 @@ class _WalksScreenState extends State<WalksScreen> {
   void initState() {
     super.initState();
 
+    final graphCalendarDays = getIt.get<StorageService>().value.calendarDays.walksCalendarDays;
+
     registerIfNotInitialized<WalksController>(
       () => WalksController(
         health: Health(),
+        graphCalendarDays: graphCalendarDays,
       ),
       afterRegister: (controller) => controller.init(),
     ).resumeStepsRefresh();

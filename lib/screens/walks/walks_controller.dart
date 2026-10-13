@@ -32,9 +32,11 @@ class WalksController
   ///
 
   final Health health;
+  final int graphCalendarDays;
 
   WalksController({
     required this.health,
+    required this.graphCalendarDays,
   }) : super((
          stepsWithDate: null,
          permissionAuthorized: null,
@@ -70,8 +72,6 @@ class WalksController
   ///
 
   final graphCalendarDayOptions = [3, 7, 14, 30, 60, 90];
-
-  static const initialStepsDays = 5;
 
   final stepsHistory = const StepsHistory();
 
@@ -361,7 +361,7 @@ class WalksController
       final recentHistoryStart = DateTime(
         today.year,
         today.month,
-        today.day - initialStepsDays + 1,
+        today.day - graphCalendarDays + 1,
       );
 
       final stepsByDate = <DateTime, StepsWithDate>{
@@ -394,7 +394,7 @@ class WalksController
         }
       }
 
-      /// Show the success state as soon as the five most recent calendar days are available
+      /// Show the success state as soon as the selected graph range is available
       updateState(
         stepsWithDate: stepsByDate.values.toList()
           ..sort(
@@ -425,7 +425,7 @@ class WalksController
     }
   }
 
-  /// Fetches all accessible history older than the initial five calendar days
+  /// Fetches all accessible history older than the initially selected graph range
   Future<void> fetchRemainingStepHistory({
     required DateTime historyEnd,
   }) async {
