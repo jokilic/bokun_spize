@@ -32,9 +32,26 @@ class MealsSuccess extends StatelessWidget {
     itemBuilder: (context, index) {
       final meal = meals[index];
 
+      final listTileKey = ValueKey(meal.id);
+      final listTile = MealsListTile(
+        onPressed: () => onPressed(meal),
+        onEditPressed: () => onEditPressed(meal),
+        onDeletePressed: () => onDeletePressed(meal),
+        onCopyPressed: () => onCopyPressed(meal),
+        meal: meal,
+        index: index,
+      );
+
+      if (index >= 5) {
+        return KeyedSubtree(
+          key: listTileKey,
+          child: listTile,
+        );
+      }
+
       return Animate(
-        key: ValueKey(meal.id),
-        delay: BokunSpizeDurations.stateTransitionStagger * index.clamp(0, 6),
+        key: listTileKey,
+        delay: BokunSpizeDurations.stateTransitionStagger * index,
         effects: const [
           FadeEffect(
             duration: BokunSpizeDurations.stateTransition,
@@ -54,14 +71,7 @@ class MealsSuccess extends StatelessWidget {
             curve: Curves.easeOutCubic,
           ),
         ],
-        child: MealsListTile(
-          onPressed: () => onPressed(meal),
-          onEditPressed: () => onEditPressed(meal),
-          onDeletePressed: () => onDeletePressed(meal),
-          onCopyPressed: () => onCopyPressed(meal),
-          meal: meal,
-          index: index,
-        ),
+        child: listTile,
       );
     },
   );
