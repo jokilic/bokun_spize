@@ -177,6 +177,40 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   /// Handles unexpected latest weight track listener errors
   void onLatestWeightTracksError(Object error, StackTrace stackTrace) => onLatestWeightTracksChanged(null);
 
+  /// Fetches, merges, and publishes the next page for the active request
+  Future<bool> fetchNextWeightTracksPage({
+    required int requestId,
+  }) async {
+    final cursor = weightTracksCursor;
+
+    if (isDisposed || requestId != weightTracksRequestId || cursor == null) {
+      return false;
+    }
+
+    final page = await firebase.getWeightTracksPage(
+      pageSize: additionalWeightTracksPageSize,
+      startAfterWeightTrack: cursor,
+    );
+
+    if (isDisposed || requestId != weightTracksRequestId || page == null) {
+      return false;
+    }
+
+    weightTracksCursor = page.cursor ?? weightTracksCursor;
+    additionalWeightTracks = mergeWeightTracks(
+      [...additionalWeightTracks, ...page.weightTracks],
+    );
+
+    updateState(
+      weightTracks: mergeWeightTracks(
+        [...additionalWeightTracks, ...latestWeightTracks],
+      ),
+      hasMore: page.hasMore && page.cursor != null,
+    );
+
+    return true;
+  }
+
   /// Completes the inclusive graph date range before prefetching one page of older entries
   Future<void> fetchGraphWeightTracks() async {
     if (isDisposed || !value.isHistoryLoading) {
@@ -208,31 +242,9 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
           break;
         }
 
-        final page = await firebase.getWeightTracksPage(
-          pageSize: additionalWeightTracksPageSize,
-          startAfterWeightTrack: cursor,
-        );
-
-        if (isDisposed || requestId != weightTracksRequestId) {
+        if (!await fetchNextWeightTracksPage(requestId: requestId)) {
           return;
         }
-
-        if (page == null) {
-          return;
-        }
-
-        /// Advance the cursor and merge each graph page with the latest listener data
-        weightTracksCursor = page.cursor ?? weightTracksCursor;
-        additionalWeightTracks = mergeWeightTracks(
-          [...additionalWeightTracks, ...page.weightTracks],
-        );
-
-        updateState(
-          weightTracks: mergeWeightTracks(
-            [...additionalWeightTracks, ...latestWeightTracks],
-          ),
-          hasMore: page.hasMore && page.cursor != null,
-        );
       }
 
       /// Reveal the loaded graph by disabling isHistoryLoading
@@ -264,9 +276,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
 
   /// Loads and appends the next page of older weight tracks
   Future<void> loadMoreWeightTracks() async {
-    final cursor = weightTracksCursor;
-
-    if (isDisposed || value.isLoading || value.isHistoryLoading || value.isLoadingMore || !value.hasMore || cursor == null) {
+    if (isDisposed || value.isLoading || value.isHistoryLoading || value.isLoadingMore || !value.hasMore || weightTracksCursor == null) {
       return;
     }
 
@@ -277,41 +287,22 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       isLoadingMore: true,
     );
 
-    /// Fetch the next 25 entries after the current cursor
-    final page = await firebase.getWeightTracksPage(
-      pageSize: additionalWeightTracksPageSize,
-      startAfterWeightTrack: cursor,
-    );
-
-    if (isDisposed || requestId != weightTracksRequestId) {
-      return;
-    }
-
-    if (page == null) {
-      updateState(
-        isLoadingMore: false,
+    try {
+      await fetchNextWeightTracksPage(
+        requestId: requestId,
       );
-      return;
+    } catch (error) {
+      log(
+        'Loading more weight tracks failed',
+        error: error,
+      );
+    } finally {
+      if (requestId == weightTracksRequestId) {
+        updateState(
+          isLoadingMore: false,
+        );
+      }
     }
-
-    /// Advance the cursor and merge the older page with previously loaded entries
-    weightTracksCursor = page.cursor ?? weightTracksCursor;
-    additionalWeightTracks = mergeWeightTracks(
-      [...additionalWeightTracks, ...page.weightTracks],
-    );
-
-    /// Publish the merged history, stop the pagination loader, and update hasMore
-    if (isDisposed || requestId != weightTracksRequestId) {
-      return;
-    }
-
-    updateState(
-      weightTracks: mergeWeightTracks(
-        [...additionalWeightTracks, ...latestWeightTracks],
-      ),
-      isLoadingMore: false,
-      hasMore: page.hasMore && page.cursor != null,
-    );
   }
 
   /// Restarts the initial page request after an error
