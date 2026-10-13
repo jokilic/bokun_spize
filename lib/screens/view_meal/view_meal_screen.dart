@@ -862,9 +862,21 @@ class ViewMealScreen extends WatchingWidget {
                 itemBuilder: (context, index) {
                   final food = foods[index];
 
+                  final listTileKey = ObjectKey(food);
+                  final listTile = ViewMealFoodListTile(
+                    food: food,
+                  );
+
+                  if (index >= 5) {
+                    return KeyedSubtree(
+                      key: listTileKey,
+                      child: listTile,
+                    );
+                  }
+
                   return Animate(
-                    key: ObjectKey(food),
-                    delay: BokunSpizeDurations.stateTransitionStagger * (7 + index.clamp(0, 4)),
+                    key: listTileKey,
+                    delay: BokunSpizeDurations.stateTransitionStagger * (7 + index),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,
@@ -877,9 +889,7 @@ class ViewMealScreen extends WatchingWidget {
                         curve: Curves.easeOutCubic,
                       ),
                     ],
-                    child: ViewMealFoodListTile(
-                      food: food,
-                    ),
+                    child: listTile,
                   );
                 },
               ),

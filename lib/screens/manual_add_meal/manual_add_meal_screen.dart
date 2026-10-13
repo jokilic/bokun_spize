@@ -940,9 +940,37 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   itemBuilder: (context, index) {
                     final food = foods[index];
 
+                    final listTileKey = ObjectKey(food);
+                    final listTile = ManualAddMealFoodListTile(
+                      enabled: !isCopyingMeal,
+                      onPressed: isCopyingMeal
+                          ? () {}
+                          : () => handleOnPressed(
+                              onPressed: () => mealController.onAddFoodPressed(
+                                context,
+                                passedFood: food,
+                              ),
+                            ),
+                      onDeletePressed: () {
+                        HapticFeedback.lightImpact();
+                        mealController.deleteFood(
+                          index: index,
+                        );
+                      },
+                      food: food,
+                      index: index,
+                    );
+
+                    if (index >= 5) {
+                      return KeyedSubtree(
+                        key: listTileKey,
+                        child: listTile,
+                      );
+                    }
+
                     return Animate(
-                      key: ObjectKey(food),
-                      delay: BokunSpizeDurations.stateTransitionStagger * (foodListAnimationStep + index.clamp(0, 4)),
+                      key: listTileKey,
+                      delay: BokunSpizeDurations.stateTransitionStagger * (foodListAnimationStep + index),
                       effects: const [
                         FadeEffect(
                           duration: BokunSpizeDurations.stateTransition,
@@ -955,25 +983,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                           curve: Curves.easeOutCubic,
                         ),
                       ],
-                      child: ManualAddMealFoodListTile(
-                        enabled: !isCopyingMeal,
-                        onPressed: isCopyingMeal
-                            ? () {}
-                            : () => handleOnPressed(
-                                onPressed: () => mealController.onAddFoodPressed(
-                                  context,
-                                  passedFood: food,
-                                ),
-                              ),
-                        onDeletePressed: () {
-                          HapticFeedback.lightImpact();
-                          mealController.deleteFood(
-                            index: index,
-                          );
-                        },
-                        food: food,
-                        index: index,
-                      ),
+                      child: listTile,
                     );
                   },
                 ),
