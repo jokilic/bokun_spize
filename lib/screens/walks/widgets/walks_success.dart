@@ -74,11 +74,23 @@ class WalksSuccess extends StatelessWidget {
             DateTime.now(),
           );
 
+          final listTile = WalksListTile(
+            onPressed: HapticFeedback.lightImpact,
+            stepWithDate: stepWithDate,
+            previousStepsWithDate: previousStepsWithDate,
+            isToday: isToday,
+            isWalking: isToday && isWalking,
+          );
+
+          if (index >= 5) {
+            return listTile;
+          }
+
           return Animate(
             key: ValueKey(
               stepWithDate.dateTime.microsecondsSinceEpoch,
             ),
-            delay: BokunSpizeDurations.stateTransitionStagger * index.clamp(0, 6),
+            delay: BokunSpizeDurations.stateTransitionStagger * index,
             effects: const [
               FadeEffect(
                 duration: BokunSpizeDurations.stateTransition,
@@ -98,13 +110,7 @@ class WalksSuccess extends StatelessWidget {
                 curve: Curves.easeOutCubic,
               ),
             ],
-            child: WalksListTile(
-              onPressed: HapticFeedback.lightImpact,
-              stepWithDate: stepWithDate,
-              previousStepsWithDate: previousStepsWithDate,
-              isToday: isToday,
-              isWalking: isToday && isWalking,
-            ),
+            child: listTile,
           );
         },
       ),

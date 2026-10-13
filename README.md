@@ -6,7 +6,6 @@
     - [ ] Think about `constants.dart`
 
 ### Screens
-    - [ ] Don't trigger fade animations in ListTiles which are bigger than index of 5
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
         - [x] Edit user name

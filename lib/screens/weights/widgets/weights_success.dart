@@ -80,9 +80,25 @@ class WeightsSuccess extends StatelessWidget {
             index: index,
           );
 
+          final listTileKey = ValueKey(weightTrack.id);
+          final listTile = WeightsListTile(
+            onPressed: HapticFeedback.lightImpact,
+            onDeletePressed: () => onDeletePressed(weightTrack),
+            weightTrack: weightTrack,
+            weightChange: previousWeightChange,
+            index: index,
+          );
+
+          if (index >= 5) {
+            return KeyedSubtree(
+              key: listTileKey,
+              child: listTile,
+            );
+          }
+
           return Animate(
-            key: ValueKey(weightTrack.id),
-            delay: BokunSpizeDurations.stateTransitionStagger * index.clamp(0, 6),
+            key: listTileKey,
+            delay: BokunSpizeDurations.stateTransitionStagger * index,
             effects: const [
               FadeEffect(
                 duration: BokunSpizeDurations.stateTransition,
@@ -102,13 +118,7 @@ class WeightsSuccess extends StatelessWidget {
                 curve: Curves.easeOutCubic,
               ),
             ],
-            child: WeightsListTile(
-              onPressed: HapticFeedback.lightImpact,
-              onDeletePressed: () => onDeletePressed(weightTrack),
-              weightTrack: weightTrack,
-              weightChange: previousWeightChange,
-              index: index,
-            ),
+            child: listTile,
           );
         },
       ),
