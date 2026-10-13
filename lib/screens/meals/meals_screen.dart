@@ -232,6 +232,7 @@ class _MealsScreenState extends State<MealsScreen> {
                               },
                               onEditPressed: () {
                                 HapticFeedback.lightImpact();
+                                Navigator.of(sheetContext).pop();
                                 mealsController.onAddManualMealPressed(
                                   context,
                                   passedMeal: meal,
@@ -240,6 +241,7 @@ class _MealsScreenState extends State<MealsScreen> {
                               },
                               onCopyPressed: () {
                                 HapticFeedback.lightImpact();
+                                Navigator.of(sheetContext).pop();
                                 mealsController.onAddManualMealPressed(
                                   context,
                                   passedMeal: meal,

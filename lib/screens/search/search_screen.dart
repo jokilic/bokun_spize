@@ -318,10 +318,7 @@ class _SearchScreenState extends State<SearchScreen> {
               if (meals.isNotEmpty)
                 SearchSuccess(
                   meals: meals,
-                  onPressed: (meal) {
-                    Navigator.of(context).pop();
-                    widget.onMealPressed(meal);
-                  },
+                  onPressed: widget.onMealPressed,
                   onDeletePressed: widget.onDeletePressed,
                   onEditPressed: widget.onEditPressed,
                   onCopyPressed: widget.onCopyPressed,
