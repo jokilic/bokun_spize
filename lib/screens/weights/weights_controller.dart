@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ import '../../util/weight_track.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'widgets/weights_add_weight_sheet.dart';
 
-class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, bool isLoading, bool isLoadingMore, bool hasMore, String? error})> implements Disposable {
+class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, bool isLoading, bool isHistoryLoading, bool isLoadingMore, bool hasMore, String? error})>
+    implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -28,6 +30,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   }) : super((
          weightTracks: const [],
          isLoading: false,
+         isHistoryLoading: false,
          isLoadingMore: false,
          hasMore: false,
          error: null,
@@ -62,10 +65,12 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
 
   final graphCalendarDayOptions = [3, 7, 14, 30, 60, 90];
 
+  static const initialWeightTracksPageSize = 5;
   static const additionalWeightTracksPageSize = 25;
 
   var isDisposed = false;
-  var hasLoadedAdditionalWeightTracks = false;
+  var hasStartedWeightHistory = false;
+  var weightTracksRequestId = 0;
 
   ///
   /// METHODS
@@ -77,28 +82,30 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       return;
     }
 
-    await weightTracksSubscription?.cancel();
-
-    if (isDisposed) {
-      return;
-    }
-
+    final requestId = ++weightTracksRequestId;
     weightTracksCursor = null;
     latestWeightTracks = const [];
     additionalWeightTracks = const [];
-    hasLoadedAdditionalWeightTracks = false;
+    hasStartedWeightHistory = false;
 
     updateState(
       weightTracks: const [],
       isLoading: true,
+      isHistoryLoading: true,
       isLoadingMore: false,
       hasMore: false,
       error: null,
     );
 
+    await weightTracksSubscription?.cancel();
+
+    if (isDisposed || requestId != weightTracksRequestId) {
+      return;
+    }
+
     weightTracksSubscription = firebase
         .listenToLatestWeightTracks(
-          pageSize: graphCalendarDays,
+          pageSize: initialWeightTracksPageSize,
         )
         .listen(
           onLatestWeightTracksChanged,
@@ -116,11 +123,13 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       latestWeightTracks = const [];
       additionalWeightTracks = const [];
       weightTracksCursor = null;
-      hasLoadedAdditionalWeightTracks = false;
+      hasStartedWeightHistory = false;
+      weightTracksRequestId++;
 
       updateState(
         weightTracks: const [],
         isLoading: false,
+        isHistoryLoading: false,
         isLoadingMore: false,
         hasMore: false,
         error: 'weightsErrorTracksCouldNotBeLoaded'.tr(),
@@ -134,7 +143,11 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     );
     latestWeightTracks = weightTracks;
 
-    if (!hasLoadedAdditionalWeightTracks) {
+    final shouldLoadHistory = !hasStartedWeightHistory;
+    hasStartedWeightHistory = true;
+
+    /// Keep the pagination boundary fixed while newer listener entries arrive
+    if (shouldLoadHistory) {
       weightTracksCursor = latestWeightTracks.lastOrNull;
     }
 
@@ -143,33 +156,90 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
         [...additionalWeightTracks, ...latestWeightTracks],
       ),
       isLoading: false,
-      hasMore: hasLoadedAdditionalWeightTracks ? value.hasMore : latestWeightTracks.length == graphCalendarDays,
+      isHistoryLoading: shouldLoadHistory ? true : null,
+      hasMore: shouldLoadHistory ? latestWeightTracks.length == initialWeightTracksPageSize : value.hasMore,
       error: null,
     );
+
+    if (shouldLoadHistory) {
+      unawaited(
+        fetchGraphWeightTracks(),
+      );
+    }
   }
 
   /// Handles unexpected latest weight track listener errors
-  void onLatestWeightTracksError(Object error, StackTrace stackTrace) {
-    if (isDisposed) {
+  void onLatestWeightTracksError(Object error, StackTrace stackTrace) => onLatestWeightTracksChanged(null);
+
+  /// Completes the initial graph batch before prefetching one page of older entries
+  Future<void> fetchGraphWeightTracks() async {
+    if (isDisposed || !value.isHistoryLoading) {
       return;
     }
 
-    updateState(
-      weightTracks: const [],
-      isLoading: false,
-      isLoadingMore: false,
-      hasMore: false,
-      error: 'weightsErrorTracksCouldNotBeLoaded'.tr(),
-    );
+    final requestId = weightTracksRequestId;
+    final cursor = weightTracksCursor;
+    final remainingGraphTracks = graphCalendarDays - initialWeightTracksPageSize;
+
+    try {
+      if (remainingGraphTracks > 0 && value.hasMore && cursor != null) {
+        final page = await firebase.getWeightTracksPage(
+          pageSize: remainingGraphTracks,
+          startAfterWeightTrack: cursor,
+        );
+
+        if (isDisposed || requestId != weightTracksRequestId) {
+          return;
+        }
+
+        if (page == null) {
+          return;
+        }
+
+        weightTracksCursor = page.cursor ?? weightTracksCursor;
+        additionalWeightTracks = mergeWeightTracks(
+          [...additionalWeightTracks, ...page.weightTracks],
+        );
+
+        updateState(
+          weightTracks: mergeWeightTracks(
+            [...additionalWeightTracks, ...latestWeightTracks],
+          ),
+          hasMore: page.hasMore && page.cursor != null,
+        );
+      }
+
+      updateState(
+        isHistoryLoading: false,
+      );
+
+      /// Keep subsequent pagination on demand after this first older page
+      unawaited(
+        loadMoreWeightTracks(),
+      );
+    } catch (error) {
+      log(
+        'Fetching graph weight tracks failed',
+        error: error,
+      );
+    } finally {
+      if (requestId == weightTracksRequestId) {
+        updateState(
+          isHistoryLoading: false,
+        );
+      }
+    }
   }
 
   /// Loads and appends the next page of older weight tracks
   Future<void> loadMoreWeightTracks() async {
     final cursor = weightTracksCursor;
 
-    if (isDisposed || value.isLoading || value.isLoadingMore || !value.hasMore || cursor == null) {
+    if (isDisposed || value.isLoading || value.isHistoryLoading || value.isLoadingMore || !value.hasMore || cursor == null) {
       return;
     }
+
+    final requestId = weightTracksRequestId;
 
     updateState(
       isLoadingMore: true,
@@ -180,7 +250,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       startAfterWeightTrack: cursor,
     );
 
-    if (isDisposed) {
+    if (isDisposed || requestId != weightTracksRequestId) {
       return;
     }
 
@@ -191,7 +261,6 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       return;
     }
 
-    hasLoadedAdditionalWeightTracks = true;
     weightTracksCursor = page.cursor ?? weightTracksCursor;
     additionalWeightTracks = mergeWeightTracks(
       [...additionalWeightTracks, ...page.weightTracks],
@@ -315,6 +384,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   void updateState({
     List<WeightTrack>? weightTracks,
     bool? isLoading,
+    bool? isHistoryLoading,
     bool? isLoadingMore,
     bool? hasMore,
     Object? error = nullStateNoChange,
@@ -326,6 +396,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     value = (
       weightTracks: weightTracks ?? value.weightTracks,
       isLoading: isLoading ?? value.isLoading,
+      isHistoryLoading: isHistoryLoading ?? value.isHistoryLoading,
       isLoadingMore: isLoadingMore ?? value.isLoadingMore,
       hasMore: hasMore ?? value.hasMore,
       error: identical(error, nullStateNoChange) ? value.error : error as String?,

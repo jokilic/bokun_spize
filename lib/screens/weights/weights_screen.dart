@@ -78,6 +78,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
 
     final error = state.error;
     final isLoading = state.isLoading;
+    final isHistoryLoading = state.isHistoryLoading;
     final isLoadingMore = state.isLoadingMore;
     final weightTracks = state.weightTracks;
 
@@ -197,6 +198,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 ///
                 WeightsAppBar(
                   isLoading: isLoading,
+                  isHistoryLoading: isHistoryLoading,
                   dayString: lastWeightTrack != null
                       ? getDateString(
                           date: lastWeightTrack.dateTime,
@@ -212,9 +214,9 @@ class _WeightsScreenState extends State<WeightsScreen> {
                 ///
                 /// GRAPH
                 ///
-                if (weightTracks.length >= 2 || isLoading)
+                if (weightTracks.length >= 2 || isLoading || isHistoryLoading)
                   WeightsGraph(
-                    isLoading: isLoading,
+                    isLoading: isLoading || isHistoryLoading,
                     onSelectedDays: (newWeightsCalendarDays) {
                       HapticFeedback.lightImpact();
                       storageService.setWeightsCalendarDays(newWeightsCalendarDays);

@@ -7,10 +7,6 @@
 
 ### Screens
     - [ ] Revert `isLoadingMore` in graphs
-    - [ ] Weights & Walks fetching behaviour:
-        - [ ] First fetch 5 -> show success state, but graph is still loading
-        - [ ] Then fetch remaining graphDays -> stop loading graph and show success
-        - [ ] Then fetch all other values (Weights are paginated, Walks should fetch everything)
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
         - [x] Edit user name
