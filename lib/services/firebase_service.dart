@@ -102,7 +102,8 @@ class FirebaseService {
     try {
       await firestore
           .collection('contactMessages')
-          .add(
+          .doc(contactMessage.id)
+          .set(
             contactMessage.toMap(),
           );
 
@@ -113,6 +114,29 @@ class FirebaseService {
         error: error,
       );
       return false;
+    }
+  }
+
+  /// Listens for real-time changes to `contactMessages` in [Firebase]
+  Stream<List<ContactMessage>> listenToContactMessages() async* {
+    Query<Map<String, dynamic>> query = firestore.collection('contactMessages');
+
+    query = query.orderBy(
+      'createdAt',
+      descending: true,
+    );
+
+    await for (final snapshot in query.snapshots()) {
+      yield snapshot.docs.map((document) {
+        final data = document.data();
+        final createdAt = data['createdAt'];
+
+        return ContactMessage.fromMap(
+          data,
+          id: document.id,
+          createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
+        );
+      }).toList();
     }
   }
 

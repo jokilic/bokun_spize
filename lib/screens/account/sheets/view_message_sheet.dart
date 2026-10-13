@@ -1,0 +1,331 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
+
+import '../../../constants/constants.dart';
+import '../../../constants/durations.dart';
+import '../../../models/contact_message/contact_message.dart';
+import '../../../theme/extensions.dart';
+import '../../../util/date_time.dart';
+import '../../../util/spacing.dart';
+import '../../../widgets/text_field_widget.dart';
+
+class ViewMessageSheet extends StatelessWidget {
+  final ContactMessage message;
+
+  const ViewMessageSheet({
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final date = getDateString(
+      date: message.createdAt,
+      dateFormat: 'dd.MM.yyyy.',
+      languageCode: context.locale.languageCode,
+    );
+
+    final time = getDateString(
+      date: message.createdAt,
+      dateFormat: 'HH:mm',
+      useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
+    );
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(listTileRadius),
+      child: ColoredBox(
+        color: context.colors.scaffoldBackground,
+        child: CustomScrollView(
+          shrinkWrap: true,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
+
+            ///
+            /// TITLE & CLOSE BUTTON
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 10),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ///
+                      /// PLACEHOLDER BUTTON
+                      ///
+                      Opacity(
+                        opacity: 0,
+                        child: IgnorePointer(
+                          child: IconButton(
+                            onPressed: null,
+                            icon: const PhosphorIcon(
+                              PhosphorIconsBold.x,
+                              size: 22,
+                            ),
+                            style: IconButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: const EdgeInsets.all(10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                              foregroundColor: context.colors.text,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      ///
+                      /// TITLE
+                      ///
+                      Expanded(
+                        child: Text(
+                          // TODO: Localize
+                          'Message',
+                          style: TextStyle(
+                            fontFamily: 'Epilogue',
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2,
+                            letterSpacing: 0.6,
+                            color: context.colors.text,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+
+                      ///
+                      /// CLOSE BUTTON
+                      ///
+                      IconButton(
+                        onPressed: Navigator.of(context).pop,
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.x,
+                          size: 22,
+                        ),
+                        style: IconButton.styleFrom(
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          foregroundColor: context.colors.text,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            ///
+            /// SUBTITLE
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Text.rich(
+                    TextSpan(
+                      text: date,
+                      children: [
+                        WidgetSpan(
+                          child: PhosphorIcon(
+                            PhosphorIconsBold.dotOutline,
+                            size: 16,
+                            color: context.colors.text,
+                          ),
+                        ),
+                        TextSpan(
+                          text: time,
+                        ),
+                      ],
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: context.colors.text,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
+
+            ///
+            /// TEXT TITLE
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 8,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Text(
+                    // TODO: Localize
+                    'Message text',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: context.colors.text,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            ),
+
+            ///
+            /// TEXT
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: TextFieldWidget(
+                  enabled: false,
+                  minLines: 3,
+                  maxLines: 3,
+                  controller: TextEditingController(
+                    text: message.message,
+                  ),
+                  // TODO: Localize
+                  title: 'Message',
+                  // TODO: Localize
+                  hintText: 'Something here',
+                  textColor: context.colors.text,
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
+
+            ///
+            ///
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 8,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Text(
+                    // TODO: Localize
+                    'Additional info',
+                    style: TextStyle(
+                      fontFamily: 'Epilogue',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                      color: context.colors.text,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            ),
+
+            ///
+            /// ORIGINAL TEXT TEXT FIELD
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: TextFieldWidget(
+                  enabled: false,
+                  minLines: 3,
+                  maxLines: 3,
+                  controller: TextEditingController(
+                    // TODO: Work on this
+                    text: 'App version: ${message.appVersion} - Platform: ${message.platform}',
+                  ),
+                  // TODO: Localize
+                  title: 'Additional info',
+                  // TODO: Localize
+                  hintText: 'Not sure',
+                  textColor: context.colors.text,
+                ),
+              ),
+            ),
+
+            ///
+            /// BOTTOM SPACING
+            ///
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: getBottomSpacing(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

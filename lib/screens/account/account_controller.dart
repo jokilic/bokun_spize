@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../models/contact_message/contact_message.dart';
 import '../../services/firebase_service.dart';
@@ -18,6 +19,7 @@ import 'sheets/account_delete_sheet.dart';
 import 'sheets/account_name_sheet.dart';
 import 'sheets/contact_sheet.dart';
 import 'sheets/language_sheet.dart';
+import 'sheets/messages_sheet.dart';
 import 'sheets/theme_sheet.dart';
 import 'sheets/user_metrics_sheet.dart';
 
@@ -128,6 +130,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
         ]);
 
         final contactMessage = ContactMessage(
+          id: const Uuid().v1(),
           message: message,
           userUid: userUid,
           userEmail: userEmail,
@@ -151,6 +154,12 @@ class AccountController extends ValueNotifier<SettingsValues> {
         );
       },
     ),
+  );
+
+  /// Opens [MessagesSheet]
+  Future<void> openMessagesSheet(BuildContext context) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => MessagesSheet(),
   );
 
   /// Opens [DeleteAccountSheet]

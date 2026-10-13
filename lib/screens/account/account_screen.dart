@@ -193,10 +193,27 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
 
               ///
-              /// LOGOUT
+              /// MESSAGES
               ///
               AccountListTile(
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  accountController.openMessagesSheet(context);
+                },
+                icon: PhosphorIconsBold.chatCircleText,
+                iconBackgroundColor: context.colors.protein,
+                // TODO: Localize
+                title: 'Messages',
+                // TODO: Localize
+                subtitle: 'See user messages',
+              ),
+
+              ///
+              /// LOGOUT
+              ///
+              AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   handleLogOut();
@@ -211,7 +228,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// DELETE ACCOUNT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 7,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openDeleteAccountSheet(
@@ -253,7 +270,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                    delay: BokunSpizeDurations.stateTransitionStagger * 8,
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,

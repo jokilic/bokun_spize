@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class ContactMessage {
+  final String id;
   final String message;
   final String userUid;
   final String userEmail;
@@ -9,6 +10,7 @@ class ContactMessage {
   final DateTime createdAt;
 
   ContactMessage({
+    required this.id,
     required this.message,
     required this.userUid,
     required this.userEmail,
@@ -19,8 +21,10 @@ class ContactMessage {
 
   factory ContactMessage.fromMap(
     Map<String, dynamic> map, {
+    required String id,
     required DateTime createdAt,
   }) => ContactMessage(
+    id: id,
     message: map['message'],
     userUid: map['userUid'],
     userEmail: map['userEmail'],
@@ -32,6 +36,7 @@ class ContactMessage {
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
+    'id': id,
     'message': message,
     'userUid': userUid,
     'userEmail': userEmail,
@@ -41,13 +46,14 @@ class ContactMessage {
   };
 
   @override
-  String toString() => 'ContactMessage(message: $message, userUid: $userUid, userEmail: $userEmail, appVersion: $appVersion, platform: $platform, createdAt: $createdAt)';
+  String toString() => 'ContactMessage(id: $id, message: $message, userUid: $userUid, userEmail: $userEmail, appVersion: $appVersion, platform: $platform, createdAt: $createdAt)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ContactMessage &&
           runtimeType == other.runtimeType &&
+          id == other.id &&
           message == other.message &&
           userUid == other.userUid &&
           userEmail == other.userEmail &&
@@ -56,5 +62,5 @@ class ContactMessage {
           createdAt == other.createdAt;
 
   @override
-  int get hashCode => message.hashCode ^ userUid.hashCode ^ userEmail.hashCode ^ appVersion.hashCode ^ platform.hashCode ^ createdAt.hashCode;
+  int get hashCode => id.hashCode ^ message.hashCode ^ userUid.hashCode ^ userEmail.hashCode ^ appVersion.hashCode ^ platform.hashCode ^ createdAt.hashCode;
 }

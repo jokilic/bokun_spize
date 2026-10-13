@@ -13,7 +13,7 @@
         - [x] Theme
         - [x] Language
         - [ ] Notifications
-        - [ ] Contact messages (only for `isAdmin`)
+        - [ ] Contact messages (only for `isAdmin`) (update Firestore rules to show only if `isAdmin`)
         - [x] Contact me
         - [x] Logout
         - [x] Delete account
