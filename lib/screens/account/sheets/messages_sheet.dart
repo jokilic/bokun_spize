@@ -33,9 +33,12 @@ class _MessagesSheetState extends State<MessagesSheet> {
   @override
   Widget build(BuildContext context) {
     /// Listens to any changes in `contactMessages` from [Firebase]
-    final contactMessages = watchStream<FirebaseService, List<ContactMessage>?>(
-      (firebaseService) => firebaseService.listenToContactMessages(),
-    ).data;
+    final contactMessages =
+        watchStream<FirebaseService, List<ContactMessage>>(
+          (firebaseService) => firebaseService.listenToContactMessages(),
+          initialValue: const <ContactMessage>[],
+        ).data ??
+        const <ContactMessage>[];
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -185,9 +188,9 @@ class _MessagesSheetState extends State<MessagesSheet> {
             ///
             /// MESSAGES
             ///
-            if (contactMessages?.isNotEmpty ?? false)
+            if (contactMessages.isNotEmpty)
               SliverList.builder(
-                itemCount: contactMessages!.length,
+                itemCount: contactMessages.length,
                 findChildIndexCallback: (key) {
                   final index = contactMessages.indexWhere(
                     (message) => ValueKey(message.id) == key,

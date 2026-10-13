@@ -119,24 +119,32 @@ class FirebaseService {
 
   /// Listens for real-time changes to `contactMessages` in [Firebase]
   Stream<List<ContactMessage>> listenToContactMessages() async* {
-    Query<Map<String, dynamic>> query = firestore.collection('contactMessages');
+    try {
+      Query<Map<String, dynamic>> query = firestore.collection('contactMessages');
 
-    query = query.orderBy(
-      'createdAt',
-      descending: true,
-    );
+      query = query.orderBy(
+        'createdAt',
+        descending: true,
+      );
 
-    await for (final snapshot in query.snapshots()) {
-      yield snapshot.docs.map((document) {
-        final data = document.data();
-        final createdAt = data['createdAt'];
+      await for (final snapshot in query.snapshots()) {
+        yield snapshot.docs.map((document) {
+          final data = document.data();
+          final createdAt = data['createdAt'];
 
-        return ContactMessage.fromMap(
-          data,
-          id: document.id,
-          createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
-        );
-      }).toList();
+          return ContactMessage.fromMap(
+            data,
+            id: document.id,
+            createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
+          );
+        }).toList();
+      }
+    } catch (error) {
+      log(
+        'Listening to contact messages failed',
+        error: error,
+      );
+      yield const <ContactMessage>[];
     }
   }
 

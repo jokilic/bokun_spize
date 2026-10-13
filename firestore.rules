@@ -127,12 +127,14 @@ service cloud.firestore {
     }
 
     // Validate contact messages using the fields serialized by the app
-    function isValidContactMessage(data) {
-      let fields = ['message', 'userUid', 'userEmail', 'appVersion', 'platform', 'createdAt'];
+    function isValidContactMessage(data, messageId) {
+      let fields = ['id', 'message', 'userUid', 'userEmail', 'appVersion', 'platform', 'createdAt'];
       let email = request.auth.token.get('email', null);
 
       return data.keys().hasAll(fields)
         && data.keys().hasOnly(fields)
+        && data.id is string
+        && data.id == messageId
         && data.message is string
         && data.message.size() > 0
         && data.message.size() <= 50000
@@ -152,7 +154,7 @@ service cloud.firestore {
     // Allow authenticated submissions and admin-only reads
     match /contactMessages/{messageId} {
       allow create: if request.auth != null
-        && isValidContactMessage(request.resource.data);
+        && isValidContactMessage(request.resource.data, messageId);
       allow read: if isAdmin();
       allow update, delete: if false;
     }
