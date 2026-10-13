@@ -142,9 +142,13 @@ class ViewMealFoodListTile extends StatelessWidget {
                                 color: context.colors.protein,
                               ),
                               children: [
-                                if (food.nutrition.protein > 0)
-                                  const WidgetSpan(
-                                    child: SizedBox(width: 8),
+                                if (food.nutrition.protein > 0 && (food.nutrition.carbs > 0 || food.nutrition.fat > 0))
+                                  WidgetSpan(
+                                    child: PhosphorIcon(
+                                      PhosphorIconsBold.dotOutline,
+                                      size: 14,
+                                      color: context.colors.text.withValues(alpha: 0.7),
+                                    ),
                                   ),
                                 TextSpan(
                                   text: food.nutrition.carbs > 0
@@ -159,9 +163,13 @@ class ViewMealFoodListTile extends StatelessWidget {
                                     color: context.colors.carbs,
                                   ),
                                 ),
-                                if (food.nutrition.carbs > 0)
-                                  const WidgetSpan(
-                                    child: SizedBox(width: 8),
+                                if (food.nutrition.carbs > 0 && food.nutrition.fat > 0)
+                                  WidgetSpan(
+                                    child: PhosphorIcon(
+                                      PhosphorIconsBold.dotOutline,
+                                      size: 14,
+                                      color: context.colors.text.withValues(alpha: 0.7),
+                                    ),
                                   ),
                                 TextSpan(
                                   text: food.nutrition.fat > 0

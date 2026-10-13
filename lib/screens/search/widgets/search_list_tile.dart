@@ -340,9 +340,22 @@ class SearchListTile extends StatelessWidget {
                           /// SUBTITLE
                           ///
                           else
-                            // TODO: Make a Text.rich which shows 'Date PhosphorIconsBold.dotOutline Time', same as Text.rich in ViewMealScreen
-                            Text(
-                              subtitleText,
+                            Text.rich(
+                              TextSpan(
+                                text: date,
+                                children: [
+                                  WidgetSpan(
+                                    child: PhosphorIcon(
+                                      PhosphorIconsBold.dotOutline,
+                                      size: 14,
+                                      color: context.colors.text.withValues(alpha: 0.7),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: time,
+                                  ),
+                                ],
+                              ),
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 14,
