@@ -284,11 +284,7 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(credential);
 
-      await saveUserRegistrationDate(
-        user: userCredential.user,
-      );
-
-      await saveProviderUserName(
+      await saveUserMetadata(
         user: userCredential.user,
         providerName: user.displayName,
       );
@@ -369,10 +365,6 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(oauthCredential);
 
-      await saveUserRegistrationDate(
-        user: userCredential.user,
-      );
-
       final appleName =
           [
                 credential.givenName,
@@ -387,7 +379,7 @@ class FirebaseService {
               )
               .join(' ');
 
-      await saveProviderUserName(
+      await saveUserMetadata(
         user: userCredential.user,
         providerName: appleName,
       );
@@ -505,11 +497,7 @@ class FirebaseService {
         );
       }
 
-      await saveUserRegistrationDate(
-        user: user,
-      );
-
-      await saveProviderUserName(
+      await saveUserMetadata(
         user: user,
         providerName: name,
       );
@@ -550,32 +538,8 @@ class FirebaseService {
     }
   }
 
-  /// Saves the first registration date without replacing an existing date
-  Future<void> saveUserRegistrationDate({required User? user}) async {
-    if (user == null) {
-      return;
-    }
-
-    final document = firestore.collection('users').doc(user.uid);
-    final registeredAt = user.metadata.creationTime ?? DateTime.now();
-
-    await firestore.runTransaction((transaction) async {
-      final snapshot = await transaction.get(document);
-
-      if (snapshot.data()?['registeredAt'] != null) {
-        return;
-      }
-
-      transaction.set(
-        document,
-        {'registeredAt': Timestamp.fromDate(registeredAt)},
-        SetOptions(merge: true),
-      );
-    });
-  }
-
-  /// Saves available provider name without replacing existing user name
-  Future<void> saveProviderUserName({
+  /// Saves available user metadata without replacing existing values
+  Future<void> saveUserMetadata({
     required User? user,
     required String? providerName,
   }) async {
@@ -584,24 +548,41 @@ class FirebaseService {
     }
 
     final displayName = user.displayName?.trim();
-    final name = (displayName?.isNotEmpty ?? false) ? displayName : providerName?.trim();
-
-    if (name == null || name.isEmpty) {
-      return;
-    }
+    final fallbackName = providerName?.trim();
+    final name = (displayName?.isNotEmpty ?? false)
+        ? displayName
+        : (fallbackName?.isNotEmpty ?? false)
+        ? fallbackName
+        : null;
 
     final document = firestore.collection('users').doc(user.uid);
-    final snapshot = await document.get();
-    final existingName = snapshot.data()?['name'] as String?;
+    final registeredAt = user.metadata.creationTime ?? DateTime.now();
 
-    if (existingName != null && existingName.trim().isNotEmpty) {
-      return;
-    }
+    await firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(document);
+      final data = snapshot.data();
+      final existingUserMetrics = data != null ? UserMetrics.fromMap(data) : null;
+      final existingName = existingUserMetrics?.name?.trim();
+      final hasExistingName = existingName != null && existingName.isNotEmpty;
+      final hasExistingRegistrationDate = existingUserMetrics?.registeredAt != null;
 
-    await document.set(
-      {'name': name},
-      SetOptions(merge: true),
-    );
+      if (hasExistingName && hasExistingRegistrationDate) {
+        return;
+      }
+
+      final userMetrics = UserMetrics(
+        registeredAt: existingUserMetrics?.registeredAt ?? registeredAt,
+        name: hasExistingName ? existingName : name,
+      );
+
+      transaction.set(
+        document,
+        userMetrics.toMap(
+          includeMetrics: false,
+        ),
+        SetOptions(merge: true),
+      );
+    });
   }
 
   /// Deletes the current user's data and Firebase account
@@ -886,7 +867,10 @@ class FirebaseService {
 
       final document = firestore.collection('users').doc(user.uid);
 
-      await document.set(newUserMetrics.toMap());
+      await document.set(
+        newUserMetrics.toMap(),
+        SetOptions(merge: true),
+      );
 
       return true;
     } catch (error) {
@@ -911,15 +895,57 @@ class FirebaseService {
         return false;
       }
 
-      await firestore.collection('users').doc(user.uid).set(
-        {'name': name},
-        SetOptions(merge: true),
+      final userMetrics = UserMetrics(
+        name: name,
       );
+
+      await firestore
+          .collection('users')
+          .doc(user.uid)
+          .set(
+            userMetrics.toMap(
+              includeMetrics: false,
+            ),
+            SetOptions(merge: true),
+          );
 
       return true;
     } catch (error) {
       log(
         'Updating user name failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
+  /// Updates only `isAdmin` in the current user's document in [Firebase]
+  Future<bool> updateUserIsAdmin({required bool isAdmin}) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final userMetrics = UserMetrics(
+        isAdmin: isAdmin,
+      );
+
+      await firestore
+          .collection('users')
+          .doc(user.uid)
+          .set(
+            userMetrics.toMap(
+              includeMetrics: false,
+            ),
+            SetOptions(merge: true),
+          );
+
+      return true;
+    } catch (error) {
+      log(
+        'Updating user admin status failed',
         error: error,
       );
       return false;
@@ -937,7 +963,10 @@ class FirebaseService {
 
       final document = firestore.collection('users').doc(user.uid);
 
-      await document.set(newUserMetrics.toMap());
+      await document.set(
+        newUserMetrics.toMap(),
+        SetOptions(merge: true),
+      );
 
       return true;
     } catch (error) {
