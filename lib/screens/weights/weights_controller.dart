@@ -166,7 +166,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       error: null,
     );
 
-    /// Start the graph batch fetch once without awaiting it
+    /// Start the graph history fetch once without awaiting it
     if (shouldLoadHistory) {
       unawaited(
         fetchGraphWeightTracks(),
@@ -177,23 +177,39 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   /// Handles unexpected latest weight track listener errors
   void onLatestWeightTracksError(Object error, StackTrace stackTrace) => onLatestWeightTracksChanged(null);
 
-  /// Completes the initial graph batch before prefetching one page of older entries
+  /// Completes the inclusive graph date range before prefetching one page of older entries
   Future<void> fetchGraphWeightTracks() async {
     if (isDisposed || !value.isHistoryLoading) {
       return;
     }
 
     final requestId = weightTracksRequestId;
-    final cursor = weightTracksCursor;
-
-    /// Calculate the remaining entries using graphCalendarDays as the total record count
-    final remainingGraphTracks = graphCalendarDays - initialWeightTracksPageSize;
 
     try {
-      /// Fetch the rest of the graph batch after the initial five entries
-      if (remainingGraphTracks > 0 && value.hasMore && cursor != null) {
+      /// Continue until the cursor passes the graph's oldest calendar day or history is exhausted
+      while (!isDisposed && requestId == weightTracksRequestId && value.hasMore) {
+        final cursor = weightTracksCursor;
+        final latestWeightTrack = value.weightTracks.firstOrNull;
+
+        if (cursor == null || latestWeightTrack == null) {
+          break;
+        }
+
+        /// Match the graph's inclusive date range anchored to the latest measurement
+        final latestDate = latestWeightTrack.dateTime;
+        final graphHistoryStart = DateTime(
+          latestDate.year,
+          latestDate.month,
+          latestDate.day - graphCalendarDays,
+        );
+
+        /// Entries on the boundary day can span multiple pages, so fetch until strictly before it
+        if (DateUtils.dateOnly(cursor.dateTime).isBefore(graphHistoryStart)) {
+          break;
+        }
+
         final page = await firebase.getWeightTracksPage(
-          pageSize: remainingGraphTracks,
+          pageSize: additionalWeightTracksPageSize,
           startAfterWeightTrack: cursor,
         );
 
@@ -205,7 +221,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
           return;
         }
 
-        /// Advance the cursor and merge the graph batch with the latest listener data
+        /// Advance the cursor and merge each graph page with the latest listener data
         weightTracksCursor = page.cursor ?? weightTracksCursor;
         additionalWeightTracks = mergeWeightTracks(
           [...additionalWeightTracks, ...page.weightTracks],
@@ -220,8 +236,9 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       }
 
       /// Reveal the loaded graph by disabling isHistoryLoading
-
-      await Future.delayed(const Duration(seconds: 5));
+      if (isDisposed || requestId != weightTracksRequestId) {
+        return;
+      }
 
       updateState(
         isHistoryLoading: false,
@@ -284,7 +301,9 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     );
 
     /// Publish the merged history, stop the pagination loader, and update hasMore
-    await Future.delayed(const Duration(seconds: 5));
+    if (isDisposed || requestId != weightTracksRequestId) {
+      return;
+    }
 
     updateState(
       weightTracks: mergeWeightTracks(
