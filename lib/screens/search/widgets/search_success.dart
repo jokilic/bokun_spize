@@ -9,7 +9,8 @@ class SearchSuccess extends StatelessWidget {
   final List<Meal> meals;
   final Function(Meal meal) onPressed;
   final Function(Meal meal) onEditPressed;
-  final Function(Meal meal) onDeletePressed;
+  final Future<bool> Function(Meal meal) onDeletePressed;
+  final Function(Meal meal) onDeleted;
   final Function(Meal meal) onCopyPressed;
 
   const SearchSuccess({
@@ -17,6 +18,7 @@ class SearchSuccess extends StatelessWidget {
     required this.onPressed,
     required this.onEditPressed,
     required this.onDeletePressed,
+    required this.onDeleted,
     required this.onCopyPressed,
   });
 
@@ -58,6 +60,7 @@ class SearchSuccess extends StatelessWidget {
           onPressed: () => onPressed(meal),
           onEditPressed: () => onEditPressed(meal),
           onDeletePressed: () => onDeletePressed(meal),
+          onDeleted: () => onDeleted(meal),
           onCopyPressed: () => onCopyPressed(meal),
           meal: meal,
           index: index,

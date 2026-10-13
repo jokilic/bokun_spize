@@ -140,7 +140,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   );
 
   /// Deletes `meal` from [Firebase]
-  Future<void> deleteMeal({
+  Future<bool> deleteMeal({
     required Meal meal,
     required BuildContext context,
   }) async {
@@ -156,6 +156,8 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
+
+    return success;
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`

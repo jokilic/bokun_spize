@@ -16,7 +16,8 @@ import '../../../widgets/meal_image.dart';
 class SearchListTile extends StatelessWidget {
   final Function() onPressed;
   final Function() onEditPressed;
-  final Function() onDeletePressed;
+  final Future<bool> Function() onDeletePressed;
+  final Function() onDeleted;
   final Function() onCopyPressed;
   final Meal meal;
   final int index;
@@ -25,6 +26,7 @@ class SearchListTile extends StatelessWidget {
     required this.onPressed,
     required this.onEditPressed,
     required this.onDeletePressed,
+    required this.onDeleted,
     required this.onCopyPressed,
     required this.meal,
     required this.index,
@@ -76,8 +78,15 @@ class SearchListTile extends StatelessWidget {
           leadingActions: [
             SwipeAction(
               onTap: (handler) async {
+                final success = await onDeletePressed();
+
+                if (!success) {
+                  await handler(false);
+                  return;
+                }
+
                 await handler(true);
-                await onDeletePressed();
+                onDeleted();
               },
               color: context.colors.delete,
               backgroundRadius: listTileRadius,

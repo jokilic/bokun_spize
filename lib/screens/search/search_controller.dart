@@ -254,6 +254,23 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     }
   }
 
+  /// Removes a deleted meal from the visible results and invalidates cached meals
+  void removeMeal(Meal meal) {
+    if (isDisposed) {
+      return;
+    }
+
+    mealsRequest = null;
+
+    updateState(
+      meals: value.meals
+          .where(
+            (result) => result.id != meal.id,
+          )
+          .toList(),
+    );
+  }
+
   /// Stop speech recognition if [TextField] becomes active
   Future<void> stopSpeechToTextIfTextFieldFocused() async {
     if (!focusNode.hasFocus) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -217,18 +219,25 @@ class _MealsScreenState extends State<MealsScreen> {
                     showBlurredModalBottomSheet(
                       context: context,
                       builder: (sheetContext) => SearchScreen(
-                        onMealPressed: (meal) {
+                        onMealPressed: ({required meal, required onDeleted}) {
                           HapticFeedback.lightImpact();
                           showBlurredModalBottomSheet(
                             context: context,
-                            builder: (context) => ViewMealScreen(
+                            builder: (viewMealContext) => ViewMealScreen(
                               passedMeal: meal,
-                              onDeletePressed: () {
-                                HapticFeedback.lightImpact();
-                                mealsController.deleteMeal(
+                              onDeletePressed: () async {
+                                unawaited(
+                                  HapticFeedback.lightImpact(),
+                                );
+
+                                final success = await mealsController.deleteMeal(
                                   meal: meal,
                                   context: context,
                                 );
+
+                                if (success) {
+                                  onDeleted();
+                                }
                               },
                               onEditPressed: () {
                                 HapticFeedback.lightImpact();
@@ -253,7 +262,7 @@ class _MealsScreenState extends State<MealsScreen> {
                         },
                         onDeletePressed: (meal) {
                           HapticFeedback.lightImpact();
-                          mealsController.deleteMeal(
+                          return mealsController.deleteMeal(
                             meal: meal,
                             context: context,
                           );

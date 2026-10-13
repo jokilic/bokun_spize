@@ -20,8 +20,12 @@ import 'widgets/search_loading.dart';
 import 'widgets/search_success.dart';
 
 class SearchScreen extends WatchingStatefulWidget {
-  final Function(Meal meal) onMealPressed;
-  final Function(Meal meal) onDeletePressed;
+  final Function({
+    required Meal meal,
+    required Function() onDeleted,
+  })
+  onMealPressed;
+  final Future<bool> Function(Meal meal) onDeletePressed;
   final Function(Meal meal) onEditPressed;
   final Function(Meal meal) onCopyPressed;
 
@@ -318,8 +322,12 @@ class _SearchScreenState extends State<SearchScreen> {
               if (meals.isNotEmpty)
                 SearchSuccess(
                   meals: meals,
-                  onPressed: widget.onMealPressed,
+                  onPressed: (meal) => widget.onMealPressed(
+                    meal: meal,
+                    onDeleted: () => searchController.removeMeal(meal),
+                  ),
                   onDeletePressed: widget.onDeletePressed,
+                  onDeleted: searchController.removeMeal,
                   onEditPressed: widget.onEditPressed,
                   onCopyPressed: widget.onCopyPressed,
                 ),
