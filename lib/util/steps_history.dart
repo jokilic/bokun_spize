@@ -19,6 +19,16 @@ class StepsHistory {
     return timestamp == null ? null : DateTime.fromMillisecondsSinceEpoch(timestamp);
   }
 
+  /// Finds the newest step record before the supplied boundary
+  Future<DateTime?> getLatestStepDate(DateTime endTime) async {
+    final timestamp = await channel.invokeMethod<int>(
+      'getLatestStepDate',
+      {'endTime': endTime.millisecondsSinceEpoch},
+    );
+
+    return timestamp == null ? null : DateTime.fromMillisecondsSinceEpoch(timestamp);
+  }
+
   /// Reads aggregated calendar-day totals without downloading individual samples
   Future<List<StepsWithDate>> getDailySteps(DateTime startTime, DateTime endTime) async {
     final rows = await channel.invokeListMethod<dynamic>(

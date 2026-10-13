@@ -452,50 +452,36 @@ class WalksController
         }
       }
 
-      DateTime? earliestHistoryDate;
-      var fetchedHistoryStart = historyEnd;
-
-      /// Find the earliest accessible date if the first five days have no completed entries
+      /// Find the latest completed day directly when the initial window is empty
       if (latestCompletedDate == null) {
-        final earliestDate = await stepsHistory.getEarliestStepDate(historyEnd);
+        final latestDate = await stepsHistory.getLatestStepDate(historyEnd);
 
         if (isDisposed) {
           return;
         }
 
-        earliestHistoryDate = earliestDate == null ? null : DateUtils.dateOnly(earliestDate);
+        latestCompletedDate = latestDate == null ? null : DateUtils.dateOnly(latestDate);
       }
 
-      /// Fetch until the full inclusive graphCalendarDays range is covered
-      while (!isDisposed) {
-        final DateTime batchStart;
+      if (latestCompletedDate == null) {
+        updateState(
+          isHistoryLoading: false,
+        );
+        return;
+      }
 
-        if (latestCompletedDate != null) {
-          /// Include the left endpoint because the graph accepts differences up to graphCalendarDays
-          batchStart = DateTime(
-            latestCompletedDate.year,
-            latestCompletedDate.month,
-            latestCompletedDate.day - graphCalendarDays,
-          );
-        } else if (earliestHistoryDate != null) {
-          /// Search older days in bounded batches until the graph endpoint is known
-          final proposedStart = DateTime(
-            fetchedHistoryStart.year,
-            fetchedHistoryStart.month,
-            fetchedHistoryStart.day - 365,
-          );
-          batchStart = proposedStart.isBefore(earliestHistoryDate) ? earliestHistoryDate : proposedStart;
-        } else {
-          break;
-        }
+      /// Include the left endpoint because the graph accepts differences up to graphCalendarDays
+      final historyStart = DateTime(
+        latestCompletedDate.year,
+        latestCompletedDate.month,
+        latestCompletedDate.day - graphCalendarDays,
+      );
 
-        if (!batchStart.isBefore(fetchedHistoryStart)) {
-          break;
-        }
-
+      /// Fetch only the graph interval not covered by the initial window
+      if (historyStart.isBefore(historyEnd)) {
         final graphSteps = await stepsHistory.getDailySteps(
-          batchStart,
-          fetchedHistoryStart,
+          historyStart,
+          historyEnd,
         );
 
         if (isDisposed) {
@@ -510,14 +496,8 @@ class WalksController
               dateTime: date,
               steps: entry.steps,
             );
-
-            if (latestCompletedDate == null || date.isAfter(latestCompletedDate)) {
-              latestCompletedDate = date;
-            }
           }
         }
-
-        fetchedHistoryStart = batchStart;
       }
 
       /// Preserve any current-day refresh completed while fetching graph data
@@ -539,7 +519,7 @@ class WalksController
       /// Start fetching history older than the completed graph range without awaiting it
       unawaited(
         fetchRemainingStepHistory(
-          historyEnd: fetchedHistoryStart,
+          historyEnd: historyStart,
         ),
       );
     } catch (error) {

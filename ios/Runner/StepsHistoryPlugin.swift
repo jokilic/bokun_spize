@@ -15,7 +15,7 @@ class StepsHistoryPlugin: NSObject, FlutterPlugin {
 
   // Validates requests before querying the health store
   func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    guard call.method == "getEarliestStepDate" || call.method == "getDailySteps" else {
+    guard call.method == "getEarliestStepDate" || call.method == "getLatestStepDate" || call.method == "getDailySteps" else {
       result(FlutterMethodNotImplemented)
       return
     }
@@ -35,6 +35,11 @@ class StepsHistoryPlugin: NSObject, FlutterPlugin {
     let endDate = Date(timeIntervalSince1970: endTime.doubleValue / 1000)
     if call.method == "getEarliestStepDate" {
       getEarliestStepDate(endDate: endDate, result: result)
+      return
+    }
+
+    if call.method == "getLatestStepDate" {
+      getLatestStepDate(endDate: endDate, result: result)
       return
     }
 
@@ -59,6 +64,25 @@ class StepsHistoryPlugin: NSObject, FlutterPlugin {
       predicate: HKQuery.predicateForSamples(withStart: nil, end: endDate, options: []),
       limit: 1,
       sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+    ) { _, samples, error in
+      DispatchQueue.main.async {
+        if let error = error {
+          result(FlutterError(code: "STEPS_HISTORY_ERROR", message: error.localizedDescription, details: nil))
+        } else {
+          result(samples?.first.map { Int64($0.startDate.timeIntervalSince1970 * 1000) })
+        }
+      }
+    }
+    healthStore.execute(query)
+  }
+
+  // Reads only the newest accessible sample before the requested boundary
+  func getLatestStepDate(endDate: Date, result: @escaping FlutterResult) {
+    let query = HKSampleQuery(
+      sampleType: HKQuantityType.quantityType(forIdentifier: .stepCount)!,
+      predicate: HKQuery.predicateForSamples(withStart: nil, end: endDate, options: []),
+      limit: 1,
+      sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)]
     ) { _, samples, error in
       DispatchQueue.main.async {
         if let error = error {

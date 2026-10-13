@@ -32,7 +32,7 @@ class StepsHistoryChannel(val context: Context, messenger: BinaryMessenger) : Me
 
     // Dispatches queries and reports failures without turning them into zero steps
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        if (call.method != "getEarliestStepDate" && call.method != "getDailySteps") {
+        if (call.method != "getEarliestStepDate" && call.method != "getLatestStepDate" && call.method != "getDailySteps") {
             result.notImplemented()
             return
         }
@@ -49,6 +49,7 @@ class StepsHistoryChannel(val context: Context, messenger: BinaryMessenger) : Me
                 val client = HealthConnectClient.getOrCreate(context)
                 when (call.method) {
                     "getEarliestStepDate" -> result.success(getEarliestStepDate(client, Instant.ofEpochMilli(endTime)))
+                    "getLatestStepDate" -> result.success(getLatestStepDate(client, Instant.ofEpochMilli(endTime)))
                     "getDailySteps" -> result.success(
                         getDailySteps(client, Instant.ofEpochMilli(startTime!!), Instant.ofEpochMilli(endTime))
                     )
@@ -70,6 +71,26 @@ class StepsHistoryChannel(val context: Context, messenger: BinaryMessenger) : Me
                     recordType = StepsRecord::class,
                     timeRangeFilter = TimeRangeFilter.before(endTime),
                     ascendingOrder = true,
+                    pageSize = 1,
+                    pageToken = pageToken,
+                )
+            )
+            response.records.firstOrNull()?.let { return it.startTime.toEpochMilli() }
+            pageToken = response.pageToken
+        } while (!pageToken.isNullOrEmpty())
+
+        return null
+    }
+
+    // Reads only the newest accessible record before the requested boundary
+    suspend fun getLatestStepDate(client: HealthConnectClient, endTime: Instant): Long? {
+        var pageToken: String? = null
+        do {
+            val response = client.readRecords(
+                ReadRecordsRequest(
+                    recordType = StepsRecord::class,
+                    timeRangeFilter = TimeRangeFilter.before(endTime),
+                    ascendingOrder = false,
                     pageSize = 1,
                     pageToken = pageToken,
                 )
