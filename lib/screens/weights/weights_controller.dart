@@ -20,9 +20,11 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
 
   final FirebaseService firebase;
+  final int graphCalendarDays;
 
   WeightsController({
     required this.firebase,
+    required this.graphCalendarDays,
   }) : super((
          weightTracks: const [],
          isLoading: false,
@@ -60,7 +62,6 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
 
   final graphCalendarDayOptions = [3, 7, 14, 30, 60, 90];
 
-  static const initialWeightTracksPageSize = 10;
   static const additionalWeightTracksPageSize = 25;
 
   var isDisposed = false;
@@ -97,7 +98,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
 
     weightTracksSubscription = firebase
         .listenToLatestWeightTracks(
-          pageSize: initialWeightTracksPageSize,
+          pageSize: graphCalendarDays,
         )
         .listen(
           onLatestWeightTracksChanged,
@@ -142,7 +143,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
         [...additionalWeightTracks, ...latestWeightTracks],
       ),
       isLoading: false,
-      hasMore: hasLoadedAdditionalWeightTracks ? value.hasMore : latestWeightTracks.length == initialWeightTracksPageSize,
+      hasMore: hasLoadedAdditionalWeightTracks ? value.hasMore : latestWeightTracks.length == graphCalendarDays,
       error: null,
     );
   }

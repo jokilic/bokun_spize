@@ -40,9 +40,12 @@ class _WeightsScreenState extends State<WeightsScreen> {
     scrollController = ScrollController();
     scrollController.addListener(onScroll);
 
+    final graphCalendarDays = getIt.get<StorageService>().value.calendarDays.weightsCalendarDays;
+
     registerIfNotInitialized<WeightsController>(
       () => WeightsController(
         firebase: getIt.get<FirebaseService>(),
+        graphCalendarDays: graphCalendarDays,
       ),
       afterRegister: (controller) => controller.init(),
     );
