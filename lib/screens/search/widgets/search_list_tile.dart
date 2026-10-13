@@ -39,7 +39,13 @@ class SearchListTile extends StatelessWidget {
 
     final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? '📷';
 
-    final subtitleText = getDateString(
+    final date = getDateString(
+      date: meal.createdAt,
+      dateFormat: 'dd.MM.yyyy.',
+      languageCode: context.locale.languageCode,
+    );
+
+    final time = getDateString(
       date: meal.createdAt,
       dateFormat: 'HH:mm',
       useTodayYesterdayTomorrow: false,
@@ -334,6 +340,7 @@ class SearchListTile extends StatelessWidget {
                           /// SUBTITLE
                           ///
                           else
+                            // TODO: Make a Text.rich which shows 'Date PhosphorIconsBold.dotOutline Time', same as Text.rich in ViewMealScreen
                             Text(
                               subtitleText,
                               style: TextStyle(

@@ -22,7 +22,6 @@ class WalksController
             bool? permissionAuthorized,
             bool isWalking,
             bool isLoading,
-            bool isHistoryLoading,
             String? error,
           })
         >
@@ -42,7 +41,6 @@ class WalksController
          permissionAuthorized: null,
          isWalking: false,
          isLoading: false,
-         isHistoryLoading: false,
          error: null,
        ));
 
@@ -323,7 +321,6 @@ class WalksController
       stepsWithDate: const [],
       permissionAuthorized: null,
       isLoading: true,
-      isHistoryLoading: true,
       error: null,
     );
 
@@ -338,7 +335,6 @@ class WalksController
       if (!permissionResult.granted) {
         updateState(
           permissionAuthorized: false,
-          isHistoryLoading: false,
           error: permissionResult.error ?? 'walksErrorStepAccessUnavailable'.tr(),
         );
         return;
@@ -416,7 +412,6 @@ class WalksController
     } catch (error) {
       updateState(
         error: error.toString(),
-        isHistoryLoading: false,
       );
     } finally {
       updateState(
@@ -507,9 +502,6 @@ class WalksController
       );
     } finally {
       isFetchingRemainingStepHistory = false;
-      updateState(
-        isHistoryLoading: false,
-      );
     }
   }
 
@@ -521,7 +513,6 @@ class WalksController
     List<StepsWithDate>? stepsWithDate,
     Object? permissionAuthorized = nullStateNoChange,
     bool? isLoading,
-    bool? isHistoryLoading,
     bool? isWalking,
     Object? error = nullStateNoChange,
   }) {
@@ -533,7 +524,6 @@ class WalksController
       stepsWithDate: stepsWithDate ?? value.stepsWithDate,
       permissionAuthorized: identical(permissionAuthorized, nullStateNoChange) ? value.permissionAuthorized : permissionAuthorized as bool?,
       isLoading: isLoading ?? value.isLoading,
-      isHistoryLoading: isHistoryLoading ?? value.isHistoryLoading,
       isWalking: isWalking ?? value.isWalking,
       error: identical(error, nullStateNoChange) ? value.error : error as String?,
     );

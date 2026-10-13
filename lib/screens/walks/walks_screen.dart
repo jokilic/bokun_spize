@@ -59,7 +59,6 @@ class _WalksScreenState extends State<WalksScreen> {
 
     final error = state.error;
     final isLoading = state.isLoading;
-    final isHistoryLoading = state.isHistoryLoading;
     final permissionAuthorized = state.permissionAuthorized;
 
     final isWalking = state.isWalking;
@@ -165,7 +164,6 @@ class _WalksScreenState extends State<WalksScreen> {
                 ///
                 WalksAppBar(
                   isLoading: isLoading,
-                  isHistoryLoading: isHistoryLoading,
                   dayString: latestStepsWithDate != null
                       ? getDateString(
                           date: latestStepsWithDate.dateTime,
@@ -181,9 +179,9 @@ class _WalksScreenState extends State<WalksScreen> {
                 ///
                 /// GRAPH
                 ///
-                if (completedStepsWithDate.length >= 2 || isLoading || isHistoryLoading)
+                if (completedStepsWithDate.length >= 2 || isLoading)
                   WalksGraph(
-                    isLoading: isLoading || isHistoryLoading,
+                    isLoading: isLoading,
                     onSelectedDays: (newWalksCalendarDays) {
                       HapticFeedback.lightImpact();
                       storageService.setWalksCalendarDays(newWalksCalendarDays);
