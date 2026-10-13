@@ -255,7 +255,7 @@ class ViewMessageSheet extends StatelessWidget {
             ),
 
             ///
-            ///
+            /// APP VERSION
             ///
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -276,7 +276,7 @@ class ViewMessageSheet extends StatelessWidget {
                   ],
                   child: Text(
                     // TODO: Localize
-                    'Additional info',
+                    'App version',
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 18,
@@ -292,28 +292,7 @@ class ViewMessageSheet extends StatelessWidget {
               child: SizedBox(height: 16),
             ),
 
-            ///
-            /// ORIGINAL TEXT TEXT FIELD
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: TextFieldWidget(
-                  enabled: false,
-                  minLines: 3,
-                  maxLines: 3,
-                  controller: TextEditingController(
-                    // TODO: Work on this
-                    text: 'App version: ${message.appVersion} - Platform: ${message.platform}',
-                  ),
-                  // TODO: Localize
-                  title: 'Additional info',
-                  // TODO: Localize
-                  hintText: 'Not sure',
-                  textColor: context.colors.text,
-                ),
-              ),
-            ),
+            // TODO: Add app version (later email & platform)
 
             ///
             /// BOTTOM SPACING
