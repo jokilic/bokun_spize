@@ -313,9 +313,9 @@ class WalksController
     }
   }
 
-  /// Requests permission and fetches the most recent step data before loading older history
+  /// Requests permission and fetches the latest five calendar days before loading graph data
   Future<void> refreshSteps() async {
-    if (isDisposed || value.isLoading || isFetchingRemainingStepHistory) {
+    if (isDisposed || value.isLoading || value.isHistoryLoading || isFetchingRemainingStepHistory) {
       return;
     }
 
@@ -361,7 +361,7 @@ class WalksController
       final recentHistoryStart = DateTime(
         today.year,
         today.month,
-        today.day - graphCalendarDays + 1,
+        today.day - 4,
       );
 
       final stepsByDate = <DateTime, StepsWithDate>{
@@ -394,7 +394,7 @@ class WalksController
         }
       }
 
-      /// Show the success state as soon as the selected graph range is available
+      /// Show the first five days while the graph continues loading
       updateState(
         stepsWithDate: stepsByDate.values.toList()
           ..sort(
@@ -407,9 +407,14 @@ class WalksController
         error: null,
       );
 
-      /// Trigger a fire-and-forget method which fetches remaining steps
+      /// Load the rest of the selected graph range without delaying the success state
       unawaited(
-        fetchRemainingStepHistory(
+        fetchGraphStepHistory(
+          historyStart: DateTime(
+            today.year,
+            today.month,
+            today.day - graphCalendarDays + 1,
+          ),
           historyEnd: recentHistoryStart,
         ),
       );
@@ -425,7 +430,69 @@ class WalksController
     }
   }
 
-  /// Fetches all accessible history older than the initially selected graph range
+  /// Completes the selected graph range before starting the remaining history fetch
+  Future<void> fetchGraphStepHistory({
+    required DateTime historyStart,
+    required DateTime historyEnd,
+  }) async {
+    if (isDisposed) {
+      return;
+    }
+
+    try {
+      /// Smaller graph ranges are already covered by the initial five days
+      final graphSteps = historyStart.isBefore(historyEnd)
+          ? await stepsHistory.getDailySteps(
+              historyStart,
+              historyEnd,
+            )
+          : const <StepsWithDate>[];
+
+      if (isDisposed) {
+        return;
+      }
+
+      final stepsByDate = <DateTime, StepsWithDate>{
+        for (final entry in graphSteps)
+          if (entry.steps > 0)
+            DateUtils.dateOnly(entry.dateTime): StepsWithDate(
+              dateTime: DateUtils.dateOnly(entry.dateTime),
+              steps: entry.steps,
+            ),
+
+        /// Preserve any current-day refresh completed while fetching graph data
+        for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,
+      };
+
+      updateState(
+        stepsWithDate: stepsByDate.values.toList()
+          ..sort(
+            (a, b) => a.dateTime.compareTo(
+              b.dateTime,
+            ),
+          ),
+        isHistoryLoading: false,
+      );
+
+      /// Continue from the oldest fetched boundary without overlapping smaller graph ranges
+      unawaited(
+        fetchRemainingStepHistory(
+          historyEnd: historyStart.isBefore(historyEnd) ? historyStart : historyEnd,
+        ),
+      );
+    } catch (error) {
+      log(
+        'Fetching graph step history failed',
+        error: error,
+      );
+
+      updateState(
+        isHistoryLoading: false,
+      );
+    }
+  }
+
+  /// Fetches all accessible older history after the graph has finished loading
   Future<void> fetchRemainingStepHistory({
     required DateTime historyEnd,
   }) async {
@@ -507,9 +574,6 @@ class WalksController
       );
     } finally {
       isFetchingRemainingStepHistory = false;
-      updateState(
-        isHistoryLoading: false,
-      );
     }
   }
 
