@@ -58,19 +58,6 @@ class ViewMealScreen extends WatchingWidget {
 
     final hasError = passedMeal.errors?.isNotEmpty ?? false;
 
-    final date = getDateString(
-      date: createdAt,
-      dateFormat: 'dd.MM.yyyy.',
-      languageCode: context.locale.languageCode,
-    );
-
-    final time = getDateString(
-      date: createdAt,
-      dateFormat: 'HH:mm',
-      useTodayYesterdayTomorrow: false,
-      languageCode: context.locale.languageCode,
-    );
-
     final primaryColor =
         passedMeal.color ??
         getCalorieValueColor(
@@ -434,7 +421,11 @@ class ViewMealScreen extends WatchingWidget {
                   ],
                   child: Text.rich(
                     TextSpan(
-                      text: date,
+                      text: getDateString(
+                        date: createdAt,
+                        dateFormat: 'EEEE, dd MMM',
+                        languageCode: context.locale.languageCode,
+                      ),
                       children: [
                         WidgetSpan(
                           child: PhosphorIcon(
@@ -444,7 +435,12 @@ class ViewMealScreen extends WatchingWidget {
                           ),
                         ),
                         TextSpan(
-                          text: time,
+                          text: getDateString(
+                            date: createdAt,
+                            dateFormat: 'HH:mm',
+                            useTodayYesterdayTomorrow: false,
+                            languageCode: context.locale.languageCode,
+                          ),
                         ),
                       ],
                     ),

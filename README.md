@@ -6,7 +6,6 @@
     - [ ] Think about `constants.dart`
 
 ### Screens
-    - [ ] Don't stagger animate indexes bigger than 5 in `MealsScreen` & `FoodListTile`
     - [ ] Revert `isLoadingMore` in graphs
     - [ ] Weights & Walks fetching behaviour:
         - [ ] First fetch 5 -> show success state, but graph is still loading

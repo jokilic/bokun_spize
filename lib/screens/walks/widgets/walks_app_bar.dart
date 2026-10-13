@@ -10,6 +10,7 @@ import '../../../widgets/animated_digit_widget.dart';
 
 class WalksAppBar extends StatelessWidget {
   final bool isLoading;
+  final bool isHistoryLoading;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
@@ -17,6 +18,7 @@ class WalksAppBar extends StatelessWidget {
 
   const WalksAppBar({
     required this.isLoading,
+    required this.isHistoryLoading,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -139,6 +141,7 @@ class WalksAppBar extends StatelessWidget {
       titlePadding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
       title: FadingFlexibleTitle(
         isLoading: isLoading,
+        isHistoryLoading: isHistoryLoading,
         dayString: dayString,
         currentSteps: currentSteps,
         stepsChange: stepsChange,
@@ -150,6 +153,7 @@ class WalksAppBar extends StatelessWidget {
 
 class FadingFlexibleTitle extends StatelessWidget {
   final bool isLoading;
+  final bool isHistoryLoading;
   final String dayString;
   final int? currentSteps;
   final double? stepsChange;
@@ -157,6 +161,7 @@ class FadingFlexibleTitle extends StatelessWidget {
 
   const FadingFlexibleTitle({
     required this.isLoading,
+    required this.isHistoryLoading,
     required this.dayString,
     required this.currentSteps,
     required this.stepsChange,
@@ -356,7 +361,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                 opacity: animation,
                 child: child,
               ),
-              child: isLoading
+              child: isHistoryLoading
                   ? Animate(
                       key: const ValueKey('walks-change-loading'),
                       onPlay: (controller) => controller.loop(
