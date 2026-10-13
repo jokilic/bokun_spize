@@ -199,6 +199,7 @@ class WalksController
       final now = DateTime.now();
       final startOfDay = DateUtils.dateOnly(now);
 
+      /// Fetch today's total and replace only today's entry
       final steps = await health.getTotalStepsInInterval(
         startOfDay,
         now,
@@ -319,6 +320,7 @@ class WalksController
       return;
     }
 
+    /// Clear previous data and enable both the list and graph loaders
     updateState(
       stepsWithDate: const [],
       permissionAuthorized: null,
@@ -328,7 +330,7 @@ class WalksController
     );
 
     try {
-      /// Configure `Health` plugin
+      /// Configure Health and request step access before fetching data
       await health.configure();
 
       /// Request and handle permissions
@@ -344,6 +346,7 @@ class WalksController
         return;
       }
 
+      /// Request access to older Android history when available
       await requestStepHistoryPermission();
 
       if (isDisposed) {
@@ -371,6 +374,7 @@ class WalksController
         ),
       };
 
+      /// Fetch the latest five calendar days, including today
       final recentSteps = await stepsHistory.getDailySteps(
         recentHistoryStart,
         now,
@@ -394,7 +398,7 @@ class WalksController
         }
       }
 
-      /// Show the first five days while the graph continues loading
+      /// Show the first results while keeping isHistoryLoading enabled
       updateState(
         stepsWithDate: stepsByDate.values.toList()
           ..sort(
@@ -407,14 +411,10 @@ class WalksController
         error: null,
       );
 
-      /// Load the rest of the selected graph range without delaying the success state
+      /// Start the graph history fetch without awaiting it
       unawaited(
         fetchGraphStepHistory(
-          historyStart: DateTime(
-            today.year,
-            today.month,
-            today.day - graphCalendarDays + 1,
-          ),
+          today: today,
           historyEnd: recentHistoryStart,
         ),
       );
@@ -432,7 +432,7 @@ class WalksController
 
   /// Completes the selected graph range before starting the remaining history fetch
   Future<void> fetchGraphStepHistory({
-    required DateTime historyStart,
+    required DateTime today,
     required DateTime historyEnd,
   }) async {
     if (isDisposed) {
@@ -440,30 +440,92 @@ class WalksController
     }
 
     try {
-      /// Smaller graph ranges are already covered by the initial five days
-      final graphSteps = historyStart.isBefore(historyEnd)
-          ? await stepsHistory.getDailySteps(
-              historyStart,
-              historyEnd,
-            )
-          : const <StepsWithDate>[];
-
-      if (isDisposed) {
-        return;
-      }
-
       final stepsByDate = <DateTime, StepsWithDate>{
-        for (final entry in graphSteps)
-          if (entry.steps > 0)
-            DateUtils.dateOnly(entry.dateTime): StepsWithDate(
-              dateTime: DateUtils.dateOnly(entry.dateTime),
-              steps: entry.steps,
-            ),
-
-        /// Preserve any current-day refresh completed while fetching graph data
         for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,
       };
+      DateTime? latestCompletedDate;
 
+      /// Anchor the graph to the latest recorded day before today
+      for (final entry in stepsByDate.values) {
+        if (entry.steps > 0 && entry.dateTime.isBefore(today) && (latestCompletedDate == null || entry.dateTime.isAfter(latestCompletedDate))) {
+          latestCompletedDate = entry.dateTime;
+        }
+      }
+
+      DateTime? earliestHistoryDate;
+      var fetchedHistoryStart = historyEnd;
+
+      /// Find the earliest accessible date if the first five days have no completed entries
+      if (latestCompletedDate == null) {
+        final earliestDate = await stepsHistory.getEarliestStepDate(historyEnd);
+
+        if (isDisposed) {
+          return;
+        }
+
+        earliestHistoryDate = earliestDate == null ? null : DateUtils.dateOnly(earliestDate);
+      }
+
+      /// Fetch until the full inclusive graphCalendarDays range is covered
+      while (!isDisposed) {
+        final DateTime batchStart;
+
+        if (latestCompletedDate != null) {
+          /// Include the left endpoint because the graph accepts differences up to graphCalendarDays
+          batchStart = DateTime(
+            latestCompletedDate.year,
+            latestCompletedDate.month,
+            latestCompletedDate.day - graphCalendarDays,
+          );
+        } else if (earliestHistoryDate != null) {
+          /// Search older days in bounded batches until the graph endpoint is known
+          final proposedStart = DateTime(
+            fetchedHistoryStart.year,
+            fetchedHistoryStart.month,
+            fetchedHistoryStart.day - 365,
+          );
+          batchStart = proposedStart.isBefore(earliestHistoryDate) ? earliestHistoryDate : proposedStart;
+        } else {
+          break;
+        }
+
+        if (!batchStart.isBefore(fetchedHistoryStart)) {
+          break;
+        }
+
+        final graphSteps = await stepsHistory.getDailySteps(
+          batchStart,
+          fetchedHistoryStart,
+        );
+
+        if (isDisposed) {
+          return;
+        }
+
+        for (final entry in graphSteps) {
+          final date = DateUtils.dateOnly(entry.dateTime);
+
+          if (entry.steps > 0 && date.isBefore(today)) {
+            stepsByDate[date] = StepsWithDate(
+              dateTime: date,
+              steps: entry.steps,
+            );
+
+            if (latestCompletedDate == null || date.isAfter(latestCompletedDate)) {
+              latestCompletedDate = date;
+            }
+          }
+        }
+
+        fetchedHistoryStart = batchStart;
+      }
+
+      /// Preserve any current-day refresh completed while fetching graph data
+      stepsByDate.addAll({
+        for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,
+      });
+
+      /// Publish the complete graph data and disable isHistoryLoading
       updateState(
         stepsWithDate: stepsByDate.values.toList()
           ..sort(
@@ -474,10 +536,10 @@ class WalksController
         isHistoryLoading: false,
       );
 
-      /// Continue from the oldest fetched boundary without overlapping smaller graph ranges
+      /// Start fetching history older than the completed graph range without awaiting it
       unawaited(
         fetchRemainingStepHistory(
-          historyEnd: historyStart.isBefore(historyEnd) ? historyStart : historyEnd,
+          historyEnd: fetchedHistoryStart,
         ),
       );
     } catch (error) {
@@ -503,6 +565,7 @@ class WalksController
     isFetchingRemainingStepHistory = true;
 
     try {
+      /// Use getEarliestStepDate to find the remaining history boundary
       final earliestDate = await stepsHistory.getEarliestStepDate(
         historyEnd,
       );
@@ -517,7 +580,7 @@ class WalksController
       final historicalStepsByDate = <DateTime, StepsWithDate>{};
       var batchEnd = historyEnd;
 
-      /// Fetch older totals in yearly batches without keeping the success screen loading
+      /// Fetch the remaining daily totals in yearly batches with the graph already visible
       while (batchEnd.isAfter(historyStart)) {
         if (isDisposed) {
           return;
@@ -554,6 +617,7 @@ class WalksController
         batchEnd = batchStart;
       }
 
+      /// Merge older entries with current data and publish the complete history
       final allStepsByDate = <DateTime, StepsWithDate>{
         ...historicalStepsByDate,
         for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,

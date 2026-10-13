@@ -6,7 +6,6 @@
     - [ ] Think about `constants.dart`
 
 ### Screens
-    - [ ] Revert `isLoadingMore` in graphs
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
         - [x] Edit user name

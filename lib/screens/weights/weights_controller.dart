@@ -82,12 +82,14 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       return;
     }
 
+    /// Invalidate previous requests and reset loaded entries and pagination
     final requestId = ++weightTracksRequestId;
     weightTracksCursor = null;
     latestWeightTracks = const [];
     additionalWeightTracks = const [];
     hasStartedWeightHistory = false;
 
+    /// Enable both the list and graph loaders
     updateState(
       weightTracks: const [],
       isLoading: true,
@@ -97,12 +99,14 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       error: null,
     );
 
+    /// Cancel the previous listener before subscribing again
     await weightTracksSubscription?.cancel();
 
     if (isDisposed || requestId != weightTracksRequestId) {
       return;
     }
 
+    /// Listen to the latest five weight entries
     weightTracksSubscription = firebase
         .listenToLatestWeightTracks(
           pageSize: initialWeightTracksPageSize,
@@ -146,11 +150,12 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     final shouldLoadHistory = !hasStartedWeightHistory;
     hasStartedWeightHistory = true;
 
-    /// Keep the pagination boundary fixed while newer listener entries arrive
+    /// Set the initial pagination cursor and retain it during later listener updates
     if (shouldLoadHistory) {
       weightTracksCursor = latestWeightTracks.lastOrNull;
     }
 
+    /// Show the first results while keeping isHistoryLoading enabled for the graph fetch
     updateState(
       weightTracks: mergeWeightTracks(
         [...additionalWeightTracks, ...latestWeightTracks],
@@ -161,6 +166,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       error: null,
     );
 
+    /// Start the graph batch fetch once without awaiting it
     if (shouldLoadHistory) {
       unawaited(
         fetchGraphWeightTracks(),
@@ -179,9 +185,12 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
 
     final requestId = weightTracksRequestId;
     final cursor = weightTracksCursor;
+
+    /// Calculate the remaining entries using graphCalendarDays as the total record count
     final remainingGraphTracks = graphCalendarDays - initialWeightTracksPageSize;
 
     try {
+      /// Fetch the rest of the graph batch after the initial five entries
       if (remainingGraphTracks > 0 && value.hasMore && cursor != null) {
         final page = await firebase.getWeightTracksPage(
           pageSize: remainingGraphTracks,
@@ -196,6 +205,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
           return;
         }
 
+        /// Advance the cursor and merge the graph batch with the latest listener data
         weightTracksCursor = page.cursor ?? weightTracksCursor;
         additionalWeightTracks = mergeWeightTracks(
           [...additionalWeightTracks, ...page.weightTracks],
@@ -209,11 +219,15 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
         );
       }
 
+      /// Reveal the loaded graph by disabling isHistoryLoading
+
+      await Future.delayed(const Duration(seconds: 5));
+
       updateState(
         isHistoryLoading: false,
       );
 
-      /// Keep subsequent pagination on demand after this first older page
+      /// Prefetch one older page without awaiting it, then load subsequent pages on scroll
       unawaited(
         loadMoreWeightTracks(),
       );
@@ -241,10 +255,12 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
 
     final requestId = weightTracksRequestId;
 
+    /// Show the pagination loader while keeping the graph visible
     updateState(
       isLoadingMore: true,
     );
 
+    /// Fetch the next 25 entries after the current cursor
     final page = await firebase.getWeightTracksPage(
       pageSize: additionalWeightTracksPageSize,
       startAfterWeightTrack: cursor,
@@ -261,10 +277,14 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
       return;
     }
 
+    /// Advance the cursor and merge the older page with previously loaded entries
     weightTracksCursor = page.cursor ?? weightTracksCursor;
     additionalWeightTracks = mergeWeightTracks(
       [...additionalWeightTracks, ...page.weightTracks],
     );
+
+    /// Publish the merged history, stop the pagination loader, and update hasMore
+    await Future.delayed(const Duration(seconds: 5));
 
     updateState(
       weightTracks: mergeWeightTracks(
