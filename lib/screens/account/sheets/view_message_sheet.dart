@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -8,13 +9,14 @@ import '../../../constants/durations.dart';
 import '../../../models/contact_message/contact_message.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/date_time.dart';
+import '../../../util/email.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../widgets/view_message_list_tile.dart';
 
 class ViewMessageSheet extends StatelessWidget {
   final ContactMessage message;
-  final Function()? onDeletePressed;
+  final Function() onDeletePressed;
 
   const ViewMessageSheet({
     required this.message,
@@ -77,10 +79,8 @@ class ViewMessageSheet extends StatelessWidget {
                       ///
                       IconButton(
                         onPressed: () {
-                          if (onDeletePressed != null) {
-                            onDeletePressed!();
-                            Navigator.of(context).pop();
-                          }
+                          onDeletePressed();
+                          Navigator.of(context).pop();
                         },
                         icon: const PhosphorIcon(
                           PhosphorIconsBold.trash,
@@ -245,7 +245,10 @@ class ViewMessageSheet extends StatelessWidget {
             ViewMessageListTile(
               animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
               onPressed: () {
-                // TODO: Open mail
+                HapticFeedback.lightImpact();
+                openEmail(
+                  message.userEmail,
+                );
               },
               icon: PhosphorIconsBold.at,
               iconBackgroundColor: context.colors.protein,

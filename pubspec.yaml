@@ -62,6 +62,7 @@ dependencies:
   speech_to_text: 7.5.0
   string_similarity: 2.2.0
   uuid: 4.6.0
+  url_launcher: 6.3.3
   watch_it: 2.5.0
 
   calendar_date_picker2:
