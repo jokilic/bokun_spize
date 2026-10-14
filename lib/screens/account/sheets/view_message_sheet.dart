@@ -103,8 +103,7 @@ class ViewMessageSheet extends StatelessWidget {
                       ///
                       Expanded(
                         child: Text(
-                          // TODO: Localize
-                          'Message',
+                          'message'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -209,8 +208,7 @@ class ViewMessageSheet extends StatelessWidget {
                   ),
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.newline,
-                  // TODO: Localize
-                  title: 'Message',
+                  title: 'message'.tr(),
                   textColor: context.colors.text,
                 ),
               ),
@@ -229,8 +227,7 @@ class ViewMessageSheet extends StatelessWidget {
               icon: PhosphorIconsBold.at,
               iconBackgroundColor: context.colors.protein,
               title: message.userEmail,
-              // TODO: Localize
-              subtitle: 'Email',
+              subtitle: 'emailAddress'.tr(),
             ),
 
             ///
@@ -241,8 +238,7 @@ class ViewMessageSheet extends StatelessWidget {
               icon: PhosphorIconsBold.deviceMobileCamera,
               iconBackgroundColor: context.colors.carbs,
               title: message.platform,
-              // TODO: Localize
-              subtitle: 'Platform',
+              subtitle: 'platform'.tr(),
             ),
 
             ///
@@ -253,8 +249,7 @@ class ViewMessageSheet extends StatelessWidget {
               icon: PhosphorIconsBold.gitBranch,
               iconBackgroundColor: context.colors.fat,
               title: 'v${message.appVersion}',
-              // TODO: Localize
-              subtitle: 'App version',
+              subtitle: 'appVersion'.tr(),
             ),
 
             ///

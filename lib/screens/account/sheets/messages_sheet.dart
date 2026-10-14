@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -109,8 +110,7 @@ class _MessagesSheetState extends State<MessagesSheet> {
                       ///
                       Expanded(
                         child: Text(
-                          // TODO: Localize
-                          'Messages',
+                          'messages'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -170,8 +170,7 @@ class _MessagesSheetState extends State<MessagesSheet> {
                     ),
                   ],
                   child: Text(
-                    // TODO: Localize
-                    'Read messages from users',
+                    'accountMessagesSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
