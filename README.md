@@ -13,7 +13,7 @@
         - [x] Theme
         - [x] Language
         - [ ] Notifications
-        - [ ] Contact messages (only for `isAdmin`) (update Firestore rules to show only if `isAdmin`)
+        - [x] Contact messages
         - [x] Contact me
         - [x] Logout
         - [x] Delete account
@@ -21,7 +21,7 @@
 
 ### Firebase
     - [ ] User -> `isAdmin` - Then he can open contact messages
-    - [ ] Update database permissions
+    - [ ] Go through `FirebaseService` and update database rules if necessary
     - [ ] Firebase App Check
     - [ ] Analytics
     - [ ] Crashlytics
