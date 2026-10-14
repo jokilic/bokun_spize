@@ -204,7 +204,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   },
                   icon: PhosphorIconsBold.chatCircleText,
                   iconBackgroundColor: context.colors.protein,
-                  title: 'accountMessagesTitle'.tr(),
+                  title: 'messages'.tr(),
                   subtitle: 'accountMessagesSubtitle'.tr(),
                 ),
 
