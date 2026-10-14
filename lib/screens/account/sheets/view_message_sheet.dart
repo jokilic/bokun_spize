@@ -14,9 +14,11 @@ import '../widgets/view_message_list_tile.dart';
 
 class ViewMessageSheet extends StatelessWidget {
   final ContactMessage message;
+  final Function()? onDeletePressed;
 
   const ViewMessageSheet({
     required this.message,
+    required this.onDeletePressed,
   });
 
   @override
@@ -71,28 +73,28 @@ class ViewMessageSheet extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ///
-                      /// PLACEHOLDER BUTTON
+                      /// DELETE BUTTON
                       ///
-                      Opacity(
-                        opacity: 0,
-                        child: IgnorePointer(
-                          child: IconButton(
-                            onPressed: null,
-                            icon: const PhosphorIcon(
-                              PhosphorIconsBold.x,
-                              size: 22,
-                            ),
-                            style: IconButton.styleFrom(
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              padding: const EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                              foregroundColor: context.colors.text,
-                            ),
+                      IconButton(
+                        onPressed: () {
+                          if (onDeletePressed != null) {
+                            onDeletePressed!();
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        icon: const PhosphorIcon(
+                          PhosphorIconsBold.trash,
+                          size: 22,
+                        ),
+                        style: IconButton.styleFrom(
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
                           ),
+                          backgroundColor: context.colors.delete,
+                          foregroundColor: context.colors.listTileBackground,
                         ),
                       ),
 

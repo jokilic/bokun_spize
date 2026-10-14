@@ -9,6 +9,8 @@ import '../../../constants/durations.dart';
 import '../../../models/contact_message/contact_message.dart';
 import '../../../services/firebase_service.dart';
 import '../../../theme/extensions.dart';
+import '../../../util/dependencies.dart';
+import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../widgets/message_list_tile.dart';
@@ -20,6 +22,24 @@ class MessagesSheet extends WatchingStatefulWidget {
 }
 
 class _MessagesSheetState extends State<MessagesSheet> {
+  /// Deletes [message] from Firebase
+  Future<void> deleteContactMessage(
+    BuildContext context, {
+    required ContactMessage message,
+  }) async {
+    final success = await getIt.get<FirebaseService>().deleteContactMessage(
+      contactMessage: message,
+    );
+
+    if (!success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'deleteFailed'.tr(),
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
+  }
+
   /// Opens [ViewMessageSheet]
   Future<void> openViewMessageSheet(
     BuildContext context, {
@@ -28,6 +48,10 @@ class _MessagesSheetState extends State<MessagesSheet> {
     context: context,
     builder: (sheetContext) => ViewMessageSheet(
       message: message,
+      onDeletePressed: () => deleteContactMessage(
+        context,
+        message: message,
+      ),
     ),
   );
 

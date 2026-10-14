@@ -117,6 +117,26 @@ class FirebaseService {
     }
   }
 
+  /// Deletes a `contactMessage` from [Firebase]
+  Future<bool> deleteContactMessage({required ContactMessage contactMessage}) async {
+    try {
+      await firestore
+          .collection('contactMessages')
+          .doc(
+            contactMessage.id,
+          )
+          .delete();
+
+      return true;
+    } catch (error) {
+      log(
+        'Deleting contact message failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
   /// Listens for real-time changes to `contactMessages` in [Firebase]
   Stream<List<ContactMessage>> listenToContactMessages() async* {
     try {
