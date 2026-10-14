@@ -151,12 +151,12 @@ service cloud.firestore {
         && data.createdAt.size() <= 64;
     }
 
-    // Allow authenticated submissions and admin-only reads
+    // Allow authenticated submissions and admin-only reads and deletes
     match /contactMessages/{messageId} {
       allow create: if request.auth != null
         && isValidContactMessage(request.resource.data, messageId);
-      allow read: if isAdmin();
-      allow update, delete: if false;
+      allow read, delete: if isAdmin();
+      allow update: if false;
     }
 
     // Allow signed-in clients to fetch AI configuration managed by administrators

@@ -203,7 +203,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     accountController.openMessagesSheet(context);
                   },
                   icon: PhosphorIconsBold.chatCircleText,
-                  iconBackgroundColor: context.colors.protein,
+                  iconBackgroundColor: context.colors.fat,
                   title: 'messages'.tr(),
                   subtitle: 'accountMessagesSubtitle'.tr(),
                 ),
