@@ -12,8 +12,6 @@ import '../../../util/spacing.dart';
 import '../../../widgets/text_field_widget.dart';
 import '../widgets/view_message_list_tile.dart';
 
-// TODO: Implement staggered animations like in other screens
-
 class ViewMessageSheet extends StatelessWidget {
   final ContactMessage message;
 
@@ -199,17 +197,39 @@ class ViewMessageSheet extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
-                child: TextFieldWidget(
-                  readOnly: true,
-                  minLines: 3,
-                  maxLines: 3,
-                  controller: TextEditingController(
-                    text: message.message,
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 18),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                    ScaleEffect(
+                      begin: Offset(0.98, 0.98),
+                      end: Offset(1, 1),
+                      alignment: Alignment.topCenter,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: TextFieldWidget(
+                    readOnly: true,
+                    minLines: 3,
+                    maxLines: 3,
+                    controller: TextEditingController(
+                      text: message.message,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    title: 'message'.tr(),
+                    textColor: context.colors.text,
                   ),
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  title: 'message'.tr(),
-                  textColor: context.colors.text,
                 ),
               ),
             ),
@@ -221,6 +241,7 @@ class ViewMessageSheet extends StatelessWidget {
             /// EMAIL
             ///
             ViewMessageListTile(
+              animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
               onPressed: () {
                 // TODO: Open mail
               },
@@ -234,6 +255,7 @@ class ViewMessageSheet extends StatelessWidget {
             /// PLATFORM
             ///
             ViewMessageListTile(
+              animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
               onPressed: () {},
               icon: PhosphorIconsBold.deviceMobileCamera,
               iconBackgroundColor: context.colors.carbs,
@@ -245,6 +267,7 @@ class ViewMessageSheet extends StatelessWidget {
             /// APP VERSION
             ///
             ViewMessageListTile(
+              animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
               onPressed: () {},
               icon: PhosphorIconsBold.gitBranch,
               iconBackgroundColor: context.colors.fat,

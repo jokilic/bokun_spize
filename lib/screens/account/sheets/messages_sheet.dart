@@ -14,8 +14,6 @@ import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../widgets/message_list_tile.dart';
 import 'view_message_sheet.dart';
 
-// TODO: Implement staggered animations like in other screens
-
 class MessagesSheet extends WatchingStatefulWidget {
   @override
   State<MessagesSheet> createState() => _MessagesSheetState();
@@ -219,7 +217,7 @@ class _MessagesSheetState extends State<MessagesSheet> {
 
                   return Animate(
                     key: listTileKey,
-                    delay: BokunSpizeDurations.stateTransitionStagger * index,
+                    delay: BokunSpizeDurations.stateTransitionStagger * (3 + index),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,
