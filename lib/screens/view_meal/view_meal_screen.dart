@@ -900,7 +900,7 @@ class ViewMealScreen extends WatchingWidget {
             ///
             if (originalText != null) ...[
               const SliverToBoxAdapter(
-                child: SizedBox(height: 24),
+                child: SizedBox(height: 16),
               ),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
@@ -943,12 +943,14 @@ class ViewMealScreen extends WatchingWidget {
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: TextFieldWidget(
-                    enabled: false,
+                    readOnly: true,
                     minLines: 3,
                     maxLines: 3,
                     controller: TextEditingController(
                       text: originalText,
                     ),
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
                     title: 'viewMealOriginalTextTextField'.tr(),
                     hintText: 'whatWasIt'.tr(),
                     textColor: context.colors.text,

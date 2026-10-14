@@ -103,6 +103,8 @@
     "accountLanguageSubtitle": "App-wide language",
     "accountContactMeTitle": "Contact",
     "accountContactMeSubtitle": "Send me a message",
+    "accountMessagesTitle": "Messages",
+    "accountMessagesSubtitle": "See user messages",
     "accountLogoutTitle": "Logout",
     "accountLogoutSubtitle": "Sign out of the app",
     "accountDeleteAccountTitle": "Delete account",

@@ -267,6 +267,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         controller: mealController.textEditingController,
                         focusNode: mealController.textFocusNode,
                         onChanged: (_) => mealController.stopSpeechToTextIfListening(),
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.newline,
                         title: 'aiAddMealTextFieldTitle'.tr(),
                         hintText: 'whatWasIt'.tr(),
                         textColor: context.colors.text,
@@ -559,7 +561,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                 ),
               ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 28),
             ),
 
             ///

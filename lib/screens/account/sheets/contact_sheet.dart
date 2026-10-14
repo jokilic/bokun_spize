@@ -223,6 +223,8 @@ class _ContactSheetState extends State<ContactSheet> {
                     minLines: 3,
                     maxLines: 3,
                     controller: messageController,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
                     title: 'accountContactSheetTextFieldTitle'.tr(),
                     hintText: 'accountContactSheetTextFieldHint'.tr(),
                     textColor: context.colors.text,

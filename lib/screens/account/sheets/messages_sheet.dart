@@ -13,6 +13,8 @@ import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../widgets/message_list_tile.dart';
 import 'view_message_sheet.dart';
 
+// TODO: Implement staggered animations like in other screens
+
 class MessagesSheet extends WatchingStatefulWidget {
   @override
   State<MessagesSheet> createState() => _MessagesSheetState();

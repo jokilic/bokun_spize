@@ -303,7 +303,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         /// TEXT FIELD
                         ///
                         TextFieldWidget(
-                          enabled: !isCopyingMeal,
+                          readOnly: isCopyingMeal,
                           controller: mealController.nameTextEditingController,
                           focusNode: mealController.nameFocusNode,
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
@@ -725,7 +725,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 28),
             ),
 
             if (!isCopyingMeal) ...[
@@ -787,7 +787,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       ),
                     ],
                     child: TextFieldWidget(
-                      enabled: !isCopyingMeal,
+                      readOnly: isCopyingMeal,
                       controller: mealController.caloriesTextEditingController,
                       focusNode: mealController.caloriesFocusNode,
                       onChanged: (_) => mealController.stopSpeechToTextIfListening(),
@@ -833,7 +833,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         ///
                         Expanded(
                           child: TextFieldWidget(
-                            enabled: !isCopyingMeal,
+                            readOnly: isCopyingMeal,
                             controller: mealController.proteinTextEditingController,
                             focusNode: mealController.proteinFocusNode,
                             onChanged: (_) => mealController.stopSpeechToTextIfListening(),
@@ -851,7 +851,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         ///
                         Expanded(
                           child: TextFieldWidget(
-                            enabled: !isCopyingMeal,
+                            readOnly: isCopyingMeal,
                             controller: mealController.carbsTextEditingController,
                             focusNode: mealController.carbsFocusNode,
                             onChanged: (_) => mealController.stopSpeechToTextIfListening(),
@@ -869,7 +869,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         ///
                         Expanded(
                           child: TextFieldWidget(
-                            enabled: !isCopyingMeal,
+                            readOnly: isCopyingMeal,
                             controller: mealController.fatsTextEditingController,
                             focusNode: mealController.fatsFocusNode,
                             title: 'fats'.tr(),
@@ -885,7 +885,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 32),
+                child: SizedBox(height: 28),
               ),
 
               ///
@@ -1053,7 +1053,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ),
                 ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 32),
+                child: SizedBox(height: 28),
               ),
             ],
 

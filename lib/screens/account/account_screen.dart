@@ -204,10 +204,8 @@ class _AccountScreenState extends State<AccountScreen> {
                   },
                   icon: PhosphorIconsBold.chatCircleText,
                   iconBackgroundColor: context.colors.protein,
-                  // TODO: Localize
-                  title: 'Messages',
-                  // TODO: Localize
-                  subtitle: 'See user messages',
+                  title: 'accountMessagesTitle'.tr(),
+                  subtitle: 'accountMessagesSubtitle'.tr(),
                 ),
 
               ///

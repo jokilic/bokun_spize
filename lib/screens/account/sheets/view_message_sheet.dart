@@ -10,6 +10,9 @@ import '../../../theme/extensions.dart';
 import '../../../util/date_time.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/text_field_widget.dart';
+import '../widgets/view_message_list_tile.dart';
+
+// TODO: Implement staggered animations like in other screens
 
 class ViewMessageSheet extends StatelessWidget {
   final ContactMessage message;
@@ -192,99 +195,23 @@ class ViewMessageSheet extends StatelessWidget {
             ),
 
             ///
-            /// TEXT TITLE
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 8,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 8),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: Text(
-                    // TODO: Localize
-                    'Message text',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
-
-            ///
             /// TEXT
             ///
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: TextFieldWidget(
-                  enabled: false,
+                  readOnly: true,
                   minLines: 3,
                   maxLines: 3,
                   controller: TextEditingController(
                     text: message.message,
                   ),
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
                   // TODO: Localize
                   title: 'Message',
-                  // TODO: Localize
-                  hintText: 'Something here',
                   textColor: context.colors.text,
-                ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
-            ),
-
-            ///
-            /// APP VERSION
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 8,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 8),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: Text(
-                    // TODO: Localize
-                    'App version',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
-                  ),
                 ),
               ),
             ),
@@ -292,7 +219,43 @@ class ViewMessageSheet extends StatelessWidget {
               child: SizedBox(height: 16),
             ),
 
-            // TODO: Add app version (later email & platform)
+            ///
+            /// EMAIL
+            ///
+            ViewMessageListTile(
+              onPressed: () {
+                // TODO: Open mail
+              },
+              icon: PhosphorIconsBold.at,
+              iconBackgroundColor: context.colors.protein,
+              title: message.userEmail,
+              // TODO: Localize
+              subtitle: 'Email',
+            ),
+
+            ///
+            /// PLATFORM
+            ///
+            ViewMessageListTile(
+              onPressed: () {},
+              icon: PhosphorIconsBold.deviceMobileCamera,
+              iconBackgroundColor: context.colors.carbs,
+              title: message.platform,
+              // TODO: Localize
+              subtitle: 'Platform',
+            ),
+
+            ///
+            /// APP VERSION
+            ///
+            ViewMessageListTile(
+              onPressed: () {},
+              icon: PhosphorIconsBold.gitBranch,
+              iconBackgroundColor: context.colors.fat,
+              title: 'v${message.appVersion}',
+              // TODO: Localize
+              subtitle: 'App version',
+            ),
 
             ///
             /// BOTTOM SPACING

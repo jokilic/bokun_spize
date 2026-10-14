@@ -26,6 +26,7 @@ class TextFieldWidget extends StatelessWidget {
   final double textFieldFontSize;
   final bool obscureText;
   final bool autofocus;
+  final bool readOnly;
 
   const TextFieldWidget({
     required this.controller,
@@ -50,12 +51,13 @@ class TextFieldWidget extends StatelessWidget {
     this.textFieldFontSize = 20,
     this.obscureText = false,
     this.autofocus = false,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) => Material(
     color: context.colors.listTileBackground.withValues(
-      alpha: enabled ? 0.5 : 0.25,
+      alpha: enabled && !readOnly ? 0.5 : 0.25,
     ),
     borderRadius: BorderRadius.circular(listTileRadius),
     child: InkWell(
@@ -105,6 +107,7 @@ class TextFieldWidget extends StatelessWidget {
                   child: TextFieldBody(
                     autofocus: autofocus,
                     obscureText: obscureText,
+                    readOnly: readOnly,
                     autofillHints: autofillHints,
                     minLines: minLines,
                     maxLines: maxLines,
@@ -192,6 +195,7 @@ class TextFieldBody extends StatelessWidget {
   final EdgeInsets contentPadding;
   final bool enabled;
   final bool filled;
+  final bool readOnly;
 
   const TextFieldBody({
     required this.controller,
@@ -217,11 +221,13 @@ class TextFieldBody extends StatelessWidget {
     this.contentPadding = const EdgeInsets.all(20),
     this.enabled = true,
     this.filled = true,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) => TextField(
     enabled: enabled,
+    readOnly: readOnly,
     autofillHints: autofillHints,
     onChanged: onChanged,
     onSubmitted: onSubmitted,
@@ -239,7 +245,7 @@ class TextFieldBody extends StatelessWidget {
       filled: filled,
       enabled: enabled,
       fillColor: context.colors.listTileBackground.withValues(
-        alpha: enabled ? 0.5 : 0.25,
+        alpha: enabled && !readOnly ? 0.5 : 0.25,
       ),
       contentPadding: contentPadding,
       border: OutlineInputBorder(
