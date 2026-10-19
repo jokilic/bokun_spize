@@ -108,6 +108,8 @@
     "accountContactMeTitle": "Contact",
     "accountContactMeSubtitle": "Send me a message",
     "accountMessagesSubtitle": "See user messages",
+    "messagesEmptyTitle": "There are no user messages",
+    "messagesEmptySubtitle": "Wait a couple of days and check again",
     "accountLogoutTitle": "Logout",
     "accountLogoutSubtitle": "Sign out of the app",
     "accountDeleteAccountTitle": "Delete account",

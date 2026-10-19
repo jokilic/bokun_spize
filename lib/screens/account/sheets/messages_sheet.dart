@@ -15,6 +15,7 @@ import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../widgets/message_list_tile.dart';
+import '../widgets/messages_empty.dart';
 import 'view_message_sheet.dart';
 
 class MessagesSheet extends WatchingStatefulWidget {
@@ -272,6 +273,11 @@ class _MessagesSheetState extends State<MessagesSheet> {
                   );
                 },
               ),
+
+            ///
+            /// EMPTY
+            ///
+            if (contactMessages.isEmpty) MessagesEmpty(),
 
             ///
             /// BOTTOM SPACING

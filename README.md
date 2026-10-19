@@ -6,6 +6,7 @@
     - [ ] Think about `constants.dart`
 
 ### Screens
+    - [ ] Test by writing nonsense in the [AIAddMealScreen]
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
         - [x] Edit user name

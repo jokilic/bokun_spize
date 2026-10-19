@@ -108,6 +108,8 @@
     "accountContactMeTitle": "Kontakt",
     "accountContactMeSubtitle": "Pošalji mi poruku",
     "accountMessagesSubtitle": "Pročitaj poruke korisnika",
+    "messagesEmptyTitle": "Nema poruka korisnika",
+    "messagesEmptySubtitle": "Pričekaj koji dan pa pogledaj ponovno",
     "accountLogoutTitle": "Odjava",
     "accountLogoutSubtitle": "Odjavi se iz aplikacije",
     "accountDeleteAccountTitle": "Izbriši račun",
