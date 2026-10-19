@@ -134,7 +134,10 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               AccountListTile(
                 animationDelay: BokunSpizeDurations.stateTransitionStagger,
-                onPressed: () {},
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  accountController.openUserMetricsSheet(context);
+                },
                 icon: PhosphorIconsBold.personSimple,
                 iconBackgroundColor: context.colors.carbs,
                 title: 'accountUserMetricsTitle'.tr(),
