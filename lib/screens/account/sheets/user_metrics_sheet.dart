@@ -7,6 +7,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
+import '../widgets/user_metrics_sex_list_tile.dart';
 
 class UserMetricsSheet extends StatefulWidget {
   @override
@@ -158,6 +159,86 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
           ),
           const SliverToBoxAdapter(
             child: SizedBox(height: 24),
+          ),
+
+          ///
+          /// SEX TITLE
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 8),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Text(
+                  // TODO
+                  'Spol',
+                  style: TextStyle(
+                    fontFamily: 'Epilogue',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: context.colors.text,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
+          ),
+
+          ///
+          /// SEX
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                  ScaleEffect(
+                    begin: Offset(0.98, 0.98),
+                    end: Offset(1, 1),
+                    alignment: Alignment.topCenter,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                // TODO: I want a row here with two `UserMetricsSexListTile` (male & female)
+                child: UserMetricsSexListTile(
+                  onPressed: () {},
+                  isActive: true,
+                  color: true ? context.colors.carbs : context.colors.scaffoldBackground,
+                  icon: PhosphorIconsBold.genderMale,
+                  title: 'Muško',
+                ),
+              ),
+            ),
           ),
 
           ///
