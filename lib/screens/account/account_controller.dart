@@ -74,7 +74,10 @@ class AccountController extends ValueNotifier<SettingsValues> {
   /// Opens [UserMetricsSheet]
   Future<void> openUserMetricsSheet(BuildContext context) async => await showBlurredModalBottomSheet(
     context: context,
-    builder: (context) => UserMetricsSheet(),
+    builder: (context) => UserMetricsSheet(
+      // TODO: Can you pass current user metrics from Firebase listener (from the screen, I guess)
+      passedUserMetrics: ,
+    ),
   );
 
   /// Opens [ThemeSheet]

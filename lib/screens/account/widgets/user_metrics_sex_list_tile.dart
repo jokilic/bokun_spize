@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/constants.dart';
-import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
 
 class UserMetricsSexListTile extends StatelessWidget {
   final Function() onPressed;
-  final bool isActive;
   final Color color;
   final IconData? icon;
   final String title;
 
   const UserMetricsSexListTile({
     required this.onPressed,
-    required this.isActive,
     required this.color,
     required this.title,
     this.icon,
@@ -36,10 +33,7 @@ class UserMetricsSexListTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(listTileRadius),
           color: context.colors.listTileBackground.withValues(alpha: 0.5),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 12,
-        ),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             ///
@@ -88,19 +82,6 @@ class UserMetricsSexListTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
-              ),
-            ),
-
-            ///
-            /// CHECKBOX
-            ///
-            AnimatedOpacity(
-              opacity: isActive ? 1 : 0,
-              duration: BokunSpizeDurations.animation,
-              child: PhosphorIcon(
-                PhosphorIconsBold.checkCircle,
-                color: color,
-                size: listTileIconRadius / 2,
               ),
             ),
           ],

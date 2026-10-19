@@ -5,16 +5,37 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
+import '../../../models/user_metrics/sex.dart';
+import '../../../models/user_metrics/user_metrics.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
 import '../widgets/user_metrics_sex_list_tile.dart';
 
 class UserMetricsSheet extends StatefulWidget {
+  final UserMetrics passedUserMetrics;
+
+  const UserMetricsSheet({
+    required this.passedUserMetrics,
+  });
+
   @override
   State<UserMetricsSheet> createState() => _UserMetricsSheetState();
 }
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
+  Sex? activeSex;
+
+  @override
+  void initState() {
+    super.initState();
+
+    activeSex = widget.passedUserMetrics.sex;
+  }
+
+  void updateSex(Sex newSex) => setState(
+    () => activeSex = newSex,
+  );
+
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
@@ -145,7 +166,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                 ],
                 child: Text(
                   // TODO
-                  'Tvoji podaci korišteni za izračun',
+                  'Tvoji podaci korišteni',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -229,13 +250,26 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     curve: Curves.easeOutCubic,
                   ),
                 ],
-                // TODO: I want a row here with two `UserMetricsSexListTile` (male & female)
-                child: UserMetricsSexListTile(
-                  onPressed: () {},
-                  isActive: true,
-                  color: true ? context.colors.carbs : context.colors.scaffoldBackground,
-                  icon: PhosphorIconsBold.genderMale,
-                  title: 'Muško',
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: UserMetricsSexListTile(
+                        onPressed: () => updateSex(Sex.male),
+                        color: activeSex == Sex.male ? context.colors.carbs : context.colors.scaffoldBackground,
+                        icon: PhosphorIconsBold.genderMale,
+                        title: 'Muško',
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: UserMetricsSexListTile(
+                        onPressed: () => updateSex(Sex.female),
+                        color: activeSex == Sex.female ? context.colors.fat : context.colors.scaffoldBackground,
+                        icon: PhosphorIconsBold.genderFemale,
+                        title: 'Žensko',
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -279,7 +313,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                         fontWeight: FontWeight.w800,
                       ),
                       padding: const EdgeInsets.all(22),
-                      backgroundColor: context.colors.protein,
+                      backgroundColor: context.colors.carbs,
                       foregroundColor: context.colors.buttonText,
                     ),
                     child: Text(
