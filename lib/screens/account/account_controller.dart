@@ -7,6 +7,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/contact_message/contact_message.dart';
+import '../../models/user_metrics/user_metrics.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../util/app_version.dart';
@@ -72,11 +73,13 @@ class AccountController extends ValueNotifier<SettingsValues> {
   );
 
   /// Opens [UserMetricsSheet]
-  Future<void> openUserMetricsSheet(BuildContext context) async => await showBlurredModalBottomSheet(
+  Future<void> openUserMetricsSheet(
+    BuildContext context, {
+    required UserMetrics userMetrics,
+  }) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (context) => UserMetricsSheet(
-      // TODO: Can you pass current user metrics from Firebase listener (from the screen, I guess)
-      passedUserMetrics: ,
+      passedUserMetrics: userMetrics,
     ),
   );
 

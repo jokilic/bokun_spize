@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -9,7 +10,10 @@ import '../../../models/user_metrics/sex.dart';
 import '../../../models/user_metrics/user_metrics.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
+import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../widgets/user_metrics_sex_list_tile.dart';
+
+// TODO: Update staggered animations like other screens
 
 class UserMetricsSheet extends StatefulWidget {
   final UserMetrics passedUserMetrics;
@@ -31,6 +35,22 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
     activeSex = widget.passedUserMetrics.sex;
   }
+
+  /// Opens [AgeSheet] and updates the selected `date`
+  Future<void> updateAgeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
+    context: context,
+    builder: (context) => AgeSheet(
+      subtitle: 'timeOfNewMeal'.tr(),
+      primaryColor: context.colors.protein,
+      dateValue: value.mealTime,
+      onTimeChanged: (newTime) {
+        HapticFeedback.lightImpact();
+        updateState(
+          mealTime: newTime,
+        );
+      },
+    ),
+  );
 
   void updateSex(Sex newSex) => setState(
     () => activeSex = newSex,
@@ -179,45 +199,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 24),
-          ),
-
-          ///
-          /// SEX TITLE
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-            sliver: SliverToBoxAdapter(
-              child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
-                effects: const [
-                  FadeEffect(
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOut,
-                  ),
-                  MoveEffect(
-                    begin: Offset(0, 8),
-                    end: Offset.zero,
-                    duration: BokunSpizeDurations.animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ],
-                child: Text(
-                  // TODO
-                  'Spol',
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
-                    color: context.colors.text,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
+            child: SizedBox(height: 20),
           ),
 
           ///
@@ -254,7 +236,10 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   children: [
                     Expanded(
                       child: UserMetricsSexListTile(
-                        onPressed: () => updateSex(Sex.male),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          updateSex(Sex.male);
+                        },
                         color: activeSex == Sex.male ? context.colors.carbs : context.colors.scaffoldBackground,
                         icon: PhosphorIconsBold.genderMale,
                         title: 'Muško',
@@ -263,13 +248,118 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: UserMetricsSexListTile(
-                        onPressed: () => updateSex(Sex.female),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          updateSex(Sex.female);
+                        },
                         color: activeSex == Sex.female ? context.colors.fat : context.colors.scaffoldBackground,
                         icon: PhosphorIconsBold.genderFemale,
                         title: 'Žensko',
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
+
+          ///
+          /// AGE
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 12),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Material(
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      handleOnPressed(
+                        onPressed: () => mealController.updateTimeViaPicker(context),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ///
+                                /// TITLE
+                                ///
+                                Text(
+                                  'time'.tr().toUpperCase(),
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.2,
+                                    color: context.colors.text.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+
+                                ///
+                                /// TIME
+                                ///
+                                Text(
+                                  time,
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.6,
+                                    color: context.colors.text,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          ///
+                          /// ICON
+                          ///
+                          PhosphorIcon(
+                            PhosphorIconsBold.clock,
+                            size: 28,
+                            color: context.colors.protein,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -316,8 +406,9 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       backgroundColor: context.colors.carbs,
                       foregroundColor: context.colors.buttonText,
                     ),
-                    child: Text(
-                      'confirm'.tr(),
+                    child: const Text(
+                      // TODO
+                      'Spremi',
                       textAlign: TextAlign.center,
                     ),
                   ),
