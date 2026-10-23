@@ -7,6 +7,7 @@ import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../theme/extensions.dart';
+import '../../../util/spacing.dart';
 
 class AgeSheet extends StatefulWidget {
   final Color primaryColor;
@@ -26,7 +27,7 @@ class AgeSheet extends StatefulWidget {
 }
 
 class _AgeSheetState extends State<AgeSheet> {
-  late var selectedAge = widget.ageValue;
+  late var selectedAge = widget.ageValue.clamp(18, 100).toInt();
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -200,7 +201,7 @@ class _AgeSheetState extends State<AgeSheet> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: ScrollDateTimePicker(
-                    onChange: (newDateTime) => selectedDateTime = newDateTime,
+                    onChange: (newDateTime) => selectedAge = newDateTime.year,
                     itemExtent: 64,
                     style: DateTimePickerStyle(
                       activeStyle: TextStyle(
@@ -227,12 +228,12 @@ class _AgeSheetState extends State<AgeSheet> {
                     ),
                     dateOption: DateTimePickerOption(
                       dateFormat: DateFormat(
-                        'HH:mm',
+                        'y',
                         context.locale.languageCode,
                       ),
-                      minDate: DateTime(2020),
-                      maxDate: DateTime(2050),
-                      initialDate: selectedDateTime,
+                      minDate: DateTime(18),
+                      maxDate: DateTime(100),
+                      initialDate: DateTime(selectedAge),
                     ),
                     centerWidget: DateTimePickerCenterWidget(
                       builder: (context, constraints, child) => Container(
@@ -278,7 +279,7 @@ class _AgeSheetState extends State<AgeSheet> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onTimeChanged(selectedDateTime);
+                      widget.onAgeChanged(selectedAge);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
