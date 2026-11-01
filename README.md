@@ -4,6 +4,7 @@
     - [ ] Replace all `TextStyle()`
     - [ ] Animations
     - [ ] Think about `constants.dart`
+    - [ ] Try using `BlurHash`
 
 ### Screens
     - [ ] Test by writing nonsense in the [AIAddMealScreen]
