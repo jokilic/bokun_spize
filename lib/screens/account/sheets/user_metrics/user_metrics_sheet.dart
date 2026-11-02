@@ -57,10 +57,17 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
     final userMetrics = widget.passedUserMetrics;
 
-    activeGender = userMetrics.gender;
     activeAge = userMetrics.age ?? defaultAge;
     activeHeight = userMetrics.height ?? defaultHeight;
     activeWeight = userMetrics.weight ?? defaultWeight;
+
+    if (userMetrics.gender != null) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => updateGender(
+          userMetrics.gender!,
+        ),
+      );
+    }
 
     updateValidated();
   }
@@ -724,8 +731,10 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           fontWeight: FontWeight.w800,
                         ),
                         padding: const EdgeInsets.all(22),
-                        backgroundColor: activeColor,
+                        backgroundColor: activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5),
                         foregroundColor: context.colors.buttonText,
+                        disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        disabledForegroundColor: activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5),
                       ),
                       child: const Text(
                         // TODO

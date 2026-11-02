@@ -72,7 +72,7 @@ class UserMetrics {
       age: (map['age'] as num?)?.toInt(),
       height: (map['height'] as num?)?.toDouble(),
       weight: (map['weight'] as num?)?.toDouble(),
-      gender: map['gender'] != null ? Gender.values[map['gender'] as int] : null,
+      gender: map['gender'] != null ? Gender.values.byName(map['gender'] as String) : null,
       dailyCalories: (map['dailyCalories'] as num?)?.toDouble(),
       dailyProtein: (map['dailyProtein'] as num?)?.toDouble(),
       dailyCarbs: (map['dailyCarbs'] as num?)?.toDouble(),
