@@ -4,16 +4,18 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import '../../../../constants/constants.dart';
 import '../../../../theme/extensions.dart';
 
-class UserMetricsSexListTile extends StatelessWidget {
+class UserMetricsGenderListTile extends StatelessWidget {
   final Function() onPressed;
   final Color color;
   final IconData? icon;
   final String title;
+  final bool isActive;
 
-  const UserMetricsSexListTile({
+  const UserMetricsGenderListTile({
     required this.onPressed,
     required this.color,
     required this.title,
+    required this.isActive,
     this.icon,
   });
 

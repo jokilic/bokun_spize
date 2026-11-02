@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum Sex {
+enum Gender {
   male,
   female,
 }
@@ -11,7 +11,7 @@ class UserMetrics {
   final int? age;
   final double? height;
   final double? weight;
-  final Sex? sex;
+  final Gender? gender;
   final double? dailyCalories;
   final double? dailyProtein;
   final double? dailyCarbs;
@@ -24,7 +24,7 @@ class UserMetrics {
     this.age,
     this.height,
     this.weight,
-    this.sex,
+    this.gender,
     this.dailyCalories,
     this.dailyProtein,
     this.dailyCarbs,
@@ -38,7 +38,7 @@ class UserMetrics {
     int? age,
     double? height,
     double? weight,
-    Sex? sex,
+    Gender? gender,
     double? dailyCalories,
     double? dailyProtein,
     double? dailyCarbs,
@@ -50,7 +50,7 @@ class UserMetrics {
     age: age ?? this.age,
     height: height ?? this.height,
     weight: weight ?? this.weight,
-    sex: sex ?? this.sex,
+    gender: gender ?? this.gender,
     dailyCalories: dailyCalories ?? this.dailyCalories,
     dailyProtein: dailyProtein ?? this.dailyProtein,
     dailyCarbs: dailyCarbs ?? this.dailyCarbs,
@@ -72,7 +72,7 @@ class UserMetrics {
       age: (map['age'] as num?)?.toInt(),
       height: (map['height'] as num?)?.toDouble(),
       weight: (map['weight'] as num?)?.toDouble(),
-      sex: map['sex'] != null ? Sex.values[map['sex'] as int] : null,
+      gender: map['gender'] != null ? Gender.values[map['gender'] as int] : null,
       dailyCalories: (map['dailyCalories'] as num?)?.toDouble(),
       dailyProtein: (map['dailyProtein'] as num?)?.toDouble(),
       dailyCarbs: (map['dailyCarbs'] as num?)?.toDouble(),
@@ -88,7 +88,7 @@ class UserMetrics {
       'age': age,
       'height': height,
       'weight': weight,
-      'sex': sex?.index,
+      'gender': gender?.index,
       'dailyCalories': dailyCalories,
       'dailyProtein': dailyProtein,
       'dailyCarbs': dailyCarbs,
@@ -99,7 +99,7 @@ class UserMetrics {
 
   @override
   String toString() =>
-      'UserMetrics(registeredAt: $registeredAt, name: $name, age: $age, height: $height, weight: $weight, sex: $sex, dailyCalories: $dailyCalories, dailyProtein: $dailyProtein, dailyCarbs: $dailyCarbs, dailyFat: $dailyFat, isAdmin: $isAdmin)';
+      'UserMetrics(registeredAt: $registeredAt, name: $name, age: $age, height: $height, weight: $weight, gender: $gender, dailyCalories: $dailyCalories, dailyProtein: $dailyProtein, dailyCarbs: $dailyCarbs, dailyFat: $dailyFat, isAdmin: $isAdmin)';
 
   @override
   bool operator ==(Object other) =>
@@ -111,7 +111,7 @@ class UserMetrics {
           age == other.age &&
           height == other.height &&
           weight == other.weight &&
-          sex == other.sex &&
+          gender == other.gender &&
           dailyCalories == other.dailyCalories &&
           dailyProtein == other.dailyProtein &&
           dailyCarbs == other.dailyCarbs &&
@@ -125,7 +125,7 @@ class UserMetrics {
       age.hashCode ^
       height.hashCode ^
       weight.hashCode ^
-      sex.hashCode ^
+      gender.hashCode ^
       dailyCalories.hashCode ^
       dailyProtein.hashCode ^
       dailyCarbs.hashCode ^
@@ -137,11 +137,11 @@ class UserMetrics {
     final currentHeight = height;
     final currentAge = age;
 
-    if (currentWeight == null || currentHeight == null || currentAge == null || sex == null) {
+    if (currentWeight == null || currentHeight == null || currentAge == null || gender == null) {
       return null;
     }
 
-    if (sex == Sex.male) {
+    if (gender == Gender.male) {
       return (10 * currentWeight) + (6.25 * currentHeight) - (5 * currentAge) + 5;
     } else {
       return (10 * currentWeight) + (6.25 * currentHeight) - (5 * currentAge) - 161;

@@ -11,7 +11,7 @@ import '../../../../models/user_metrics/user_metrics.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
 import 'user_metrics_height.dart';
-import 'user_metrics_sex_list_tile.dart';
+import 'user_metrics_gender_list_tile.dart';
 import 'user_metrics_weight.dart';
 
 // TODO: Update staggered animations like other screens
@@ -28,7 +28,7 @@ class UserMetricsSheet extends StatefulWidget {
 }
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
-  Sex? activeSex;
+  Gender? activeGender;
   int? activeAge;
   double? activeHeight;
   double? activeWeight;
@@ -41,7 +41,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
     final userMetrics = widget.passedUserMetrics;
 
-    activeSex = userMetrics.sex;
+    activeGender = userMetrics.gender;
     activeAge = userMetrics.age;
     activeHeight = userMetrics.height;
     activeWeight = userMetrics.weight;
@@ -53,8 +53,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     super.dispose();
   }
 
-  void updateSex(Sex newSex) => setState(
-    () => activeSex = newSex,
+  void updateGender(Gender newGender) => setState(
+    () => activeGender = newGender,
   );
 
   void updateAge(int newAge) => setState(
@@ -242,7 +242,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
             ),
 
             ///
-            /// SEX
+            /// GENDER
             ///
             SliverPadding(
               padding: const EdgeInsets.symmetric(
@@ -273,26 +273,35 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   ],
                   child: Row(
                     children: [
+                      ///
+                      /// MALE
+                      ///
                       Expanded(
-                        child: UserMetricsSexListTile(
+                        child: UserMetricsGenderListTile(
+                          isActive: activeGender == Gender.male,
                           onPressed: () {
                             HapticFeedback.lightImpact();
-                            updateSex(Sex.male);
+                            updateGender(Gender.male);
                           },
-                          color: activeSex == Sex.male ? context.colors.carbs : context.colors.scaffoldBackground,
+                          color: activeGender == Gender.male ? context.colors.carbs : context.colors.scaffoldBackground,
                           icon: PhosphorIconsBold.genderMale,
                           // TODO
                           title: 'Muško',
                         ),
                       ),
                       const SizedBox(width: 16),
+
+                      ///
+                      /// FEMALE
+                      ///
                       Expanded(
-                        child: UserMetricsSexListTile(
+                        child: UserMetricsGenderListTile(
+                          isActive: activeGender == Gender.female,
                           onPressed: () {
                             HapticFeedback.lightImpact();
-                            updateSex(Sex.female);
+                            updateGender(Gender.female);
                           },
-                          color: activeSex == Sex.female ? context.colors.fat : context.colors.scaffoldBackground,
+                          color: activeGender == Gender.female ? context.colors.fat : context.colors.scaffoldBackground,
                           icon: PhosphorIconsBold.genderFemale,
                           // TODO
                           title: 'Žensko',

@@ -23,7 +23,7 @@ service cloud.firestore {
         'height',
         'weight',
         'activity',
-        'sex',
+        'gender',
         'dailyCalories',
         'dailyProtein',
         'dailyCarbs',
@@ -49,9 +49,9 @@ service cloud.firestore {
         && data.activity is int
         && data.activity >= 0
         && data.activity <= 4
-        && data.sex is int
-        && data.sex >= 0
-        && data.sex <= 1
+        && data.gender is int
+        && data.gender >= 0
+        && data.gender <= 1
         && data.dailyCalories is number
         && data.dailyCalories >= 0
         && data.dailyProtein is number
