@@ -6,10 +6,12 @@ import '../../../../theme/extensions.dart';
 class UserMetricsHeight extends StatefulWidget {
   final double initialHeight;
   final Function(double newHeight) onHeightChanged;
+  final Color primaryColor;
 
   const UserMetricsHeight({
     required this.initialHeight,
     required this.onHeightChanged,
+    required this.primaryColor,
     super.key,
   });
 
@@ -169,7 +171,7 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
                       width: 6,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: context.colors.carbs,
+                        color: widget.primaryColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
                     ),
@@ -189,7 +191,7 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
     final isSelected = index == selectedIndex;
     final height = minimumHeight + (index * heightStep);
     final color = isSelected
-        ? context.colors.carbs.withValues(alpha: 0.5)
+        ? widget.primaryColor
         : context.colors.text.withValues(
             alpha: isMajorMark ? 0.75 : 0.5,
           );

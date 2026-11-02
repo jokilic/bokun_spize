@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 
 class UserMetricsGenderListTile extends StatelessWidget {
   final Function() onPressed;
-  final Color color;
   final IconData? icon;
   final String title;
+  final Color primaryColor;
   final bool isActive;
 
   const UserMetricsGenderListTile({
     required this.onPressed,
-    required this.color,
     required this.title,
+    required this.primaryColor,
     required this.isActive,
     this.icon,
   });
@@ -26,14 +27,16 @@ class UserMetricsGenderListTile extends StatelessWidget {
     child: InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(listTileRadius),
-      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+      highlightColor: isActive ? primaryColor : context.colors.listTileBackground.withValues(alpha: 0.5),
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
-      child: Container(
+      child: AnimatedContainer(
+        duration: BokunSpizeDurations.animation,
+        curve: Curves.easeIn,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(listTileRadius),
-          color: context.colors.listTileBackground.withValues(alpha: 0.5),
+          color: isActive ? primaryColor : context.colors.listTileBackground.withValues(alpha: 0.5),
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -50,11 +53,11 @@ class UserMetricsGenderListTile extends StatelessWidget {
                 width: listTileIconSmallRadius,
                 height: listTileIconSmallRadius,
                 alignment: Alignment.center,
-                color: color.withValues(alpha: 0.25),
+                color: context.colors.scaffoldBackground,
                 child: icon != null
                     ? PhosphorIcon(
                         icon!,
-                        color: context.colors.carbs,
+                        color: primaryColor,
                         size: listTileIconSmallRadius / 2,
                       )
                     : const SizedBox(
@@ -81,7 +84,7 @@ class UserMetricsGenderListTile extends StatelessWidget {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: context.colors.text,
+                      color: isActive ? context.colors.scaffoldBackground : context.colors.text,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

@@ -5,6 +5,7 @@
     - [ ] Animations
     - [ ] Think about `constants.dart`
     - [ ] Try using `BlurHash`
+    - [ ] Maybe smaller button padding and text size
 
 ### Screens
     - [ ] Test by writing nonsense in the [AIAddMealScreen]

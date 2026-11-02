@@ -7,10 +7,12 @@ import '../../../../theme/extensions.dart';
 class UserMetricsWeight extends StatefulWidget {
   final double initialWeight;
   final Function(double newWeight) onWeightChanged;
+  final Color primaryColor;
 
   const UserMetricsWeight({
     required this.initialWeight,
     required this.onWeightChanged,
+    required this.primaryColor,
     super.key,
   });
 
@@ -150,7 +152,7 @@ class UserMetricsWeightState extends State<UserMetricsWeight> {
                       width: 6,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: context.colors.carbs,
+                        color: widget.primaryColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
                     ),
@@ -170,7 +172,7 @@ class UserMetricsWeightState extends State<UserMetricsWeight> {
     final isSelected = index == selectedIndex;
     final weight = minimumWeight + (index * weightStep);
     final color = isSelected
-        ? context.colors.carbs.withValues(alpha: 0.5)
+        ? widget.primaryColor
         : context.colors.text.withValues(
             alpha: isWholeKilogram ? 0.75 : 0.5,
           );

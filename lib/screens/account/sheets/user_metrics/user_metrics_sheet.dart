@@ -38,6 +38,8 @@ class UserMetricsSheet extends StatefulWidget {
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
   var validated = false;
 
+  Color? activeColor;
+
   Gender? activeGender;
   int? activeAge;
   double? activeHeight;
@@ -65,10 +67,14 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     super.dispose();
   }
 
-  void updateValidated() => validated = activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
+  void updateValidated() {
+    validated = activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
+    print('Validated -> $validated');
+  }
 
   void updateGender(Gender newGender) => setState(() {
     activeGender = newGender;
+    activeColor = newGender == Gender.male ? context.colors.carbs : context.colors.fat;
     updateValidated();
   });
 
@@ -315,11 +321,11 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       Expanded(
                         child: UserMetricsGenderListTile(
                           isActive: activeGender == Gender.male,
+                          primaryColor: context.colors.carbs,
                           onPressed: () {
                             HapticFeedback.lightImpact();
                             updateGender(Gender.male);
                           },
-                          color: activeGender == Gender.male ? context.colors.carbs : context.colors.scaffoldBackground,
                           icon: PhosphorIconsBold.genderMale,
                           // TODO
                           title: 'Muško',
@@ -333,11 +339,11 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       Expanded(
                         child: UserMetricsGenderListTile(
                           isActive: activeGender == Gender.female,
+                          primaryColor: context.colors.fat,
                           onPressed: () {
                             HapticFeedback.lightImpact();
                             updateGender(Gender.female);
                           },
-                          color: activeGender == Gender.female ? context.colors.fat : context.colors.scaffoldBackground,
                           icon: PhosphorIconsBold.genderFemale,
                           // TODO
                           title: 'Žensko',
@@ -419,6 +425,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   Text.rich(
                                     TextSpan(
                                       children: [
+                                        // TODO: Use `animated_digit_widget.dart`
                                         TextSpan(
                                           text: currentAge.toStringAsFixed(0),
                                         ),
@@ -426,6 +433,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                           child: SizedBox(width: 4),
                                         ),
                                         TextSpan(
+                                          // TODO
                                           text: 'godina',
                                           style: TextStyle(
                                             fontFamily: 'Epilogue',
@@ -467,7 +475,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   /// INCREMENT
                                   ///
                                   Material(
-                                    color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    color: currentAge > 1 ? context.colors.listTileBackground.withValues(alpha: 0.5) : context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(12),
                                     child: InkWell(
                                       onTap: currentAge > 1 ? () {} : null,
@@ -482,7 +490,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                         child: PhosphorIcon(
                                           PhosphorIconsBold.minus,
                                           size: 22,
-                                          color: currentAge > 1 ? context.colors.text : context.colors.text.withValues(alpha: 0.3),
+                                          color: context.colors.text,
                                         ),
                                       ),
                                     ),
@@ -493,7 +501,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   /// DECREMENT
                                   ///
                                   Material(
-                                    color: currentAge < 100 ? context.colors.carbs : context.colors.carbs.withValues(alpha: 0.3),
+                                    color: currentAge < 100 ? activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5) : context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(12),
                                     child: InkWell(
                                       onTap: currentAge < 100 ? () {} : null,
@@ -508,7 +516,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                         child: PhosphorIcon(
                                           PhosphorIconsBold.plus,
                                           size: 22,
-                                          color: context.colors.buttonText,
+                                          color: currentAge < 100 && activeColor != null ? context.colors.buttonText : context.colors.text,
                                         ),
                                       ),
                                     ),
@@ -591,6 +599,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             UserMetricsHeight(
                               initialHeight: currentHeight,
                               onHeightChanged: updateHeight,
+                              primaryColor: activeColor ?? context.colors.text,
                             ),
                           ],
                         ),
@@ -667,6 +676,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             UserMetricsWeight(
                               initialWeight: currentWeight,
                               onWeightChanged: updateWeight,
+                              primaryColor: activeColor ?? context.colors.text,
                             ),
                           ],
                         ),
@@ -713,7 +723,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           fontWeight: FontWeight.w800,
                         ),
                         padding: const EdgeInsets.all(22),
-                        backgroundColor: context.colors.carbs,
+                        backgroundColor: activeColor,
                         foregroundColor: context.colors.buttonText,
                       ),
                       child: const Text(
