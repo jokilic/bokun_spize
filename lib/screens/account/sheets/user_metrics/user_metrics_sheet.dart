@@ -10,17 +10,25 @@ import '../../../../constants/durations.dart';
 import '../../../../models/user_metrics/user_metrics.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
-import 'user_metrics_height.dart';
 import 'user_metrics_gender_list_tile.dart';
+import 'user_metrics_height.dart';
 import 'user_metrics_weight.dart';
 
 // TODO: Update staggered animations like other screens
 
 class UserMetricsSheet extends StatefulWidget {
   final UserMetrics passedUserMetrics;
+  final Function({
+    required Gender newGender,
+    required int newAge,
+    required double newHeight,
+    required double newWeight,
+  })
+  onSavePressed;
 
   const UserMetricsSheet({
     required this.passedUserMetrics,
+    required this.onSavePressed,
   });
 
   @override
@@ -28,6 +36,8 @@ class UserMetricsSheet extends StatefulWidget {
 }
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
+  bool get validated => activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
+
   Gender? activeGender;
   int? activeAge;
   double? activeHeight;
@@ -61,7 +71,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     () => activeAge = newAge,
   );
 
-  // Updates the age once and keeps updating it while the button is held
   void startAgeUpdate(int amount) {
     stopAgeUpdate();
     changeAge(amount);
@@ -88,6 +97,21 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   void stopAgeUpdate() {
     ageUpdateTimer?.cancel();
     ageUpdateTimer = null;
+  }
+
+  void onSavePressed({required bool validated}) {
+    if (!validated) {
+      return;
+    }
+
+    widget.onSavePressed(
+      newGender: activeGender!,
+      newAge: activeAge!,
+      newHeight: activeHeight!,
+      newWeight: activeWeight!,
+    );
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -669,9 +693,11 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: validated
+                          ? () => onSavePressed(
+                              validated: validated,
+                            )
+                          : null,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),

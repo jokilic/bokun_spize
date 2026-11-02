@@ -80,6 +80,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
     context: context,
     builder: (context) => UserMetricsSheet(
       passedUserMetrics: userMetrics,
+      onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) {
+        // TODO: Update with new values
+      },
     ),
   );
 

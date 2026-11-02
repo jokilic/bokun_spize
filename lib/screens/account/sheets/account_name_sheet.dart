@@ -45,6 +45,7 @@ class _AccountNameSheetState extends State<AccountNameSheet> {
     widget.onSavePressed(
       nameController.text.trim(),
     );
+
     Navigator.of(context).pop();
   }
 
