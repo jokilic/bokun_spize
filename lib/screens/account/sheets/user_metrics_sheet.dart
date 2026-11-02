@@ -10,7 +10,6 @@ import '../../../models/user_metrics/sex.dart';
 import '../../../models/user_metrics/user_metrics.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
-import '../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../widgets/user_metrics_sex_list_tile.dart';
 
 // TODO: Update staggered animations like other screens
@@ -37,20 +36,20 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   }
 
   /// Opens [AgeSheet] and updates the selected `date`
-  Future<void> updateAgeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => AgeSheet(
-      subtitle: 'timeOfNewMeal'.tr(),
-      primaryColor: context.colors.protein,
-      dateValue: value.mealTime,
-      onTimeChanged: (newTime) {
-        HapticFeedback.lightImpact();
-        updateState(
-          mealTime: newTime,
-        );
-      },
-    ),
-  );
+  // Future<void> updateAgeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
+  //   context: context,
+  //   builder: (context) => AgeSheet(
+  //     subtitle: 'timeOfNewMeal'.tr(),
+  //     primaryColor: context.colors.protein,
+  //     dateValue: value.mealTime,
+  //     onTimeChanged: (newTime) {
+  //       HapticFeedback.lightImpact();
+  //       updateState(
+  //         mealTime: newTime,
+  //       );
+  //     },
+  //   ),
+  // );
 
   void updateSex(Sex newSex) => setState(
     () => activeSex = newSex,
@@ -292,9 +291,9 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   child: InkWell(
                     onTap: () {
                       HapticFeedback.lightImpact();
-                      handleOnPressed(
-                        onPressed: () => mealController.updateTimeViaPicker(context),
-                      );
+                      // handleOnPressed(
+                      //   onPressed: () => mealController.updateTimeViaPicker(context),
+                      // );
                     },
                     borderRadius: BorderRadius.circular(listTileRadius),
                     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
@@ -335,7 +334,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                 /// TIME
                                 ///
                                 Text(
-                                  time,
+                                  'timee',
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 18,
