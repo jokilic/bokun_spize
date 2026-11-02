@@ -5,7 +5,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
-import '../../../../models/user_metrics/sex.dart';
 import '../../../../models/user_metrics/user_metrics.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
@@ -28,12 +27,20 @@ class UserMetricsSheet extends StatefulWidget {
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
   Sex? activeSex;
+  int? age;
+  double? height;
+  double? weight;
 
   @override
   void initState() {
     super.initState();
 
-    activeSex = widget.passedUserMetrics.sex;
+    final userMetrics = widget.passedUserMetrics;
+
+    activeSex = userMetrics.sex;
+    age = userMetrics.age;
+    height = userMetrics.height;
+    weight = userMetrics.weight;
   }
 
   void updateSex(Sex newSex) => setState(
@@ -314,31 +321,44 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                 const SizedBox(height: 6),
 
                                 ///
-                                /// AGE BUTTONS
+                                /// AGE
                                 ///
-                                // TODO
-                                Text(
-                                  'timee',
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: age?.toStringAsFixed(0) ?? 30.toStringAsFixed(0),
+                                      ),
+                                      const WidgetSpan(
+                                        child: SizedBox(width: 4),
+                                      ),
+                                      TextSpan(
+                                        text: 'godina',
+                                        style: TextStyle(
+                                          fontFamily: 'Epilogue',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: context.colors.text.withValues(alpha: 0.7),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.6,
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.w900,
                                     color: context.colors.text,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
                           ),
 
                           ///
-                          /// ICON
+                          /// BUTTONS
                           ///
-                          PhosphorIcon(
-                            PhosphorIconsBold.clock,
-                            size: 28,
-                            color: context.colors.protein,
-                          ),
+                          // TODO: Two circular buttons here - minus & plus
                         ],
                       ),
                     ),
@@ -412,8 +432,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           /// HEIGHT
                           ///
                           UserMetricsHeight(
+                            initialHeight: height ?? 180,
                             // TODO
-                            initialHeight: 150,
                             onHeightChanged: (newHeight) {},
                           ),
                         ],
@@ -489,8 +509,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           /// HEIGHT
                           ///
                           UserMetricsWeight(
+                            initialWeight: weight ?? 75.0,
                             // TODO
-                            initialWeight: 75,
                             onWeightChanged: (newWeight) {},
                           ),
                         ],

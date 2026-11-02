@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'activity_level.dart';
-import 'sex.dart';
+enum Sex {
+  male,
+  female,
+}
 
 class UserMetrics {
   final DateTime? registeredAt;
@@ -9,7 +11,6 @@ class UserMetrics {
   final int? age;
   final double? height;
   final double? weight;
-  final ActivityLevel? activity;
   final Sex? sex;
   final double? dailyCalories;
   final double? dailyProtein;
@@ -23,7 +24,6 @@ class UserMetrics {
     this.age,
     this.height,
     this.weight,
-    this.activity,
     this.sex,
     this.dailyCalories,
     this.dailyProtein,
@@ -38,7 +38,6 @@ class UserMetrics {
     int? age,
     double? height,
     double? weight,
-    ActivityLevel? activity,
     Sex? sex,
     double? dailyCalories,
     double? dailyProtein,
@@ -51,7 +50,6 @@ class UserMetrics {
     age: age ?? this.age,
     height: height ?? this.height,
     weight: weight ?? this.weight,
-    activity: activity ?? this.activity,
     sex: sex ?? this.sex,
     dailyCalories: dailyCalories ?? this.dailyCalories,
     dailyProtein: dailyProtein ?? this.dailyProtein,
@@ -74,7 +72,6 @@ class UserMetrics {
       age: (map['age'] as num?)?.toInt(),
       height: (map['height'] as num?)?.toDouble(),
       weight: (map['weight'] as num?)?.toDouble(),
-      activity: map['activity'] != null ? ActivityLevel.values[map['activity'] as int] : null,
       sex: map['sex'] != null ? Sex.values[map['sex'] as int] : null,
       dailyCalories: (map['dailyCalories'] as num?)?.toDouble(),
       dailyProtein: (map['dailyProtein'] as num?)?.toDouble(),
@@ -91,7 +88,6 @@ class UserMetrics {
       'age': age,
       'height': height,
       'weight': weight,
-      'activity': activity?.index,
       'sex': sex?.index,
       'dailyCalories': dailyCalories,
       'dailyProtein': dailyProtein,
@@ -103,7 +99,7 @@ class UserMetrics {
 
   @override
   String toString() =>
-      'UserMetrics(registeredAt: $registeredAt, name: $name, age: $age, height: $height, weight: $weight, activity: $activity, sex: $sex, dailyCalories: $dailyCalories, dailyProtein: $dailyProtein, dailyCarbs: $dailyCarbs, dailyFat: $dailyFat, isAdmin: $isAdmin)';
+      'UserMetrics(registeredAt: $registeredAt, name: $name, age: $age, height: $height, weight: $weight, sex: $sex, dailyCalories: $dailyCalories, dailyProtein: $dailyProtein, dailyCarbs: $dailyCarbs, dailyFat: $dailyFat, isAdmin: $isAdmin)';
 
   @override
   bool operator ==(Object other) =>
@@ -115,7 +111,6 @@ class UserMetrics {
           age == other.age &&
           height == other.height &&
           weight == other.weight &&
-          activity == other.activity &&
           sex == other.sex &&
           dailyCalories == other.dailyCalories &&
           dailyProtein == other.dailyProtein &&
@@ -130,7 +125,6 @@ class UserMetrics {
       age.hashCode ^
       height.hashCode ^
       weight.hashCode ^
-      activity.hashCode ^
       sex.hashCode ^
       dailyCalories.hashCode ^
       dailyProtein.hashCode ^
@@ -156,12 +150,11 @@ class UserMetrics {
 
   double? get tdee {
     final basalMetabolicRate = bmr;
-    final currentActivity = activity;
 
-    if (basalMetabolicRate == null || currentActivity == null) {
+    if (basalMetabolicRate == null) {
       return null;
     }
 
-    return basalMetabolicRate * currentActivity.multiplier;
+    return basalMetabolicRate * 1.2;
   }
 }
