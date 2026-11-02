@@ -1,17 +1,17 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/constants.dart';
-import '../../../constants/durations.dart';
-import '../../../models/user_metrics/sex.dart';
-import '../../../models/user_metrics/user_metrics.dart';
-import '../../../theme/extensions.dart';
-import '../../../util/spacing.dart';
-import '../widgets/user_metrics_height.dart';
-import '../widgets/user_metrics_sex_list_tile.dart';
+import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
+import '../../../../models/user_metrics/sex.dart';
+import '../../../../models/user_metrics/user_metrics.dart';
+import '../../../../theme/extensions.dart';
+import '../../../../util/spacing.dart';
+import 'user_metrics_height.dart';
+import 'user_metrics_sex_list_tile.dart';
+import 'user_metrics_weight.dart';
 
 // TODO: Update staggered animations like other screens
 
@@ -35,22 +35,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
     activeSex = widget.passedUserMetrics.sex;
   }
-
-  /// Opens [AgeSheet] and updates the selected `date`
-  // Future<void> updateAgeViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
-  //   context: context,
-  //   builder: (context) => AgeSheet(
-  //     subtitle: 'timeOfNewMeal'.tr(),
-  //     primaryColor: context.colors.protein,
-  //     dateValue: value.mealTime,
-  //     onTimeChanged: (newTime) {
-  //       HapticFeedback.lightImpact();
-  //       updateState(
-  //         mealTime: newTime,
-  //       );
-  //     },
-  //   ),
-  // );
 
   void updateSex(Sex newSex) => setState(
     () => activeSex = newSex,
@@ -242,6 +226,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                         },
                         color: activeSex == Sex.male ? context.colors.carbs : context.colors.scaffoldBackground,
                         icon: PhosphorIconsBold.genderMale,
+                        // TODO
                         title: 'Muško',
                       ),
                     ),
@@ -254,6 +239,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                         },
                         color: activeSex == Sex.female ? context.colors.fat : context.colors.scaffoldBackground,
                         icon: PhosphorIconsBold.genderFemale,
+                        // TODO
                         title: 'Žensko',
                       ),
                     ),
@@ -263,7 +249,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 12),
           ),
 
           ///
@@ -290,12 +276,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   color: context.colors.listTileBackground.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      // handleOnPressed(
-                      //   onPressed: () => mealController.updateTimeViaPicker(context),
-                      // );
-                    },
+                    onTap: HapticFeedback.lightImpact,
                     borderRadius: BorderRadius.circular(listTileRadius),
                     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
@@ -320,7 +301,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                 /// TITLE
                                 ///
                                 Text(
-                                  'time'.tr().toUpperCase(),
+                                  // TODO
+                                  'Age'.toUpperCase(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
                                     fontSize: 12,
@@ -332,8 +314,9 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                 const SizedBox(height: 6),
 
                                 ///
-                                /// TIME
+                                /// AGE BUTTONS
                                 ///
+                                // TODO
                                 Text(
                                   'timee',
                                   style: TextStyle(
@@ -392,12 +375,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   color: context.colors.listTileBackground.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      // handleOnPressed(
-                      //   onPressed: () => mealController.updateTimeViaPicker(context),
-                      // );
-                    },
+                    onTap: HapticFeedback.lightImpact,
                     borderRadius: BorderRadius.circular(listTileRadius),
                     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
@@ -428,7 +406,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                               color: context.colors.text.withValues(alpha: 0.5),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 4),
 
                           ///
                           /// HEIGHT
@@ -437,6 +415,83 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             // TODO
                             initialHeight: 150,
                             onHeightChanged: (newHeight) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
+
+          ///
+          /// WEIGHT
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 12),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Material(
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  child: InkWell(
+                    onTap: HapticFeedback.lightImpact,
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ///
+                          /// TITLE
+                          ///
+                          Text(
+                            // TODO
+                            'Težina'.toUpperCase(),
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.2,
+                              color: context.colors.text.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+
+                          ///
+                          /// HEIGHT
+                          ///
+                          UserMetricsWeight(
+                            // TODO
+                            initialWeight: 75,
+                            onWeightChanged: (newWeight) {},
                           ),
                         ],
                       ),

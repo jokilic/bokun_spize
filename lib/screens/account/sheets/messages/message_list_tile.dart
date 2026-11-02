@@ -2,10 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/constants.dart';
-import '../../../models/contact_message/contact_message.dart';
-import '../../../theme/extensions.dart';
-import '../../../util/date_time.dart';
+import '../../../../constants/constants.dart';
+import '../../../../models/contact_message/contact_message.dart';
+import '../../../../theme/extensions.dart';
+import '../../../../util/date_time.dart';
 
 class MessageListTile extends StatelessWidget {
   final ContactMessage message;

@@ -4,15 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/constants.dart';
-import '../../../constants/durations.dart';
-import '../../../models/contact_message/contact_message.dart';
-import '../../../theme/extensions.dart';
-import '../../../util/date_time.dart';
-import '../../../util/email.dart';
-import '../../../util/spacing.dart';
-import '../../../widgets/text_field_widget.dart';
-import '../widgets/view_message_list_tile.dart';
+import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
+import '../../../../models/contact_message/contact_message.dart';
+import '../../../../theme/extensions.dart';
+import '../../../../util/date_time.dart';
+import '../../../../util/email.dart';
+import '../../../../util/spacing.dart';
+import '../../../../widgets/text_field_widget.dart';
+import 'view_message_list_tile.dart';
 
 class ViewMessageSheet extends StatelessWidget {
   final ContactMessage message;

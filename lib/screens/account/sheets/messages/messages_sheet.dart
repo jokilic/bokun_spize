@@ -5,17 +5,17 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../constants/constants.dart';
-import '../../../constants/durations.dart';
-import '../../../models/contact_message/contact_message.dart';
-import '../../../services/firebase_service.dart';
-import '../../../theme/extensions.dart';
-import '../../../util/dependencies.dart';
-import '../../../util/snackbars.dart';
-import '../../../util/spacing.dart';
-import '../../../widgets/blurred_modal_bottom_sheet.dart';
-import '../widgets/message_list_tile.dart';
-import '../widgets/messages_empty.dart';
+import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
+import '../../../../models/contact_message/contact_message.dart';
+import '../../../../services/firebase_service.dart';
+import '../../../../theme/extensions.dart';
+import '../../../../util/dependencies.dart';
+import '../../../../util/snackbars.dart';
+import '../../../../util/spacing.dart';
+import '../../../../widgets/blurred_modal_bottom_sheet.dart';
+import 'message_list_tile.dart';
+import 'messages_empty.dart';
 import 'view_message_sheet.dart';
 
 class MessagesSheet extends WatchingStatefulWidget {

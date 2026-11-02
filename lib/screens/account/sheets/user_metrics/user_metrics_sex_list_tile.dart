@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/constants.dart';
-import '../../../theme/extensions.dart';
+import '../../../../constants/constants.dart';
+import '../../../../theme/extensions.dart';
 
 class UserMetricsSexListTile extends StatelessWidget {
   final Function() onPressed;

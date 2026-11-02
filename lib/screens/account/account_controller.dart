@@ -20,9 +20,9 @@ import 'sheets/account_delete_sheet.dart';
 import 'sheets/account_name_sheet.dart';
 import 'sheets/contact_sheet.dart';
 import 'sheets/language_sheet.dart';
-import 'sheets/messages_sheet.dart';
+import 'sheets/messages/messages_sheet.dart';
 import 'sheets/theme_sheet.dart';
-import 'sheets/user_metrics_sheet.dart';
+import 'sheets/user_metrics/user_metrics_sheet.dart';
 
 enum ThemeEnum {
   light,

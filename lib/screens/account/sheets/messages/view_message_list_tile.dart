@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
-import '../../../constants/constants.dart';
-import '../../../constants/durations.dart';
-import '../../../theme/extensions.dart';
+import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
+import '../../../../theme/extensions.dart';
 
 class ViewMessageListTile extends StatelessWidget {
   final Duration animationDelay;

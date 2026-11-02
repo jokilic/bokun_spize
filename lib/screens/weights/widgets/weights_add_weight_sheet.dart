@@ -51,6 +51,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   @override
   void initState() {
     super.initState();
+
     rulerController = ScrollController(
       initialScrollOffset: selectedIndex * rulerItemExtent,
     );
