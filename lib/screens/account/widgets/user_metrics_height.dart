@@ -92,89 +92,92 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      ///
-      /// HEIGHT
-      ///
-      Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: selectedHeight.toStringAsFixed(0),
-            ),
-            const WidgetSpan(
-              child: SizedBox(width: 4),
-            ),
-            TextSpan(
-              text: 'cm',
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: context.colors.text.withValues(alpha: 0.7),
-              ),
-            ),
-          ],
-        ),
-        style: TextStyle(
-          fontFamily: 'Epilogue',
-          fontSize: 40,
-          fontWeight: FontWeight.w900,
-          color: context.colors.text,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      const SizedBox(height: 20),
-
-      ///
-      /// HEIGHT PICKER
-      ///
-      SizedBox(
-        height: 80,
-        child: LayoutBuilder(
-          builder: (context, constraints) => Stack(
-            alignment: Alignment.center,
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 32),
+    child: Column(
+      children: [
+        ///
+        /// HEIGHT
+        ///
+        Text.rich(
+          TextSpan(
             children: [
-              NotificationListener<ScrollNotification>(
-                onNotification: (notification) {
-                  if (notification is ScrollUpdateNotification) {
-                    updateSelectedHeight();
-                  }
-                  if (notification is ScrollEndNotification) {
-                    settleRuler();
-                  }
-
-                  return false;
-                },
-                child: ListView.builder(
-                  controller: rulerController,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: (constraints.maxWidth - rulerItemExtent) / 2,
-                  ),
-                  itemExtent: rulerItemExtent,
-                  itemCount: rulerItemCount,
-                  itemBuilder: (context, index) => buildRulerMark(index),
-                ),
+              TextSpan(
+                text: selectedHeight.toStringAsFixed(0),
               ),
-
-              IgnorePointer(
-                child: Container(
-                  width: 6,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: context.colors.protein,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
+              const WidgetSpan(
+                child: SizedBox(width: 4),
+              ),
+              TextSpan(
+                text: 'cm',
+                style: TextStyle(
+                  fontFamily: 'Epilogue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: context.colors.text.withValues(alpha: 0.7),
                 ),
               ),
             ],
           ),
+          style: TextStyle(
+            fontFamily: 'Epilogue',
+            fontSize: 40,
+            fontWeight: FontWeight.w900,
+            color: context.colors.text,
+          ),
+          textAlign: TextAlign.center,
         ),
-      ),
-    ],
+        const SizedBox(height: 20),
+
+        ///
+        /// HEIGHT PICKER
+        ///
+        SizedBox(
+          height: 80,
+          child: LayoutBuilder(
+            builder: (context, constraints) => Stack(
+              alignment: Alignment.center,
+              children: [
+                NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification is ScrollUpdateNotification) {
+                      updateSelectedHeight();
+                    }
+                    if (notification is ScrollEndNotification) {
+                      settleRuler();
+                    }
+
+                    return false;
+                  },
+                  child: ListView.builder(
+                    controller: rulerController,
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: (constraints.maxWidth - rulerItemExtent) / 2,
+                    ),
+                    itemExtent: rulerItemExtent,
+                    itemCount: rulerItemCount,
+                    itemBuilder: (context, index) => buildRulerMark(index),
+                  ),
+                ),
+
+                IgnorePointer(
+                  child: Container(
+                    width: 6,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: context.colors.protein,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
   );
 
   /// Builds a major or minor ruler mark for the supplied height index
