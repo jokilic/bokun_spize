@@ -22,7 +22,6 @@ service cloud.firestore {
         'age',
         'height',
         'weight',
-        'activity',
         'gender',
         'dailyCalories',
         'dailyProtein',
@@ -34,7 +33,7 @@ service cloud.firestore {
         && data.keys().hasOnly(['name', 'registeredAt', 'isAdmin'])
         && (!('name' in data) || (data.name is string && data.name.size() <= 200));
 
-      let isMetricsDocument = data.keys().hasAll(metricFields)
+      let isMetricsDocument = data.keys().hasAll(['age', 'height', 'weight', 'gender'])
         && data.keys().hasOnly(metricFields.concat(['name', 'registeredAt', 'isAdmin']))
         && (!('name' in data) || (data.name is string && data.name.size() <= 200))
         && data.age is int
@@ -46,20 +45,13 @@ service cloud.firestore {
         && data.weight is number
         && data.weight > 0
         && data.weight <= 1000
-        && data.activity is int
-        && data.activity >= 0
-        && data.activity <= 4
         && data.gender is int
         && data.gender >= 0
         && data.gender <= 1
-        && data.dailyCalories is number
-        && data.dailyCalories >= 0
-        && data.dailyProtein is number
-        && data.dailyProtein >= 0
-        && data.dailyCarbs is number
-        && data.dailyCarbs >= 0
-        && data.dailyFat is number
-        && data.dailyFat >= 0;
+        && (!('dailyCalories' in data) || data.dailyCalories == null || (data.dailyCalories is number && data.dailyCalories >= 0))
+        && (!('dailyProtein' in data) || data.dailyProtein == null || (data.dailyProtein is number && data.dailyProtein >= 0))
+        && (!('dailyCarbs' in data) || data.dailyCarbs == null || (data.dailyCarbs is number && data.dailyCarbs >= 0))
+        && (!('dailyFat' in data) || data.dailyFat == null || (data.dailyFat is number && data.dailyFat >= 0));
 
       return (!('registeredAt' in data) || data.registeredAt is timestamp)
         && (!('isAdmin' in data) || data.isAdmin is bool)
