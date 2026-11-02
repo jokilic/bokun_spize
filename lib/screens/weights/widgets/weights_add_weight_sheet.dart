@@ -350,6 +350,9 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                           TextSpan(
                             text: selectedWeight.toStringAsFixed(1),
                           ),
+                          const WidgetSpan(
+                            child: SizedBox(width: 4),
+                          ),
                           TextSpan(
                             text: 'kilogram'.tr(),
                             style: TextStyle(

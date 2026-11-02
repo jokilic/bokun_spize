@@ -10,6 +10,7 @@ import '../../../models/user_metrics/sex.dart';
 import '../../../models/user_metrics/user_metrics.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
+import '../widgets/user_metrics_height.dart';
 import '../widgets/user_metrics_sex_list_tile.dart';
 
 // TODO: Update staggered animations like other screens
@@ -410,53 +411,32 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(listTileRadius),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ///
-                                /// TITLE
-                                ///
-                                Text(
-                                  // TODO
-                                  'Visina'.toUpperCase(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 1.2,
-                                    color: context.colors.text.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-
-                                ///
-                                /// HEIGHT
-                                ///
-                                Text(
-                                  'timee',
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.6,
-                                    color: context.colors.text,
-                                  ),
-                                ),
-                              ],
+                          ///
+                          /// TITLE
+                          ///
+                          Text(
+                            // TODO
+                            'Visina'.toUpperCase(),
+                            style: TextStyle(
+                              fontFamily: 'Epilogue',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.2,
+                              color: context.colors.text.withValues(alpha: 0.5),
                             ),
                           ),
+                          const SizedBox(height: 6),
 
                           ///
-                          /// ICON
+                          /// HEIGHT
                           ///
-                          PhosphorIcon(
-                            PhosphorIconsBold.clock,
-                            size: 28,
-                            color: context.colors.protein,
+                          UserMetricsHeight(
+                            // TODO
+                            initialHeight: 150,
+                            onHeightChanged: (newHeight) {},
                           ),
                         ],
                       ),
