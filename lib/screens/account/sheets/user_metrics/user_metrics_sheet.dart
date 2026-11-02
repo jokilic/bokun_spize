@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -31,6 +33,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   double? activeHeight;
   double? activeWeight;
 
+  Timer? ageUpdateTimer;
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +54,41 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   void updateAge(int newAge) => setState(
     () => activeAge = newAge,
   );
+
+  // Updates the age once and keeps updating it while the button is held
+  void startAgeUpdate(int amount) {
+    stopAgeUpdate();
+    changeAge(amount);
+
+    ageUpdateTimer = Timer.periodic(
+      BokunSpizeDurations.animation,
+      (_) => changeAge(amount),
+    );
+  }
+
+  void changeAge(int amount) {
+    final currentAge = activeAge ?? 30;
+    final newAge = (currentAge + amount).clamp(1, 100).toInt();
+
+    if (newAge == currentAge) {
+      stopAgeUpdate();
+      return;
+    }
+
+    HapticFeedback.lightImpact();
+    updateAge(newAge);
+  }
+
+  void stopAgeUpdate() {
+    ageUpdateTimer?.cancel();
+    ageUpdateTimer = null;
+  }
+
+  @override
+  void dispose() {
+    stopAgeUpdate();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -374,53 +413,47 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  onPressed: (activeAge ?? 30) > 1
-                                      ? () {
-                                          HapticFeedback.lightImpact();
-                                          updateAge(
-                                            (activeAge ?? 30) - 1,
-                                          );
-                                        }
-                                      : null,
-                                  icon: const PhosphorIcon(
-                                    PhosphorIconsBold.minus,
-                                    size: 22,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    minimumSize: Size.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    padding: const EdgeInsets.all(10),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                Material(
+                                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: InkWell(
+                                    onTap: (activeAge ?? 30) > 1 ? () {} : null,
+                                    onTapDown: (activeAge ?? 30) > 1 ? (_) => startAgeUpdate(-1) : null,
+                                    onTapUp: (activeAge ?? 30) > 1 ? (_) => stopAgeUpdate() : null,
+                                    onTapCancel: stopAgeUpdate,
+                                    borderRadius: BorderRadius.circular(12),
+                                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    splashColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: PhosphorIcon(
+                                        PhosphorIconsBold.minus,
+                                        size: 22,
+                                        color: (activeAge ?? 30) > 1 ? context.colors.text : context.colors.text.withValues(alpha: 0.3),
+                                      ),
                                     ),
-                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                    foregroundColor: context.colors.text,
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                IconButton(
-                                  onPressed: (activeAge ?? 30) < 100
-                                      ? () {
-                                          HapticFeedback.lightImpact();
-                                          updateAge(
-                                            (activeAge ?? 30) + 1,
-                                          );
-                                        }
-                                      : null,
-                                  icon: const PhosphorIcon(
-                                    PhosphorIconsBold.plus,
-                                    size: 22,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    minimumSize: Size.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    padding: const EdgeInsets.all(10),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                Material(
+                                  color: (activeAge ?? 30) < 100 ? context.colors.carbs : context.colors.carbs.withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: InkWell(
+                                    onTap: (activeAge ?? 30) < 100 ? () {} : null,
+                                    onTapDown: (activeAge ?? 30) < 100 ? (_) => startAgeUpdate(1) : null,
+                                    onTapUp: (activeAge ?? 30) < 100 ? (_) => stopAgeUpdate() : null,
+                                    onTapCancel: stopAgeUpdate,
+                                    borderRadius: BorderRadius.circular(12),
+                                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    splashColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: PhosphorIcon(
+                                        PhosphorIconsBold.plus,
+                                        size: 22,
+                                        color: context.colors.buttonText,
+                                      ),
                                     ),
-                                    backgroundColor: context.colors.carbs,
-                                    foregroundColor: context.colors.buttonText,
                                   ),
                                 ),
                               ],
