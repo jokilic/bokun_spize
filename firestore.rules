@@ -45,9 +45,8 @@ service cloud.firestore {
         && data.weight is number
         && data.weight > 0
         && data.weight <= 1000
-        && data.gender is int
-        && data.gender >= 0
-        && data.gender <= 1
+        && data.gender is string
+        && data.gender in ['male', 'female']
         && (!('dailyCalories' in data) || data.dailyCalories == null || (data.dailyCalories is number && data.dailyCalories >= 0))
         && (!('dailyProtein' in data) || data.dailyProtein == null || (data.dailyProtein is number && data.dailyProtein >= 0))
         && (!('dailyCarbs' in data) || data.dailyCarbs == null || (data.dailyCarbs is number && data.dailyCarbs >= 0))

@@ -88,7 +88,7 @@ class UserMetrics {
       'age': age,
       'height': height,
       'weight': weight,
-      'gender': gender?.index,
+      'gender': gender?.name,
       'dailyCalories': dailyCalories,
       'dailyProtein': dailyProtein,
       'dailyCarbs': dailyCarbs,
