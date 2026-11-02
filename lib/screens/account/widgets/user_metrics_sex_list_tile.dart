@@ -33,7 +33,10 @@ class UserMetricsSexListTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(listTileRadius),
           color: context.colors.listTileBackground.withValues(alpha: 0.5),
         ),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
         child: Row(
           children: [
             ///

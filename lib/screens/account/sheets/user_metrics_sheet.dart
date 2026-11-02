@@ -185,7 +185,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                 ],
                 child: Text(
                   // TODO
-                  'Tvoji podaci korišteni',
+                  'Tvoje mjere',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,
@@ -332,6 +332,109 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
                                 ///
                                 /// TIME
+                                ///
+                                Text(
+                                  'timee',
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.6,
+                                    color: context.colors.text,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          ///
+                          /// ICON
+                          ///
+                          PhosphorIcon(
+                            PhosphorIconsBold.clock,
+                            size: 28,
+                            color: context.colors.protein,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
+
+          ///
+          /// HEIGHT
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 12),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Material(
+                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      // handleOnPressed(
+                      //   onPressed: () => mealController.updateTimeViaPicker(context),
+                      // );
+                    },
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ///
+                                /// TITLE
+                                ///
+                                Text(
+                                  // TODO
+                                  'Visina'.toUpperCase(),
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.2,
+                                    color: context.colors.text.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+
+                                ///
+                                /// HEIGHT
                                 ///
                                 Text(
                                   'timee',
