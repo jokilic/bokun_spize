@@ -36,7 +36,7 @@ class UserMetricsSheet extends StatefulWidget {
 }
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
-  bool get validated => activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
+  var validated = false;
 
   Gender? activeGender;
   int? activeAge;
@@ -55,6 +55,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     activeAge = userMetrics.age;
     activeHeight = userMetrics.height;
     activeWeight = userMetrics.weight;
+
+    updateValidated();
   }
 
   @override
@@ -63,13 +65,27 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     super.dispose();
   }
 
-  void updateGender(Gender newGender) => setState(
-    () => activeGender = newGender,
-  );
+  void updateValidated() => validated = activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
 
-  void updateAge(int newAge) => setState(
-    () => activeAge = newAge,
-  );
+  void updateGender(Gender newGender) => setState(() {
+    activeGender = newGender;
+    updateValidated();
+  });
+
+  void updateAge(int newAge) => setState(() {
+    activeAge = newAge;
+    updateValidated();
+  });
+
+  void updateHeight(double newHeight) => setState(() {
+    activeHeight = newHeight;
+    updateValidated();
+  });
+
+  void updateWeight(double newWeight) => setState(() {
+    activeWeight = newWeight;
+    updateValidated();
+  });
 
   void startAgeUpdate(int amount) {
     stopAgeUpdate();
@@ -99,11 +115,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     ageUpdateTimer = null;
   }
 
-  void onSavePressed({required bool validated}) {
-    if (!validated) {
-      return;
-    }
-
+  void onSavePressed() {
     widget.onSavePressed(
       newGender: activeGender!,
       newAge: activeAge!,
@@ -578,8 +590,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             ///
                             UserMetricsHeight(
                               initialHeight: currentHeight,
-                              // TODO
-                              onHeightChanged: (newHeight) {},
+                              onHeightChanged: updateHeight,
                             ),
                           ],
                         ),
@@ -655,8 +666,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             ///
                             UserMetricsWeight(
                               initialWeight: currentWeight,
-                              // TODO
-                              onWeightChanged: (newWeight) {},
+                              onWeightChanged: updateWeight,
                             ),
                           ],
                         ),
@@ -693,11 +703,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: validated
-                          ? () => onSavePressed(
-                              validated: validated,
-                            )
-                          : null,
+                      onPressed: validated ? onSavePressed : null,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
