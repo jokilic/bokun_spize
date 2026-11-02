@@ -131,7 +131,7 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
       /// HEIGHT PICKER
       ///
       SizedBox(
-        height: 120,
+        height: 80,
         child: LayoutBuilder(
           builder: (context, constraints) => Stack(
             alignment: Alignment.center,
@@ -163,7 +163,7 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
               IgnorePointer(
                 child: Container(
                   width: 6,
-                  height: 96,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: context.colors.protein,
                     borderRadius: BorderRadius.circular(100),
@@ -192,12 +192,12 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 80,
+          height: 56,
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               width: isMajorMark ? 3 : 2,
-              height: isMajorMark ? 48 : 16,
+              height: isMajorMark ? 24 : 12,
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(100),
@@ -205,9 +205,9 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         SizedBox(
-          height: 20,
+          height: 16,
           child: isMajorMark
               ? OverflowBox(
                   minWidth: 48,

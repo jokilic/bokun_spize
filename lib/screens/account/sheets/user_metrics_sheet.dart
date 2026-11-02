@@ -428,7 +428,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                               color: context.colors.text.withValues(alpha: 0.5),
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 12),
 
                           ///
                           /// HEIGHT
