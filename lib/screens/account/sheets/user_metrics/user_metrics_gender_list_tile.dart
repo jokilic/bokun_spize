@@ -23,10 +23,10 @@ class UserMetricsGenderListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Material(
     color: Colors.transparent,
-    borderRadius: BorderRadius.circular(listTileRadius),
+    borderRadius: BorderRadius.circular(20),
     child: InkWell(
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(listTileRadius),
+      borderRadius: BorderRadius.circular(20),
       highlightColor: isActive ? primaryColor : context.colors.listTileBackground.withValues(alpha: 0.5),
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
@@ -35,12 +35,12 @@ class UserMetricsGenderListTile extends StatelessWidget {
         duration: BokunSpizeDurations.animation,
         curve: Curves.easeIn,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(listTileRadius),
+          borderRadius: BorderRadius.circular(20),
           color: isActive ? primaryColor : context.colors.listTileBackground.withValues(alpha: 0.5),
         ),
         padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
+          horizontal: 16,
+          vertical: 12,
         ),
         child: Row(
           children: [

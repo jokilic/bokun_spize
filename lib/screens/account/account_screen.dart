@@ -10,6 +10,7 @@ import 'package:watch_it/watch_it.dart';
 import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
+import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
@@ -72,6 +73,13 @@ class _AccountScreenState extends State<AccountScreen> {
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
       (firebaseService) => firebaseService.listenToUserMetrics(),
     ).data;
+
+    /// Listens to the latest `weightTrack` from [Firebase]
+    final lastWeightTrack = watchStream<FirebaseService, List<WeightTrack>?>(
+      (firebaseService) => firebaseService.listenToLatestWeightTracks(
+        pageSize: 1,
+      ),
+    ).data?.firstOrNull;
 
     final email = firebaseService.userEmail;
     final name = userMetrics?.name;
@@ -143,6 +151,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   accountController.openUserMetricsSheet(
                     context,
                     userMetrics: userMetrics,
+                    lastWeightTrack: lastWeightTrack,
                   );
                 },
                 icon: PhosphorIconsBold.personSimple,

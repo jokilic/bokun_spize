@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../models/contact_message/contact_message.dart';
 import '../../models/user_metrics/user_metrics.dart';
+import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
 import '../../util/app_version.dart';
@@ -76,10 +77,12 @@ class AccountController extends ValueNotifier<SettingsValues> {
   Future<void> openUserMetricsSheet(
     BuildContext context, {
     required UserMetrics userMetrics,
+    required WeightTrack? lastWeightTrack,
   }) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (context) => UserMetricsSheet(
       passedUserMetrics: userMetrics,
+      lastWeightTrack: lastWeightTrack,
       onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) => firebase.updateUserMetrics(
         newUserMetrics: userMetrics.copyWith(
           age: newAge,

@@ -8,6 +8,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../models/user_metrics/user_metrics.dart';
+import '../../../../models/weight_track/weight_track.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
 import 'user_metrics_gender_list_tile.dart';
@@ -18,6 +19,7 @@ import 'user_metrics_weight.dart';
 
 class UserMetricsSheet extends StatefulWidget {
   final UserMetrics passedUserMetrics;
+  final WeightTrack? lastWeightTrack;
   final Function({
     required Gender newGender,
     required int newAge,
@@ -28,6 +30,7 @@ class UserMetricsSheet extends StatefulWidget {
 
   const UserMetricsSheet({
     required this.passedUserMetrics,
+    required this.lastWeightTrack,
     required this.onSavePressed,
   });
 
@@ -59,7 +62,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
     activeAge = userMetrics.age ?? defaultAge;
     activeHeight = userMetrics.height ?? defaultHeight;
-    activeWeight = userMetrics.weight ?? defaultWeight;
+    activeWeight = userMetrics.weight ?? widget.lastWeightTrack?.weight ?? defaultWeight;
 
     if (userMetrics.gender != null) {
       WidgetsBinding.instance.addPostFrameCallback(
