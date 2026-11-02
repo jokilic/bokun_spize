@@ -81,7 +81,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
     builder: (context) => UserMetricsSheet(
       passedUserMetrics: userMetrics,
       onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) {
-        // TODO: Update with new values
+        // TODO: Trigger Firebase which will save these values into `UserMetrics`
       },
     ),
   );

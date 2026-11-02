@@ -36,6 +36,10 @@ class UserMetricsSheet extends StatefulWidget {
 }
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
+  final defaultAge = 30;
+  final defaultHeight = 180.0;
+  final defaultWeight = 75.0;
+
   var validated = false;
 
   Color? activeColor;
@@ -54,9 +58,9 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     final userMetrics = widget.passedUserMetrics;
 
     activeGender = userMetrics.gender;
-    activeAge = userMetrics.age;
-    activeHeight = userMetrics.height;
-    activeWeight = userMetrics.weight;
+    activeAge = userMetrics.age ?? defaultAge;
+    activeHeight = userMetrics.height ?? defaultHeight;
+    activeWeight = userMetrics.weight ?? defaultWeight;
 
     updateValidated();
   }
@@ -67,10 +71,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     super.dispose();
   }
 
-  void updateValidated() {
-    validated = activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
-    print('Validated -> $validated');
-  }
+  void updateValidated() => validated = activeGender != null && activeAge != null && activeHeight != null && activeWeight != null;
 
   void updateGender(Gender newGender) => setState(() {
     activeGender = newGender;
@@ -104,7 +105,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   }
 
   void changeAge(int amount) {
-    final currentAge = activeAge ?? 30;
+    final currentAge = activeAge ?? defaultAge;
     final newAge = (currentAge + amount).clamp(1, 100).toInt();
 
     if (newAge == currentAge) {
@@ -134,9 +135,9 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final currentAge = activeAge ?? 30;
-    final currentHeight = activeHeight ?? 180;
-    final currentWeight = activeWeight ?? 75.0;
+    final currentAge = activeAge ?? defaultAge;
+    final currentHeight = activeHeight ?? defaultHeight;
+    final currentWeight = activeWeight ?? defaultWeight;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),

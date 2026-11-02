@@ -49,7 +49,11 @@ class UserMetricsWeightState extends State<UserMetricsWeight> {
   }
 
   void updateSelectedWeight() {
-    final index = (rulerController.offset / rulerItemExtent).round().clamp(0, rulerItemCount - 1);
+    final index = (rulerController.offset / rulerItemExtent).round().clamp(
+      0,
+      rulerItemCount - 1,
+    );
+
     final newWeight = ((minimumWeight * 10) + index).round() / 10;
 
     if (newWeight.toStringAsFixed(1) == selectedWeight.toStringAsFixed(1)) {
@@ -59,6 +63,8 @@ class UserMetricsWeightState extends State<UserMetricsWeight> {
     setState(
       () => selectedWeight = newWeight,
     );
+
+    widget.onWeightChanged(newWeight);
   }
 
   void settleRuler() {
