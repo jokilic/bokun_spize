@@ -27,9 +27,9 @@ class UserMetricsSheet extends StatefulWidget {
 
 class _UserMetricsSheetState extends State<UserMetricsSheet> {
   Sex? activeSex;
-  int? age;
-  double? height;
-  double? weight;
+  int? activeAge;
+  double? activeHeight;
+  double? activeWeight;
 
   @override
   void initState() {
@@ -38,13 +38,17 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     final userMetrics = widget.passedUserMetrics;
 
     activeSex = userMetrics.sex;
-    age = userMetrics.age;
-    height = userMetrics.height;
-    weight = userMetrics.weight;
+    activeAge = userMetrics.age;
+    activeHeight = userMetrics.height;
+    activeWeight = userMetrics.weight;
   }
 
   void updateSex(Sex newSex) => setState(
     () => activeSex = newSex,
+  );
+
+  void updateAge(int newAge) => setState(
+    () => activeAge = newAge,
   );
 
   @override
@@ -327,7 +331,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: age?.toStringAsFixed(0) ?? 30.toStringAsFixed(0),
+                                        text: activeAge?.toStringAsFixed(0) ?? 30.toStringAsFixed(0),
                                       ),
                                       const WidgetSpan(
                                         child: SizedBox(width: 4),
@@ -358,7 +362,70 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           ///
                           /// BUTTONS
                           ///
-                          // TODO: Two circular buttons here - minus & plus
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: context.colors.scaffoldBackground,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: (activeAge ?? 30) > 1
+                                      ? () {
+                                          HapticFeedback.lightImpact();
+                                          updateAge(
+                                            (activeAge ?? 30) - 1,
+                                          );
+                                        }
+                                      : null,
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.minus,
+                                    size: 22,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    minimumSize: Size.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    padding: const EdgeInsets.all(10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    foregroundColor: context.colors.text,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                IconButton(
+                                  onPressed: (activeAge ?? 30) < 100
+                                      ? () {
+                                          HapticFeedback.lightImpact();
+                                          updateAge(
+                                            (activeAge ?? 30) + 1,
+                                          );
+                                        }
+                                      : null,
+                                  icon: const PhosphorIcon(
+                                    PhosphorIconsBold.plus,
+                                    size: 22,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    minimumSize: Size.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    padding: const EdgeInsets.all(10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    backgroundColor: context.colors.carbs,
+                                    foregroundColor: context.colors.buttonText,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -432,7 +499,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           /// HEIGHT
                           ///
                           UserMetricsHeight(
-                            initialHeight: height ?? 180,
+                            initialHeight: activeHeight ?? 180,
                             // TODO
                             onHeightChanged: (newHeight) {},
                           ),
@@ -509,7 +576,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                           /// HEIGHT
                           ///
                           UserMetricsWeight(
-                            initialWeight: weight ?? 75.0,
+                            initialWeight: activeWeight ?? 75.0,
                             // TODO
                             onWeightChanged: (newWeight) {},
                           ),
