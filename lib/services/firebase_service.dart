@@ -1031,7 +1031,7 @@ class FirebaseService {
   }
 
   /// Deletes `userMetrics` from the current user's document in [Firebase]
-  Future<bool> deleteUserMetrics() async {
+  Future<bool> deleteUserMetrics({required bool onlyBodyMetrics}) async {
     try {
       final user = auth.currentUser;
 
@@ -1041,7 +1041,16 @@ class FirebaseService {
 
       final document = firestore.collection('users').doc(user.uid);
 
-      await document.delete();
+      if (onlyBodyMetrics) {
+        await document.update({
+          'age': FieldValue.delete(),
+          'gender': FieldValue.delete(),
+          'height': FieldValue.delete(),
+          'weight': FieldValue.delete(),
+        });
+      } else {
+        await document.delete();
+      }
 
       return true;
     } catch (error) {

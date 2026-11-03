@@ -91,9 +91,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
           weight: newWeight,
         ),
       ),
-      onDeletePressed: () {
-        // TODO: Delete age, gender, height and weight from Firebase
-      },
+      onDeletePressed: () => firebase.deleteUserMetrics(
+        onlyBodyMetrics: true,
+      ),
     ),
   );
 
