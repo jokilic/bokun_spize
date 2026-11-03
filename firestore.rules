@@ -57,6 +57,14 @@ service cloud.firestore {
         && (isRegistrationDocument || isMetricsDocument);
     }
 
+    // Allow removing all body metrics without changing any other user data
+    function isBodyMetricsDeletion() {
+      let bodyMetricFields = ['age', 'height', 'weight', 'gender'];
+
+      return !request.resource.data.keys().hasAny(bodyMetricFields)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(bodyMetricFields);
+    }
+
     function isValidNutrition(data) {
       return data is map
         && data.keys().hasAll(['calories', 'protein', 'carbs', 'fat'])
@@ -162,7 +170,7 @@ service cloud.firestore {
         && isValidUserDocument(request.resource.data);
       allow update: if isOwner(userId)
         && request.resource.data.get('isAdmin', false) == resource.data.get('isAdmin', false)
-        && isValidUserDocument(request.resource.data);
+        && (isValidUserDocument(request.resource.data) || isBodyMetricsDeletion());
 
       match /meals/{mealId} {
         allow read, delete: if isOwner(userId);
