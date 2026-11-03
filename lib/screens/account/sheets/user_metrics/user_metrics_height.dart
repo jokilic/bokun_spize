@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
+import '../../../../util/height.dart';
 
 class UserMetricsHeight extends StatefulWidget {
   final double initialHeight;
@@ -20,11 +21,6 @@ class UserMetricsHeight extends StatefulWidget {
 }
 
 class UserMetricsHeightState extends State<UserMetricsHeight> {
-  static const minimumHeight = 100.0;
-  static const maximumHeight = 225.0;
-  static const heightStep = 1.0;
-  static const rulerItemExtent = 8.0;
-
   late final ScrollController rulerController;
   late var selectedHeight = widget.initialHeight;
 
@@ -49,16 +45,6 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
   void dispose() {
     rulerController.dispose();
     super.dispose();
-  }
-
-  double normalizedHeight(double height) {
-    final clampedHeight = height.clamp(
-      minimumHeight,
-      maximumHeight,
-    );
-    final stepIndex = ((clampedHeight - minimumHeight) / heightStep).round();
-
-    return minimumHeight + (stepIndex * heightStep);
   }
 
   void updateSelectedHeight() {

@@ -16,6 +16,7 @@ import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
 import '../../util/dependencies.dart';
+import '../../util/height.dart';
 import '../../util/snackbars.dart';
 import '../../util/spacing.dart';
 import '../../widgets/navigation_bar_widget.dart';
@@ -84,6 +85,8 @@ class _AccountScreenState extends State<AccountScreen> {
     final email = firebaseService.userEmail;
     final name = userMetrics?.name;
     final userPhoto = firebaseService.userPhoto;
+
+    final hasUserMetrics = userMetrics?.age != null && userMetrics?.height != null && userMetrics?.weight != null && userMetrics?.gender != null;
 
     return Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
@@ -158,6 +161,60 @@ class _AccountScreenState extends State<AccountScreen> {
                 iconBackgroundColor: context.colors.carbs,
                 title: 'accountUserMetricsTitle'.tr(),
                 subtitle: 'accountUserMetricsSubtitle'.tr(),
+                customSubtitle: hasUserMetrics
+                    ? Text.rich(
+                        ///
+                        /// HEIGHT
+                        ///
+                        TextSpan(
+                          text:
+                              // TODO
+                              '${normalizedHeight(
+                                userMetrics!.height!,
+                              ).toStringAsFixed(0)}cm',
+                          children: [
+                            WidgetSpan(
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.dotOutline,
+                                size: 16,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+
+                            ///
+                            /// WEIGHT
+                            ///
+                            TextSpan(
+                              // TODO
+                              text: '${userMetrics.weight!.toStringAsFixed(1)}kg',
+                            ),
+                            WidgetSpan(
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.dotOutline,
+                                size: 16,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+
+                            ///
+                            /// AGE
+                            ///
+                            TextSpan(
+                              // TODO
+                              text: '${userMetrics.age!.toStringAsFixed(0)}y',
+                            ),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: context.colors.text.withValues(alpha: 0.7),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : null,
               ),
 
               ///

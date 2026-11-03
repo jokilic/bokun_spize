@@ -13,6 +13,7 @@ class AccountListTile extends StatelessWidget {
   final Color iconBackgroundColor;
   final String title;
   final String subtitle;
+  final Widget? customSubtitle;
 
   const AccountListTile({
     required this.onPressed,
@@ -20,6 +21,7 @@ class AccountListTile extends StatelessWidget {
     required this.iconBackgroundColor,
     required this.title,
     required this.subtitle,
+    this.customSubtitle,
     this.animationDelay = Duration.zero,
   });
 
@@ -112,17 +114,20 @@ class AccountListTile extends StatelessWidget {
                         ///
                         /// SUBTITLE
                         ///
-                        Text(
-                          subtitle,
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.text.withValues(alpha: 0.7),
+                        if (customSubtitle != null)
+                          customSubtitle!
+                        else
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: context.colors.text.withValues(alpha: 0.7),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
                       ],
                     ),
                   ),

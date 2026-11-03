@@ -27,11 +27,13 @@ class UserMetricsSheet extends StatefulWidget {
     required double newWeight,
   })
   onSavePressed;
+  final Function()? onDeletePressed;
 
   const UserMetricsSheet({
     required this.passedUserMetrics,
     required this.lastWeightTrack,
     required this.onSavePressed,
+    required this.onDeletePressed,
   });
 
   @override
@@ -44,6 +46,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   final defaultWeight = 75.0;
 
   var validated = false;
+
+  late final bool passedUserMetricsExist;
 
   Color? activeColor;
 
@@ -71,6 +75,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
         ),
       );
     }
+
+    passedUserMetricsExist = userMetrics.age != null && userMetrics.height != null && userMetrics.weight != null && userMetrics.gender != null;
 
     updateValidated();
   }
@@ -143,6 +149,13 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     Navigator.of(context).pop();
   }
 
+  void onDeletePressed() {
+    if (widget.onDeletePressed != null) {
+      widget.onDeletePressed!();
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentAge = activeAge ?? defaultAge;
@@ -186,15 +199,16 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ///
-                      /// PLACEHOLDER BUTTON
+                      /// DELETE BUTTON
                       ///
                       Opacity(
-                        opacity: 0,
+                        opacity: passedUserMetricsExist ? 1 : 0,
                         child: IgnorePointer(
+                          ignoring: !passedUserMetricsExist,
                           child: IconButton(
-                            onPressed: null,
+                            onPressed: onDeletePressed,
                             icon: const PhosphorIcon(
-                              PhosphorIconsBold.x,
+                              PhosphorIconsBold.trash,
                               size: 22,
                             ),
                             style: IconButton.styleFrom(
@@ -204,8 +218,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(100),
                               ),
-                              backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                              foregroundColor: context.colors.text,
+                              backgroundColor: context.colors.delete,
+                              foregroundColor: context.colors.listTileBackground,
                             ),
                           ),
                         ),

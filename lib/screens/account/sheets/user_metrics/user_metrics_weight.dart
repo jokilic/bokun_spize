@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
+import '../../../../util/weight.dart';
 
 class UserMetricsWeight extends StatefulWidget {
   final double initialWeight;
@@ -21,11 +22,6 @@ class UserMetricsWeight extends StatefulWidget {
 }
 
 class UserMetricsWeightState extends State<UserMetricsWeight> {
-  static const minimumWeight = 40.0;
-  static const maximumWeight = 200.0;
-  static const weightStep = 0.1;
-  static const rulerItemExtent = 8.0;
-
   late final ScrollController rulerController;
   late var selectedWeight = widget.initialWeight;
 
