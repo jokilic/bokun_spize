@@ -15,3 +15,10 @@ typedef ReauthenticationResult = ({bool success, String? appleAuthorizationCode}
 typedef CalendarDays = ({int weightsCalendarDays, int walksCalendarDays});
 
 typedef SettingsValues = ({ThemeEnum theme});
+
+typedef DailyMacroValues = ({
+  double calories,
+  double protein,
+  double carbs,
+  double fat,
+});

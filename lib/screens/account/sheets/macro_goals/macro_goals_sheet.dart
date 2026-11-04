@@ -6,32 +6,21 @@ import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
+import '../../../../util/typedefs.dart';
 
 // TODO: Update staggered animations like other screens
 
 class MacroGoalsSheet extends StatefulWidget {
   final Color activeColor;
   final double bmr;
-  final double initialDailyCalories;
-  final double initialDailyProtein;
-  final double initialDailyCarbs;
-  final double initialDailyFat;
-  final Function({
-    required double dailyCalories,
-    required double dailyProtein,
-    required double dailyCarbs,
-    required double dailyFat,
-  })
-  onSavePressed;
+  final DailyMacroValues initialDailyMacroValues;
+  final Function(DailyMacroValues dailyMacroValues) onSavePressed;
   final Function()? onDeletePressed;
 
   const MacroGoalsSheet({
     required this.activeColor,
     required this.bmr,
-    required this.initialDailyCalories,
-    required this.initialDailyProtein,
-    required this.initialDailyCarbs,
-    required this.initialDailyFat,
+    required this.initialDailyMacroValues,
     required this.onSavePressed,
     required this.onDeletePressed,
   });

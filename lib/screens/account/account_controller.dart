@@ -126,31 +126,27 @@ class AccountController extends ValueNotifier<SettingsValues> {
     required UserMetrics userMetrics,
   }) async {
     final bmr = userMetrics.bmr ?? 0;
-    final dailyCalories = userMetrics.dailyCalories ?? userMetrics.tdee ?? bmr;
+    final dailyMacroValues = userMetrics.dailyMacroValues;
 
-    // TODO: Depending on BMR and TDEE, I want the daily macro values to be calculated on device (put logic in `user_metrics.dart`). We pass over those calculated values as initial and then the user can tweak them...
-
-    // final dailyProtein = userMetrics.dailyProtein ?? 150;
-    // final dailyCarbs = userMetrics.dailyCarbs ?? 250;
-    // final dailyFat = userMetrics.dailyFat ?? 70;
+    if (dailyMacroValues == null) {
+      // TODO: Show error snackbar
+    }
 
     await showBlurredModalBottomSheet(
       context: context,
       builder: (context) => MacroGoalsSheet(
         activeColor: userMetrics.gender == Gender.female ? context.colors.fat : context.colors.carbs,
         bmr: bmr,
-        initialDailyCalories: dailyCalories,
-        initialDailyProtein: dailyProtein,
-        initialDailyCarbs: dailyCarbs,
-        initialDailyFat: dailyFat,
-        onSavePressed: ({required dailyCalories, required dailyProtein, required dailyCarbs, required dailyFat}) => firebase.updateUserMetrics(
+        initialDailyMacroValues: dailyMacroValues!,
+        onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
           newUserMetrics: userMetrics.copyWith(
-            dailyCalories: dailyCalories,
-            dailyProtein: dailyProtein,
-            dailyCarbs: dailyCarbs,
-            dailyFat: dailyFat,
+            dailyCalories: dailyMacroValues.calories,
+            dailyProtein: dailyMacroValues.protein,
+            dailyCarbs: dailyMacroValues.carbs,
+            dailyFat: dailyMacroValues.fat,
           ),
         ),
+        // TODO: Why is this null?
         onDeletePressed: null,
       ),
     );

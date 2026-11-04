@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../util/typedefs.dart';
+
 enum Gender {
   male,
   female,
@@ -156,5 +158,20 @@ class UserMetrics {
     }
 
     return basalMetabolicRate * 1.2;
+  }
+
+  DailyMacroValues? get dailyMacroValues {
+    final calories = tdee?.roundToDouble();
+
+    if (calories == null) {
+      return null;
+    }
+
+    return (
+      calories: calories,
+      protein: (calories * 0.3 / 4).roundToDouble(),
+      carbs: (calories * 0.4 / 4).roundToDouble(),
+      fat: (calories * 0.3 / 9).roundToDouble(),
+    );
   }
 }
