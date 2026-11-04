@@ -20,7 +20,7 @@ import 'user_metrics_weight.dart';
 class UserMetricsSheet extends StatefulWidget {
   final UserMetrics passedUserMetrics;
   final WeightTrack? lastWeightTrack;
-  final Function({
+  final Future<UserMetrics?> Function({
     required Gender newGender,
     required int newAge,
     required double newHeight,
@@ -138,15 +138,26 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     ageUpdateTimer = null;
   }
 
-  void onSavePressed() {
-    widget.onSavePressed(
+  Future<void> onSavePressed() async {
+    setState(() => validated = false);
+
+    final updatedUserMetrics = await widget.onSavePressed(
       newGender: activeGender!,
       newAge: activeAge!,
       newHeight: activeHeight!,
       newWeight: activeWeight!,
     );
 
-    Navigator.of(context).pop();
+    if (!mounted) {
+      return;
+    }
+
+    if (updatedUserMetrics == null) {
+      setState(updateValidated);
+      return;
+    }
+
+    Navigator.of(context).pop(updatedUserMetrics);
   }
 
   void onDeletePressed() {

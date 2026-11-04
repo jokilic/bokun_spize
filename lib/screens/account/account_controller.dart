@@ -11,6 +11,7 @@ import '../../models/user_metrics/user_metrics.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
 import '../../services/theme_service.dart';
+import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
 import '../../util/device_info.dart';
 import '../../util/snackbars.dart';
@@ -21,6 +22,7 @@ import 'sheets/account_delete_sheet.dart';
 import 'sheets/account_name_sheet.dart';
 import 'sheets/contact_sheet.dart';
 import 'sheets/language_sheet.dart';
+import 'sheets/macro_goals/macro_goals_sheet.dart';
 import 'sheets/messages/messages_sheet.dart';
 import 'sheets/theme_sheet.dart';
 import 'sheets/user_metrics/user_metrics_sheet.dart';
@@ -78,24 +80,81 @@ class AccountController extends ValueNotifier<SettingsValues> {
     BuildContext context, {
     required UserMetrics userMetrics,
     required WeightTrack? lastWeightTrack,
-  }) async => await showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => UserMetricsSheet(
-      passedUserMetrics: userMetrics,
-      lastWeightTrack: lastWeightTrack,
-      onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) => firebase.updateUserMetrics(
-        newUserMetrics: userMetrics.copyWith(
-          age: newAge,
-          gender: newGender,
-          height: newHeight,
-          weight: newWeight,
+  }) async {
+    final updatedUserMetrics = await showBlurredModalBottomSheet<UserMetrics>(
+      context: context,
+      builder: (context) => UserMetricsSheet(
+        passedUserMetrics: userMetrics,
+        lastWeightTrack: lastWeightTrack,
+        onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) async {
+          /// Calculate `UserMetrics` with new values
+          final newUserMetrics = userMetrics.copyWith(
+            age: newAge,
+            gender: newGender,
+            height: newHeight,
+            weight: newWeight,
+          );
+
+          /// Trigger updating in [Firebase]
+          final success = await firebase.updateUserMetrics(
+            newUserMetrics: newUserMetrics,
+          );
+
+          return success ? newUserMetrics : null;
+        },
+        onDeletePressed: () => firebase.deleteUserMetrics(
+          onlyBodyMetrics: true,
+          onlyMacroGoals: false,
         ),
       ),
-      onDeletePressed: () => firebase.deleteUserMetrics(
-        onlyBodyMetrics: true,
+    );
+
+    if (updatedUserMetrics == null || !context.mounted) {
+      return;
+    }
+
+    /// Updating was successful, open [MacroGoalsSheet] with proper `UserMetrics`
+    await openMacroGoalsSheet(
+      context,
+      userMetrics: updatedUserMetrics,
+    );
+  }
+
+  /// Opens [MacroGoalsSheet] with saved or calculated daily goals
+  Future<void> openMacroGoalsSheet(
+    BuildContext context, {
+    required UserMetrics userMetrics,
+  }) async {
+    final bmr = userMetrics.bmr ?? 0;
+    final dailyCalories = userMetrics.dailyCalories ?? userMetrics.tdee ?? bmr;
+
+    // TODO: Depending on BMR and TDEE, I want the daily macro values to be calculated on device (put logic in `user_metrics.dart`). We pass over those calculated values as initial and then the user can tweak them...
+
+    // final dailyProtein = userMetrics.dailyProtein ?? 150;
+    // final dailyCarbs = userMetrics.dailyCarbs ?? 250;
+    // final dailyFat = userMetrics.dailyFat ?? 70;
+
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (context) => MacroGoalsSheet(
+        activeColor: userMetrics.gender == Gender.female ? context.colors.fat : context.colors.carbs,
+        bmr: bmr,
+        initialDailyCalories: dailyCalories,
+        initialDailyProtein: dailyProtein,
+        initialDailyCarbs: dailyCarbs,
+        initialDailyFat: dailyFat,
+        onSavePressed: ({required dailyCalories, required dailyProtein, required dailyCarbs, required dailyFat}) => firebase.updateUserMetrics(
+          newUserMetrics: userMetrics.copyWith(
+            dailyCalories: dailyCalories,
+            dailyProtein: dailyProtein,
+            dailyCarbs: dailyCarbs,
+            dailyFat: dailyFat,
+          ),
+        ),
+        onDeletePressed: null,
       ),
-    ),
-  );
+    );
+  }
 
   /// Opens [ThemeSheet]
   Future<void> openThemeSheet(

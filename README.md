@@ -25,7 +25,7 @@
 ### Firebase
     - [ ] User -> `isAdmin` - Then he can open contact messages
     - [ ] Go through `FirebaseService` and update database rules if necessary
-    - [ ] Firebase App Check
+    - [ ] Firebase App Check - Add to new app & legacy app
     - [ ] Analytics
     - [ ] Crashlytics
     - [ ] Perhaps anonymous sign-in

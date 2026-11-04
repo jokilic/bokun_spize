@@ -1031,7 +1031,10 @@ class FirebaseService {
   }
 
   /// Deletes `userMetrics` from the current user's document in [Firebase]
-  Future<bool> deleteUserMetrics({required bool onlyBodyMetrics}) async {
+  Future<bool> deleteUserMetrics({
+    required bool onlyBodyMetrics,
+    required bool onlyMacroGoals,
+  }) async {
     try {
       final user = auth.currentUser;
 
@@ -1040,6 +1043,8 @@ class FirebaseService {
       }
 
       final document = firestore.collection('users').doc(user.uid);
+
+      // TODO: Implement if `onlyMacroGoals` is true -> Then delete daily values only
 
       if (onlyBodyMetrics) {
         await document.update({
