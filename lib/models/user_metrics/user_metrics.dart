@@ -161,17 +161,23 @@ class UserMetrics {
   }
 
   DailyMacroValues? get dailyMacroValues {
+    final currentWeight = weight;
     final calories = tdee?.roundToDouble();
 
-    if (calories == null) {
+    if (currentWeight == null || calories == null) {
       return null;
     }
 
+    final protein = (currentWeight * 1.6).roundToDouble();
+    final fat = (currentWeight * 0.8).roundToDouble();
+    final remainingCalories = calories - (protein * 4) - (fat * 9);
+    final carbs = remainingCalories > 0 ? (remainingCalories / 4).roundToDouble() : 0.0;
+
     return (
       calories: calories,
-      protein: (calories * 0.3 / 4).roundToDouble(),
-      carbs: (calories * 0.4 / 4).roundToDouble(),
-      fat: (calories * 0.3 / 9).roundToDouble(),
+      protein: protein,
+      carbs: carbs,
+      fat: fat,
     );
   }
 }
