@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,13 @@ Future<void> initializeBeforeAppStart() async {
   /// Initialize [Firebase]
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  /// Initialize [Firebase App Check]
+  await FirebaseAppCheck.instance.activate(
+    // providerWeb: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
   );
 
   /// Initialize services
