@@ -8,9 +8,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/easy_localization_controller.dart';
 import 'package:easy_localization/src/localization.dart';
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -63,18 +65,22 @@ void unRegisterIfNotDisposed<T extends Object>({
 }
 
 /// Initializes app dependencies
-Future<void> initializeBeforeAppStart() async => await Future.wait(
-  [
-    SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp],
-    ),
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-    ),
-    initializeLocalization(),
-    initializeFirebase(),
-  ],
-);
+Future<void> initializeBeforeAppStart() async {
+  await Future.wait(
+    [
+      SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp],
+      ),
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge,
+      ),
+      initializeLocalization(),
+      initializeFirebase(),
+    ],
+  );
+
+  await initializeFirebaseAppCheck();
+}
 
 /// Initialize [EasyLocalization] & return active `locale`
 Future<Locale?> initializeLocalization() async {
@@ -112,6 +118,7 @@ Future<Locale?> initializeLocalization() async {
   }
 }
 
+/// Initializes [Firebase]
 Future<void> initializeFirebase() async {
   if (firebase_core.Firebase.apps.isNotEmpty) {
     return;
@@ -119,6 +126,15 @@ Future<void> initializeFirebase() async {
 
   await firebase_core.Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
+
+/// Initializes [Firebase App Check]
+Future<void> initializeFirebaseAppCheck() async {
+  await FirebaseAppCheck.instance.activate(
+    // providerWeb: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
   );
 }
 
