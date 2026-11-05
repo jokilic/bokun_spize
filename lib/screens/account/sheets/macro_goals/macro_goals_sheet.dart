@@ -312,8 +312,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                 ),
                                 const SizedBox(height: 6),
 
+                                ///
+                                /// BUTTONS & CALORIES
+                                ///
                                 Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     ///
                                     /// INCREMENT
