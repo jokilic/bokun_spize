@@ -20,6 +20,7 @@ import 'user_metrics_weight.dart';
 class UserMetricsSheet extends StatefulWidget {
   final UserMetrics passedUserMetrics;
   final WeightTrack? lastWeightTrack;
+  final bool userMetricsExist;
   final Future<UserMetrics?> Function({
     required Gender newGender,
     required int newAge,
@@ -32,6 +33,7 @@ class UserMetricsSheet extends StatefulWidget {
   const UserMetricsSheet({
     required this.passedUserMetrics,
     required this.lastWeightTrack,
+    required this.userMetricsExist,
     required this.onSavePressed,
     required this.onDeletePressed,
   });
@@ -46,8 +48,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
   final defaultWeight = 75.0;
 
   var validated = false;
-
-  late final bool passedUserMetricsExist;
 
   Color? activeColor;
 
@@ -75,8 +75,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
         ),
       );
     }
-
-    passedUserMetricsExist = userMetrics.age != null && userMetrics.height != null && userMetrics.weight != null && userMetrics.gender != null;
 
     updateValidated();
   }
@@ -213,9 +211,9 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       /// DELETE BUTTON
                       ///
                       Opacity(
-                        opacity: passedUserMetricsExist ? 1 : 0,
+                        opacity: widget.userMetricsExist ? 1 : 0,
                         child: IgnorePointer(
-                          ignoring: !passedUserMetricsExist,
+                          ignoring: !widget.userMetricsExist,
                           child: IconButton(
                             onPressed: onDeletePressed,
                             icon: const PhosphorIcon(

@@ -86,6 +86,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
       builder: (context) => UserMetricsSheet(
         passedUserMetrics: userMetrics,
         lastWeightTrack: lastWeightTrack,
+        // TODO: Update this to check if age, height, weight and gender already existed before
+        userMetricsExist: false,
         onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) async {
           /// Calculate `UserMetrics` with new values
           final newUserMetrics = userMetrics.copyWith(
@@ -145,6 +147,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
         bmr: userMetrics.bmr ?? 0,
         tdee: userMetrics.tdee ?? 0,
         initialDailyMacroValues: dailyMacroValues,
+        // TODO: Update this to check if daily macro values already existed before
+        macroGoalsExist: false,
         onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
           newUserMetrics: userMetrics.copyWith(
             dailyCalories: dailyMacroValues.calories,
