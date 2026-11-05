@@ -30,7 +30,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  calendar_date_picker2: 4.0.0
+  calendar_date_picker2: 3.0.0
   diacritic: 0.1.6
   firebase_ai: 4.0.0
   firebase_app_check: 0.4.9
