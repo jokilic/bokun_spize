@@ -81,13 +81,14 @@ class AccountController extends ValueNotifier<SettingsValues> {
     required UserMetrics userMetrics,
     required WeightTrack? lastWeightTrack,
   }) async {
+    final userMetricsExist = userMetrics.age != null && userMetrics.height != null && userMetrics.weight != null && userMetrics.gender != null;
+
     final updatedUserMetrics = await showBlurredModalBottomSheet<UserMetrics>(
       context: context,
       builder: (context) => UserMetricsSheet(
         passedUserMetrics: userMetrics,
         lastWeightTrack: lastWeightTrack,
-        // TODO: Update this to check if age, height, weight and gender already existed before
-        userMetricsExist: false,
+        userMetricsExist: userMetricsExist,
         onSavePressed: ({required newAge, required newGender, required newHeight, required newWeight}) async {
           /// Calculate `UserMetrics` with new values
           final newUserMetrics = userMetrics.copyWith(
@@ -140,6 +141,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
       return;
     }
 
+    final macroGoalsExist = userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
+
     await showBlurredModalBottomSheet(
       context: context,
       builder: (context) => MacroGoalsSheet(
@@ -147,8 +150,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
         bmr: userMetrics.bmr ?? 0,
         tdee: userMetrics.tdee ?? 0,
         initialDailyMacroValues: dailyMacroValues,
-        // TODO: Update this to check if daily macro values already existed before
-        macroGoalsExist: false,
+        macroGoalsExist: macroGoalsExist,
         onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
           newUserMetrics: userMetrics.copyWith(
             dailyCalories: dailyMacroValues.calories,
