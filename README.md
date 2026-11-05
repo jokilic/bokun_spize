@@ -25,7 +25,12 @@
 ### Firebase
     - [ ] User -> `isAdmin` - Then he can open contact messages
     - [ ] Go through `FirebaseService` and update database rules if necessary
-    - [ ] Firebase App Check - Add to new app & legacy app
+    - [ ] Firebase App Check
+        - [ ] Add the Play App Signing SHA-256
+        - [ ] Change PLAY_RECOGNIZED to Required
+        - [ ] Optionally change LICENSED to Required
+        - [ ] Minimum acceptable device integrity -> Don't explicitly check
+        - [ ] The legacy sideloaded APK will then stop working
     - [ ] Analytics
     - [ ] Crashlytics
     - [ ] Perhaps anonymous sign-in
