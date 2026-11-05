@@ -13,6 +13,7 @@ import '../../../../util/typedefs.dart';
 class MacroGoalsSheet extends StatefulWidget {
   final Color activeColor;
   final double bmr;
+  final double tdee;
   final DailyMacroValues initialDailyMacroValues;
   final Function(DailyMacroValues dailyMacroValues) onSavePressed;
   final Function()? onDeletePressed;
@@ -20,6 +21,7 @@ class MacroGoalsSheet extends StatefulWidget {
   const MacroGoalsSheet({
     required this.activeColor,
     required this.bmr,
+    required this.tdee,
     required this.initialDailyMacroValues,
     required this.onSavePressed,
     required this.onDeletePressed,
@@ -34,24 +36,70 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
 
   late final bool passedMacroGoalsExist;
 
+  double? activeCalories;
+  double? activeProtein;
+  double? activeCarbs;
+  double? activeFat;
+
   @override
   void initState() {
     super.initState();
 
-    final validMacroGoals = widget.initialDailyCalories > 0 && widget.initialDailyProtein > 0 && widget.initialDailyCarbs > 0 && widget.initialDailyFat > 0;
+    final dailyMacroValues = widget.initialDailyMacroValues;
+
+    activeCalories = dailyMacroValues.calories;
+    activeProtein = dailyMacroValues.protein;
+    activeCarbs = dailyMacroValues.carbs;
+    activeFat = dailyMacroValues.fat;
+
+    final validMacroGoals =
+        widget.initialDailyMacroValues.calories > 0 &&
+        widget.initialDailyMacroValues.protein > 0 &&
+        widget.initialDailyMacroValues.carbs > 0 &&
+        widget.initialDailyMacroValues.fat > 0;
 
     passedMacroGoalsExist = widget.onDeletePressed != null && validMacroGoals;
-    validated = widget.bmr > 0 && validMacroGoals;
+
+    updateValidated();
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void updateValidated() => validated = (activeCalories ?? 0) > 0 && (activeProtein ?? 0) > 0 && (activeCarbs ?? 0) > 0 && (activeFat ?? 0) > 0;
+
+  void updateCalories(double newCalories) => setState(() {
+    activeCalories = newCalories;
+    updateValidated();
+  });
+
+  void updateProtein(double newProtein) => setState(() {
+    activeProtein = newProtein;
+    updateValidated();
+  });
+
+  void updateCarbs(double newCarbs) => setState(() {
+    activeCarbs = newCarbs;
+    updateValidated();
+  });
+
+  void updateFat(double newFat) => setState(() {
+    activeFat = newFat;
+    updateValidated();
+  });
 
   /// Saves the currently provided daily macro goals
   void onSavePressed() {
-    widget.onSavePressed(
-      dailyCalories: widget.initialDailyCalories,
-      dailyProtein: widget.initialDailyProtein,
-      dailyCarbs: widget.initialDailyCarbs,
-      dailyFat: widget.initialDailyFat,
+    final newDailyMacroValues = (
+      calories: activeCalories!,
+      protein: activeProtein!,
+      carbs: activeCarbs!,
+      fat: activeFat!,
     );
+
+    widget.onSavePressed(newDailyMacroValues);
 
     Navigator.of(context).pop();
   }
@@ -133,7 +181,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                     Expanded(
                       child: Text(
                         // TODO
-                        'Podaci korisnika',
+                        'Dnevni ciljevi',
                         style: TextStyle(
                           fontFamily: 'Epilogue',
                           fontSize: 26,
@@ -194,7 +242,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                 ],
                 child: Text(
                   // TODO
-                  'Tvoje mjere',
+                  'Količina makronutrijenata',
                   style: TextStyle(
                     fontFamily: 'Epilogue',
                     fontSize: 16,

@@ -157,7 +157,7 @@ class UserMetrics {
       return null;
     }
 
-    return basalMetabolicRate * 1.2;
+    return basalMetabolicRate * 1.55;
   }
 
   DailyMacroValues? get dailyMacroValues {

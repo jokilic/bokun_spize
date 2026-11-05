@@ -125,7 +125,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
     BuildContext context, {
     required UserMetrics userMetrics,
   }) async {
-    final bmr = userMetrics.bmr ?? 0;
     final dailyMacroValues = userMetrics.dailyMacroValues;
 
     if (dailyMacroValues == null) {
@@ -136,7 +135,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
       context: context,
       builder: (context) => MacroGoalsSheet(
         activeColor: userMetrics.gender == Gender.female ? context.colors.fat : context.colors.carbs,
-        bmr: bmr,
+        bmr: userMetrics.bmr ?? 0,
+        tdee: userMetrics.tdee ?? 0,
         initialDailyMacroValues: dailyMacroValues!,
         onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
           newUserMetrics: userMetrics.copyWith(
