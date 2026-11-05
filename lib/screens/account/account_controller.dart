@@ -128,7 +128,14 @@ class AccountController extends ValueNotifier<SettingsValues> {
     final dailyMacroValues = userMetrics.dailyMacroValues;
 
     if (dailyMacroValues == null) {
-      // TODO: Show error snackbar
+      showSnackbar(
+        context,
+        // TODO: Some proper text
+        text: 'entranceErrorUnknown'.tr(),
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+
+      return;
     }
 
     await showBlurredModalBottomSheet(
@@ -137,7 +144,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
         activeColor: userMetrics.gender == Gender.female ? context.colors.fat : context.colors.carbs,
         bmr: userMetrics.bmr ?? 0,
         tdee: userMetrics.tdee ?? 0,
-        initialDailyMacroValues: dailyMacroValues!,
+        initialDailyMacroValues: dailyMacroValues,
         onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
           newUserMetrics: userMetrics.copyWith(
             dailyCalories: dailyMacroValues.calories,
@@ -146,8 +153,10 @@ class AccountController extends ValueNotifier<SettingsValues> {
             dailyFat: dailyMacroValues.fat,
           ),
         ),
-        // TODO: Why is this null?
-        onDeletePressed: null,
+        onDeletePressed: () => firebase.deleteUserMetrics(
+          onlyBodyMetrics: false,
+          onlyMacroGoals: true,
+        ),
       ),
     );
   }
