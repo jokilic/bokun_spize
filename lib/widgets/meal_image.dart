@@ -104,6 +104,8 @@ class MealImageState extends State<MealImage> {
       child: BlurHash(
         hash: imageBlurHash,
         imageFit: widget.fit,
+        duration: BokunSpizeDurations.animation,
+        curve: Curves.easeIn,
         optimizationMode: BlurHashOptimizationMode.standard,
       ),
     );
