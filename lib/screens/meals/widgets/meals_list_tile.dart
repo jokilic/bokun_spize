@@ -167,6 +167,7 @@ class MealsListTile extends StatelessWidget {
                         child: meal.imageStoragePath != null && showImageMealListTile
                             ? MealImage(
                                 imageStoragePath: meal.imageStoragePath!,
+                                imageBlurHash: meal.imageBlurHash,
                                 height: listTileIconRadius,
                                 width: listTileIconRadius,
                                 placeholderWidget: Animate(

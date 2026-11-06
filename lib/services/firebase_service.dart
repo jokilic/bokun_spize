@@ -1287,8 +1287,8 @@ class FirebaseService {
     }
   }
 
-  /// Uploads the image used to create a meal and returns its `Storage` path
-  Future<String?> uploadMealImage({
+  /// Uploads a meal image and returns its `Storage` path with an optional `BlurHash`
+  Future<MealImageUploadResult?> uploadMealImage({
     required File imageFile,
   }) async {
     try {
@@ -1302,6 +1302,7 @@ class FirebaseService {
       final ext = mealImageExtension(imageFile);
       final storagePath = 'users/${user.uid}/meal-images/$imageId.$ext';
       final imageReference = storage.ref(storagePath);
+      final imageBlurHashFuture = generateMealImageBlurHash(imageFile);
 
       await imageReference.putFile(
         imageFile,
@@ -1314,7 +1315,10 @@ class FirebaseService {
         ),
       );
 
-      return storagePath;
+      return (
+        imageStoragePath: storagePath,
+        imageBlurHash: await imageBlurHashFuture,
+      );
     } on FirebaseException catch (error) {
       log(
         'Uploading meal image failed',

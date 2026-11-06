@@ -411,6 +411,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                             width: double.infinity,
                             child: MealImage(
                               imageStoragePath: imageStoragePath,
+                              imageBlurHash: widget.passedMeal?.imageStoragePath == imageStoragePath ? widget.passedMeal?.imageBlurHash : null,
                               height: 160,
                               width: double.infinity,
                               errorWidget: Container(

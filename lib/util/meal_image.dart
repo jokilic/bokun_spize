@@ -1,4 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
+
+import 'package:blurhash_ffi/blurhash_ffi.dart';
+import 'package:flutter/painting.dart';
 
 /// Returns a supported file extension for a meal image
 String mealImageExtension(File imageFile) {
@@ -21,3 +25,19 @@ String mealImageContentType(String ext) => switch (ext) {
   'heif' => 'image/heif',
   _ => 'image/webp',
 };
+
+/// Generates a compact placeholder for a meal image
+Future<String?> generateMealImageBlurHash(File imageFile) async {
+  try {
+    return await BlurhashFFI.encode(
+      FileImage(imageFile),
+    );
+  } catch (error, stackTrace) {
+    log(
+      'Generating meal image BlurHash failed',
+      error: error,
+      stackTrace: stackTrace,
+    );
+    return null;
+  }
+}

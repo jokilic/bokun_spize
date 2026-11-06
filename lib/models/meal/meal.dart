@@ -18,6 +18,7 @@ class Meal {
   final bool isLoading;
   final List<String>? errors;
   final String? imageStoragePath;
+  final String? imageBlurHash;
   final String? methodOfCreation;
 
   Meal({
@@ -32,6 +33,7 @@ class Meal {
     this.foods,
     this.errors,
     this.imageStoragePath,
+    this.imageBlurHash,
     this.methodOfCreation,
   });
 
@@ -47,6 +49,7 @@ class Meal {
     bool? isLoading,
     List<String>? errors,
     String? imageStoragePath,
+    String? imageBlurHash,
     String? methodOfCreation,
   }) => Meal(
     id: id ?? this.id,
@@ -60,6 +63,7 @@ class Meal {
     isLoading: isLoading ?? this.isLoading,
     errors: errors ?? this.errors,
     imageStoragePath: imageStoragePath ?? this.imageStoragePath,
+    imageBlurHash: imageBlurHash ?? this.imageBlurHash,
     methodOfCreation: methodOfCreation ?? this.methodOfCreation,
   );
 
@@ -71,6 +75,7 @@ class Meal {
     required bool isLoading,
     required List<String>? errors,
     required String? imageStoragePath,
+    required String? imageBlurHash,
   }) => Meal(
     id: id,
     name: map['name'],
@@ -83,6 +88,7 @@ class Meal {
     isLoading: isLoading,
     errors: errors,
     imageStoragePath: imageStoragePath,
+    imageBlurHash: imageBlurHash,
     methodOfCreation: map['methodOfCreation'] as String?,
   );
 
@@ -100,12 +106,13 @@ class Meal {
     'isLoading': isLoading,
     'errors': errors,
     'imageStoragePath': imageStoragePath,
+    'imageBlurHash': imageBlurHash,
     'methodOfCreation': methodOfCreation,
   };
 
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, methodOfCreation: $methodOfCreation)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, imageBlurHash: $imageBlurHash, methodOfCreation: $methodOfCreation)';
 
   @override
   bool operator ==(Object other) =>
@@ -122,6 +129,7 @@ class Meal {
           isLoading == other.isLoading &&
           errors == other.errors &&
           imageStoragePath == other.imageStoragePath &&
+          imageBlurHash == other.imageBlurHash &&
           methodOfCreation == other.methodOfCreation;
 
   @override
@@ -136,5 +144,6 @@ class Meal {
       isLoading.hashCode ^
       errors.hashCode ^
       imageStoragePath.hashCode ^
+      imageBlurHash.hashCode ^
       methodOfCreation.hashCode;
 }

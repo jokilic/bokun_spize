@@ -291,12 +291,15 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
             imageFile: imageFile,
           )
         else
-          Future<String?>.value(),
+          Future<MealImageUploadResult?>.value(),
       ],
     );
 
     final result = results.first! as TriggerAIResult;
-    final imageStoragePath = results.last as String?;
+    final imageUploadResult = results.last as MealImageUploadResult?;
+
+    final imageStoragePath = imageUploadResult?.imageStoragePath;
+    final imageBlurHash = imageUploadResult?.imageBlurHash;
 
     final aiResult = result.aiResult;
 
@@ -309,6 +312,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
             createdAt: loadingMeal.createdAt,
             originalText: loadingMeal.originalText,
             imageStoragePath: imageStoragePath,
+            imageBlurHash: imageBlurHash,
           );
 
     /// Keep errors while allowing fallback AI model to recover
@@ -322,6 +326,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       meal: (meal ?? loadingMeal).copyWith(
         errors: errors.isEmpty ? null : errors,
         imageStoragePath: imageStoragePath,
+        imageBlurHash: imageBlurHash,
         methodOfCreation: result.modelName,
         isLoading: false,
       ),
@@ -515,12 +520,18 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required ManualMealResult result,
   }) async {
     final imageFile = result.imageFile;
-    final imageStoragePath = imageFile != null
+    final imageUploadResult = imageFile != null
         ? await firebase.uploadMealImage(
             imageFile: imageFile,
           )
-        : result.imageStoragePath;
-    final imageUploadFailed = imageFile != null && imageStoragePath == null;
+        : null;
+    final imageStoragePath = imageFile != null ? imageUploadResult?.imageStoragePath : result.imageStoragePath;
+    final imageBlurHash = imageFile != null
+        ? imageUploadResult?.imageBlurHash
+        : imageStoragePath == loadingMeal.imageStoragePath
+        ? loadingMeal.imageBlurHash
+        : null;
+    final imageUploadFailed = imageFile != null && imageUploadResult == null;
 
     /// Finish loading and preserve the meal data even if the image upload fails
     return (
@@ -535,6 +546,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         nutrition: result.nutrition,
         foods: result.foods,
         imageStoragePath: imageStoragePath,
+        imageBlurHash: imageBlurHash,
         isLoading: false,
         errors: imageUploadFailed ? ['mealsErrorImageUploadFailed'.tr()] : null,
       ),

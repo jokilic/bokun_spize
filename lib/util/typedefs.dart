@@ -8,6 +8,8 @@ typedef TriggerAIResult = ({String? aiResult, String? modelName, List<String>? e
 
 typedef AIMealResult = ({String? words, DateTime? dateTime, File? imageFile});
 
+typedef MealImageUploadResult = ({String imageStoragePath, String? imageBlurHash});
+
 typedef ManualMealResult = ({String name, DateTime? dateTime, Nutrition? nutrition, List<Food>? foods, File? imageFile, String? imageStoragePath});
 
 typedef ReauthenticationResult = ({bool success, String? appleAuthorizationCode});

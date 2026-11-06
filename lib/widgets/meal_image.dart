@@ -1,3 +1,4 @@
+import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,6 +11,7 @@ import '../util/dependencies.dart';
 
 class MealImage extends StatefulWidget {
   final String imageStoragePath;
+  final String? imageBlurHash;
   final BoxFit fit;
   final double height;
   final double width;
@@ -20,6 +22,7 @@ class MealImage extends StatefulWidget {
     required this.imageStoragePath,
     required this.height,
     required this.width,
+    this.imageBlurHash,
     this.fit = BoxFit.cover,
     this.placeholderWidget,
     this.errorWidget = const SizedBox.shrink(),
@@ -49,6 +52,7 @@ class MealImageState extends State<MealImage> {
     }
   }
 
+  /// Gets the cached URL and starts resolving a missing download URL
   void getDownloadUrl() {
     final cacheService = getIt.get<CacheService>();
 
@@ -60,7 +64,8 @@ class MealImageState extends State<MealImage> {
     );
   }
 
-  Widget getPlaceholderWidget() => Animate(
+  /// Builds the animated fallback used when no `BlurHash` is available
+  Widget getAnimatedPlaceholderWidget() => Animate(
     onPlay: (controller) => controller.loop(
       reverse: true,
       min: 0.6,
@@ -81,6 +86,26 @@ class MealImageState extends State<MealImage> {
     ),
   );
 
+  /// Returns the caller placeholder before falling back to the default animation
+  Widget getFallbackPlaceholderWidget() => widget.placeholderWidget ?? getAnimatedPlaceholderWidget();
+
+  /// Builds the `BlurHash` placeholder or the existing animated fallback
+  Widget getPlaceholderWidget() {
+    final imageBlurHash = widget.imageBlurHash;
+
+    if (imageBlurHash == null || imageBlurHash.isEmpty) {
+      return getFallbackPlaceholderWidget();
+    }
+
+    return Image(
+      image: BlurhashFfiImage(imageBlurHash),
+      fit: widget.fit,
+      height: widget.height,
+      width: widget.width,
+      errorBuilder: (context, error, stackTrace) => getFallbackPlaceholderWidget(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => FutureBuilder<String?>(
     future: imageUrlFuture,
@@ -98,7 +123,7 @@ class MealImageState extends State<MealImage> {
           fit: widget.fit,
           height: widget.height,
           width: widget.width,
-          placeholder: (context, url) => widget.placeholderWidget ?? getPlaceholderWidget(),
+          placeholder: (context, url) => getPlaceholderWidget(),
           errorBuilder: (context, error, stackTrace) => widget.errorWidget,
           fadeOutCurve: Curves.easeIn,
           fadeInDuration: BokunSpizeDurations.animation,
@@ -107,7 +132,7 @@ class MealImageState extends State<MealImage> {
         );
       }
 
-      return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : widget.placeholderWidget ?? getPlaceholderWidget();
+      return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : getPlaceholderWidget();
     },
   );
 }

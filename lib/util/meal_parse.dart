@@ -18,6 +18,7 @@ Meal? parseMealDocument(QueryDocumentSnapshot<Map<String, dynamic>> document) {
       isLoading: data['isLoading'] as bool? ?? false,
       errors: (data['errors'] as List?)?.cast<String>(),
       imageStoragePath: data['imageStoragePath'] as String?,
+      imageBlurHash: data['imageBlurHash'] as String?,
     );
   } catch (error, stackTrace) {
     log(

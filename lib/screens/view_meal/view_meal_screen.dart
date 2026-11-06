@@ -115,6 +115,7 @@ class ViewMealScreen extends WatchingWidget {
                     child: imageStoragePath != null
                         ? MealImage(
                             imageStoragePath: imageStoragePath,
+                            imageBlurHash: passedMeal.imageBlurHash,
                             height: 240,
                             width: double.infinity,
                             errorWidget: Container(

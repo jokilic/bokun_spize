@@ -23,6 +23,7 @@ Meal? parseAIResultToMeal({
   required DateTime createdAt,
   required String? originalText,
   required String? imageStoragePath,
+  required String? imageBlurHash,
 }) {
   try {
     final decoded = jsonDecode(aiResult);
@@ -34,6 +35,7 @@ Meal? parseAIResultToMeal({
         createdAt: createdAt,
         originalText: originalText,
         imageStoragePath: imageStoragePath,
+        imageBlurHash: imageBlurHash,
         isLoading: false,
         errors: null,
       );
