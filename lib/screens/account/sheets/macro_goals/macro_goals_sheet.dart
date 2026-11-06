@@ -321,88 +321,88 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                     ///
                                     /// INCREMENT
                                     ///
-                                    Material(
-                                      color: currentAge > 1 ? context.colors.listTileBackground.withValues(alpha: 0.5) : context.colors.scaffoldBackground,
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: InkWell(
-                                        onTap: currentAge > 1 ? () {} : null,
-                                        onTapDown: currentAge > 1 ? (_) => startAgeUpdate(-1) : null,
-                                        onTapUp: currentAge > 1 ? (_) => stopAgeUpdate() : null,
-                                        onTapCancel: stopAgeUpdate,
-                                        borderRadius: BorderRadius.circular(12),
-                                        highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                        splashColor: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: PhosphorIcon(
-                                            PhosphorIconsBold.minus,
-                                            size: 22,
-                                            color: context.colors.text,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
+                                    // Material(
+                                    //   color: currentAge > 1 ? context.colors.listTileBackground.withValues(alpha: 0.5) : context.colors.scaffoldBackground,
+                                    //   borderRadius: BorderRadius.circular(12),
+                                    //   child: InkWell(
+                                    //     onTap: currentAge > 1 ? () {} : null,
+                                    //     onTapDown: currentAge > 1 ? (_) => startAgeUpdate(-1) : null,
+                                    //     onTapUp: currentAge > 1 ? (_) => stopAgeUpdate() : null,
+                                    //     onTapCancel: stopAgeUpdate,
+                                    //     borderRadius: BorderRadius.circular(12),
+                                    //     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    //     splashColor: Colors.transparent,
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.all(10),
+                                    //       child: PhosphorIcon(
+                                    //         PhosphorIconsBold.minus,
+                                    //         size: 22,
+                                    //         color: context.colors.text,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    // const SizedBox(width: 16),
 
-                                    ///
-                                    /// CALORIES
-                                    ///
-                                    Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          // TODO: Use `animated_digit_widget.dart`
-                                          TextSpan(
-                                            text: activeCalories?.toStringAsFixed(0),
-                                          ),
-                                          const WidgetSpan(
-                                            child: SizedBox(width: 4),
-                                          ),
-                                          TextSpan(
-                                            // TODO
-                                            text: 'godina',
-                                            style: TextStyle(
-                                              fontFamily: 'Epilogue',
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: context.colors.text.withValues(alpha: 0.7),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      style: TextStyle(
-                                        fontFamily: 'Epilogue',
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.w900,
-                                        color: context.colors.text,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(width: 16),
+                                    // ///
+                                    // /// CALORIES
+                                    // ///
+                                    // Text.rich(
+                                    //   TextSpan(
+                                    //     children: [
+                                    //       // TODO: Use `animated_digit_widget.dart`
+                                    //       TextSpan(
+                                    //         text: activeCalories?.toStringAsFixed(0),
+                                    //       ),
+                                    //       const WidgetSpan(
+                                    //         child: SizedBox(width: 4),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         // TODO
+                                    //         text: 'godina',
+                                    //         style: TextStyle(
+                                    //           fontFamily: 'Epilogue',
+                                    //           fontSize: 16,
+                                    //           fontWeight: FontWeight.w700,
+                                    //           color: context.colors.text.withValues(alpha: 0.7),
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    //   style: TextStyle(
+                                    //     fontFamily: 'Epilogue',
+                                    //     fontSize: 36,
+                                    //     fontWeight: FontWeight.w900,
+                                    //     color: context.colors.text,
+                                    //   ),
+                                    //   textAlign: TextAlign.center,
+                                    // ),
+                                    // const SizedBox(width: 16),
 
-                                    ///
-                                    /// DECREMENT
-                                    ///
-                                    Material(
-                                      color: currentAge < 100 ? activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5) : context.colors.scaffoldBackground,
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: InkWell(
-                                        onTap: currentAge < 100 ? () {} : null,
-                                        onTapDown: currentAge < 100 ? (_) => startAgeUpdate(1) : null,
-                                        onTapUp: currentAge < 100 ? (_) => stopAgeUpdate() : null,
-                                        onTapCancel: stopAgeUpdate,
-                                        borderRadius: BorderRadius.circular(12),
-                                        highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                        splashColor: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: PhosphorIcon(
-                                            PhosphorIconsBold.plus,
-                                            size: 22,
-                                            color: currentAge < 100 && activeColor != null ? context.colors.buttonText : context.colors.text,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    // ///
+                                    // /// DECREMENT
+                                    // ///
+                                    // Material(
+                                    //   color: currentAge < 100 ? activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5) : context.colors.scaffoldBackground,
+                                    //   borderRadius: BorderRadius.circular(12),
+                                    //   child: InkWell(
+                                    //     onTap: currentAge < 100 ? () {} : null,
+                                    //     onTapDown: currentAge < 100 ? (_) => startAgeUpdate(1) : null,
+                                    //     onTapUp: currentAge < 100 ? (_) => stopAgeUpdate() : null,
+                                    //     onTapCancel: stopAgeUpdate,
+                                    //     borderRadius: BorderRadius.circular(12),
+                                    //     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    //     splashColor: Colors.transparent,
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.all(10),
+                                    //       child: PhosphorIcon(
+                                    //         PhosphorIconsBold.plus,
+                                    //         size: 22,
+                                    //         color: currentAge < 100 && activeColor != null ? context.colors.buttonText : context.colors.text,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ],

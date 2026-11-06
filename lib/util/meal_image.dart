@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:math' as math;
 
-import 'package:blurhash_ffi/blurhash_ffi.dart';
-import 'package:flutter/painting.dart';
+import 'package:image/image.dart' as img;
+
+import 'blur_hash.dart';
 
 /// Returns a supported file extension for a meal image
 String mealImageExtension(File imageFile) {
@@ -29,8 +32,10 @@ String mealImageContentType(String ext) => switch (ext) {
 /// Generates a compact placeholder for a meal image
 Future<String?> generateMealImageBlurHash(File imageFile) async {
   try {
-    return await BlurhashFFI.encode(
-      FileImage(imageFile),
+    final imagePath = imageFile.path;
+
+    return await Isolate.run(
+      () => encodeMealImageBlurHashFile(imagePath),
     );
   } catch (error, stackTrace) {
     log(
@@ -40,4 +45,29 @@ Future<String?> generateMealImageBlurHash(File imageFile) async {
     );
     return null;
   }
+}
+
+/// Reads, resizes, and encodes a meal image into a BlurHash
+String encodeMealImageBlurHashFile(String imagePath) {
+  final decodedImage = img.decodeImage(File(imagePath).readAsBytesSync());
+
+  if (decodedImage == null) {
+    throw const FormatException('Unable to decode meal image for BlurHash');
+  }
+
+  final orientedImage = img.bakeOrientation(decodedImage);
+  final scale = math.min<double>(
+    1,
+    64 / math.max(orientedImage.width, orientedImage.height),
+  );
+  final resizedImage = scale < 1
+      ? img.copyResize(
+          orientedImage,
+          width: math.max(1, (orientedImage.width * scale).round()),
+          height: math.max(1, (orientedImage.height * scale).round()),
+          interpolation: img.Interpolation.average,
+        )
+      : orientedImage;
+
+  return encodeBlurHashImage(resizedImage);
 }

@@ -1,12 +1,13 @@
-import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 import '../constants/constants.dart';
 import '../constants/durations.dart';
 import '../services/cache_service.dart';
 import '../theme/extensions.dart';
+import '../util/blur_hash.dart';
 import '../util/dependencies.dart';
 
 class MealImage extends StatefulWidget {
@@ -93,16 +94,18 @@ class MealImageState extends State<MealImage> {
   Widget getPlaceholderWidget() {
     final imageBlurHash = widget.imageBlurHash;
 
-    if (imageBlurHash == null || imageBlurHash.isEmpty) {
+    if (imageBlurHash == null || !isValidBlurHash(imageBlurHash)) {
       return getFallbackPlaceholderWidget();
     }
 
-    return Image(
-      image: BlurhashFfiImage(imageBlurHash),
-      fit: widget.fit,
+    return SizedBox(
       height: widget.height,
       width: widget.width,
-      errorBuilder: (context, error, stackTrace) => getFallbackPlaceholderWidget(),
+      child: BlurHash(
+        hash: imageBlurHash,
+        imageFit: widget.fit,
+        optimizationMode: BlurHashOptimizationMode.standard,
+      ),
     );
   }
 
