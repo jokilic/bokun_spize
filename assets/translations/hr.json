@@ -23,6 +23,9 @@
     "steps": "koraci",
     "saveChanges": "Spremi promjene",
     "saveMeasurements": "Spremi mjere",
+    "saveGoals": "Spremi ciljeve",
+    "dailyIntake": "dnevnog unosa",
+    "macros": "Makronutrijenti",
     "weights": "Težina",
     "account": "Račun",
     "calories": "Kalorije",
@@ -41,11 +44,13 @@
     "whatWasIt": "Što si mislio?",
     "addFailed": "Dodavanje nije uspjelo",
     "deleteFailed": "Brisanje nije uspjelo",
+    "bmr": "BMR",
     "caloriesUnit": "kcal",
     "centimeter": "cm",
     "kilogram": "kg",
     "zeroHint": "0",
     "gramUnit": "g",
+    "yearUnit": "god",
     "vsToday": "vs danas",
     "vsYesterday": "vs jučer",
     "vsLastDays": "vs zadnjih {} dana",
@@ -218,5 +223,8 @@
     "accountContactSendSuccess": "Poruka poslana",
     "accountContactSendFailure": "Slanje poruke nije uspjelo",
     "userMetricsTitle": "Osobni podaci",
-    "userMetricsSubtitle": "Za izračun dnevnih ciljeva"
+    "userMetricsSubtitle": "Za izračun dnevnih ciljeva",
+    "goalsTitle": "Ciljevi",
+    "goalsSubtitle": "Dnevne kalorije i makronutrijenti",
+    "goalsExplanation": "Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju."
 }

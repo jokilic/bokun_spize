@@ -39,6 +39,9 @@ class CodegenLoader extends AssetLoader{
   "steps": "steps",
   "saveChanges": "Save changes",
   "saveMeasurements": "Save measurements",
+  "saveGoals": "Save goals",
+  "dailyIntake": "daily intake",
+  "macros": "Macros",
   "weights": "Weights",
   "account": "Account",
   "calories": "Calories",
@@ -57,11 +60,13 @@ class CodegenLoader extends AssetLoader{
   "whatWasIt": "What was it?",
   "addFailed": "Add failed",
   "deleteFailed": "Delete failed",
+  "bmr": "BMR",
   "caloriesUnit": "kcal",
   "centimeter": "cm",
   "kilogram": "kg",
   "zeroHint": "0",
   "gramUnit": "g",
+  "yearUnit": "y",
   "vsToday": "vs today",
   "vsYesterday": "vs yesterday",
   "vsLastDays": "vs last {} days",
@@ -234,7 +239,10 @@ class CodegenLoader extends AssetLoader{
   "accountContactSendSuccess": "Message sent",
   "accountContactSendFailure": "Couldn't send message",
   "userMetricsTitle": "Personal data",
-  "userMetricsSubtitle": "To calculate your daily goals"
+  "userMetricsSubtitle": "To calculate your daily goals",
+  "goalsTitle": "Goals",
+  "goalsSubtitle": "Daily calories & macros",
+  "goalsExplanation": "Changing your daily calorie intake automatically adjusts the protein, carbohydrate, and fat ratios."
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -261,6 +269,9 @@ static const Map<String,dynamic> _hr = {
   "steps": "koraci",
   "saveChanges": "Spremi promjene",
   "saveMeasurements": "Spremi mjere",
+  "saveGoals": "Spremi ciljeve",
+  "dailyIntake": "dnevnog unosa",
+  "macros": "Makronutrijenti",
   "weights": "Težina",
   "account": "Račun",
   "calories": "Kalorije",
@@ -279,11 +290,13 @@ static const Map<String,dynamic> _hr = {
   "whatWasIt": "Što si mislio?",
   "addFailed": "Dodavanje nije uspjelo",
   "deleteFailed": "Brisanje nije uspjelo",
+  "bmr": "BMR",
   "caloriesUnit": "kcal",
   "centimeter": "cm",
   "kilogram": "kg",
   "zeroHint": "0",
   "gramUnit": "g",
+  "yearUnit": "god",
   "vsToday": "vs danas",
   "vsYesterday": "vs jučer",
   "vsLastDays": "vs zadnjih {} dana",
@@ -456,7 +469,10 @@ static const Map<String,dynamic> _hr = {
   "accountContactSendSuccess": "Poruka poslana",
   "accountContactSendFailure": "Slanje poruke nije uspjelo",
   "userMetricsTitle": "Osobni podaci",
-  "userMetricsSubtitle": "Za izračun dnevnih ciljeva"
+  "userMetricsSubtitle": "Za izračun dnevnih ciljeva",
+  "goalsTitle": "Ciljevi",
+  "goalsSubtitle": "Dnevne kalorije i makronutrijenti",
+  "goalsExplanation": "Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }

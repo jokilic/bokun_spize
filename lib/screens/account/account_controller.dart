@@ -135,21 +135,11 @@ class AccountController extends ValueNotifier<SettingsValues> {
     );
 
     if (dailyMacroValues == null) {
-      showSnackbar(
-        context,
-        // TODO: Some proper text
-        text: 'entranceErrorUnknown'.tr(),
-        icon: PhosphorIconsBold.warningOctagon,
-      );
-
       return;
     }
 
-    final macroGoalsExist = useExistingMacroGoals &&
-        userMetrics.dailyCalories != null &&
-        userMetrics.dailyProtein != null &&
-        userMetrics.dailyCarbs != null &&
-        userMetrics.dailyFat != null;
+    final macroGoalsExist =
+        useExistingMacroGoals && userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
 
     showBlurredModalBottomSheet(
       context: context,

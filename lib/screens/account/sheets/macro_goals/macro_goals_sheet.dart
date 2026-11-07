@@ -11,6 +11,7 @@ import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
 import '../../../../util/typedefs.dart';
+import '../../../../widgets/animated_digit_widget.dart';
 
 // TODO: Update staggered animations like other screens
 
@@ -242,8 +243,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                       ///
                       Expanded(
                         child: Text(
-                          // TODO
-                          'Dnevni ciljevi',
+                          'goalsTitle'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -303,8 +303,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                     ),
                   ],
                   child: Text(
-                    // TODO
-                    'Količina makronutrijenata',
+                    'goalsSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -369,8 +368,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    // TODO
-                                    'Calories'.toUpperCase(),
+                                    'calories'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -425,16 +423,26 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                           Text.rich(
                                             TextSpan(
                                               children: [
-                                                // TODO: Use `animated_digit_widget.dart`
-                                                TextSpan(
-                                                  text: activeCalories?.toStringAsFixed(0),
+                                                WidgetSpan(
+                                                  alignment: PlaceholderAlignment.middle,
+                                                  child: AnimatedDigitWidget(
+                                                    value: activeCalories,
+                                                    loop: false,
+                                                    duration: BokunSpizeDurations.animation,
+                                                    curve: Curves.easeIn,
+                                                    textStyle: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 36,
+                                                      fontWeight: FontWeight.w900,
+                                                      color: context.colors.text,
+                                                    ),
+                                                  ),
                                                 ),
                                                 const WidgetSpan(
                                                   child: SizedBox(width: 4),
                                                 ),
                                                 TextSpan(
-                                                  // TODO
-                                                  text: 'kcal',
+                                                  text: 'caloriesUnit'.tr(),
                                                   style: TextStyle(
                                                     fontFamily: 'Epilogue',
                                                     fontSize: 16,
@@ -459,15 +467,17 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                           Text.rich(
                                             TextSpan(
                                               children: [
+                                                TextSpan(
+                                                  text: 'bmr'.tr().toUpperCase(),
+                                                ),
                                                 const TextSpan(
-                                                  // TODO
-                                                  text: 'BMR:',
+                                                  text: ':',
                                                 ),
                                                 const WidgetSpan(
                                                   child: SizedBox(width: 4),
                                                 ),
                                                 TextSpan(
-                                                  text: '${widget.bmr.toStringAsFixed(0)} kcal',
+                                                  text: '${widget.bmr.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
                                                   style: TextStyle(
                                                     fontFamily: 'Epilogue',
                                                     fontSize: 12,
@@ -542,8 +552,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                // TODO
-                                                'Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju.',
+                                                'goalsExplanation'.tr(),
                                                 style: TextStyle(
                                                   fontFamily: 'PlusJakartaSans',
                                                   fontSize: 12,
@@ -622,8 +631,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    // TODO
-                                    'Macros'.toUpperCase(),
+                                    'macros'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -691,8 +699,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
-                                                          // TODO
-                                                          '${proteinPercentage.toStringAsFixed(0)}% unosa',
+                                                          '${proteinPercentage.toStringAsFixed(0)}% ${'dailyIntake'.tr()}',
                                                           style: TextStyle(
                                                             fontFamily: 'PlusJakartaSans',
                                                             fontSize: 10,
@@ -809,8 +816,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
-                                                          // TODO
-                                                          '${carbsPercentage.toStringAsFixed(0)}% unosa',
+                                                          '${carbsPercentage.toStringAsFixed(0)}% ${'dailyIntake'.tr()}',
                                                           style: TextStyle(
                                                             fontFamily: 'PlusJakartaSans',
                                                             fontSize: 10,
@@ -927,8 +933,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
-                                                          // TODO
-                                                          '${fatPercentage.toStringAsFixed(0)}% unosa',
+                                                          '${fatPercentage.toStringAsFixed(0)}% ${'dailyIntake'.tr()}',
                                                           style: TextStyle(
                                                             fontFamily: 'PlusJakartaSans',
                                                             fontSize: 10,
@@ -1039,9 +1044,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                         disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                         disabledForegroundColor: widget.activeColor,
                       ),
-                      child: const Text(
-                        // TODO
-                        'Spremi',
+                      child: Text(
+                        'saveGoals'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

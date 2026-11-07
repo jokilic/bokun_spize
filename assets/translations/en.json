@@ -23,6 +23,9 @@
     "steps": "steps",
     "saveChanges": "Save changes",
     "saveMeasurements": "Save measurements",
+    "saveGoals": "Save goals",
+    "dailyIntake": "daily intake",
+    "macros": "Macros",
     "weights": "Weights",
     "account": "Account",
     "calories": "Calories",
@@ -41,11 +44,13 @@
     "whatWasIt": "What was it?",
     "addFailed": "Add failed",
     "deleteFailed": "Delete failed",
+    "bmr": "BMR",
     "caloriesUnit": "kcal",
     "centimeter": "cm",
     "kilogram": "kg",
     "zeroHint": "0",
     "gramUnit": "g",
+    "yearUnit": "y",
     "vsToday": "vs today",
     "vsYesterday": "vs yesterday",
     "vsLastDays": "vs last {} days",
@@ -218,5 +223,8 @@
     "accountContactSendSuccess": "Message sent",
     "accountContactSendFailure": "Couldn't send message",
     "userMetricsTitle": "Personal data",
-    "userMetricsSubtitle": "To calculate your daily goals"
+    "userMetricsSubtitle": "To calculate your daily goals",
+    "goalsTitle": "Goals",
+    "goalsSubtitle": "Daily calories & macros",
+    "goalsExplanation": "Changing your daily calorie intake automatically adjusts the protein, carbohydrate, and fat ratios."
 }

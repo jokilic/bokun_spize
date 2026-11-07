@@ -227,9 +227,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                 color: context.colors.text.withValues(alpha: 0.7),
                               ),
                             ),
-                            const TextSpan(
-                              // TODO: Localization for 'y'
-                              text: 'y',
+                            TextSpan(
+                              text: 'yearUnit'.tr(),
                             ),
                           ],
                         ),

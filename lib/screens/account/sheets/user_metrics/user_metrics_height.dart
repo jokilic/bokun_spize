@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/height.dart';
-import '../../../../widgets/animated_digit_widget.dart';
 
 class UserMetricsHeight extends StatefulWidget {
   final double initialHeight;
