@@ -218,21 +218,21 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               /// GOALS
               ///
-              AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  accountController.openMacroGoalsSheet(
-                    context,
-                    userMetrics: userMetrics!,
-                  );
-                },
-                // TODO: Use proper icon here
-                icon: PhosphorIconsBold.palette,
-                iconBackgroundColor: context.colors.carbs,
-                title: 'accountGoalsTitle'.tr(),
-                subtitle: 'accountGoalsSubtitle'.tr(),
-              ),
+              if (hasUserMetrics)
+                AccountListTile(
+                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    accountController.openMacroGoalsSheet(
+                      context,
+                      userMetrics: userMetrics!,
+                    );
+                  },
+                  icon: PhosphorIconsBold.target,
+                  iconBackgroundColor: context.colors.carbs,
+                  title: 'accountGoalsTitle'.tr(),
+                  subtitle: 'accountGoalsSubtitle'.tr(),
+                ),
 
               ///
               /// THEME

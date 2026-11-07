@@ -1044,14 +1044,19 @@ class FirebaseService {
 
       final document = firestore.collection('users').doc(user.uid);
 
-      // TODO: Implement if `onlyMacroGoals` is true -> Then delete daily values only
-
       if (onlyBodyMetrics) {
         await document.update({
           'age': FieldValue.delete(),
           'gender': FieldValue.delete(),
           'height': FieldValue.delete(),
           'weight': FieldValue.delete(),
+        });
+      } else if (onlyMacroGoals) {
+        await document.update({
+          'dailyCalories': FieldValue.delete(),
+          'dailyProtein': FieldValue.delete(),
+          'dailyCarbs': FieldValue.delete(),
+          'dailyFat': FieldValue.delete(),
         });
       } else {
         await document.delete();
