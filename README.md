@@ -15,6 +15,7 @@
         - [x] Edit user name
         - [x] UserMetricsSheet
         - [ ] MacroGoalsSheet
+            - [ ] Show if user metrics exist
         - [x] Theme
         - [x] Language
         - [ ] Notifications

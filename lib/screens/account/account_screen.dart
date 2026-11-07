@@ -158,7 +158,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   );
                 },
                 icon: PhosphorIconsBold.personSimple,
-                iconBackgroundColor: context.colors.carbs,
+                iconBackgroundColor: context.colors.protein,
                 title: 'accountUserMetricsTitle'.tr(),
                 subtitle: 'accountUserMetricsSubtitle'.tr(),
                 customSubtitle: hasUserMetrics
@@ -168,10 +168,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         ///
                         TextSpan(
                           text:
-                              // TODO
                               '${normalizedHeight(
                                 userMetrics!.height!,
-                              ).toStringAsFixed(0)}cm',
+                              ).toStringAsFixed(0)}${'centimeter'.tr()}',
                           children: [
                             WidgetSpan(
                               child: PhosphorIcon(
@@ -185,8 +184,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             /// WEIGHT
                             ///
                             TextSpan(
-                              // TODO
-                              text: '${userMetrics.weight!.toStringAsFixed(1)}kg',
+                              text: '${userMetrics.weight!.toStringAsFixed(1)}${'kilogram'.tr()}',
                             ),
                             WidgetSpan(
                               child: PhosphorIcon(
@@ -200,7 +198,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             /// AGE
                             ///
                             TextSpan(
-                              // TODO
+                              // TODO: Localization for 'y'
                               text: '${userMetrics.age!.toStringAsFixed(0)}y',
                             ),
                           ],
@@ -218,10 +216,29 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
 
               ///
-              /// THEME
+              /// GOALS
               ///
               AccountListTile(
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  accountController.openMacroGoalsSheet(
+                    context,
+                    userMetrics: userMetrics!,
+                  );
+                },
+                // TODO: Use proper icon here
+                icon: PhosphorIconsBold.palette,
+                iconBackgroundColor: context.colors.carbs,
+                title: 'accountGoalsTitle'.tr(),
+                subtitle: 'accountGoalsSubtitle'.tr(),
+              ),
+
+              ///
+              /// THEME
+              ///
+              AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 3,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openThemeSheet(
@@ -239,7 +256,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LANGUAGE
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 3,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openLanguageSheet(
@@ -257,7 +274,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// CONTACT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openContactSheet(context);
@@ -273,7 +290,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               if (userMetrics?.isAdmin ?? false)
                 AccountListTile(
-                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
                   onPressed: () {
                     HapticFeedback.lightImpact();
                     accountController.openMessagesSheet(context);
@@ -288,7 +305,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LOGOUT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 7,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   handleLogOut();
@@ -303,7 +320,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// DELETE ACCOUNT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 7,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 8,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openDeleteAccountSheet(
@@ -345,7 +362,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 8,
+                    delay: BokunSpizeDurations.stateTransitionStagger * 9,
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,

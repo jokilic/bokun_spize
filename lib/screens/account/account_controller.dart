@@ -120,6 +120,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
     openMacroGoalsSheet(
       context,
       userMetrics: updatedUserMetrics,
+      useExistingMacroGoals: false,
     );
   }
 
@@ -127,8 +128,11 @@ class AccountController extends ValueNotifier<SettingsValues> {
   void openMacroGoalsSheet(
     BuildContext context, {
     required UserMetrics userMetrics,
+    bool useExistingMacroGoals = true,
   }) {
-    final dailyMacroValues = userMetrics.dailyMacroValues;
+    final dailyMacroValues = userMetrics.calculateDailyMacroValues(
+      useExistingMacroGoals ? userMetrics.dailyCalories : null,
+    );
 
     if (dailyMacroValues == null) {
       showSnackbar(
@@ -141,9 +145,11 @@ class AccountController extends ValueNotifier<SettingsValues> {
       return;
     }
 
-    final macroGoalsExist = userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
-
-    // TODO: When opening MacroGoalsSheet from here, don't use existing macro goals, treat it like a fresh data (calculate calories & macros like when opened for the first time)
+    final macroGoalsExist = useExistingMacroGoals &&
+        userMetrics.dailyCalories != null &&
+        userMetrics.dailyProtein != null &&
+        userMetrics.dailyCarbs != null &&
+        userMetrics.dailyFat != null;
 
     showBlurredModalBottomSheet(
       context: context,

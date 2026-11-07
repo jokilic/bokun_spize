@@ -121,10 +121,12 @@ class CodegenLoader extends AssetLoader{
   "calendarSheetTitle": "Select date",
   "navigationBarMeals": "Meals",
   "timeSheetTitle": "Select time",
-  "accountUserMetricsTitle": "Your measurements",
+  "accountUserMetricsTitle": "Personal data",
   "accountUserMetricsSubtitle": "Height, weight, etc.",
   "accountUserMetricsHeight": "Height",
   "accountUserMetricsWeight": "Weight",
+  "accountGoalsTitle": "Goals",
+  "accountGoalsSubtitle": "Your daily macros",
   "accountThemeSubtitle": "App-wide colors",
   "accountLanguageSubtitle": "App-wide language",
   "accountContactMeTitle": "Contact",
@@ -231,7 +233,7 @@ class CodegenLoader extends AssetLoader{
   "accountContactSheetButton": "Send message",
   "accountContactSendSuccess": "Message sent",
   "accountContactSendFailure": "Couldn't send message",
-  "userMetricsTitle": "Measurements",
+  "userMetricsTitle": "Personal data",
   "userMetricsSubtitle": "To calculate your daily goals"
 };
 static const Map<String,dynamic> _hr = {
@@ -341,10 +343,12 @@ static const Map<String,dynamic> _hr = {
   "calendarSheetTitle": "Odaberi datum",
   "navigationBarMeals": "Obroci",
   "timeSheetTitle": "Odaberi vrijeme",
-  "accountUserMetricsTitle": "Tvoje mjere",
+  "accountUserMetricsTitle": "Osobni podaci",
   "accountUserMetricsSubtitle": "Visina, težina itd.",
   "accountUserMetricsHeight": "Visina",
   "accountUserMetricsWeight": "Težina",
+  "accountGoalsTitle": "Ciljevi",
+  "accountGoalsSubtitle": "Tvoji dnevni makronutrijenti",
   "accountThemeSubtitle": "Boje aplikacije",
   "accountLanguageSubtitle": "Jezik aplikacije",
   "accountContactMeTitle": "Kontakt",
@@ -451,7 +455,7 @@ static const Map<String,dynamic> _hr = {
   "accountContactSheetButton": "Pošalji poruku",
   "accountContactSendSuccess": "Poruka poslana",
   "accountContactSendFailure": "Slanje poruke nije uspjelo",
-  "userMetricsTitle": "Mjere",
+  "userMetricsTitle": "Osobni podaci",
   "userMetricsSubtitle": "Za izračun dnevnih ciljeva"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};

@@ -105,10 +105,12 @@
     "calendarSheetTitle": "Select date",
     "navigationBarMeals": "Meals",
     "timeSheetTitle": "Select time",
-    "accountUserMetricsTitle": "Your measurements",
+    "accountUserMetricsTitle": "Personal data",
     "accountUserMetricsSubtitle": "Height, weight, etc.",
     "accountUserMetricsHeight": "Height",
     "accountUserMetricsWeight": "Weight",
+    "accountGoalsTitle": "Goals",
+    "accountGoalsSubtitle": "Your daily macros",
     "accountThemeSubtitle": "App-wide colors",
     "accountLanguageSubtitle": "App-wide language",
     "accountContactMeTitle": "Contact",
@@ -215,6 +217,6 @@
     "accountContactSheetButton": "Send message",
     "accountContactSendSuccess": "Message sent",
     "accountContactSendFailure": "Couldn't send message",
-    "userMetricsTitle": "Measurements",
+    "userMetricsTitle": "Personal data",
     "userMetricsSubtitle": "To calculate your daily goals"
 }
