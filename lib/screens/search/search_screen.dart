@@ -209,7 +209,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       'searchSubtitle'.tr(),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: context.colors.text,
                       ),

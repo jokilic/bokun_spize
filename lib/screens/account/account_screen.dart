@@ -12,6 +12,7 @@ import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
+import '../../services/screen_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
@@ -57,6 +58,10 @@ class _AccountScreenState extends State<AccountScreen> {
     unRegisterIfNotDisposed<WeightsController>();
     unRegisterIfNotDisposed<WalksController>();
     unRegisterIfNotDisposed<AccountController>();
+
+    getIt.get<ScreenService>().changeNavigationBarItem(
+      NavigationBarItem.meals,
+    );
 
     await getIt.get<FirebaseService>().logOut();
   }

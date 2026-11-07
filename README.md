@@ -9,6 +9,7 @@
     - [ ] App name -> Bokun / Bite
 
 ### Screens
+    - [ ] Go through every hardcoded text and check if it makes sense
     - [ ] Test by writing nonsense in the [AIAddMealScreen]
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
@@ -25,7 +26,6 @@
         - [x] Version
 
 ### Firebase
-    - [ ] User -> `isAdmin` - Then he can open contact messages
     - [ ] Firebase App Check
         - [ ] Add the Play App Signing SHA-256
         - [ ] Change PLAY_RECOGNIZED to Required
@@ -39,6 +39,7 @@
 ### Notifications
     - [ ] Notifications reminding to weight
     - [ ] Notifications analyzing previous day (meals, weight, walks)
+    - [ ] Announcement notifications
 
 ### In-app purchases
     - [ ] Research & initial implementation

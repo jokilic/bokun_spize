@@ -304,7 +304,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                     'goalsSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: context.colors.text,
                     ),
@@ -532,32 +532,72 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                     color: context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
-                                      onTap: HapticFeedback.lightImpact,
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
-                                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                      highlightColor: Colors.transparent,
                                       splashColor: Colors.transparent,
                                       hoverColor: Colors.transparent,
                                       focusColor: Colors.transparent,
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
-                                          horizontal: 24,
-                                          vertical: 16,
+                                          horizontal: 20,
+                                          vertical: 14,
                                         ),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
                                         ),
                                         child: Row(
                                           children: [
-                                            Expanded(
-                                              child: Text(
-                                                'goalsExplanation'.tr(),
-                                                style: TextStyle(
-                                                  fontFamily: 'PlusJakartaSans',
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: context.colors.text.withValues(alpha: 0.75),
+                                            ///
+                                            /// ICON
+                                            ///
+                                            Material(
+                                              color: context.colors.listTileBackground,
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: InkWell(
+                                                borderRadius: BorderRadius.circular(12),
+                                                highlightColor: Colors.transparent,
+                                                splashColor: Colors.transparent,
+                                                hoverColor: Colors.transparent,
+                                                focusColor: Colors.transparent,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(12),
+                                                  child: PhosphorIcon(
+                                                    PhosphorIconsBold.mathOperations,
+                                                    size: 22,
+                                                    color: context.colors.text.withValues(alpha: 0.75),
+                                                  ),
                                                 ),
-                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 20),
+
+                                            ///
+                                            /// TEXT
+                                            ///
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'goalsExplanationTitle'.tr(),
+                                                    style: TextStyle(
+                                                      fontFamily: 'PlusJakartaSans',
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    'goalsExplanationSubtitle'.tr(),
+                                                    style: TextStyle(
+                                                      fontFamily: 'PlusJakartaSans',
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],

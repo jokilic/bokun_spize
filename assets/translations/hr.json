@@ -226,5 +226,6 @@
     "userMetricsSubtitle": "Za izračun dnevnih ciljeva",
     "goalsTitle": "Ciljevi",
     "goalsSubtitle": "Dnevne kalorije i makronutrijenti",
-    "goalsExplanation": "Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju."
+    "goalsExplanationTitle": "Način računanja",
+    "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju."
 }

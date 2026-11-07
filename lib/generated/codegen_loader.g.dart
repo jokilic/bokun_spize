@@ -242,7 +242,8 @@ class CodegenLoader extends AssetLoader{
   "userMetricsSubtitle": "To calculate your daily goals",
   "goalsTitle": "Goals",
   "goalsSubtitle": "Daily calories & macros",
-  "goalsExplanation": "Changing your daily calorie intake automatically adjusts the protein, carbohydrate, and fat ratios."
+  "goalsExplanationTitle": "Method of calculation",
+  "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros."
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -472,7 +473,8 @@ static const Map<String,dynamic> _hr = {
   "userMetricsSubtitle": "Za izračun dnevnih ciljeva",
   "goalsTitle": "Ciljevi",
   "goalsSubtitle": "Dnevne kalorije i makronutrijenti",
-  "goalsExplanation": "Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju."
+  "goalsExplanationTitle": "Način računanja",
+  "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }

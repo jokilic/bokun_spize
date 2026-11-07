@@ -263,7 +263,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     isEditingMeal ? 'manualAddMealEditSubtitle'.tr() : 'manualAddMealSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: context.colors.text,
                     ),

@@ -226,5 +226,6 @@
     "userMetricsSubtitle": "To calculate your daily goals",
     "goalsTitle": "Goals",
     "goalsSubtitle": "Daily calories & macros",
-    "goalsExplanation": "Changing your daily calorie intake automatically adjusts the protein, carbohydrate, and fat ratios."
+    "goalsExplanationTitle": "Method of calculation",
+    "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros."
 }
