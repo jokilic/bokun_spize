@@ -88,6 +88,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
     final hasUserMetrics = userMetrics?.age != null && userMetrics?.height != null && userMetrics?.weight != null && userMetrics?.gender != null;
 
+    final hasMacroValues = userMetrics?.dailyCalories != null && userMetrics?.dailyProtein != null && userMetrics?.dailyCarbs != null && userMetrics?.dailyFat != null;
+
     return Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
       bottomNavigationBar: NavigationBarWidget(),
@@ -232,6 +234,68 @@ class _AccountScreenState extends State<AccountScreen> {
                   iconBackgroundColor: context.colors.carbs,
                   title: 'accountGoalsTitle'.tr(),
                   subtitle: 'accountGoalsSubtitle'.tr(),
+                  customSubtitle: hasMacroValues
+                      ? Text.rich(
+                          ///
+                          /// CALORIES
+                          ///
+                          TextSpan(
+                            text: '${userMetrics!.dailyCalories!.toStringAsFixed(0)}${'caloriesUnit'.tr()}',
+                            children: [
+                              WidgetSpan(
+                                child: PhosphorIcon(
+                                  PhosphorIconsBold.dotOutline,
+                                  size: 16,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+
+                              ///
+                              /// PROTEIN
+                              ///
+                              TextSpan(
+                                text: '${userMetrics.dailyProtein!.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                              ),
+                              WidgetSpan(
+                                child: PhosphorIcon(
+                                  PhosphorIconsBold.dotOutline,
+                                  size: 16,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+
+                              ///
+                              /// CARBS
+                              ///
+                              TextSpan(
+                                text: '${userMetrics.dailyCarbs!.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                              ),
+                              WidgetSpan(
+                                child: PhosphorIcon(
+                                  PhosphorIconsBold.dotOutline,
+                                  size: 16,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+
+                              ///
+                              /// FAT
+                              ///
+                              TextSpan(
+                                text: '${userMetrics.dailyFat!.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: context.colors.text.withValues(alpha: 0.7),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : null,
                 ),
 
               ///
