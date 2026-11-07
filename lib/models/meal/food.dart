@@ -45,6 +45,14 @@ class Food {
     color: map['color'] != null ? colorFromHex(map['color']) : null,
   );
 
+  static Food? tryFromMap(Object? value) {
+    try {
+      return value is Map ? Food.fromMap(Map<String, dynamic>.from(value)) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Map<String, dynamic> toMap() => {
     'name': name,
     'quantity': quantity,

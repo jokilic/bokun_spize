@@ -98,8 +98,9 @@ service cloud.firestore {
         && isOptionalString(data.name, 500)
         && isOptionalString(data.emoji, 32)
         && isOptionalString(data.color, 16)
-        && ((data.createdAt is string && data.createdAt.size() <= 64) || data.createdAt is timestamp)
+        && data.createdAt is timestamp
         && (data.nutrition == null || isValidNutrition(data.nutrition))
+        // Firestore Rules cannot validate every element type in an arbitrary list
         && (data.foods == null || (data.foods is list && data.foods.size() <= 200))
         && isOptionalString(data.originalText, 50000)
         && isOptionalString(data.get('methodOfCreation', null), 200)
@@ -120,7 +121,7 @@ service cloud.firestore {
         && data.keys().hasOnly(['id', 'dateTime', 'weight'])
         && data.id is string
         && data.id == weightTrackId
-        && (data.dateTime is timestamp || data.dateTime is string)
+        && data.dateTime is timestamp
         && data.weight is number
         && data.weight > 0
         && data.weight <= 1000;
@@ -146,9 +147,7 @@ service cloud.firestore {
         && data.appVersion.size() <= 200
         && data.platform is string
         && data.platform.size() <= 10000
-        && data.createdAt is string
-        && data.createdAt.size() > 0
-        && data.createdAt.size() <= 64;
+        && data.createdAt is timestamp;
     }
 
     // Allow authenticated submissions and admin-only reads and deletes

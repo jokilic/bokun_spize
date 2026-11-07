@@ -971,39 +971,6 @@ class FirebaseService {
     }
   }
 
-  /// Updates only `isAdmin` in the current user's document in [Firebase]
-  Future<bool> updateUserIsAdmin({required bool isAdmin}) async {
-    try {
-      final user = auth.currentUser;
-
-      if (user == null) {
-        return false;
-      }
-
-      final userMetrics = UserMetrics(
-        isAdmin: isAdmin,
-      );
-
-      await firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(
-            userMetrics.toMap(
-              includeMetrics: false,
-            ),
-            SetOptions(merge: true),
-          );
-
-      return true;
-    } catch (error) {
-      log(
-        'Updating user admin status failed',
-        error: error,
-      );
-      return false;
-    }
-  }
-
   /// Updates `userMetrics` in the current user's document in [Firebase]
   Future<bool> updateUserMetrics({required UserMetrics newUserMetrics}) async {
     try {
@@ -1159,11 +1126,11 @@ class FirebaseService {
     query = query
         .where(
           'createdAt',
-          isGreaterThanOrEqualTo: startOfDay.toIso8601String(),
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
         )
         .where(
           'createdAt',
-          isLessThan: startOfNextDay.toIso8601String(),
+          isLessThan: Timestamp.fromDate(startOfNextDay),
         )
         .orderBy('createdAt', descending: true);
 

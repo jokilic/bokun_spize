@@ -41,7 +41,7 @@ class WeightTrack {
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'dateTime': dateTime,
+    'dateTime': Timestamp.fromDate(dateTime),
     'weight': weight,
   };
 

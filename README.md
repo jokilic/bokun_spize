@@ -14,8 +14,7 @@
     - [ ] `AccountScreen`
         - [x] Edit user name
         - [x] UserMetricsSheet
-        - [ ] MacroGoalsSheet
-            - [ ] Show if user metrics exist
+        - [x] MacroGoalsSheet
         - [x] Theme
         - [x] Language
         - [ ] Notifications
@@ -27,7 +26,6 @@
 
 ### Firebase
     - [ ] User -> `isAdmin` - Then he can open contact messages
-    - [ ] Go through `FirebaseService` and update database rules if necessary
     - [ ] Firebase App Check
         - [ ] Add the Play App Signing SHA-256
         - [ ] Change PLAY_RECOGNIZED to Required

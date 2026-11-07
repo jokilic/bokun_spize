@@ -84,17 +84,17 @@ class UserMetrics {
   }
 
   Map<String, dynamic> toMap({bool includeMetrics = true}) => {
-    if (registeredAt != null) 'registeredAt': registeredAt,
+    if (registeredAt != null) 'registeredAt': Timestamp.fromDate(registeredAt!),
     if (name != null) 'name': name,
     if (includeMetrics) ...{
-      'age': age,
-      'height': height,
-      'weight': weight,
-      'gender': gender?.name,
-      'dailyCalories': dailyCalories,
-      'dailyProtein': dailyProtein,
-      'dailyCarbs': dailyCarbs,
-      'dailyFat': dailyFat,
+      if (age != null) 'age': age,
+      if (height != null) 'height': height,
+      if (weight != null) 'weight': weight,
+      if (gender != null) 'gender': gender!.name,
+      if (dailyCalories != null) 'dailyCalories': dailyCalories,
+      if (dailyProtein != null) 'dailyProtein': dailyProtein,
+      if (dailyCarbs != null) 'dailyCarbs': dailyCarbs,
+      if (dailyFat != null) 'dailyFat': dailyFat,
     },
     if (isAdmin != null) 'isAdmin': isAdmin,
   };

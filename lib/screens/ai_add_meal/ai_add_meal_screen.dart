@@ -163,7 +163,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                           'logMeal'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
-                            fontSize: 26,
+                            fontSize: 24,
                             fontWeight: FontWeight.w800,
                             height: 1.2,
                             letterSpacing: 0.6,

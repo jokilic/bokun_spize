@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../util/color.dart';
@@ -83,7 +84,7 @@ class Meal {
     color: map['color'] != null ? colorFromHex(map['color']) : null,
     createdAt: createdAt,
     nutrition: map['nutrition'] != null ? Nutrition.fromMap(map['nutrition'] as Map<String, dynamic>) : null,
-    foods: map['foods'] != null ? List<Food>.from(map['foods'].map((x) => Food.fromMap(x))) : null,
+    foods: (map['foods'] as List?)?.map(Food.tryFromMap).whereType<Food>().toList(),
     originalText: originalText,
     isLoading: isLoading,
     errors: errors,
@@ -92,14 +93,17 @@ class Meal {
     methodOfCreation: map['methodOfCreation'] as String?,
   );
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode({
+    ...toMap(),
+    'createdAt': createdAt.toIso8601String(),
+  });
 
   Map<String, dynamic> toMap() => {
     'id': id,
     'name': name,
     'emoji': emoji,
     'color': color != null ? colorToHex(color!) : null,
-    'createdAt': createdAt.toIso8601String(),
+    'createdAt': Timestamp.fromDate(createdAt),
     'nutrition': nutrition?.toMap(),
     'foods': foods?.map((food) => food.toMap()).toList(),
     'originalText': originalText,

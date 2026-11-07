@@ -240,7 +240,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             'entranceTitle'.tr(),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
-                              fontSize: 30,
+                              fontSize: 28,
                               fontWeight: FontWeight.w800,
                               height: 1.2,
                               letterSpacing: 0.6,
@@ -253,7 +253,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 8),
+                    child: SizedBox(height: 4),
                   ),
 
                   ///

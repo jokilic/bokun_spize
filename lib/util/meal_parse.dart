@@ -16,7 +16,7 @@ Meal? parseMealDocument(QueryDocumentSnapshot<Map<String, dynamic>> document) {
       createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
       originalText: data['originalText'] as String?,
       isLoading: data['isLoading'] as bool? ?? false,
-      errors: (data['errors'] as List?)?.cast<String>(),
+      errors: (data['errors'] as List?)?.whereType<String>().toList(),
       imageStoragePath: data['imageStoragePath'] as String?,
       imageBlurHash: data['imageBlurHash'] as String?,
     );

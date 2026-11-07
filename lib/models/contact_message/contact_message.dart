@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ContactMessage {
   final String id;
   final String message;
@@ -33,7 +35,10 @@ class ContactMessage {
     createdAt: createdAt,
   );
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode({
+    ...toMap(),
+    'createdAt': createdAt.toIso8601String(),
+  });
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -42,7 +47,7 @@ class ContactMessage {
     'userEmail': userEmail,
     'appVersion': appVersion,
     'platform': platform,
-    'createdAt': createdAt.toIso8601String(),
+    'createdAt': Timestamp.fromDate(createdAt),
   };
 
   @override
