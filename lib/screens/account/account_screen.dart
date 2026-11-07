@@ -169,11 +169,21 @@ class _AccountScreenState extends State<AccountScreen> {
                         /// HEIGHT
                         ///
                         TextSpan(
-                          text:
-                              '${normalizedHeight(
-                                userMetrics!.height!,
-                              ).toStringAsFixed(0)}${'centimeter'.tr()}',
                           children: [
+                            TextSpan(
+                              text: normalizedHeight(
+                                userMetrics!.height!,
+                              ).toStringAsFixed(0),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'centimeter'.tr(),
+                            ),
                             WidgetSpan(
                               child: PhosphorIcon(
                                 PhosphorIconsBold.dotOutline,
@@ -186,7 +196,16 @@ class _AccountScreenState extends State<AccountScreen> {
                             /// WEIGHT
                             ///
                             TextSpan(
-                              text: '${userMetrics.weight!.toStringAsFixed(1)}${'kilogram'.tr()}',
+                              text: userMetrics.weight!.toStringAsFixed(1),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'kilogram'.tr(),
                             ),
                             WidgetSpan(
                               child: PhosphorIcon(
@@ -200,8 +219,17 @@ class _AccountScreenState extends State<AccountScreen> {
                             /// AGE
                             ///
                             TextSpan(
+                              text: userMetrics.age!.toStringAsFixed(0),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            const TextSpan(
                               // TODO: Localization for 'y'
-                              text: '${userMetrics.age!.toStringAsFixed(0)}y',
+                              text: 'y',
                             ),
                           ],
                         ),
