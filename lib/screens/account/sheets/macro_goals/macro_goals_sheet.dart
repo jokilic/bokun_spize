@@ -13,8 +13,6 @@ import '../../../../util/spacing.dart';
 import '../../../../util/typedefs.dart';
 import '../../../../widgets/animated_digit_widget.dart';
 
-// TODO: Update staggered animations like other screens
-
 class MacroGoalsSheet extends StatefulWidget {
   final Color activeColor;
   final double bmr;
@@ -326,7 +324,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -589,7 +587,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -1013,7 +1011,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
