@@ -1017,6 +1017,10 @@ class FirebaseService {
           'gender': FieldValue.delete(),
           'height': FieldValue.delete(),
           'weight': FieldValue.delete(),
+          'dailyCalories': FieldValue.delete(),
+          'dailyProtein': FieldValue.delete(),
+          'dailyCarbs': FieldValue.delete(),
+          'dailyFat': FieldValue.delete(),
         });
       } else if (onlyMacroGoals) {
         await document.update({

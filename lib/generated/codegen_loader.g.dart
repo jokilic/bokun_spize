@@ -38,7 +38,7 @@ class CodegenLoader extends AssetLoader{
   "walks": "Walks",
   "steps": "steps",
   "saveChanges": "Save changes",
-  "saveMeasurements": "Save measurements",
+  "saveMeasurements": "Save data",
   "saveGoals": "Save goals",
   "dailyIntake": "daily intake",
   "macros": "Macros",
@@ -185,7 +185,7 @@ class CodegenLoader extends AssetLoader{
   "mealsErrorMealFailedDecoding": "Meal could not be read",
   "mealsErrorImageFailedSave": "Image could not be saved",
   "mealsErrorImageUploadFailed": "Image upload failed",
-  "mealsEmptyTitle": "Meal journal for today is empty",
+  "mealsEmptyTitle": "Meal journal is empty",
   "mealsEmptySubtitle": "Add your first meal by pressing the corner icon",
   "mealsErrorTitle": "Error in meal journal",
   "searchTitle": "Search meals",
@@ -231,6 +231,7 @@ class CodegenLoader extends AssetLoader{
   "accountDeleteSheetSubtitle": "Confirm account deletion",
   "accountDeleteSheetTextFieldTitle": "Write '{}'",
   "accountDeleteSheetWord": "delete my account",
+  "accountDeleteButton": "Delete account",
   "accountContactSheetTitle": "Contact me",
   "accountContactSheetSubtitle": "Send me a message",
   "accountContactSheetTextFieldTitle": "Your message",
@@ -243,7 +244,9 @@ class CodegenLoader extends AssetLoader{
   "goalsTitle": "Goals",
   "goalsSubtitle": "Daily calories & macros",
   "goalsExplanationTitle": "Method of calculation",
-  "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros."
+  "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros.",
+  "deleteAccountExplanationTitle": "This is permanent",
+  "deleteAccountExplanationSubtitle": "Deleting your account will forever remove your data."
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -269,7 +272,7 @@ static const Map<String,dynamic> _hr = {
   "walks": "Hodanje",
   "steps": "koraci",
   "saveChanges": "Spremi promjene",
-  "saveMeasurements": "Spremi mjere",
+  "saveMeasurements": "Spremi podatke",
   "saveGoals": "Spremi ciljeve",
   "dailyIntake": "dnevnog unosa",
   "macros": "Makronutrijenti",
@@ -416,7 +419,7 @@ static const Map<String,dynamic> _hr = {
   "mealsErrorMealFailedDecoding": "Obrok se nije mogao učitati",
   "mealsErrorImageFailedSave": "Slika se nije mogla spremiti",
   "mealsErrorImageUploadFailed": "Prijenos slike nije uspio",
-  "mealsEmptyTitle": "Dnevnik obroka za danas je prazan",
+  "mealsEmptyTitle": "Dnevnik obroka je prazan",
   "mealsEmptySubtitle": "Dodaj prvi obrok pritiskom na ikonu u kutu",
   "mealsErrorTitle": "Pogreška u dnevniku obroka",
   "searchTitle": "Pretraži obroke",
@@ -462,6 +465,7 @@ static const Map<String,dynamic> _hr = {
   "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
   "accountDeleteSheetTextFieldTitle": "Napiši '{}'",
   "accountDeleteSheetWord": "izbriši moj račun",
+  "accountDeleteButton": "Izbriši račun",
   "accountContactSheetTitle": "Kontakt",
   "accountContactSheetSubtitle": "Pošalji mi poruku",
   "accountContactSheetTextFieldTitle": "Tvoja poruka",
@@ -474,7 +478,9 @@ static const Map<String,dynamic> _hr = {
   "goalsTitle": "Ciljevi",
   "goalsSubtitle": "Dnevne kalorije i makronutrijenti",
   "goalsExplanationTitle": "Način računanja",
-  "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju."
+  "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju.",
+  "deleteAccountExplanationTitle": "Ovo je trajno",
+  "deleteAccountExplanationSubtitle": "Brisanjem računa trajno ćete ukloniti svoje podatke."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }

@@ -63,6 +63,19 @@ class _MealsScreenState extends State<MealsScreen> {
     final isLoading = state.isLoading && state.currentlyVisibleDate == null;
     final meals = state.meals;
 
+    /// Localized `date` values
+    final shortDayString = getDateString(
+      date: currentlyVisibleDate,
+      dateFormat: 'dd MMM',
+      languageCode: context.locale.languageCode,
+    );
+
+    final fullDayString = getDateString(
+      date: currentlyVisibleDate,
+      dateFormat: 'EEEE, dd.MM.yyyy.',
+      languageCode: context.locale.languageCode,
+    );
+
     /// Listens to any changes in `userMetrics` from [Firebase]
     final userMetrics = watchStream<FirebaseService, UserMetrics?>(
       (firebaseService) => firebaseService.listenToUserMetrics(),
@@ -277,16 +290,8 @@ class _MealsScreenState extends State<MealsScreen> {
                       ),
                     );
                   },
-                  shortDayString: getDateString(
-                    date: currentlyVisibleDate,
-                    dateFormat: 'dd MMM',
-                    languageCode: context.locale.languageCode,
-                  ),
-                  fullDayString: getDateString(
-                    date: currentlyVisibleDate,
-                    dateFormat: 'EEEE, dd.MM.yyyy.',
-                    languageCode: context.locale.languageCode,
-                  ),
+                  shortDayString: shortDayString,
+                  fullDayString: fullDayString,
                   currentCalories: currentCalories,
                   currentProtein: currentProtein,
                   currentCarbs: currentCarbs,

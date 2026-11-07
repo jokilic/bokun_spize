@@ -207,6 +207,114 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
             ),
 
             ///
+            /// EXPLANATION
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Material(
+                    color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(listTileRadius / 2),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(listTileRadius / 2),
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: context.colors.delete,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(listTileRadius / 2),
+                        ),
+                        child: Row(
+                          children: [
+                            ///
+                            /// ICON
+                            ///
+                            Material(
+                              color: context.colors.delete,
+                              borderRadius: BorderRadius.circular(12),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: PhosphorIcon(
+                                    PhosphorIconsBold.warningCircle,
+                                    size: 22,
+                                    color: context.colors.buttonText,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+
+                            ///
+                            /// TEXT
+                            ///
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'deleteAccountExplanationTitle'.tr(),
+                                    style: TextStyle(
+                                      fontFamily: 'PlusJakartaSans',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.colors.text.withValues(alpha: 0.75),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'deleteAccountExplanationSubtitle'.tr(),
+                                    style: TextStyle(
+                                      fontFamily: 'PlusJakartaSans',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: context.colors.text.withValues(alpha: 0.75),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 20),
+            ),
+
+            ///
             /// PASSWORD TEXT FIELD
             ///
             if (widget.requiresPassword) ...[
@@ -214,7 +322,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.animation,
@@ -264,7 +372,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * (widget.requiresPassword ? 4 : 3),
+                  delay: BokunSpizeDurations.stateTransitionStagger * (widget.requiresPassword ? 5 : 4),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -319,7 +427,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * (widget.requiresPassword ? 5 : 4),
+                  delay: BokunSpizeDurations.stateTransitionStagger * (widget.requiresPassword ? 6 : 5),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -349,7 +457,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                         foregroundColor: context.colors.buttonText,
                       ),
                       child: Text(
-                        'confirm'.tr(),
+                        'accountDeleteButton'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

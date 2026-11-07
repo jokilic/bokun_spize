@@ -22,7 +22,7 @@
     "walks": "Walks",
     "steps": "steps",
     "saveChanges": "Save changes",
-    "saveMeasurements": "Save measurements",
+    "saveMeasurements": "Save data",
     "saveGoals": "Save goals",
     "dailyIntake": "daily intake",
     "macros": "Macros",
@@ -169,7 +169,7 @@
     "mealsErrorMealFailedDecoding": "Meal could not be read",
     "mealsErrorImageFailedSave": "Image could not be saved",
     "mealsErrorImageUploadFailed": "Image upload failed",
-    "mealsEmptyTitle": "Meal journal for today is empty",
+    "mealsEmptyTitle": "Meal journal is empty",
     "mealsEmptySubtitle": "Add your first meal by pressing the corner icon",
     "mealsErrorTitle": "Error in meal journal",
     "searchTitle": "Search meals",
@@ -215,6 +215,7 @@
     "accountDeleteSheetSubtitle": "Confirm account deletion",
     "accountDeleteSheetTextFieldTitle": "Write '{}'",
     "accountDeleteSheetWord": "delete my account",
+    "accountDeleteButton": "Delete account",
     "accountContactSheetTitle": "Contact me",
     "accountContactSheetSubtitle": "Send me a message",
     "accountContactSheetTextFieldTitle": "Your message",
@@ -227,5 +228,7 @@
     "goalsTitle": "Goals",
     "goalsSubtitle": "Daily calories & macros",
     "goalsExplanationTitle": "Method of calculation",
-    "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros."
+    "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros.",
+    "deleteAccountExplanationTitle": "This is permanent",
+    "deleteAccountExplanationSubtitle": "Deleting your account will forever remove your data."
 }

@@ -22,7 +22,7 @@
     "walks": "Hodanje",
     "steps": "koraci",
     "saveChanges": "Spremi promjene",
-    "saveMeasurements": "Spremi mjere",
+    "saveMeasurements": "Spremi podatke",
     "saveGoals": "Spremi ciljeve",
     "dailyIntake": "dnevnog unosa",
     "macros": "Makronutrijenti",
@@ -169,7 +169,7 @@
     "mealsErrorMealFailedDecoding": "Obrok se nije mogao učitati",
     "mealsErrorImageFailedSave": "Slika se nije mogla spremiti",
     "mealsErrorImageUploadFailed": "Prijenos slike nije uspio",
-    "mealsEmptyTitle": "Dnevnik obroka za danas je prazan",
+    "mealsEmptyTitle": "Dnevnik obroka je prazan",
     "mealsEmptySubtitle": "Dodaj prvi obrok pritiskom na ikonu u kutu",
     "mealsErrorTitle": "Pogreška u dnevniku obroka",
     "searchTitle": "Pretraži obroke",
@@ -215,6 +215,7 @@
     "accountDeleteSheetSubtitle": "Potvrdi brisanje računa",
     "accountDeleteSheetTextFieldTitle": "Napiši '{}'",
     "accountDeleteSheetWord": "izbriši moj račun",
+    "accountDeleteButton": "Izbriši račun",
     "accountContactSheetTitle": "Kontakt",
     "accountContactSheetSubtitle": "Pošalji mi poruku",
     "accountContactSheetTextFieldTitle": "Tvoja poruka",
@@ -227,5 +228,7 @@
     "goalsTitle": "Ciljevi",
     "goalsSubtitle": "Dnevne kalorije i makronutrijenti",
     "goalsExplanationTitle": "Način računanja",
-    "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju."
+    "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju.",
+    "deleteAccountExplanationTitle": "Ovo je trajno",
+    "deleteAccountExplanationSubtitle": "Brisanjem računa trajno ćete ukloniti svoje podatke."
 }
