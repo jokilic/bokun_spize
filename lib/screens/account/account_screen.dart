@@ -268,8 +268,19 @@ class _AccountScreenState extends State<AccountScreen> {
                           /// CALORIES
                           ///
                           TextSpan(
-                            text: '${userMetrics!.dailyCalories!.toStringAsFixed(0)}${'caloriesUnit'.tr()}',
                             children: [
+                              TextSpan(
+                                text: userMetrics!.dailyCalories!.toStringAsFixed(0),
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'caloriesUnit'.tr(),
+                              ),
                               WidgetSpan(
                                 child: PhosphorIcon(
                                   PhosphorIconsBold.dotOutline,
@@ -282,7 +293,16 @@ class _AccountScreenState extends State<AccountScreen> {
                               /// PROTEIN
                               ///
                               TextSpan(
-                                text: '${userMetrics.dailyProtein!.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                                text: userMetrics.dailyProtein!.toStringAsFixed(0),
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'gramUnit'.tr(),
                               ),
                               WidgetSpan(
                                 child: PhosphorIcon(
@@ -296,7 +316,16 @@ class _AccountScreenState extends State<AccountScreen> {
                               /// CARBS
                               ///
                               TextSpan(
-                                text: '${userMetrics.dailyCarbs!.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                                text: userMetrics.dailyCarbs!.toStringAsFixed(0),
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'gramUnit'.tr(),
                               ),
                               WidgetSpan(
                                 child: PhosphorIcon(
@@ -310,7 +339,16 @@ class _AccountScreenState extends State<AccountScreen> {
                               /// FAT
                               ///
                               TextSpan(
-                                text: '${userMetrics.dailyFat!.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                                text: userMetrics.dailyFat!.toStringAsFixed(0),
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.colors.text.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'gramUnit'.tr(),
                               ),
                             ],
                           ),
