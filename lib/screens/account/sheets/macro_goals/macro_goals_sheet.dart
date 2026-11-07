@@ -546,7 +546,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                 'Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju.',
                                                 style: TextStyle(
                                                   fontFamily: 'PlusJakartaSans',
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                   fontWeight: FontWeight.w400,
                                                   color: context.colors.text.withValues(alpha: 0.75),
                                                 ),
@@ -681,7 +681,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                           'protein'.tr(),
                                                           style: TextStyle(
                                                             fontFamily: 'Epilogue',
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             fontWeight: FontWeight.w700,
                                                             color: context.colors.text,
                                                           ),
@@ -691,10 +691,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
+                                                          // TODO
                                                           '${proteinPercentage.toStringAsFixed(0)}% unosa',
                                                           style: TextStyle(
-                                                            fontFamily: 'Epilogue',
-                                                            fontSize: 12,
+                                                            fontFamily: 'PlusJakartaSans',
+                                                            fontSize: 10,
                                                             fontWeight: FontWeight.w500,
                                                             color: context.colors.text.withValues(alpha: 0.75),
                                                           ),
@@ -721,7 +722,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                     '${currentProtein.toStringAsFixed(0)}${'gramUnit'.tr()}',
                                                     style: TextStyle(
                                                       fontFamily: 'Epilogue',
-                                                      fontSize: 18,
+                                                      fontSize: 16,
                                                       fontWeight: FontWeight.w800,
                                                       color: context.colors.text,
                                                     ),
@@ -734,8 +735,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   Text(
                                                     '${proteinCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
                                                     style: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 12,
+                                                      fontFamily: 'PlusJakartaSans',
+                                                      fontSize: 10,
                                                       fontWeight: FontWeight.w500,
                                                       color: context.colors.text.withValues(alpha: 0.75),
                                                     ),
@@ -798,7 +799,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                           'carbs'.tr(),
                                                           style: TextStyle(
                                                             fontFamily: 'Epilogue',
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             fontWeight: FontWeight.w700,
                                                             color: context.colors.text,
                                                           ),
@@ -808,10 +809,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
+                                                          // TODO
                                                           '${carbsPercentage.toStringAsFixed(0)}% unosa',
                                                           style: TextStyle(
-                                                            fontFamily: 'Epilogue',
-                                                            fontSize: 12,
+                                                            fontFamily: 'PlusJakartaSans',
+                                                            fontSize: 10,
                                                             fontWeight: FontWeight.w500,
                                                             color: context.colors.text.withValues(alpha: 0.75),
                                                           ),
@@ -838,7 +840,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                     '${currentCarbs.toStringAsFixed(0)}${'gramUnit'.tr()}',
                                                     style: TextStyle(
                                                       fontFamily: 'Epilogue',
-                                                      fontSize: 18,
+                                                      fontSize: 16,
                                                       fontWeight: FontWeight.w800,
                                                       color: context.colors.text,
                                                     ),
@@ -851,8 +853,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   Text(
                                                     '${carbsCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
                                                     style: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 12,
+                                                      fontFamily: 'PlusJakartaSans',
+                                                      fontSize: 10,
                                                       fontWeight: FontWeight.w500,
                                                       color: context.colors.text.withValues(alpha: 0.75),
                                                     ),
@@ -915,7 +917,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                           'fats'.tr(),
                                                           style: TextStyle(
                                                             fontFamily: 'Epilogue',
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             fontWeight: FontWeight.w700,
                                                             color: context.colors.text,
                                                           ),
@@ -925,10 +927,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
+                                                          // TODO
                                                           '${fatPercentage.toStringAsFixed(0)}% unosa',
                                                           style: TextStyle(
-                                                            fontFamily: 'Epilogue',
-                                                            fontSize: 12,
+                                                            fontFamily: 'PlusJakartaSans',
+                                                            fontSize: 10,
                                                             fontWeight: FontWeight.w500,
                                                             color: context.colors.text.withValues(alpha: 0.75),
                                                           ),
@@ -955,7 +958,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                     '${currentFat.toStringAsFixed(0)}${'gramUnit'.tr()}',
                                                     style: TextStyle(
                                                       fontFamily: 'Epilogue',
-                                                      fontSize: 18,
+                                                      fontSize: 16,
                                                       fontWeight: FontWeight.w800,
                                                       color: context.colors.text,
                                                     ),
@@ -968,8 +971,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   Text(
                                                     '${fatCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
                                                     style: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 12,
+                                                      fontFamily: 'PlusJakartaSans',
+                                                      fontSize: 10,
                                                       fontWeight: FontWeight.w500,
                                                       color: context.colors.text.withValues(alpha: 0.75),
                                                     ),
