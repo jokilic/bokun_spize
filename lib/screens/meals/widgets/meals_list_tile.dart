@@ -35,7 +35,11 @@ class MealsListTile extends StatelessWidget {
     final isLoading = meal.isLoading;
     final hasError = meal.errors?.isNotEmpty ?? false;
 
-    final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? '📷';
+    final titleText = isLoading
+        ? meal.originalText ?? '📷'
+        : hasError
+        ? meal.errors!.join('\n')
+        : capitalizeFirstLetter(meal.name) ?? '📷';
 
     final subtitleText = getDateString(
       date: meal.createdAt,
@@ -325,94 +329,96 @@ class MealsListTile extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 20),
+                    if (!hasError) ...[
+                      const SizedBox(width: 20),
 
-                    ///
-                    /// CALORIES
-                    ///
-                    Column(
-                      children: [
-                        ///
-                        /// CALORIES VALUE
-                        ///
-                        if (isLoading)
-                          Animate(
-                            onPlay: (controller) => controller.loop(
-                              reverse: true,
-                              min: 0.6,
-                            ),
-                            effects: const [
-                              FadeEffect(
-                                duration: BokunSpizeDurations.shimmer,
-                                curve: Curves.easeIn,
+                      ///
+                      /// CALORIES
+                      ///
+                      Column(
+                        children: [
+                          ///
+                          /// CALORIES VALUE
+                          ///
+                          if (isLoading)
+                            Animate(
+                              onPlay: (controller) => controller.loop(
+                                reverse: true,
+                                min: 0.6,
                               ),
-                            ],
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                              effects: const [
+                                FadeEffect(
+                                  duration: BokunSpizeDurations.shimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                              ],
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                                ),
+                                height: 28,
+                                width: 48,
                               ),
-                              height: 28,
-                              width: 48,
+                            )
+                          else
+                            Text(
+                              formatNutritionValue(
+                                    meal.nutrition?.calories,
+                                  ) ??
+                                  '',
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: primaryColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.right,
                             ),
-                          )
-                        else
-                          Text(
-                            formatNutritionValue(
-                                  meal.nutrition?.calories,
-                                ) ??
-                                '',
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              color: primaryColor,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.right,
-                          ),
 
-                        ///
-                        /// CALORIES UNIT
-                        ///
-                        if (isLoading) ...[
-                          const SizedBox(height: 8),
-                          Animate(
-                            onPlay: (controller) => controller.loop(
-                              reverse: true,
-                              min: 0.6,
-                            ),
-                            effects: const [
-                              FadeEffect(
-                                duration: BokunSpizeDurations.shimmer,
-                                curve: Curves.easeIn,
+                          ///
+                          /// CALORIES UNIT
+                          ///
+                          if (isLoading) ...[
+                            const SizedBox(height: 8),
+                            Animate(
+                              onPlay: (controller) => controller.loop(
+                                reverse: true,
+                                min: 0.6,
                               ),
-                            ],
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                              effects: const [
+                                FadeEffect(
+                                  duration: BokunSpizeDurations.shimmer,
+                                  curve: Curves.easeIn,
+                                ),
+                              ],
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                                ),
+                                height: 12,
+                                width: 32,
                               ),
-                              height: 12,
-                              width: 32,
                             ),
-                          ),
-                        ] else
-                          Text(
-                            'caloriesUnit'.tr().toUpperCase(),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.text.withValues(alpha: 0.5),
+                          ] else
+                            Text(
+                              'caloriesUnit'.tr().toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: 'Epilogue',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.5),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.right,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.right,
-                          ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
