@@ -162,6 +162,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     final currentProtein = activeProtein ?? 0;
     final currentCarbs = activeCarbs ?? 0;
     final currentFat = activeFat ?? 0;
+    final proteinCalories = currentProtein * 4;
+    final proteinPercentage = currentCalories > 0 ? proteinCalories / currentCalories * 100 : 0;
 
     final decreasedCalories = (((currentCalories / 50).ceil() - 1) * 50).clamp(0, double.infinity).toDouble();
     final canDecreaseCalories = decreasedCalories >= widget.bmr && (widget.calculateDailyMacroValues(decreasedCalories)?.carbs ?? 0) > 0;
@@ -629,7 +631,6 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   ///
                                   /// PROTEIN
                                   ///
-                                  // TODO: Can you update to use proper percentage, gram and calorie value?
                                   Material(
                                     color: context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
@@ -684,7 +685,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         /// PERCENTAGE
                                                         ///
                                                         Text(
-                                                          '30% unosa',
+                                                          '${proteinPercentage.toStringAsFixed(0)}% unosa',
                                                           style: TextStyle(
                                                             fontFamily: 'Epilogue',
                                                             fontSize: 12,
@@ -711,7 +712,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   /// GRAMS
                                                   ///
                                                   Text(
-                                                    '150g',
+                                                    '${currentProtein.toStringAsFixed(0)}${'gramUnit'.tr()}',
                                                     style: TextStyle(
                                                       fontFamily: 'Epilogue',
                                                       fontSize: 18,
@@ -725,7 +726,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   /// CALORIES
                                                   ///
                                                   Text(
-                                                    '400 kcal',
+                                                    '${proteinCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
                                                     style: TextStyle(
                                                       fontFamily: 'Epilogue',
                                                       fontSize: 12,
