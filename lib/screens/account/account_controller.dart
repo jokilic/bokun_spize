@@ -106,8 +106,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
           return success ? newUserMetrics : null;
         },
         onDeletePressed: () => firebase.deleteUserMetrics(
-          onlyBodyMetrics: true,
-          onlyMacroGoals: false,
+          onlyMetricsAndMacros: true,
+          onlyMacros: false,
         ),
       ),
     );
@@ -158,8 +158,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
           ),
         ),
         onDeletePressed: () => firebase.deleteUserMetrics(
-          onlyBodyMetrics: false,
-          onlyMacroGoals: true,
+          onlyMetricsAndMacros: false,
+          onlyMacros: true,
         ),
       ),
     );
