@@ -252,121 +252,137 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               /// GOALS
               ///
-              if (hasUserMetrics)
-                AccountListTile(
-                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    accountController.openMacroGoalsSheet(
+              AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 2,
+                onPressed: () {
+                  if (userMetrics == null) {
+                    return;
+                  }
+
+                  HapticFeedback.lightImpact();
+
+                  /// No user metrics, open [UserMetricsSheet]
+                  if (!hasUserMetrics) {
+                    accountController.openUserMetricsSheet(
                       context,
-                      userMetrics: userMetrics!,
+                      userMetrics: userMetrics,
+                      lastWeightTrack: lastWeightTrack,
                     );
-                  },
-                  icon: PhosphorIconsBold.target,
-                  iconBackgroundColor: context.colors.carbs,
-                  title: 'accountGoalsTitle'.tr(),
-                  subtitle: 'accountGoalsSubtitle'.tr(),
-                  customSubtitle: hasMacroValues
-                      ? Text.rich(
-                          ///
-                          /// CALORIES
-                          ///
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: userMetrics!.dailyCalories!.toStringAsFixed(0),
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'caloriesUnit'.tr(),
-                              ),
-                              WidgetSpan(
-                                child: PhosphorIcon(
-                                  PhosphorIconsBold.dotOutline,
-                                  size: 16,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
-                              ),
 
-                              ///
-                              /// PROTEIN
-                              ///
-                              TextSpan(
-                                text: userMetrics.dailyProtein!.toStringAsFixed(0),
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'gramUnit'.tr(),
-                              ),
-                              WidgetSpan(
-                                child: PhosphorIcon(
-                                  PhosphorIconsBold.dotOutline,
-                                  size: 16,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
-                              ),
+                    return;
+                  }
 
-                              ///
-                              /// CARBS
-                              ///
-                              TextSpan(
-                                text: userMetrics.dailyCarbs!.toStringAsFixed(0),
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
+                  /// User metrics exist, open [MacroGoalsSheet]
+                  accountController.openMacroGoalsSheet(
+                    context,
+                    userMetrics: userMetrics,
+                  );
+                },
+                icon: PhosphorIconsBold.target,
+                iconBackgroundColor: context.colors.carbs,
+                title: 'accountGoalsTitle'.tr(),
+                subtitle: hasUserMetrics ? 'accountGoalsSubtitle'.tr() : 'accountGoalsMissingMetricsSubtitle'.tr(),
+                customSubtitle: hasUserMetrics && hasMacroValues
+                    ? Text.rich(
+                        ///
+                        /// CALORIES
+                        ///
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: userMetrics!.dailyCalories!.toStringAsFixed(0),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
                               ),
-                              TextSpan(
-                                text: 'gramUnit'.tr(),
+                            ),
+                            TextSpan(
+                              text: 'caloriesUnit'.tr(),
+                            ),
+                            WidgetSpan(
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.dotOutline,
+                                size: 16,
+                                color: context.colors.text.withValues(alpha: 0.7),
                               ),
-                              WidgetSpan(
-                                child: PhosphorIcon(
-                                  PhosphorIconsBold.dotOutline,
-                                  size: 16,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
-                              ),
+                            ),
 
-                              ///
-                              /// FAT
-                              ///
-                              TextSpan(
-                                text: userMetrics.dailyFat!.toStringAsFixed(0),
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
+                            ///
+                            /// PROTEIN
+                            ///
+                            TextSpan(
+                              text: userMetrics.dailyProtein!.toStringAsFixed(0),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
                               ),
-                              TextSpan(
-                                text: 'gramUnit'.tr(),
+                            ),
+                            TextSpan(
+                              text: 'gramUnit'.tr(),
+                            ),
+                            WidgetSpan(
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.dotOutline,
+                                size: 16,
+                                color: context.colors.text.withValues(alpha: 0.7),
                               ),
-                            ],
-                          ),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.text.withValues(alpha: 0.7),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : null,
-                ),
+                            ),
+
+                            ///
+                            /// CARBS
+                            ///
+                            TextSpan(
+                              text: userMetrics.dailyCarbs!.toStringAsFixed(0),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'gramUnit'.tr(),
+                            ),
+                            WidgetSpan(
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.dotOutline,
+                                size: 16,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+
+                            ///
+                            /// FAT
+                            ///
+                            TextSpan(
+                              text: userMetrics.dailyFat!.toStringAsFixed(0),
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'gramUnit'.tr(),
+                            ),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: context.colors.text.withValues(alpha: 0.7),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : null,
+              ),
 
               ///
               /// THEME
