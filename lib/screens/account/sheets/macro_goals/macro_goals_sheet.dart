@@ -101,7 +101,9 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
 
   void changeCalories(double amount) {
     final currentCalories = activeCalories ?? 0;
-    final newCalories = (currentCalories + amount).clamp(0, double.infinity).toDouble();
+    final steppedCalories = amount.isNegative ? ((currentCalories / 50).ceil() - 1) * 50 : ((currentCalories / 50).floor() + 1) * 50;
+
+    final newCalories = steppedCalories.clamp(0, double.infinity).toDouble();
 
     if (newCalories == currentCalories) {
       stopCaloriesUpdate();
@@ -493,10 +495,10 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   ///
                                   Material(
                                     color: context.colors.scaffoldBackground,
-                                    borderRadius: BorderRadius.circular(listTileRadius),
+                                    borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
                                       onTap: HapticFeedback.lightImpact,
-                                      borderRadius: BorderRadius.circular(listTileRadius),
+                                      borderRadius: BorderRadius.circular(listTileRadius / 2),
                                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                       splashColor: Colors.transparent,
                                       hoverColor: Colors.transparent,
@@ -507,7 +509,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                           vertical: 16,
                                         ),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(listTileRadius),
+                                          borderRadius: BorderRadius.circular(listTileRadius / 2),
                                         ),
                                         child: Text(
                                           'Preporučeni dnevni unos za umjerenu razinu tjelesne aktivnosti.',
@@ -535,6 +537,104 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
             ),
             const SliverToBoxAdapter(
               child: SizedBox(height: 20),
+            ),
+
+            ///
+            /// MACROS
+            ///
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              sliver: SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 12),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Material(
+                    color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    child: InkWell(
+                      onTap: HapticFeedback.lightImpact,
+                      borderRadius: BorderRadius.circular(listTileRadius),
+                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      splashColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ///
+                                  /// TITLE
+                                  ///
+                                  Text(
+                                    // TODO
+                                    'Macros'.toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.2,
+                                      color: context.colors.text.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  ///
+                                  /// PROTEIN
+                                  ///
+                                  Material(
+                                    color: context.colors.scaffoldBackground,
+                                    borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                    child: InkWell(
+                                      onTap: HapticFeedback.lightImpact,
+                                      borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                      splashColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 24,
+                                          vertical: 16,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                        ),
+                                        child: const SizedBox.shrink(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
 
             ///
