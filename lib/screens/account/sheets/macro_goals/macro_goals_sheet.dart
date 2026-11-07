@@ -18,6 +18,7 @@ class MacroGoalsSheet extends StatefulWidget {
   final double bmr;
   final double tdee;
   final DailyMacroValues initialDailyMacroValues;
+  final DailyMacroValues? Function(double calories) calculateDailyMacroValues;
   final bool macroGoalsExist;
   final Function(DailyMacroValues dailyMacroValues) onSavePressed;
   final Function()? onDeletePressed;
@@ -27,6 +28,7 @@ class MacroGoalsSheet extends StatefulWidget {
     required this.bmr,
     required this.tdee,
     required this.initialDailyMacroValues,
+    required this.calculateDailyMacroValues,
     required this.macroGoalsExist,
     required this.onSavePressed,
     required this.onDeletePressed,
@@ -66,32 +68,36 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     super.dispose();
   }
 
-  void updateValidated() => validated = (activeCalories ?? 0) > 0 && (activeProtein ?? 0) > 0 && (activeCarbs ?? 0) > 0 && (activeFat ?? 0) > 0;
+  /// Updates whether all daily macro values can be saved
+  void updateValidated() => validated = (activeCalories ?? 0) >= widget.bmr && (activeProtein ?? 0) > 0 && (activeCarbs ?? 0) > 0 && (activeFat ?? 0) > 0;
 
-  void updateCalories(double newCalories) => setState(() {
-    activeCalories = newCalories;
-    updateValidated();
-  });
+  /// Recalculates all daily macro values for the selected calorie target
+  bool updateCalories(double newCalories) {
+    final newDailyMacroValues = widget.calculateDailyMacroValues(newCalories);
 
-  void updateProtein(double newProtein) => setState(() {
-    activeProtein = newProtein;
-    updateValidated();
-  });
+    if (newCalories < widget.bmr || (newDailyMacroValues?.carbs ?? 0) <= 0) {
+      return false;
+    }
 
-  void updateCarbs(double newCarbs) => setState(() {
-    activeCarbs = newCarbs;
-    updateValidated();
-  });
+    setState(() {
+      activeCalories = newDailyMacroValues!.calories;
+      activeProtein = newDailyMacroValues.protein;
+      activeCarbs = newDailyMacroValues.carbs;
+      activeFat = newDailyMacroValues.fat;
 
-  void updateFat(double newFat) => setState(() {
-    activeFat = newFat;
-    updateValidated();
-  });
+      updateValidated();
+    });
+
+    return true;
+  }
 
   /// Starts updating calories while the button remains pressed
   void startCaloriesUpdate(double amount) {
     stopCaloriesUpdate();
-    changeCalories(amount);
+
+    if (!changeCalories(amount)) {
+      return;
+    }
 
     caloriesUpdateTimer = Timer.periodic(
       BokunSpizeDurations.animation,
@@ -99,7 +105,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     );
   }
 
-  void changeCalories(double amount) {
+  /// Changes calories by one 50 calorie step
+  bool changeCalories(double amount) {
     final currentCalories = activeCalories ?? 0;
     final steppedCalories = amount.isNegative ? ((currentCalories / 50).ceil() - 1) * 50 : ((currentCalories / 50).floor() + 1) * 50;
 
@@ -107,13 +114,20 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
 
     if (newCalories == currentCalories) {
       stopCaloriesUpdate();
-      return;
+      return false;
+    }
+
+    if (!updateCalories(newCalories)) {
+      stopCaloriesUpdate();
+      return false;
     }
 
     HapticFeedback.lightImpact();
-    updateCalories(newCalories);
+
+    return true;
   }
 
+  /// Stops the active calorie update timer
   void stopCaloriesUpdate() {
     caloriesUpdateTimer?.cancel();
     caloriesUpdateTimer = null;
@@ -133,6 +147,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     Navigator.of(context).pop();
   }
 
+  /// Deletes the currently saved daily macro goals
   void onDeletePressed() {
     if (widget.onDeletePressed != null) {
       widget.onDeletePressed!();
@@ -146,6 +161,9 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     final currentProtein = activeProtein ?? 0;
     final currentCarbs = activeCarbs ?? 0;
     final currentFat = activeFat ?? 0;
+
+    final decreasedCalories = (((currentCalories / 50).ceil() - 1) * 50).clamp(0, double.infinity).toDouble();
+    final canDecreaseCalories = decreasedCalories >= widget.bmr && (widget.calculateDailyMacroValues(decreasedCalories)?.carbs ?? 0) > 0;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -361,15 +379,15 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       ///
-                                      /// INCREMENT
+                                      /// DECREMENT
                                       ///
                                       Material(
-                                        color: currentCalories > 0 ? context.colors.scaffoldBackground : context.colors.listTileBackground,
+                                        color: canDecreaseCalories ? context.colors.scaffoldBackground : context.colors.listTileBackground,
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
-                                          onTap: currentCalories > 0 ? () {} : null,
-                                          onTapDown: currentCalories > 0 ? (_) => startCaloriesUpdate(-1) : null,
-                                          onTapUp: currentCalories > 0 ? (_) => stopCaloriesUpdate() : null,
+                                          onTap: canDecreaseCalories ? () {} : null,
+                                          onTapDown: canDecreaseCalories ? (_) => startCaloriesUpdate(-1) : null,
+                                          onTapUp: canDecreaseCalories ? (_) => stopCaloriesUpdate() : null,
                                           onTapCancel: stopCaloriesUpdate,
                                           borderRadius: BorderRadius.circular(12),
                                           highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
@@ -463,7 +481,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                       const SizedBox(width: 16),
 
                                       ///
-                                      /// DECREMENT
+                                      /// INCREMENT
                                       ///
                                       Material(
                                         color: widget.activeColor,
@@ -512,6 +530,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
                                         ),
                                         child: Text(
+                                          // TODO
                                           'Preporučeni dnevni unos za umjerenu razinu tjelesne aktivnosti.',
                                           style: TextStyle(
                                             fontFamily: 'Epilogue',

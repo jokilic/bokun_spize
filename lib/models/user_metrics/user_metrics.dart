@@ -160,21 +160,23 @@ class UserMetrics {
     return basalMetabolicRate * 1.55;
   }
 
-  DailyMacroValues? get dailyMacroValues {
-    final currentWeight = weight;
-    final calories = tdee?.roundToDouble();
+  DailyMacroValues? get dailyMacroValues => calculateDailyMacroValues(dailyCalories);
 
-    if (currentWeight == null || calories == null) {
+  DailyMacroValues? calculateDailyMacroValues(double? calories) {
+    final currentWeight = weight;
+    final currentCalories = calories ?? tdee?.roundToDouble();
+
+    if (currentWeight == null || currentCalories == null) {
       return null;
     }
 
     final protein = (currentWeight * 1.6).roundToDouble();
     final fat = (currentWeight * 0.8).roundToDouble();
-    final remainingCalories = calories - (protein * 4) - (fat * 9);
+    final remainingCalories = currentCalories - (protein * 4) - (fat * 9);
     final carbs = remainingCalories > 0 ? (remainingCalories / 4).roundToDouble() : 0.0;
 
     return (
-      calories: calories,
+      calories: currentCalories,
       protein: protein,
       carbs: carbs,
       fat: fat,

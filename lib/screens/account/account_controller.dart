@@ -117,17 +117,17 @@ class AccountController extends ValueNotifier<SettingsValues> {
     }
 
     /// Updating was successful, open [MacroGoalsSheet] with proper `UserMetrics`
-    await openMacroGoalsSheet(
+    openMacroGoalsSheet(
       context,
       userMetrics: updatedUserMetrics,
     );
   }
 
   /// Opens [MacroGoalsSheet] with saved or calculated daily goals
-  Future<void> openMacroGoalsSheet(
+  void openMacroGoalsSheet(
     BuildContext context, {
     required UserMetrics userMetrics,
-  }) async {
+  }) {
     final dailyMacroValues = userMetrics.dailyMacroValues;
 
     if (dailyMacroValues == null) {
@@ -143,13 +143,14 @@ class AccountController extends ValueNotifier<SettingsValues> {
 
     final macroGoalsExist = userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
 
-    await showBlurredModalBottomSheet(
+    showBlurredModalBottomSheet(
       context: context,
       builder: (context) => MacroGoalsSheet(
         activeColor: userMetrics.gender == Gender.female ? context.colors.fat : context.colors.carbs,
         bmr: userMetrics.bmr ?? 0,
         tdee: userMetrics.tdee ?? 0,
         initialDailyMacroValues: dailyMacroValues,
+        calculateDailyMacroValues: userMetrics.calculateDailyMacroValues,
         macroGoalsExist: macroGoalsExist,
         onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
           newUserMetrics: userMetrics.copyWith(
