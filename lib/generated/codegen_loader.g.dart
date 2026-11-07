@@ -231,7 +231,7 @@ class CodegenLoader extends AssetLoader{
   "accountContactSheetButton": "Send message",
   "accountContactSendSuccess": "Message sent",
   "accountContactSendFailure": "Couldn't send message",
-  "userMetricsTitle": "Your measurements",
+  "userMetricsTitle": "Measurements",
   "userMetricsSubtitle": "To calculate your daily goals"
 };
 static const Map<String,dynamic> _hr = {
@@ -451,7 +451,7 @@ static const Map<String,dynamic> _hr = {
   "accountContactSheetButton": "Pošalji poruku",
   "accountContactSendSuccess": "Poruka poslana",
   "accountContactSendFailure": "Slanje poruke nije uspjelo",
-  "userMetricsTitle": "Tvoje mjere",
+  "userMetricsTitle": "Mjere",
   "userMetricsSubtitle": "Za izračun dnevnih ciljeva"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};

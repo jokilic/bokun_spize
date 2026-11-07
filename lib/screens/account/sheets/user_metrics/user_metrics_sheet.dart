@@ -12,11 +12,10 @@ import '../../../../models/user_metrics/user_metrics.dart';
 import '../../../../models/weight_track/weight_track.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
+import '../../../../widgets/animated_digit_widget.dart';
 import 'user_metrics_gender_list_tile.dart';
 import 'user_metrics_height.dart';
 import 'user_metrics_weight.dart';
-
-// TODO: Update staggered animations like other screens
 
 class UserMetricsSheet extends StatefulWidget {
   final UserMetrics passedUserMetrics;
@@ -396,7 +395,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -455,9 +454,20 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   Text.rich(
                                     TextSpan(
                                       children: [
-                                        // TODO: Use `animated_digit_widget.dart`
-                                        TextSpan(
-                                          text: currentAge.toStringAsFixed(0),
+                                        WidgetSpan(
+                                          alignment: PlaceholderAlignment.middle,
+                                          child: AnimatedDigitWidget(
+                                            value: currentAge,
+                                            loop: false,
+                                            duration: BokunSpizeDurations.animation,
+                                            curve: Curves.easeIn,
+                                            textStyle: TextStyle(
+                                              fontFamily: 'Epilogue',
+                                              fontSize: 36,
+                                              fontWeight: FontWeight.w900,
+                                              color: context.colors.text,
+                                            ),
+                                          ),
                                         ),
                                         const WidgetSpan(
                                           child: SizedBox(width: 4),
@@ -572,7 +582,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -648,7 +658,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -724,7 +734,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,

@@ -143,6 +143,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
 
     final macroGoalsExist = userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
 
+    // TODO: When opening MacroGoalsSheet from here, don't use existing macro goals, treat it like a fresh data (calculate calories & macros like when opened for the first time)
+
     showBlurredModalBottomSheet(
       context: context,
       builder: (context) => MacroGoalsSheet(

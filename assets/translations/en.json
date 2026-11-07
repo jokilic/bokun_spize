@@ -215,6 +215,6 @@
     "accountContactSheetButton": "Send message",
     "accountContactSendSuccess": "Message sent",
     "accountContactSendFailure": "Couldn't send message",
-    "userMetricsTitle": "Your measurements",
+    "userMetricsTitle": "Measurements",
     "userMetricsSubtitle": "To calculate your daily goals"
 }
