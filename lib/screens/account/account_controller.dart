@@ -148,7 +148,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
       builder: (context) => MacroGoalsSheet(
         activeColor: userMetrics.gender == Gender.female ? context.colors.fat : context.colors.carbs,
         bmr: userMetrics.bmr ?? 0,
-        tdee: userMetrics.tdee ?? 0,
         initialDailyMacroValues: dailyMacroValues,
         calculateDailyMacroValues: userMetrics.calculateDailyMacroValues,
         macroGoalsExist: macroGoalsExist,

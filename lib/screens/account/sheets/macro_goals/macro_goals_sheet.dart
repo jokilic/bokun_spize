@@ -17,7 +17,6 @@ import '../../../../util/typedefs.dart';
 class MacroGoalsSheet extends StatefulWidget {
   final Color activeColor;
   final double bmr;
-  final double tdee;
   final DailyMacroValues initialDailyMacroValues;
   final DailyMacroValues? Function(double calories) calculateDailyMacroValues;
   final bool macroGoalsExist;
@@ -27,7 +26,6 @@ class MacroGoalsSheet extends StatefulWidget {
   const MacroGoalsSheet({
     required this.activeColor,
     required this.bmr,
-    required this.tdee,
     required this.initialDailyMacroValues,
     required this.calculateDailyMacroValues,
     required this.macroGoalsExist,
@@ -70,13 +68,13 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
   }
 
   /// Updates whether all daily macro values can be saved
-  void updateValidated() => validated = (activeCalories ?? 0) >= widget.bmr && (activeProtein ?? 0) > 0 && (activeCarbs ?? 0) > 0 && (activeFat ?? 0) > 0;
+  void updateValidated() => validated = (activeCalories ?? 0) > 0 && (activeProtein ?? 0) > 0 && (activeCarbs ?? 0) > 0 && (activeFat ?? 0) > 0;
 
   /// Recalculates all daily macro values for the selected calorie target
   bool updateCalories(double newCalories) {
     final newDailyMacroValues = widget.calculateDailyMacroValues(newCalories);
 
-    if (newCalories < widget.bmr || (newDailyMacroValues?.carbs ?? 0) <= 0) {
+    if ((newDailyMacroValues?.carbs ?? 0) <= 0) {
       return false;
     }
 
@@ -159,14 +157,22 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
   @override
   Widget build(BuildContext context) {
     final currentCalories = activeCalories ?? 0;
+
     final currentProtein = activeProtein ?? 0;
     final currentCarbs = activeCarbs ?? 0;
     final currentFat = activeFat ?? 0;
+
     final proteinCalories = currentProtein * 4;
     final proteinPercentage = currentCalories > 0 ? proteinCalories / currentCalories * 100 : 0;
 
+    final carbsCalories = currentCarbs * 4;
+    final carbsPercentage = currentCalories > 0 ? carbsCalories / currentCalories * 100 : 0;
+
+    final fatCalories = currentFat * 9;
+    final fatPercentage = currentCalories > 0 ? fatCalories / currentCalories * 100 : 0;
+
     final decreasedCalories = (((currentCalories / 50).ceil() - 1) * 50).clamp(0, double.infinity).toDouble();
-    final canDecreaseCalories = decreasedCalories >= widget.bmr && (widget.calculateDailyMacroValues(decreasedCalories)?.carbs ?? 0) > 0;
+    final canDecreaseCalories = (widget.calculateDailyMacroValues(decreasedCalories)?.carbs ?? 0) > 0;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
@@ -537,7 +543,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                             Expanded(
                                               child: Text(
                                                 // TODO
-                                                'Preporučeni dnevni unos za umjerenu razinu tjelesne aktivnosti.',
+                                                'Promjenom dnevnog unosa kalorija omjeri proteina, ugljikohidrata i masti automatski se prilagođavaju.',
                                                 style: TextStyle(
                                                   fontFamily: 'PlusJakartaSans',
                                                   fontSize: 14,
@@ -727,6 +733,240 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   ///
                                                   Text(
                                                     '${proteinCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                    ),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  ///
+                                  /// CARBS
+                                  ///
+                                  Material(
+                                    color: context.colors.scaffoldBackground,
+                                    borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                    child: InkWell(
+                                      onTap: HapticFeedback.lightImpact,
+                                      borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                      splashColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ///
+                                            /// NAME
+                                            ///
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 12,
+                                                    width: 12,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: context.colors.carbs,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        ///
+                                                        /// TITLE
+                                                        ///
+                                                        Text(
+                                                          'carbs'.tr(),
+                                                          style: TextStyle(
+                                                            fontFamily: 'Epilogue',
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: context.colors.text,
+                                                          ),
+                                                        ),
+
+                                                        ///
+                                                        /// PERCENTAGE
+                                                        ///
+                                                        Text(
+                                                          '${carbsPercentage.toStringAsFixed(0)}% unosa',
+                                                          style: TextStyle(
+                                                            fontFamily: 'Epilogue',
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: context.colors.text.withValues(alpha: 0.75),
+                                                          ),
+                                                          textAlign: TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            ///
+                                            /// VALUE
+                                            ///
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  ///
+                                                  /// GRAMS
+                                                  ///
+                                                  Text(
+                                                    '${currentCarbs.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.w800,
+                                                      color: context.colors.text,
+                                                    ),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+
+                                                  ///
+                                                  /// CALORIES
+                                                  ///
+                                                  Text(
+                                                    '${carbsCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                    ),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  ///
+                                  /// FAT
+                                  ///
+                                  Material(
+                                    color: context.colors.scaffoldBackground,
+                                    borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                    child: InkWell(
+                                      onTap: HapticFeedback.lightImpact,
+                                      borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                      splashColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ///
+                                            /// NAME
+                                            ///
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 12,
+                                                    width: 12,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: context.colors.fat,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        ///
+                                                        /// TITLE
+                                                        ///
+                                                        Text(
+                                                          'fats'.tr(),
+                                                          style: TextStyle(
+                                                            fontFamily: 'Epilogue',
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: context.colors.text,
+                                                          ),
+                                                        ),
+
+                                                        ///
+                                                        /// PERCENTAGE
+                                                        ///
+                                                        Text(
+                                                          '${fatPercentage.toStringAsFixed(0)}% unosa',
+                                                          style: TextStyle(
+                                                            fontFamily: 'Epilogue',
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: context.colors.text.withValues(alpha: 0.75),
+                                                          ),
+                                                          textAlign: TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            ///
+                                            /// VALUE
+                                            ///
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  ///
+                                                  /// GRAMS
+                                                  ///
+                                                  Text(
+                                                    '${currentFat.toStringAsFixed(0)}${'gramUnit'.tr()}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.w800,
+                                                      color: context.colors.text,
+                                                    ),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+
+                                                  ///
+                                                  /// CALORIES
+                                                  ///
+                                                  Text(
+                                                    '${fatCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
                                                     style: TextStyle(
                                                       fontFamily: 'Epilogue',
                                                       fontSize: 12,
