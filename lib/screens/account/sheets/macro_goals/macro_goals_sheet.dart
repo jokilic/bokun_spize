@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -42,6 +44,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
   double? activeCarbs;
   double? activeFat;
 
+  Timer? caloriesUpdateTimer;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +58,12 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     activeFat = dailyMacroValues.fat;
 
     updateValidated();
+  }
+
+  @override
+  void dispose() {
+    stopCaloriesUpdate();
+    super.dispose();
   }
 
   void updateValidated() => validated = (activeCalories ?? 0) > 0 && (activeProtein ?? 0) > 0 && (activeCarbs ?? 0) > 0 && (activeFat ?? 0) > 0;
@@ -77,6 +87,35 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
     activeFat = newFat;
     updateValidated();
   });
+
+  /// Starts updating calories while the button remains pressed
+  void startCaloriesUpdate(double amount) {
+    stopCaloriesUpdate();
+    changeCalories(amount);
+
+    caloriesUpdateTimer = Timer.periodic(
+      BokunSpizeDurations.animation,
+      (_) => changeCalories(amount),
+    );
+  }
+
+  void changeCalories(double amount) {
+    final currentCalories = activeCalories ?? 0;
+    final newCalories = (currentCalories + amount).clamp(0, double.infinity).toDouble();
+
+    if (newCalories == currentCalories) {
+      stopCaloriesUpdate();
+      return;
+    }
+
+    HapticFeedback.lightImpact();
+    updateCalories(newCalories);
+  }
+
+  void stopCaloriesUpdate() {
+    caloriesUpdateTimer?.cancel();
+    caloriesUpdateTimer = null;
+  }
 
   /// Saves the currently provided daily macro goals
   void onSavePressed() {
@@ -327,10 +366,9 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
                                           onTap: currentCalories > 0 ? () {} : null,
-                                          // TODO Finish this to work like 'age' in `UserMetricsSheet`
-                                          // onTapDown: currentCalories > 0 ? (_) => startAgeUpdate(-1) : null,
-                                          // onTapUp: currentCalories > 0 ? (_) => stopAgeUpdate() : null,
-                                          // onTapCancel: stopAgeUpdate,
+                                          onTapDown: currentCalories > 0 ? (_) => startCaloriesUpdate(-1) : null,
+                                          onTapUp: currentCalories > 0 ? (_) => stopCaloriesUpdate() : null,
+                                          onTapCancel: stopCaloriesUpdate,
                                           borderRadius: BorderRadius.circular(12),
                                           highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                           splashColor: Colors.transparent,
@@ -430,10 +468,9 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
                                           onTap: () {},
-                                          // TODO Finish this to work like 'age' in `UserMetricsSheet`
-                                          // onTapDown: (_) => startAgeUpdate(1),
-                                          // onTapUp: (_) => stopAgeUpdate(),
-                                          // onTapCancel: stopAgeUpdate,
+                                          onTapDown: (_) => startCaloriesUpdate(1),
+                                          onTapUp: (_) => stopCaloriesUpdate(),
+                                          onTapCancel: stopCaloriesUpdate,
                                           borderRadius: BorderRadius.circular(12),
                                           highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                           splashColor: Colors.transparent,
