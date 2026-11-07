@@ -594,7 +594,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: HapticFeedback.lightImpact,
+                                  onPressed: () {},
                                   icon: const PhosphorIcon(
                                     PhosphorIconsBold.cameraSlash,
                                     size: 32,

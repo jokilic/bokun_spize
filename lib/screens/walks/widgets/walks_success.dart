@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../constants/constants.dart';
@@ -75,7 +74,7 @@ class WalksSuccess extends StatelessWidget {
           );
 
           final listTile = WalksListTile(
-            onPressed: HapticFeedback.lightImpact,
+            onPressed: () {},
             stepWithDate: stepWithDate,
             previousStepsWithDate: previousStepsWithDate,
             isToday: isToday,

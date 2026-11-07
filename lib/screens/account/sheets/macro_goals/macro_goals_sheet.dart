@@ -341,7 +341,6 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                     color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
-                      onTap: HapticFeedback.lightImpact,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,
@@ -644,7 +643,6 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                     color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
-                      onTap: HapticFeedback.lightImpact,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,
@@ -687,7 +685,6 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                     color: context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
-                                      onTap: HapticFeedback.lightImpact,
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
                                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                       splashColor: Colors.transparent,
@@ -736,15 +733,18 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         ///
                                                         /// PERCENTAGE
                                                         ///
-                                                        Text(
-                                                          '${proteinPercentage.toStringAsFixed(0)}% ${'dailyIntake'.tr()}',
-                                                          style: TextStyle(
+                                                        AnimatedDigitWidget(
+                                                          value: proteinPercentage.round(),
+                                                          suffix: '% ${'dailyIntake'.tr()}',
+                                                          loop: false,
+                                                          duration: BokunSpizeDurations.animation,
+                                                          curve: Curves.easeIn,
+                                                          textStyle: TextStyle(
                                                             fontFamily: 'PlusJakartaSans',
                                                             fontSize: 10,
                                                             fontWeight: FontWeight.w500,
                                                             color: context.colors.text.withValues(alpha: 0.75),
                                                           ),
-                                                          textAlign: TextAlign.right,
                                                         ),
                                                       ],
                                                     ),
@@ -763,29 +763,41 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   ///
                                                   /// GRAMS
                                                   ///
-                                                  Text(
-                                                    '${currentProtein.toStringAsFixed(0)}${'gramUnit'.tr()}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w800,
-                                                      color: context.colors.text,
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: AnimatedDigitWidget(
+                                                      value: currentProtein.round(),
+                                                      suffix: 'gramUnit'.tr(),
+                                                      loop: false,
+                                                      duration: BokunSpizeDurations.animation,
+                                                      curve: Curves.easeIn,
+                                                      textStyle: TextStyle(
+                                                        fontFamily: 'Epilogue',
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w800,
+                                                        color: context.colors.text,
+                                                      ),
                                                     ),
-                                                    textAlign: TextAlign.right,
                                                   ),
 
                                                   ///
                                                   /// CALORIES
                                                   ///
-                                                  Text(
-                                                    '${proteinCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'PlusJakartaSans',
-                                                      fontSize: 10,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: AnimatedDigitWidget(
+                                                      value: proteinCalories.round(),
+                                                      suffix: ' ${'caloriesUnit'.tr()}',
+                                                      loop: false,
+                                                      duration: BokunSpizeDurations.animation,
+                                                      curve: Curves.easeIn,
+                                                      textStyle: TextStyle(
+                                                        fontFamily: 'PlusJakartaSans',
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: context.colors.text.withValues(alpha: 0.75),
+                                                      ),
                                                     ),
-                                                    textAlign: TextAlign.right,
                                                   ),
                                                 ],
                                               ),
@@ -804,7 +816,6 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                     color: context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
-                                      onTap: HapticFeedback.lightImpact,
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
                                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                       splashColor: Colors.transparent,
@@ -853,15 +864,18 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         ///
                                                         /// PERCENTAGE
                                                         ///
-                                                        Text(
-                                                          '${carbsPercentage.toStringAsFixed(0)}% ${'dailyIntake'.tr()}',
-                                                          style: TextStyle(
+                                                        AnimatedDigitWidget(
+                                                          value: carbsPercentage.round(),
+                                                          suffix: '% ${'dailyIntake'.tr()}',
+                                                          loop: false,
+                                                          duration: BokunSpizeDurations.animation,
+                                                          curve: Curves.easeIn,
+                                                          textStyle: TextStyle(
                                                             fontFamily: 'PlusJakartaSans',
                                                             fontSize: 10,
                                                             fontWeight: FontWeight.w500,
                                                             color: context.colors.text.withValues(alpha: 0.75),
                                                           ),
-                                                          textAlign: TextAlign.right,
                                                         ),
                                                       ],
                                                     ),
@@ -880,29 +894,41 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   ///
                                                   /// GRAMS
                                                   ///
-                                                  Text(
-                                                    '${currentCarbs.toStringAsFixed(0)}${'gramUnit'.tr()}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w800,
-                                                      color: context.colors.text,
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: AnimatedDigitWidget(
+                                                      value: currentCarbs.round(),
+                                                      suffix: 'gramUnit'.tr(),
+                                                      loop: false,
+                                                      duration: BokunSpizeDurations.animation,
+                                                      curve: Curves.easeIn,
+                                                      textStyle: TextStyle(
+                                                        fontFamily: 'Epilogue',
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w800,
+                                                        color: context.colors.text,
+                                                      ),
                                                     ),
-                                                    textAlign: TextAlign.right,
                                                   ),
 
                                                   ///
                                                   /// CALORIES
                                                   ///
-                                                  Text(
-                                                    '${carbsCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'PlusJakartaSans',
-                                                      fontSize: 10,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: AnimatedDigitWidget(
+                                                      value: carbsCalories.round(),
+                                                      suffix: ' ${'caloriesUnit'.tr()}',
+                                                      loop: false,
+                                                      duration: BokunSpizeDurations.animation,
+                                                      curve: Curves.easeIn,
+                                                      textStyle: TextStyle(
+                                                        fontFamily: 'PlusJakartaSans',
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: context.colors.text.withValues(alpha: 0.75),
+                                                      ),
                                                     ),
-                                                    textAlign: TextAlign.right,
                                                   ),
                                                 ],
                                               ),
@@ -921,7 +947,6 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                     color: context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
-                                      onTap: HapticFeedback.lightImpact,
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
                                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                       splashColor: Colors.transparent,
@@ -970,15 +995,18 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         ///
                                                         /// PERCENTAGE
                                                         ///
-                                                        Text(
-                                                          '${fatPercentage.toStringAsFixed(0)}% ${'dailyIntake'.tr()}',
-                                                          style: TextStyle(
+                                                        AnimatedDigitWidget(
+                                                          value: fatPercentage.round(),
+                                                          suffix: '% ${'dailyIntake'.tr()}',
+                                                          loop: false,
+                                                          duration: BokunSpizeDurations.animation,
+                                                          curve: Curves.easeIn,
+                                                          textStyle: TextStyle(
                                                             fontFamily: 'PlusJakartaSans',
                                                             fontSize: 10,
                                                             fontWeight: FontWeight.w500,
                                                             color: context.colors.text.withValues(alpha: 0.75),
                                                           ),
-                                                          textAlign: TextAlign.right,
                                                         ),
                                                       ],
                                                     ),
@@ -997,29 +1025,41 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   ///
                                                   /// GRAMS
                                                   ///
-                                                  Text(
-                                                    '${currentFat.toStringAsFixed(0)}${'gramUnit'.tr()}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w800,
-                                                      color: context.colors.text,
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: AnimatedDigitWidget(
+                                                      value: currentFat.round(),
+                                                      suffix: 'gramUnit'.tr(),
+                                                      loop: false,
+                                                      duration: BokunSpizeDurations.animation,
+                                                      curve: Curves.easeIn,
+                                                      textStyle: TextStyle(
+                                                        fontFamily: 'Epilogue',
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w800,
+                                                        color: context.colors.text,
+                                                      ),
                                                     ),
-                                                    textAlign: TextAlign.right,
                                                   ),
 
                                                   ///
                                                   /// CALORIES
                                                   ///
-                                                  Text(
-                                                    '${fatCalories.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'PlusJakartaSans',
-                                                      fontSize: 10,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: AnimatedDigitWidget(
+                                                      value: fatCalories.round(),
+                                                      suffix: ' ${'caloriesUnit'.tr()}',
+                                                      loop: false,
+                                                      duration: BokunSpizeDurations.animation,
+                                                      curve: Curves.easeIn,
+                                                      textStyle: TextStyle(
+                                                        fontFamily: 'PlusJakartaSans',
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: context.colors.text.withValues(alpha: 0.75),
+                                                      ),
                                                     ),
-                                                    textAlign: TextAlign.right,
                                                   ),
                                                 ],
                                               ),

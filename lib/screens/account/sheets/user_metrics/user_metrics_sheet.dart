@@ -412,7 +412,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
-                      onTap: HapticFeedback.lightImpact,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,
@@ -599,7 +598,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
-                      onTap: HapticFeedback.lightImpact,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,
@@ -675,7 +673,6 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     color: context.colors.listTileBackground.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
-                      onTap: HapticFeedback.lightImpact,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,

@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../constants/constants.dart';
@@ -81,8 +80,9 @@ class WeightsSuccess extends StatelessWidget {
           );
 
           final listTileKey = ValueKey(weightTrack.id);
+
           final listTile = WeightsListTile(
-            onPressed: HapticFeedback.lightImpact,
+            onPressed: () {},
             onDeletePressed: () => onDeletePressed(weightTrack),
             weightTrack: weightTrack,
             weightChange: previousWeightChange,

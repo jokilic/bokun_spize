@@ -7,6 +7,9 @@
     - [ ] Maybe smaller button padding and text size
     - [ ] Research sleep
     - [ ] App name -> Bokun / Bite
+    - [ ] Dark theme
+        - [ ] Trash icon should be white
+        - [ ] Male / Female color updates
 
 ### Screens
     - [ ] Go through every hardcoded text and check if it makes sense
