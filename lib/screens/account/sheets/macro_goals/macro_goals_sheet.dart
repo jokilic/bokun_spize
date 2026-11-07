@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -529,16 +530,22 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
                                         ),
-                                        child: Text(
-                                          // TODO
-                                          'Preporučeni dnevni unos za umjerenu razinu tjelesne aktivnosti.',
-                                          style: TextStyle(
-                                            fontFamily: 'Epilogue',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: context.colors.text.withValues(alpha: 0.75),
-                                          ),
-                                          textAlign: TextAlign.center,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                // TODO
+                                                'Preporučeni dnevni unos za umjerenu razinu tjelesne aktivnosti.',
+                                                style: TextStyle(
+                                                  fontFamily: 'PlusJakartaSans',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: context.colors.text.withValues(alpha: 0.75),
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -622,6 +629,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   ///
                                   /// PROTEIN
                                   ///
+                                  // TODO: Can you update to use proper percentage, gram and calorie value?
                                   Material(
                                     color: context.colors.scaffoldBackground,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
@@ -633,14 +641,104 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                       hoverColor: Colors.transparent,
                                       focusColor: Colors.transparent,
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 24,
-                                          vertical: 16,
-                                        ),
+                                        padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
                                         ),
-                                        child: const SizedBox.shrink(),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ///
+                                            /// NAME
+                                            ///
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 12,
+                                                    width: 12,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: context.colors.protein,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        ///
+                                                        /// TITLE
+                                                        ///
+                                                        Text(
+                                                          'protein'.tr(),
+                                                          style: TextStyle(
+                                                            fontFamily: 'Epilogue',
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: context.colors.text,
+                                                          ),
+                                                        ),
+
+                                                        ///
+                                                        /// PERCENTAGE
+                                                        ///
+                                                        Text(
+                                                          '30% unosa',
+                                                          style: TextStyle(
+                                                            fontFamily: 'Epilogue',
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: context.colors.text.withValues(alpha: 0.75),
+                                                          ),
+                                                          textAlign: TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            ///
+                                            /// VALUE
+                                            ///
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  ///
+                                                  /// GRAMS
+                                                  ///
+                                                  Text(
+                                                    '150g',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.w800,
+                                                      color: context.colors.text,
+                                                    ),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+
+                                                  ///
+                                                  /// CALORIES
+                                                  ///
+                                                  Text(
+                                                    '400 kcal',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Epilogue',
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                    ),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
