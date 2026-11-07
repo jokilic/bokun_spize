@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -239,8 +240,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       ///
                       Expanded(
                         child: Text(
-                          // TODO
-                          'Podaci korisnika',
+                          'userMetricsTitle'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 26,
@@ -300,8 +300,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                     ),
                   ],
                   child: Text(
-                    // TODO
-                    'Tvoje mjere',
+                    'userMetricsSubtitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'Epilogue',
                       fontSize: 16,
@@ -361,8 +360,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             updateGender(Gender.male);
                           },
                           icon: PhosphorIconsBold.genderMale,
-                          // TODO
-                          title: 'Muško',
+                          title: 'genderMale'.tr(),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -379,8 +377,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             updateGender(Gender.female);
                           },
                           icon: PhosphorIconsBold.genderFemale,
-                          // TODO
-                          title: 'Žensko',
+                          title: 'genderFemale'.tr(),
                         ),
                       ),
                     ],
@@ -441,8 +438,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   /// TITLE
                                   ///
                                   Text(
-                                    // TODO
-                                    'Age'.toUpperCase(),
+                                    'age'.tr().toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: 'Epilogue',
                                       fontSize: 12,
@@ -467,8 +463,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                           child: SizedBox(width: 4),
                                         ),
                                         TextSpan(
-                                          // TODO
-                                          text: 'godina',
+                                          text: 'years'.tr(),
                                           style: TextStyle(
                                             fontFamily: 'Epilogue',
                                             fontSize: 16,
@@ -615,8 +610,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             /// TITLE
                             ///
                             Text(
-                              // TODO
-                              'Visina'.toUpperCase(),
+                              'accountUserMetricsHeight'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'Epilogue',
                                 fontSize: 12,
@@ -692,8 +686,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             /// TITLE
                             ///
                             Text(
-                              // TODO
-                              'Težina'.toUpperCase(),
+                              'accountUserMetricsWeight'.tr().toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'Epilogue',
                                 fontSize: 12,
@@ -762,9 +755,8 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                         disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                         disabledForegroundColor: activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5),
                       ),
-                      child: const Text(
-                        // TODO
-                        'Spremi',
+                      child: Text(
+                        'saveMeasurements'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

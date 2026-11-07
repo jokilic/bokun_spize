@@ -170,6 +170,9 @@ class UserMetrics {
       return null;
     }
 
+    /// `Protein` targets `1.6 g/kg` to support muscle maintenance
+    /// `Fat` targets `0.8 g/kg` to cover essential dietary fat needs
+    /// `Carbs` fill the calories left after applying `4 kcal/g` for `protein` and `9 kcal/g` for `fat`
     final protein = (currentWeight * 1.6).roundToDouble();
     final fat = (currentWeight * 0.8).roundToDouble();
     final remainingCalories = currentCalories - (protein * 4) - (fat * 9);

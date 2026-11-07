@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constants/durations.dart';
@@ -97,7 +98,7 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
                 child: SizedBox(width: 4),
               ),
               TextSpan(
-                text: 'cm',
+                text: 'centimeter'.tr(),
                 style: TextStyle(
                   fontFamily: 'Epilogue',
                   fontSize: 16,
