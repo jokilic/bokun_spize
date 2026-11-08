@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -28,9 +29,14 @@ class ThemeSheet extends StatefulWidget {
 class _ThemeSheetState extends State<ThemeSheet> {
   late var selectedTheme = widget.initialTheme;
 
-  void updateTheme(ThemeEnum newTheme) => setState(
-    () => selectedTheme = newTheme,
-  );
+  /// Updates the selected theme
+  void updateTheme(ThemeEnum newTheme) {
+    HapticFeedback.lightImpact();
+
+    setState(
+      () => selectedTheme = newTheme,
+    );
+  }
 
   @override
   Widget build(BuildContext context) => ClipRRect(

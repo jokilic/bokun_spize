@@ -152,6 +152,7 @@ class SearchListTile extends StatelessWidget {
                       Navigator.of(context).pop();
                       onEditPressed();
                     },
+              enableFeedback: false,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,

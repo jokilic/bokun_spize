@@ -126,6 +126,7 @@ class MealsListTile extends StatelessWidget {
             child: InkWell(
               onTap: isLoading || hasError ? null : onPressed,
               onLongPress: isLoading || hasError ? null : onEditPressed,
+              enableFeedback: false,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,

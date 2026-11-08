@@ -136,7 +136,12 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     ageUpdateTimer = null;
   }
 
+  /// Saves the currently provided user metrics
   Future<void> onSavePressed() async {
+    unawaited(
+      HapticFeedback.lightImpact(),
+    );
+
     setState(() => validated = false);
 
     final updatedUserMetrics = await widget.onSavePressed(
@@ -158,8 +163,10 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
     Navigator.of(context).pop(updatedUserMetrics);
   }
 
+  /// Deletes the currently saved user metrics
   void onDeletePressed() {
     if (widget.onDeletePressed != null) {
+      HapticFeedback.lightImpact();
       widget.onDeletePressed!();
       Navigator.of(context).pop();
     }

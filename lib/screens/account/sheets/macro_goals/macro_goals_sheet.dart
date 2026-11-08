@@ -133,6 +133,8 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
 
   /// Saves the currently provided daily macro goals
   void onSavePressed() {
+    HapticFeedback.lightImpact();
+
     final newDailyMacroValues = (
       calories: activeCalories!,
       protein: activeProtein!,
@@ -148,6 +150,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
   /// Deletes the currently saved daily macro goals
   void onDeletePressed() {
     if (widget.onDeletePressed != null) {
+      HapticFeedback.lightImpact();
       widget.onDeletePressed!();
       Navigator.of(context).pop();
     }

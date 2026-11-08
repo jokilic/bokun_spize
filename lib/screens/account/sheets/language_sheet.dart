@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -27,9 +28,14 @@ class LanguageSheet extends StatefulWidget {
 class _LanguageSheetState extends State<LanguageSheet> {
   late var selectedLanguage = widget.initialLanguage;
 
-  void updateLanguage(Locale newLanguage) => setState(
-    () => selectedLanguage = newLanguage,
-  );
+  /// Updates the selected language
+  void updateLanguage(Locale newLanguage) {
+    HapticFeedback.lightImpact();
+
+    setState(
+      () => selectedLanguage = newLanguage,
+    );
+  }
 
   @override
   Widget build(BuildContext context) => ClipRRect(
