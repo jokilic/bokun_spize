@@ -205,6 +205,12 @@ class WalksController
         now,
       );
 
+      /// Preserve the current value when the health query does not return a valid result
+      if (steps == null) {
+        log('Refreshing today steps returned no result');
+        return;
+      }
+
       /// Ignore a result completed after leaving [WalksScreen]
       if (isDisposed || !isStepsRefreshActive || value.isLoading) {
         return;
@@ -220,7 +226,7 @@ class WalksController
         ..add(
           StepsWithDate(
             dateTime: startOfDay,
-            steps: steps ?? 0,
+            steps: steps,
           ),
         );
 
