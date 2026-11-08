@@ -293,7 +293,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -330,7 +330,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -388,7 +388,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -465,7 +465,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -570,7 +570,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,

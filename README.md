@@ -2,11 +2,6 @@
 
 - [ ] Replace all `TextStyle()`
 - [ ] Animations
-    - [ ] Staggered animation in `MealsSuccess` - animate 7 list tiles instead of 5
-    - [ ] `AccountScreen` - Staggered animation - Fix language and notification ListTiles fading at same time
-    - [ ] `CalendarSheet` - Staggered animation - title -> subtitle -> calendar
-    - [ ] `TimeSheet` - Staggered animation - title -> subtitle -> picker
-    - [ ] `WeightsAddWeightSheet` - Staggered animation - title -> subtitle -> time -> kilograms -> picker -> two buttons -> main button
 - [ ] Think about `constants.dart`
 - [ ] Maybe smaller button padding and text size
     - [ ] New to Bokun spize - smaller font

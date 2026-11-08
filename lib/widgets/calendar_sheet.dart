@@ -182,7 +182,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 2,
+                delay: BokunSpizeDurations.stateTransitionStagger * 3,
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -326,7 +326,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                  delay: BokunSpizeDurations.stateTransitionStagger * 4,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
