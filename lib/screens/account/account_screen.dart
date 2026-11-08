@@ -52,21 +52,21 @@ class _AccountScreenState extends State<AccountScreen> {
     super.dispose();
   }
 
-  /// Cancels user-specific listeners and signs-out
+  /// Signs out and cancels user-specific listeners
   Future<void> handleLogOut() async {
+    await getIt.get<FirebaseService>().logOut();
+
+    /// Reset navigation after authentication has removed the signed-in screens
+    getIt.get<ScreenService>().changeNavigationBarItem(
+      NavigationBarItem.meals,
+    );
+
     await Future.wait([
       unRegisterIfNotDisposed<MealsController>(),
       unRegisterIfNotDisposed<WeightsController>(),
       unRegisterIfNotDisposed<WalksController>(),
       unRegisterIfNotDisposed<AccountController>(),
     ]);
-
-    await getIt.get<FirebaseService>().logOut();
-
-    /// Reset navigation only after authentication has removed the signed-in screens
-    getIt.get<ScreenService>().changeNavigationBarItem(
-      NavigationBarItem.meals,
-    );
   }
 
   @override
