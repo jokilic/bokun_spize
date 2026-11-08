@@ -424,6 +424,25 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
 
               ///
+              /// NOTIFICATIONS
+              ///
+              AccountListTile(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 4,
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  accountController.openNotificationsSheet(
+                    context,
+                  );
+                },
+                icon: PhosphorIconsBold.notification,
+                iconBackgroundColor: context.colors.protein,
+                // TODO
+                title: 'Notifications',
+                // TODO
+                subtitle: 'Some text here',
+              ),
+
+              ///
               /// CONTACT
               ///
               AccountListTile(
@@ -458,7 +477,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LOGOUT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 7,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 7 : 6),
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   handleLogOut();
@@ -473,7 +492,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// DELETE ACCOUNT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 8,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 8 : 7),
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openDeleteAccountSheet(
@@ -515,7 +534,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 9,
+                    delay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 9 : 8),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,

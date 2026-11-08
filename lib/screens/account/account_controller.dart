@@ -199,6 +199,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
     ),
   );
 
+  /// Opens [NotificationsSheet]
+  Future<void> openNotificationsSheet(BuildContext context) async {}
+
   /// Opens [ContactSheet]
   Future<void> openContactSheet(BuildContext context) async => await showBlurredModalBottomSheet(
     context: context,
