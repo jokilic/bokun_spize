@@ -94,7 +94,7 @@ class ViewMessageSheet extends StatelessWidget {
                             borderRadius: BorderRadius.circular(100),
                           ),
                           backgroundColor: context.colors.delete,
-                          foregroundColor: context.colors.listTileBackground,
+                          foregroundColor: context.colors.buttonText,
                         ),
                       ),
 

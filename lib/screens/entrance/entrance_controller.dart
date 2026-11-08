@@ -72,6 +72,8 @@ class EntranceController
 
   @override
   void onDispose() {
+    isDisposed = true;
+
     loginEmailTextEditingController.dispose();
     loginPasswordTextEditingController.dispose();
 
@@ -91,6 +93,8 @@ class EntranceController
   ///
   /// VARIABLES
   ///
+
+  var isDisposed = false;
 
   late final loginEmailTextEditingController = TextEditingController();
   late final loginPasswordTextEditingController = TextEditingController();
@@ -419,14 +423,20 @@ class EntranceController
     bool? emailIsLoading,
     bool? googleIsLoading,
     bool? appleIsLoading,
-  }) => value = (
-    loginEmailValid: loginEmailValid ?? value.loginEmailValid,
-    loginPasswordValid: loginPasswordValid ?? value.loginPasswordValid,
-    registerEmailValid: registerEmailValid ?? value.registerEmailValid,
-    registerPasswordValid: registerPasswordValid ?? value.registerPasswordValid,
-    registerNameValid: registerNameValid ?? value.registerNameValid,
-    emailIsLoading: emailIsLoading ?? value.emailIsLoading,
-    googleIsLoading: googleIsLoading ?? value.googleIsLoading,
-    appleIsLoading: appleIsLoading ?? value.appleIsLoading,
-  );
+  }) {
+    if (isDisposed) {
+      return;
+    }
+
+    value = (
+      loginEmailValid: loginEmailValid ?? value.loginEmailValid,
+      loginPasswordValid: loginPasswordValid ?? value.loginPasswordValid,
+      registerEmailValid: registerEmailValid ?? value.registerEmailValid,
+      registerPasswordValid: registerPasswordValid ?? value.registerPasswordValid,
+      registerNameValid: registerNameValid ?? value.registerNameValid,
+      emailIsLoading: emailIsLoading ?? value.emailIsLoading,
+      googleIsLoading: googleIsLoading ?? value.googleIsLoading,
+      appleIsLoading: appleIsLoading ?? value.appleIsLoading,
+    );
+  }
 }

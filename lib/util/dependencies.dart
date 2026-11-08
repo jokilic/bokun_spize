@@ -52,12 +52,12 @@ T registerIfNotInitialized<T extends Object>(
 
 /// Unregisters a class if it's not already disposed
 /// Optionally runs a function with newly unregistered class
-void unRegisterIfNotDisposed<T extends Object>({
+Future<void> unRegisterIfNotDisposed<T extends Object>({
   String? instanceName,
   void Function(T controller)? afterUnregister,
-}) {
+}) async {
   if (getIt.isRegistered<T>(instanceName: instanceName)) {
-    getIt.unregister<T>(
+    await getIt.unregister<T>(
       disposingFunction: afterUnregister,
       instanceName: instanceName,
     );

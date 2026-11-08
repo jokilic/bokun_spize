@@ -56,9 +56,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   ///
 
   @override
-  void onDispose() {
+  Future<void> onDispose() async {
     mealsListenerVersion++;
-    mealsSubscription?.cancel();
+    await mealsSubscription?.cancel();
     super.dispose();
   }
 

@@ -72,6 +72,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
     final result = await onPressed();
 
+    if (!mounted) {
+      return;
+    }
+
     /// Successful logic
     if (result.user != null && result.error == null) {
       return;
@@ -98,6 +102,10 @@ class _EntranceScreenState extends State<EntranceScreen> {
     );
 
     final result = await onPressed();
+
+    if (!mounted) {
+      return;
+    }
 
     /// Successful logic
     if (result.success && result.error == null) {

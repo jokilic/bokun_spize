@@ -47,9 +47,9 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
   ///
 
   @override
-  void onDispose() {
+  Future<void> onDispose() async {
     isDisposed = true;
-    weightTracksSubscription?.cancel();
+    await weightTracksSubscription?.cancel();
     super.dispose();
   }
 

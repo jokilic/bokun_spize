@@ -7,9 +7,7 @@
     - [ ] Maybe smaller button padding and text size
     - [ ] Research sleep
     - [ ] App name -> Bokun / Bite
-    - [ ] Dark theme
-        - [ ] Trash icon should be white
-        - [ ] Male / Female color updates
+    - [ ] Email user gets when logged in using Google and probably Apple
 
 ### Screens
     - [ ] In `MealsScreen` and `SearchScreen` it does a double vibration when long-pressing `MealListTile` and going to `Edit meal` that way
