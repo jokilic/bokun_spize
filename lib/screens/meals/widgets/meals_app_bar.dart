@@ -448,8 +448,31 @@ class FadingFlexibleTitle extends StatelessWidget {
                 else
                   Transform.translate(
                     offset: const Offset(0, 6),
-                    child: Text(
-                      dailyCalories != null ? '/ ${dailyCalories!.toStringAsFixed(0)} ${'caloriesUnit'.tr()}' : 'caloriesUnit'.tr(),
+                    child: Text.rich(
+                      TextSpan(
+                        children: dailyCalories != null
+                            ? [
+                                const TextSpan(text: '/ '),
+                                TextSpan(
+                                  text: dailyCalories!.toStringAsFixed(0),
+                                  style: TextStyle(
+                                    fontFamily: 'Epilogue',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.2,
+                                    color: context.colors.text,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' ${'caloriesUnit'.tr()}',
+                                ),
+                              ]
+                            : [
+                                TextSpan(
+                                  text: 'caloriesUnit'.tr(),
+                                ),
+                              ],
+                      ),
                       style: TextStyle(
                         fontFamily: 'Epilogue',
                         fontSize: 12,
