@@ -38,12 +38,14 @@ class MealImageState extends State<MealImage> {
   late Future<String?> imageUrlFuture;
   String? cachedImageUrl;
 
+  /// Starts resolving the image download URL
   @override
   void initState() {
     super.initState();
     getDownloadUrl();
   }
 
+  /// Resolves a new download URL when the storage path changes
   @override
   void didUpdateWidget(covariant MealImage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -112,32 +114,51 @@ class MealImageState extends State<MealImage> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<String?>(
-    future: imageUrlFuture,
-    initialData: cachedImageUrl,
-    builder: (context, snapshot) {
-      final cacheManager = getIt.get<CacheService>().imageCacheManager;
-      final imageUrl = snapshot.data;
+  Widget build(BuildContext context) => SizedBox(
+    height: widget.height,
+    width: widget.width,
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        ///
+        /// PLACEHOLDER
+        ///
+        getPlaceholderWidget(),
 
-      if (imageUrl != null) {
-        return CachedNetworkImage(
-          key: ValueKey(widget.imageStoragePath),
-          imageUrl: imageUrl,
-          cacheKey: widget.imageStoragePath,
-          cacheManager: cacheManager,
-          fit: widget.fit,
-          height: widget.height,
-          width: widget.width,
-          placeholder: (context, url) => getPlaceholderWidget(),
-          errorBuilder: (context, error, stackTrace) => widget.errorWidget,
-          fadeOutCurve: Curves.easeIn,
-          fadeInDuration: BokunSpizeDurations.animation,
-          fadeOutDuration: BokunSpizeDurations.animation,
-          placeholderFadeInDuration: BokunSpizeDurations.animation,
-        );
-      }
+        ///
+        /// PROPER IMAGE
+        ///
+        FutureBuilder<String?>(
+          future: imageUrlFuture,
+          initialData: cachedImageUrl,
+          builder: (context, snapshot) {
+            final cacheManager = getIt.get<CacheService>().imageCacheManager;
+            final imageUrl = snapshot.data;
 
-      return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : getPlaceholderWidget();
-    },
+            if (imageUrl != null) {
+              return CachedNetworkImage(
+                key: ValueKey(widget.imageStoragePath),
+                imageUrl: imageUrl,
+                cacheKey: widget.imageStoragePath,
+                cacheManager: cacheManager,
+                fit: widget.fit,
+                height: widget.height,
+                width: widget.width,
+                placeholder: (context, url) => const SizedBox.shrink(),
+                errorBuilder: (context, error, stackTrace) => widget.errorWidget,
+                fadeInDuration: BokunSpizeDurations.animation,
+                fadeOutDuration: Duration.zero,
+                placeholderFadeInDuration: Duration.zero,
+              );
+            }
+
+            ///
+            /// ERROR
+            ///
+            return snapshot.connectionState == ConnectionState.done ? widget.errorWidget : const SizedBox.shrink();
+          },
+        ),
+      ],
+    ),
   );
 }
