@@ -3,28 +3,21 @@
 ### Theme
     - [ ] Replace all `TextStyle()`
     - [ ] Animations
+        - [ ] Set `stateTransitionStagger` to long and test in all screens (originally 50 milliseconds)
     - [ ] Think about `constants.dart`
     - [ ] Maybe smaller button padding and text size
     - [ ] App name -> Bokun / Bite
     - [ ] Email user gets when logged in using Google and probably Apple
-    - [ ] Set `stateTransitionStagger` to long and test in all screens
 
 ### Screens
     - [ ] Go through every hardcoded text and check if it makes sense
     - [ ] Test by writing nonsense in the [AIAddMealScreen]
     - [ ] Add Meal screens - show dismissible widgets with info
     - [ ] `AccountScreen`
-        - [x] Edit user name
-        - [x] UserMetricsSheet
-        - [x] MacroGoalsSheet
-        - [x] Theme
-        - [x] Language
         - [ ] Notifications
-        - [x] Contact messages
-        - [x] Contact me
-        - [x] Logout
-        - [x] Delete account
-        - [x] Version
+            - [ ] Notifications reminding to weight
+            - [ ] Notifications analyzing previous day (meals, weight, walks)
+            - [ ] Announcements
 
 ### Firebase
     - [ ] Firebase App Check
@@ -36,11 +29,6 @@
     - [ ] Analytics
     - [ ] Crashlytics
     - [ ] Perhaps anonymous sign-in
-
-### Notifications
-    - [ ] Notifications reminding to weight
-    - [ ] Notifications analyzing previous day (meals, weight, walks)
-    - [ ] Announcement notifications
 
 ### In-app purchases
     - [ ] Research & initial implementation
