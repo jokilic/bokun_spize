@@ -1,37 +1,36 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-### Theme
-    - [ ] Replace all `TextStyle()`
-    - [ ] Animations
-        - [ ] Set `stateTransitionStagger` to long and test in all screens (originally 50 milliseconds)
-    - [ ] Think about `constants.dart`
-    - [ ] Maybe smaller button padding and text size
-    - [ ] App name -> Bokun / Bite
-    - [ ] Email user gets when logged in using Google and probably Apple
-
-### Screens
-    - [ ] Go through every hardcoded text and check if it makes sense
-    - [ ] Test by writing nonsense in the [AIAddMealScreen]
-    - [ ] Add Meal screens - show dismissible widgets with info
-    - [ ] `AccountScreen`
-        - [ ] Notifications
-            - [ ] Notifications reminding to weight
-            - [ ] Notifications analyzing previous day (meals, weight, walks)
-            - [ ] Announcements
-
-### Firebase
-    - [ ] Firebase App Check
-        - [ ] Add the Play App Signing SHA-256
-        - [ ] Change PLAY_RECOGNIZED to Required
-        - [ ] Optionally change LICENSED to Required
-        - [ ] Minimum acceptable device integrity -> Don't explicitly check
-        - [ ] The legacy sideloaded APK will then stop working
-    - [ ] Analytics
-    - [ ] Crashlytics
-    - [ ] Perhaps anonymous sign-in
-
-### In-app purchases
-    - [ ] Research & initial implementation
+- [ ] Replace all `TextStyle()`
+- [ ] Animations
+    - [ ] Staggered animation in `MealsSuccess` - animate 7 list tiles instead of 5
+    - [ ] `AccountScreen` - Staggered animation - Fix language and notification ListTiles fading at same time
+    - [ ] `CalendarSheet` - Staggered animation - title -> subtitle -> calendar
+    - [ ] `TimeSheet` - Staggered animation - title -> subtitle -> picker
+    - [ ] `WeightsAddWeightSheet` - Staggered animation - title -> subtitle -> time -> kilograms -> picker -> two buttons -> main button
+- [ ] Think about `constants.dart`
+- [ ] Maybe smaller button padding and text size
+    - [ ] New to Bokun spize - smaller font
+- [ ] App name -> Bokun / Bite
+- [ ] Email that user gets when logged in using Google and probably Apple
+- [ ] Remove Apple login from Android
+- [ ] Go through every hardcoded text and check if it makes sense
+- [ ] Test by writing nonsense in the [AIAddMealScreen]
+- [ ] Add Meal screens - show dismissible widgets with info
+- [ ] `AccountScreen`
+    - [ ] Notifications
+        - [ ] Notifications reminding to weight
+        - [ ] Notifications analyzing previous day (meals, weight, walks)
+        - [ ] Announcements
+- [ ] Firebase App Check
+    - [ ] Add the Play App Signing SHA-256
+    - [ ] Change PLAY_RECOGNIZED to Required
+    - [ ] Optionally change LICENSED to Required
+    - [ ] Minimum acceptable device integrity -> Don't explicitly check
+    - [ ] The legacy sideloaded APK will then stop working
+- [ ] Analytics
+- [ ] Crashlytics
+- [ ] Perhaps anonymous sign-in
+- [ ] App purchases - Research & initial implementation
 
 # Bokun spize 🥗
 
