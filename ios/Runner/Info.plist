@@ -23,6 +23,17 @@
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
 		<string>Bokun spize</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.178689254446-rqml3i7egb20nt7697ae61nipea77738</string>
+				</array>
+			</dict>
+		</array>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -39,6 +50,8 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>GIDClientID</key>
+		<string>178689254446-rqml3i7egb20nt7697ae61nipea77738.apps.googleusercontent.com</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Bokun spize needs access to photo library in order to create meals using your photos.</string>
 		<key>NSCameraUsageDescription</key>

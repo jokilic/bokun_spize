@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "178689254446-37n5hml4245rte13fhmf472ecsoovobf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.josipkilic.bokun_spize",
+            "certificate_hash": "1c9dddbeb5e2cc272d98a5b9f6406d6335f9bfe5"
+          }
+        },
+        {
           "client_id": "178689254446-mgl57hb5bmeetol86ao2so03tdf2s930.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
