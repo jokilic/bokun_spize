@@ -120,9 +120,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     final nutritionAnimationStep = imageAnimationStep + (showImage ? 1 : 0);
     final foodListAnimationStep = nutritionAnimationStep + 4;
 
-    /// Limit the food stagger to five steps so long lists keep later controls responsive
-    final foodAnimationCount = (foods?.length ?? 0).clamp(0, 5);
-    final addFoodAnimationStep = foodListAnimationStep + foodAnimationCount;
+    /// Count the complete food list as one animation step when it is visible
+    final addFoodAnimationStep = foodListAnimationStep + ((foods?.isNotEmpty ?? false) ? 1 : 0);
     final dateTimeAnimationStep = isCopyingMeal ? nutritionAnimationStep : addFoodAnimationStep + 1;
 
     return ClipRRect(
@@ -930,63 +929,49 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               /// FOODS
               ///
               if (foods?.isNotEmpty ?? false) ...[
-                SliverList.builder(
-                  itemCount: foods!.length,
-                  findChildIndexCallback: (key) {
-                    final index = foods.indexWhere(
-                      (food) => ObjectKey(food) == key,
-                    );
-                    return index == -1 ? null : index;
-                  },
-                  itemBuilder: (context, index) {
-                    final food = foods[index];
-
-                    final listTileKey = ObjectKey(food);
-                    final listTile = ManualAddMealFoodListTile(
-                      enabled: !isCopyingMeal,
-                      onPressed: isCopyingMeal
-                          ? () {}
-                          : () => handleOnPressed(
-                              onPressed: () => mealController.onAddFoodPressed(
-                                context,
-                                passedFood: food,
-                              ),
+                SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * foodListAnimationStep,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 8),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Column(
+                      children: [
+                        for (var index = 0; index < foods!.length; index++)
+                          KeyedSubtree(
+                            key: ObjectKey(foods[index]),
+                            child: ManualAddMealFoodListTile(
+                              enabled: !isCopyingMeal,
+                              onPressed: isCopyingMeal
+                                  ? () {}
+                                  : () => handleOnPressed(
+                                      onPressed: () => mealController.onAddFoodPressed(
+                                        context,
+                                        passedFood: foods[index],
+                                      ),
+                                    ),
+                              onDeletePressed: () {
+                                HapticFeedback.lightImpact();
+                                mealController.deleteFood(
+                                  index: index,
+                                );
+                              },
+                              food: foods[index],
+                              index: index,
                             ),
-                      onDeletePressed: () {
-                        HapticFeedback.lightImpact();
-                        mealController.deleteFood(
-                          index: index,
-                        );
-                      },
-                      food: food,
-                      index: index,
-                    );
-
-                    if (index >= 5) {
-                      return KeyedSubtree(
-                        key: listTileKey,
-                        child: listTile,
-                      );
-                    }
-
-                    return Animate(
-                      key: listTileKey,
-                      delay: BokunSpizeDurations.stateTransitionStagger * (foodListAnimationStep + index),
-                      effects: const [
-                        FadeEffect(
-                          duration: BokunSpizeDurations.stateTransition,
-                          curve: Curves.easeOut,
-                        ),
-                        MoveEffect(
-                          begin: Offset(0, 18),
-                          end: Offset.zero,
-                          duration: BokunSpizeDurations.stateTransition,
-                          curve: Curves.easeOutCubic,
-                        ),
+                          ),
                       ],
-                      child: listTile,
-                    );
-                  },
+                    ),
+                  ),
                 ),
                 if (!isCopyingMeal)
                   const SliverToBoxAdapter(
