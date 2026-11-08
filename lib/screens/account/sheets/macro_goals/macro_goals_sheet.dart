@@ -230,7 +230,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               backgroundColor: context.colors.delete,
-                              foregroundColor: context.colors.listTileBackground,
+                              foregroundColor: context.colors.buttonText,
                             ),
                           ),
                         ),

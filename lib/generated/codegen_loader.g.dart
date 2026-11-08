@@ -247,7 +247,8 @@ class CodegenLoader extends AssetLoader{
   "goalsExplanationTitle": "Method of calculation",
   "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros.",
   "deleteAccountExplanationTitle": "This is permanent",
-  "deleteAccountExplanationSubtitle": "Deleting your account will forever remove your data."
+  "deleteAccountExplanationSubtitle": "Deleting your account will forever remove your data.",
+  "mealsListTileError": "Error has happened"
 };
 static const Map<String,dynamic> _hr = {
   "appName": "Bokun spize",
@@ -482,7 +483,8 @@ static const Map<String,dynamic> _hr = {
   "goalsExplanationTitle": "Način računanja",
   "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju.",
   "deleteAccountExplanationTitle": "Ovo je trajno",
-  "deleteAccountExplanationSubtitle": "Brisanjem računa trajno ćete ukloniti svoje podatke."
+  "deleteAccountExplanationSubtitle": "Brisanjem računa trajno ćete ukloniti svoje podatke.",
+  "mealsListTileError": "Pogreška se dogodila"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "hr": _hr};
 }

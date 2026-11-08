@@ -12,6 +12,10 @@
         - [ ] Male / Female color updates
 
 ### Screens
+    - [ ] In `MealsScreen` and `SearchScreen` it does a double vibration when long-pressing `MealListTile` and going to `Edit meal` that way
+    - [ ] Pressing save button in `UserMetricsSheet` and `MacroGoalsSheet` doesn't vibrate
+    - [ ] Pressing delete button in `UserMetricsSheet` and `MacroGoalsSheet` doesn't vibrate
+    - [ ] Pressing some theme in `ThemeSheet` and `LanguageSheet` doesn't vibrate
     - [ ] Go through every hardcoded text and check if it makes sense
     - [ ] Test by writing nonsense in the [AIAddMealScreen]
     - [ ] Add Meal screens - show dismissible widgets with info

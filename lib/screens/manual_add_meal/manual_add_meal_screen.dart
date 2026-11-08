@@ -189,7 +189,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               backgroundColor: context.colors.delete,
-                              foregroundColor: context.colors.listTileBackground,
+                              foregroundColor: context.colors.buttonText,
                             ),
                           ),
                         ),

@@ -53,7 +53,7 @@ class UserMetricsGenderListTile extends StatelessWidget {
                 width: listTileIconSmallRadius,
                 height: listTileIconSmallRadius,
                 alignment: Alignment.center,
-                color: context.colors.scaffoldBackground,
+                color: context.colors.buttonText,
                 child: icon != null
                     ? PhosphorIcon(
                         icon!,
@@ -84,7 +84,7 @@ class UserMetricsGenderListTile extends StatelessWidget {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: isActive ? context.colors.scaffoldBackground : context.colors.text,
+                      color: isActive ? context.colors.buttonText : context.colors.text,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

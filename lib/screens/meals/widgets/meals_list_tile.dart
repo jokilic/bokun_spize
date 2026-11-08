@@ -34,11 +34,12 @@ class MealsListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLoading = meal.isLoading;
     final hasError = meal.errors?.isNotEmpty ?? false;
+    final errorText = hasError ? meal.errors!.join('\n') : null;
 
     final titleText = isLoading
         ? meal.originalText ?? '📷'
         : hasError
-        ? meal.errors!.join('\n')
+        ? 'mealsListTileError'.tr()
         : capitalizeFirstLetter(meal.name) ?? '📷';
 
     final subtitleText = getDateString(
@@ -314,6 +315,16 @@ class MealsListTile extends StatelessWidget {
                           ///
                           /// SUBTITLE
                           ///
+                          else if (hasError)
+                            Text(
+                              errorText!,
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            )
                           else
                             Text(
                               subtitleText,

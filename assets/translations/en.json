@@ -231,5 +231,6 @@
     "goalsExplanationTitle": "Method of calculation",
     "goalsExplanationSubtitle": "Changing daily calorie intake adjusts ratio of macros.",
     "deleteAccountExplanationTitle": "This is permanent",
-    "deleteAccountExplanationSubtitle": "Deleting your account will forever remove your data."
+    "deleteAccountExplanationSubtitle": "Deleting your account will forever remove your data.",
+    "mealsListTileError": "Error has happened"
 }

@@ -231,5 +231,6 @@
     "goalsExplanationTitle": "Način računanja",
     "goalsExplanationSubtitle": "Promjenom dnevnog unosa kalorija omjeri makronutrijenata se prilagođavaju.",
     "deleteAccountExplanationTitle": "Ovo je trajno",
-    "deleteAccountExplanationSubtitle": "Brisanjem računa trajno ćete ukloniti svoje podatke."
+    "deleteAccountExplanationSubtitle": "Brisanjem računa trajno ćete ukloniti svoje podatke.",
+    "mealsListTileError": "Pogreška se dogodila"
 }
