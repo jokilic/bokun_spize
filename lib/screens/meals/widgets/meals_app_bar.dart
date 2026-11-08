@@ -625,6 +625,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                               child: buildNutritionValue(
                                 context,
                                 value: currentProtein,
+                                dailyValue: dailyProtein,
                               ),
                             ),
                           ],
@@ -681,6 +682,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                               child: buildNutritionValue(
                                 context,
                                 value: currentCarbs,
+                                dailyValue: dailyCarbs,
                               ),
                             ),
                           ],
@@ -737,6 +739,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                               child: buildNutritionValue(
                                 context,
                                 value: currentFat,
+                                dailyValue: dailyFat,
                               ),
                             ),
                           ],
@@ -757,20 +760,19 @@ class FadingFlexibleTitle extends StatelessWidget {
   Widget buildNutritionValue(
     BuildContext context, {
     required double value,
+    double? dailyValue,
   }) {
-    final textStyle = TextStyle(
-      fontFamily: 'PlusJakartaSans',
-      fontSize: 8,
-      fontWeight: FontWeight.w500,
-      height: 1.2,
-      letterSpacing: 0.4,
-      color: context.colors.text,
-    );
-
     if (isLoading) {
       return Text(
         '--',
-        style: textStyle,
+        style: TextStyle(
+          fontFamily: 'PlusJakartaSans',
+          fontSize: 8,
+          fontWeight: FontWeight.w500,
+          height: 1.2,
+          letterSpacing: 0.4,
+          color: context.colors.text,
+        ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -779,14 +781,95 @@ class FadingFlexibleTitle extends StatelessWidget {
     final formattedValue = formatNutritionValue(value)!;
     final decimalIndex = formattedValue.indexOf('.');
 
-    return AnimatedDigitWidget(
+    final valueWidget = AnimatedDigitWidget(
       value: num.parse(formattedValue),
       fractionDigits: decimalIndex < 0 ? 0 : formattedValue.length - decimalIndex - 1,
-      suffix: 'gramUnit'.tr(),
       loop: false,
       duration: BokunSpizeDurations.animation,
       curve: Curves.easeIn,
-      textStyle: textStyle,
+      textStyle: TextStyle(
+        fontFamily: 'PlusJakartaSans',
+        fontSize: 8,
+        fontWeight: FontWeight.w600,
+        height: 1.2,
+        letterSpacing: 0.4,
+        color: context.colors.text,
+      ),
+    );
+
+    if (dailyValue == null) {
+      return Text.rich(
+        TextSpan(
+          children: [
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: valueWidget,
+            ),
+            TextSpan(
+              text: 'gramUnit'.tr(),
+              style: TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 8,
+                fontWeight: FontWeight.w500,
+                height: 1.2,
+                letterSpacing: 0.4,
+                color: context.colors.text,
+              ),
+            ),
+          ],
+        ),
+        style: TextStyle(
+          fontFamily: 'PlusJakartaSans',
+          fontSize: 8,
+          fontWeight: FontWeight.w500,
+          height: 1.2,
+          letterSpacing: 0.4,
+          color: context.colors.text,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
+    return Text.rich(
+      TextSpan(
+        children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: valueWidget,
+          ),
+          TextSpan(
+            text: 'gramUnit'.tr(),
+          ),
+          const TextSpan(
+            text: ' / ',
+          ),
+          TextSpan(
+            text: formatNutritionValue(dailyValue),
+            style: TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontSize: 8,
+              fontWeight: FontWeight.w600,
+              height: 1.2,
+              letterSpacing: 0.4,
+              color: context.colors.text,
+            ),
+          ),
+          TextSpan(
+            text: 'gramUnit'.tr(),
+          ),
+        ],
+      ),
+      style: TextStyle(
+        fontFamily: 'PlusJakartaSans',
+        fontSize: 8,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        letterSpacing: 0.4,
+        color: context.colors.text,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

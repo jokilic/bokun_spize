@@ -435,7 +435,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   );
                 },
                 icon: PhosphorIconsBold.notification,
-                iconBackgroundColor: context.colors.protein,
+                iconBackgroundColor: context.colors.carbs,
                 // TODO
                 title: 'Notifications',
                 // TODO
@@ -452,7 +452,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   accountController.openContactSheet(context);
                 },
                 icon: PhosphorIconsBold.envelopeSimple,
-                iconBackgroundColor: context.colors.carbs,
+                iconBackgroundColor: context.colors.fat,
                 title: 'accountContactMeTitle'.tr(),
                 subtitle: 'accountContactMeSubtitle'.tr(),
               ),
@@ -468,7 +468,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     accountController.openMessagesSheet(context);
                   },
                   icon: PhosphorIconsBold.chatCircleText,
-                  iconBackgroundColor: context.colors.fat,
+                  iconBackgroundColor: context.colors.protein,
                   title: 'messages'.tr(),
                   subtitle: 'accountMessagesSubtitle'.tr(),
                 ),
@@ -483,7 +483,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   handleLogOut();
                 },
                 icon: PhosphorIconsBold.signOut,
-                iconBackgroundColor: context.colors.delete,
+                iconBackgroundColor: context.colors.carbs,
                 title: 'accountLogoutTitle'.tr(),
                 subtitle: 'accountLogoutSubtitle'.tr(),
               ),
@@ -512,7 +512,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   );
                 },
                 icon: PhosphorIconsBold.trash,
-                iconBackgroundColor: context.colors.text,
+                iconBackgroundColor: context.colors.delete,
                 title: 'accountDeleteAccountTitle'.tr(),
                 subtitle: 'accountDeleteAccountSubtitle'.tr(),
               ),

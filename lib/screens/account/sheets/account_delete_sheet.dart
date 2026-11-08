@@ -286,7 +286,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                                       fontFamily: 'PlusJakartaSans',
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: context.colors.text.withValues(alpha: 0.75),
+                                      color: context.colors.text,
                                     ),
                                   ),
                                   const SizedBox(height: 4),

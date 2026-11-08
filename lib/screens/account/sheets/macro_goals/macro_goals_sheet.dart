@@ -553,7 +553,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                             /// ICON
                                             ///
                                             Material(
-                                              color: context.colors.listTileBackground,
+                                              color: context.colors.carbs,
                                               borderRadius: BorderRadius.circular(12),
                                               child: InkWell(
                                                 borderRadius: BorderRadius.circular(12),
@@ -566,7 +566,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                   child: PhosphorIcon(
                                                     PhosphorIconsBold.mathOperations,
                                                     size: 22,
-                                                    color: context.colors.text.withValues(alpha: 0.75),
+                                                    color: context.colors.buttonText,
                                                   ),
                                                 ),
                                               ),
@@ -586,7 +586,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       fontFamily: 'PlusJakartaSans',
                                                       fontSize: 14,
                                                       fontWeight: FontWeight.w600,
-                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                      color: context.colors.text,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 4),
