@@ -410,7 +410,7 @@ class ViewMealScreen extends WatchingWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 8),
+              child: SizedBox(height: 4),
             ),
 
             ///
@@ -852,47 +852,33 @@ class ViewMealScreen extends WatchingWidget {
               ///
               /// FOODS
               ///
-              SliverList.builder(
-                itemCount: foods!.length,
-                findChildIndexCallback: (key) {
-                  final index = foods.indexWhere(
-                    (food) => ObjectKey(food) == key,
-                  );
-                  return index == -1 ? null : index;
-                },
-                itemBuilder: (context, index) {
-                  final food = foods[index];
-
-                  final listTileKey = ObjectKey(food);
-                  final listTile = ViewMealFoodListTile(
-                    food: food,
-                  );
-
-                  if (index >= 5) {
-                    return KeyedSubtree(
-                      key: listTileKey,
-                      child: listTile,
-                    );
-                  }
-
-                  return Animate(
-                    key: listTileKey,
-                    delay: BokunSpizeDurations.stateTransitionStagger * (7 + index),
-                    effects: const [
-                      FadeEffect(
-                        duration: BokunSpizeDurations.stateTransition,
-                        curve: Curves.easeOut,
-                      ),
-                      MoveEffect(
-                        begin: Offset(0, 18),
-                        end: Offset.zero,
-                        duration: BokunSpizeDurations.stateTransition,
-                        curve: Curves.easeOutCubic,
-                      ),
+              SliverToBoxAdapter(
+                child: Animate(
+                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  effects: const [
+                    FadeEffect(
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOut,
+                    ),
+                    MoveEffect(
+                      begin: Offset(0, 8),
+                      end: Offset.zero,
+                      duration: BokunSpizeDurations.animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ],
+                  child: Column(
+                    children: [
+                      for (final food in foods!)
+                        KeyedSubtree(
+                          key: ObjectKey(food),
+                          child: ViewMealFoodListTile(
+                            food: food,
+                          ),
+                        ),
                     ],
-                    child: listTile,
-                  );
-                },
+                  ),
+                ),
               ),
             ],
 
@@ -943,18 +929,33 @@ class ViewMealScreen extends WatchingWidget {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
                 sliver: SliverToBoxAdapter(
-                  child: TextFieldWidget(
-                    readOnly: true,
-                    minLines: 3,
-                    maxLines: 3,
-                    controller: TextEditingController(
-                      text: originalText,
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 9,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 8),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: TextFieldWidget(
+                      readOnly: true,
+                      minLines: 3,
+                      maxLines: 3,
+                      controller: TextEditingController(
+                        text: originalText,
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      title: 'viewMealOriginalTextTextField'.tr(),
+                      hintText: 'whatWasIt'.tr(),
+                      textColor: context.colors.text,
                     ),
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.newline,
-                    title: 'viewMealOriginalTextTextField'.tr(),
-                    hintText: 'whatWasIt'.tr(),
-                    textColor: context.colors.text,
                   ),
                 ),
               ),

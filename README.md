@@ -7,6 +7,7 @@
     - [ ] Maybe smaller button padding and text size
     - [ ] App name -> Bokun / Bite
     - [ ] Email user gets when logged in using Google and probably Apple
+    - [ ] Set `stateTransitionStagger` to long and test in all screens
 
 ### Screens
     - [ ] Go through every hardcoded text and check if it makes sense
