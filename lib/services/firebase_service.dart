@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
@@ -18,6 +19,7 @@ import '../models/weight_track/weight_track.dart';
 import '../util/ai_schema.dart';
 import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
+import '../util/timezone.dart';
 import '../util/typedefs.dart';
 import '../util/weight_track_parse.dart';
 import 'cache_service.dart';
@@ -107,6 +109,37 @@ class FirebaseService {
     }
 
     return firestore.collection('users').doc(user.uid).collection('notificationSettings').doc('preferences');
+  }
+
+  /// Fetches `NotificationSettings` updates the current `locale` and `timezone` if different
+  Future<NotificationSettings> getAndRefreshNotificationSettings(Locale locale) async {
+    /// Get current `NotificationSettings` from [Firebase]
+    final storedSettings = await getNotificationSettings();
+
+    /// Get current `timezone`
+    final timezone = await getLocalTimezoneIdentifier(
+      fallback: storedSettings?.timezone ?? 'UTC',
+    );
+
+    final settings =
+        storedSettings ??
+        NotificationSettings.defaults(
+          timezone: timezone,
+          locale: locale.languageCode,
+        );
+    final synchronizedSettings = settings.copyWith(
+      timezone: timezone,
+      locale: locale.languageCode,
+    );
+
+    /// Update new `NotificationSettings` in [Firebase]
+    if (storedSettings == null || storedSettings.timezone != timezone || storedSettings.locale != locale.languageCode) {
+      await writeNotificationSettings(
+        settings: synchronizedSettings,
+      );
+    }
+
+    return synchronizedSettings;
   }
 
   /// Fetches notification settings for the current user

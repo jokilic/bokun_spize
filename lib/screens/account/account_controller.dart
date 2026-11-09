@@ -20,7 +20,6 @@ import '../../util/device_info.dart';
 import '../../util/firebase_messaging.dart';
 import '../../util/snackbars.dart';
 import '../../util/theme.dart';
-import '../../util/timezone.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'sheets/account_delete_sheet.dart';
@@ -203,7 +202,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
       initialLanguage: initialLanguage,
       onLanguageChanged: (newLocale) async {
         await context.setLocale(newLocale);
-        await syncNotificationContext(newLocale);
+        await firebase.getAndRefreshNotificationSettings(newLocale);
       },
     ),
   );
@@ -211,7 +210,10 @@ class AccountController extends ValueNotifier<SettingsValues> {
   /// Opens [NotificationsSheet]
   Future<void> openNotificationsSheet(BuildContext context) async {
     final results = await Future.wait<Object>([
-      loadNotificationSettings(context.locale),
+      /// Fetch latest `NotificationSettings` from [Firebase]
+      firebase.getAndRefreshNotificationSettings(context.locale),
+
+      /// Get current notification permission status
       getFirebaseMessagingPermissionStatus(),
     ]);
 
@@ -232,42 +234,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
         onOpenSettingsPressed: openAppSettings,
       ),
     );
-  }
-
-  /// Loads preferences and captures the current locale and timezone
-  Future<NotificationSettings> loadNotificationSettings(Locale locale) async {
-    /// Get current `NotificationSettings` from [Firebase]
-    final storedSettings = await firebase.getNotificationSettings();
-
-    /// Get current `timezone`
-    final timezone = await getLocalTimezoneIdentifier(
-      fallback: storedSettings?.timezone ?? 'UTC',
-    );
-
-    final settings =
-        storedSettings ??
-        NotificationSettings.defaults(
-          timezone: timezone,
-          locale: locale.languageCode,
-        );
-    final synchronizedSettings = settings.copyWith(
-      timezone: timezone,
-      locale: locale.languageCode,
-    );
-
-    /// Update new `NotificationSettings` in [Firebase]
-    if (storedSettings == null || storedSettings.timezone != timezone || storedSettings.locale != locale.languageCode) {
-      await firebase.writeNotificationSettings(
-        settings: synchronizedSettings,
-      );
-    }
-
-    return synchronizedSettings;
-  }
-
-  /// Captures locale and timezone changes in persisted notification preferences
-  Future<void> syncNotificationContext(Locale locale) async {
-    await loadNotificationSettings(locale);
   }
 
   /// Opens [ContactSheet]
