@@ -127,6 +127,64 @@ service cloud.firestore {
         && data.weight <= 1000;
     }
 
+    // Validate notification preferences and optional server scheduling metadata
+    function isValidNotificationSettings(data) {
+      let clientFields = [
+        'weighReminderEnabled',
+        'weighReminderTime',
+        'dailySummaryEnabled',
+        'dailySummaryTime',
+        'announcementsEnabled',
+        'timezone',
+        'locale',
+      ];
+      let serverFields = [
+        'nextWeighReminderAt',
+        'lastWeighReminderSentAt',
+        'nextDailySummaryAt',
+        'lastDailySummarySentAt',
+        'lastAnnouncementSentAt',
+      ];
+
+      return data.keys().hasAll(clientFields)
+        && data.keys().hasOnly(clientFields.concat(serverFields))
+        && data.weighReminderEnabled is bool
+        && data.weighReminderTime is string
+        && data.weighReminderTime.size() == 5
+        && data.weighReminderTime.matches('([01][0-9]|2[0-3]):[0-5][0-9]')
+        && data.dailySummaryEnabled is bool
+        && data.dailySummaryTime is string
+        && data.dailySummaryTime.size() == 5
+        && data.dailySummaryTime.matches('([01][0-9]|2[0-3]):[0-5][0-9]')
+        && data.announcementsEnabled is bool
+        && data.timezone is string
+        && data.timezone.size() > 0
+        && data.timezone.size() <= 100
+        && data.timezone.matches('(UTC|[A-Za-z_+-]+(/[A-Za-z0-9_+-]+)+)')
+        && data.locale is string
+        && data.locale in ['en', 'hr']
+        && (!('nextWeighReminderAt' in data) || data.nextWeighReminderAt is timestamp)
+        && (!('lastWeighReminderSentAt' in data) || data.lastWeighReminderSentAt is timestamp)
+        && (!('nextDailySummaryAt' in data) || data.nextDailySummaryAt is timestamp)
+        && (!('lastDailySummarySentAt' in data) || data.lastDailySummarySentAt is timestamp)
+        && (!('lastAnnouncementSentAt' in data) || data.lastAnnouncementSentAt is timestamp);
+    }
+
+    // Keep scheduling fields writable only by trusted server environments
+    function onlyClientNotificationFieldsChanged() {
+      let clientFields = [
+        'weighReminderEnabled',
+        'weighReminderTime',
+        'dailySummaryEnabled',
+        'dailySummaryTime',
+        'announcementsEnabled',
+        'timezone',
+        'locale',
+      ];
+
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(clientFields);
+    }
+
     // Validate contact messages using the fields serialized by the app
     function isValidContactMessage(data, messageId) {
       let fields = ['id', 'message', 'userUid', 'userEmail', 'appVersion', 'platform', 'createdAt'];
@@ -182,6 +240,25 @@ service cloud.firestore {
         allow read, delete: if isOwner(userId);
         allow create, update: if isOwner(userId)
           && isValidWeightTrack(request.resource.data, weightTrackId);
+      }
+
+      match /notificationSettings/preferences {
+        allow get, delete: if isOwner(userId);
+        allow list: if false;
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasOnly([
+            'weighReminderEnabled',
+            'weighReminderTime',
+            'dailySummaryEnabled',
+            'dailySummaryTime',
+            'announcementsEnabled',
+            'timezone',
+            'locale',
+          ])
+          && isValidNotificationSettings(request.resource.data);
+        allow update: if isOwner(userId)
+          && isValidNotificationSettings(request.resource.data)
+          && onlyClientNotificationFieldsChanged();
       }
     }
   }

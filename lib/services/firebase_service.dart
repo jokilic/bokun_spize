@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 import '../constants/durations.dart';
 import '../models/contact_message/contact_message.dart';
 import '../models/meal/meal.dart';
+import '../models/notification_settings/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
 import '../util/ai_schema.dart';
@@ -96,6 +97,87 @@ class FirebaseService {
   ///
   /// METHODS
   ///
+
+  /// Returns the current user's notification preferences document
+  DocumentReference<Map<String, dynamic>>? get notificationSettingsDocument {
+    final user = auth.currentUser;
+
+    if (user == null) {
+      return null;
+    }
+
+    return firestore.collection('users').doc(user.uid).collection('notificationSettings').doc('preferences');
+  }
+
+  /// Fetches notification settings for the current user
+  Future<NotificationSettings?> getNotificationSettings() async {
+    try {
+      final document = notificationSettingsDocument;
+
+      if (document == null) {
+        return null;
+      }
+
+      final snapshot = await document.get();
+      final data = snapshot.data();
+
+      return data == null ? null : NotificationSettings.fromMap(data);
+    } catch (error) {
+      log(
+        'Getting notification settings failed',
+        error: error,
+      );
+      return null;
+    }
+  }
+
+  /// Listens for real-time notification settings changes for the current user
+  Stream<NotificationSettings?> listenToNotificationSettings() async* {
+    final document = notificationSettingsDocument;
+
+    if (document == null) {
+      yield null;
+      return;
+    }
+
+    try {
+      await for (final snapshot in document.snapshots()) {
+        final data = snapshot.data();
+
+        yield data == null ? null : NotificationSettings.fromMap(data);
+      }
+    } catch (error) {
+      log(
+        'Listening to notification settings failed',
+        error: error,
+      );
+      yield null;
+    }
+  }
+
+  /// Writes client-managed notification preferences while preserving scheduling metadata
+  Future<bool> writeNotificationSettings({required NotificationSettings settings}) async {
+    try {
+      final document = notificationSettingsDocument;
+
+      if (document == null) {
+        return false;
+      }
+
+      await document.set(
+        settings.toMap(),
+        SetOptions(merge: true),
+      );
+
+      return true;
+    } catch (error) {
+      log(
+        'Writing notification settings failed',
+        error: error,
+      );
+      return false;
+    }
+  }
 
   /// Adds a contact message to the root `contactMessages` collection in [Firebase]
   Future<bool> writeContactMessage({required ContactMessage contactMessage}) async {
@@ -696,6 +778,9 @@ class FirebaseService {
       );
       await deleteCollectionPaged(
         userDocument.collection('weightTracks'),
+      );
+      await deleteCollectionPaged(
+        userDocument.collection('notificationSettings'),
       );
 
       /// Deletes user document

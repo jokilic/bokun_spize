@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/contact_message/contact_message.dart';
+import '../../models/notification_settings/notification_settings.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
@@ -14,8 +17,10 @@ import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
 import '../../util/device_info.dart';
+import '../../util/firebase.dart';
 import '../../util/snackbars.dart';
 import '../../util/theme.dart';
+import '../../util/timezone.dart';
 import '../../util/typedefs.dart';
 import '../../widgets/blurred_modal_bottom_sheet.dart';
 import 'sheets/account_delete_sheet.dart';
@@ -24,6 +29,7 @@ import 'sheets/contact_sheet.dart';
 import 'sheets/language_sheet.dart';
 import 'sheets/macro_goals/macro_goals_sheet.dart';
 import 'sheets/messages/messages_sheet.dart';
+import 'sheets/notifications_sheet.dart';
 import 'sheets/theme_sheet.dart';
 import 'sheets/user_metrics/user_metrics_sheet.dart';
 
@@ -195,12 +201,69 @@ class AccountController extends ValueNotifier<SettingsValues> {
     builder: (sheetContext) => LanguageSheet(
       showConfirmButton: false,
       initialLanguage: initialLanguage,
-      onLanguageChanged: context.setLocale,
+      onLanguageChanged: (newLocale) async {
+        await context.setLocale(newLocale);
+        await syncNotificationContext(newLocale);
+      },
     ),
   );
 
   /// Opens [NotificationsSheet]
-  Future<void> openNotificationsSheet(BuildContext context) async {}
+  Future<void> openNotificationsSheet(BuildContext context) async {
+    final results = await Future.wait<Object>([
+      loadNotificationSettings(context.locale),
+      getFirebaseMessagingPermissionStatus(),
+    ]);
+
+    if (!context.mounted) {
+      return;
+    }
+
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (sheetContext) => NotificationsSheet(
+        initialSettings: results[0] as NotificationSettings,
+        initialPermissionStatus: results[1] as AuthorizationStatus,
+        onSettingsChanged: (settings) => firebase.writeNotificationSettings(
+          settings: settings,
+        ),
+        onPermissionRequested: requestFirebaseMessagingPermission,
+        onPermissionRefreshed: getFirebaseMessagingPermissionStatus,
+        onOpenSettingsPressed: openAppSettings,
+      ),
+    );
+  }
+
+  /// Loads preferences and captures the current locale and timezone
+  Future<NotificationSettings> loadNotificationSettings(Locale locale) async {
+    final storedSettings = await firebase.getNotificationSettings();
+    final timezone = await getLocalTimezoneIdentifier(
+      fallback: storedSettings?.timezone ?? 'UTC',
+    );
+    final settings =
+        storedSettings ??
+        NotificationSettings.defaults(
+          timezone: timezone,
+          locale: locale.languageCode,
+        );
+    final synchronizedSettings = settings.copyWith(
+      timezone: timezone,
+      locale: locale.languageCode,
+    );
+
+    if (storedSettings == null || storedSettings.timezone != timezone || storedSettings.locale != locale.languageCode) {
+      await firebase.writeNotificationSettings(
+        settings: synchronizedSettings,
+      );
+    }
+
+    return synchronizedSettings;
+  }
+
+  /// Captures locale and timezone changes in persisted notification preferences
+  Future<void> syncNotificationContext(Locale locale) async {
+    await loadNotificationSettings(locale);
+  }
 
   /// Opens [ContactSheet]
   Future<void> openContactSheet(BuildContext context) async => await showBlurredModalBottomSheet(

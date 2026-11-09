@@ -22,17 +22,23 @@ Server payloads must use one of these stable `android.notification.channel_id` v
 | `daily_summaries` | Previous-day and progress summaries | Default |
 | `announcements` | Product announcements and fallback notifications | Default |
 
-Android uses `announcements` when a payload does not specify a channel. The app creates all channels before Firebase processes messages and requests `POST_NOTIFICATIONS` through `FirebaseMessaging.requestPermission()` on Android 13 and newer.
+Android uses `announcements` when a payload does not specify a channel. The app creates all channels before Firebase processes messages and requests `POST_NOTIFICATIONS` through `FirebaseMessaging.requestPermission()` only after the user presses **Allow notifications** in Account → Notifications.
 
 ## iOS authorization
 
-The app requests alert, badge and sound authorization. Firebase can return `authorized`, `denied`, `notDetermined` or `provisional`; callers must preserve these states instead of reducing them to a Boolean. Foreground notifications present alerts, badges and sounds.
+The app requests alert, badge and sound authorization only after the user presses **Allow notifications**. Firebase can return `authorized`, `denied`, `deniedPermanently`, `notDetermined` or `provisional`; callers preserve these states instead of reducing them to a Boolean. Foreground notifications present alerts, badges and sounds.
+
+## Notification preferences
+
+Client-managed preferences are stored at `users/{uid}/notificationSettings/preferences`. Firestore rules restrict access to the owning user, reject unexpected fields and prevent clients from writing server-managed scheduling timestamps.
+
+A trusted scheduler must calculate the next delivery timestamps, send FCM messages and update the last-sent timestamps. The mobile client does not schedule local notifications.
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 
 ## Physical-device verification
 
-1. Install and open a fresh build on a physical device, then respond to the system notification prompt
+1. Install and open a fresh build on a physical device, open Account → Notifications, press **Allow notifications** and respond to the system prompt
 2. Retrieve the FCM registration token while debugging or from the device-registration implementation
 3. In Firebase Console, use **Messaging → Send test message** and target that token
 4. Verify delivery while the app is foregrounded, backgrounded and terminated

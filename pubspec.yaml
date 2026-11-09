@@ -47,6 +47,7 @@ dependencies:
   flutter_blurhash: 0.9.1
   flutter_displaymode: 0.7.0
   flutter_swipe_action_cell: 3.1.9
+  flutter_timezone: 5.1.1
   fuzzywuzzy: 1.2.0
   get_it: 9.3.0
   google_sign_in: 7.2.0

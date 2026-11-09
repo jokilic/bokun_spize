@@ -1,29 +1,15 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:easy_localization/src/easy_localization_controller.dart';
-import 'package:easy_localization/src/localization.dart';
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../firebase_options.dart';
-import '../generated/codegen_loader.g.dart';
 import '../services/ai_service.dart';
 import '../services/cache_service.dart';
 import '../services/firebase_service.dart';
@@ -31,6 +17,8 @@ import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
 import '../services/storage_service.dart';
 import '../services/theme_service.dart';
+import 'firebase.dart';
+import 'localization.dart';
 
 final getIt = GetIt.instance;
 
@@ -82,89 +70,6 @@ Future<void> initializeBeforeAppStart() async {
   );
 
   await initializeFirebaseAppCheck();
-}
-
-/// Initialize [EasyLocalization] & return active `locale`
-Future<Locale?> initializeLocalization() async {
-  try {
-    await EasyLocalization.ensureInitialized();
-
-    final controller = EasyLocalizationController(
-      useOnlyLangCode: true,
-      supportedLocales: const [
-        Locale('hr'),
-        Locale('en'),
-      ],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('hr'),
-      saveLocale: true,
-      useFallbackTranslations: true,
-      assetLoader: const CodegenLoader(),
-      onLoadError: (e) {},
-    );
-
-    await controller.loadTranslations();
-
-    Localization.load(
-      controller.locale,
-      translations: controller.translations,
-      fallbackTranslations: controller.fallbackTranslations,
-    );
-
-    await initializeDateFormatting('en');
-    await initializeDateFormatting('hr');
-
-    return controller.locale;
-  } catch (e) {
-    return null;
-  }
-}
-
-/// Initializes [Firebase]
-Future<void> initializeFirebase() async {
-  if (firebase_core.Firebase.apps.isNotEmpty) {
-    return;
-  }
-
-  await firebase_core.Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-}
-
-/// Initializes [Firebase App Check]
-Future<void> initializeFirebaseAppCheck() async {
-  await FirebaseAppCheck.instance.activate(
-    // providerWeb: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
-    providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
-  );
-}
-
-/// Requests notification permission and configures foreground presentation
-Future<AuthorizationStatus?> initializeFirebaseMessaging() async {
-  try {
-    final messaging = FirebaseMessaging.instance;
-
-    await messaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    final settings = await messaging.requestPermission();
-
-    log(
-      'Notification permission status: ${settings.authorizationStatus.name}',
-    );
-
-    return settings.authorizationStatus;
-  } catch (error) {
-    log(
-      'Firebase Messaging initialization failed',
-      error: error,
-    );
-    return null;
-  }
 }
 
 /// Registers app services and loads saved preferences before the app starts
