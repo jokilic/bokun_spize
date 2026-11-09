@@ -9,8 +9,6 @@ import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/text_field_widget.dart';
 
-// TODO: Staggered animations like in other screens
-
 class AccountDeleteSheet extends StatefulWidget {
   final String deleteWord;
   final Function(String? password) onDeletePressed;

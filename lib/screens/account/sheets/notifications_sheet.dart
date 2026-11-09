@@ -15,6 +15,8 @@ import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';
 import 'notifications/notifications_sheet_list_tile.dart';
 
+// TODO: Staggered animations like in other screens
+
 class NotificationsSheet extends StatefulWidget {
   final NotificationSettings initialSettings;
   final AuthorizationStatus initialPermissionStatus;
