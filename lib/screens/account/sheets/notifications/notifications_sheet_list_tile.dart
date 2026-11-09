@@ -107,6 +107,9 @@ class NotificationsSheetListTile extends StatelessWidget {
             Switch.adaptive(
               value: isActive,
               activeThumbColor: color,
+              activeTrackColor: color.withValues(alpha: 0.25),
+              inactiveThumbColor: context.colors.listTileBackground,
+              inactiveTrackColor: context.colors.scaffoldBackground,
               onChanged: (_) => onPressed(),
             ),
           ],

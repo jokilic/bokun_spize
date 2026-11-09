@@ -444,8 +444,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                 child: NotificationsSheetListTile(
                   onPressed: () => updateSettings(
                     settings.copyWith(
-                      // TODO: Instead of this hardcoded `false` we need somekind of a toggle, because we don't have new value
-                      weighReminderEnabled: false,
+                      weighReminderEnabled: !settings.weighReminderEnabled,
                     ),
                   ),
                   isActive: settings.weighReminderEnabled,
@@ -491,8 +490,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                 child: NotificationsSheetListTile(
                   onPressed: () => updateSettings(
                     settings.copyWith(
-                      // TODO: Instead of this hardcoded `false` we need somekind of a toggle, because we don't have new value
-                      dailySummaryEnabled: false,
+                      dailySummaryEnabled: !settings.dailySummaryEnabled,
                     ),
                   ),
                   isActive: settings.dailySummaryEnabled,
@@ -538,8 +536,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                 child: NotificationsSheetListTile(
                   onPressed: () => updateSettings(
                     settings.copyWith(
-                      // TODO: Instead of this hardcoded `false` we need somekind of a toggle, because we don't have new value
-                      announcementsEnabled: false,
+                      announcementsEnabled: !settings.announcementsEnabled,
                     ),
                   ),
                   isActive: settings.announcementsEnabled,
@@ -561,81 +558,6 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
           ),
         ],
-      ),
-    ),
-  );
-}
-
-class NotificationPreferenceTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool enabled;
-  final bool permissionGranted;
-  final ValueChanged<bool> onChanged;
-
-  const NotificationPreferenceTile({
-    required this.title,
-    required this.subtitle,
-    required this.enabled,
-    required this.permissionGranted,
-    required this.onChanged,
-  });
-
-  /// Builds one persisted notification preference control
-  @override
-  Widget build(BuildContext context) => SliverPadding(
-    padding: const EdgeInsets.symmetric(
-      horizontal: marginHorizontal,
-      vertical: 8,
-    ),
-    sliver: SliverToBoxAdapter(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(listTileRadius),
-          color: context.colors.listTileBackground.withValues(alpha: 0.5),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: context.colors.text,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.text.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Switch.adaptive(
-                  value: enabled,
-                  activeThumbColor: context.colors.carbs,
-                  onChanged: onChanged,
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     ),
   );
