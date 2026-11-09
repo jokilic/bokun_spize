@@ -16,7 +16,10 @@
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>processing</string>
+			<string>remote-notification</string>
 		</array>
+		<key>FirebaseAppDelegateProxyEnabled</key>
+		<true/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
 		<key>CFBundleDevelopmentRegion</key>

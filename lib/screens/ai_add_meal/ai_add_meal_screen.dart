@@ -850,7 +850,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
-                        padding: const EdgeInsets.all(22),
+                        padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.protein,
                         foregroundColor: context.colors.buttonText,
                         disabledBackgroundColor: context.colors.protein.withValues(alpha: 0.25),

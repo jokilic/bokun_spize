@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_reminders_name">Reminders</string>
+    <string name="notification_channel_reminders_description">Reminders to enter weight</string>
+    <string name="notification_channel_daily_summaries_name">Daily progress</string>
+    <string name="notification_channel_daily_summaries_description">Explanation about daily progress</string>
+    <string name="notification_channel_announcements_name">Announcements</string>
+    <string name="notification_channel_announcements_description">Important application updates</string>
+</resources>

@@ -269,7 +269,7 @@ class _ContactSheetState extends State<ContactSheet> {
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
-                        padding: const EdgeInsets.all(22),
+                        padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.account,
                         foregroundColor: context.colors.buttonText,
                       ),

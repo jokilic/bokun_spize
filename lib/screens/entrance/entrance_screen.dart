@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -497,7 +498,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                     height: 1.6,
                                     fontWeight: FontWeight.w800,
                                   ),
-                                  padding: const EdgeInsets.all(18),
+                                  padding: const EdgeInsets.all(16),
                                   backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                   foregroundColor: context.colors.text,
                                   disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
@@ -513,42 +514,43 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             ///
                             /// APPLE
                             ///
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: appleIsLoading
-                                    ? null
-                                    : () => handleOnPressed(
-                                        context: context,
-                                        onPressed: entranceController.appleSignInPressed,
-                                      ),
-                                icon: PhosphorIcon(
-                                  PhosphorIconsBold.appleLogo,
-                                  color: context.colors.text.withValues(
-                                    alpha: googleIsLoading ? 0.5 : 1,
+                            if (defaultTargetPlatform == TargetPlatform.iOS)
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: appleIsLoading
+                                      ? null
+                                      : () => handleOnPressed(
+                                          context: context,
+                                          onPressed: entranceController.appleSignInPressed,
+                                        ),
+                                  icon: PhosphorIcon(
+                                    PhosphorIconsBold.appleLogo,
+                                    color: context.colors.text.withValues(
+                                      alpha: googleIsLoading ? 0.5 : 1,
+                                    ),
+                                    size: 24,
                                   ),
-                                  size: 24,
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  shape: const StadiumBorder(),
-                                  textStyle: const TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 16,
-                                    height: 1.6,
-                                    fontWeight: FontWeight.w800,
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    shape: const StadiumBorder(),
+                                    textStyle: const TextStyle(
+                                      fontFamily: 'Epilogue',
+                                      fontSize: 16,
+                                      height: 1.6,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                    padding: const EdgeInsets.all(16),
+                                    backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                                    foregroundColor: context.colors.text,
+                                    disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
+                                    disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
                                   ),
-                                  padding: const EdgeInsets.all(18),
-                                  backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                                  foregroundColor: context.colors.text,
-                                  disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.25),
-                                  disabledForegroundColor: context.colors.text.withValues(alpha: 0.5),
-                                ),
-                                label: Text(
-                                  'entranceApple'.tr(),
-                                  textAlign: TextAlign.center,
+                                  label: Text(
+                                    'entranceApple'.tr(),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -605,7 +607,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                   text: showLogin ? 'entranceCreateAnAccount'.tr() : 'signIn'.tr(),
                                   style: TextStyle(
                                     fontFamily: 'Epilogue',
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w700,
                                     color: context.colors.protein,
                                   ),
@@ -614,7 +616,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                             ),
                             style: TextStyle(
                               fontFamily: 'Epilogue',
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: context.colors.text,
                             ),

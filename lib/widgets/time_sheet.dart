@@ -289,7 +289,7 @@ class _TimeSheetState extends State<TimeSheet> {
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                       ),
-                      padding: const EdgeInsets.all(22),
+                      padding: const EdgeInsets.all(20),
                       backgroundColor: widget.primaryColor,
                       foregroundColor: context.colors.buttonText,
                     ),

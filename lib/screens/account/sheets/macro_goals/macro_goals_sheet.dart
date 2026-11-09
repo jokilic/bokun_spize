@@ -1119,7 +1119,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
-                        padding: const EdgeInsets.all(22),
+                        padding: const EdgeInsets.all(20),
                         backgroundColor: widget.activeColor,
                         foregroundColor: context.colors.buttonText,
                         disabledBackgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),

@@ -1,6 +1,7 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +138,33 @@ Future<void> initializeFirebaseAppCheck() async {
     providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
     providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
   );
+}
+
+/// Requests notification permission and configures foreground presentation
+Future<AuthorizationStatus?> initializeFirebaseMessaging() async {
+  try {
+    final messaging = FirebaseMessaging.instance;
+
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    final settings = await messaging.requestPermission();
+
+    log(
+      'Notification permission status: ${settings.authorizationStatus.name}',
+    );
+
+    return settings.authorizationStatus;
+  } catch (error) {
+    log(
+      'Firebase Messaging initialization failed',
+      error: error,
+    );
+    return null;
+  }
 }
 
 /// Registers app services and loads saved preferences before the app starts

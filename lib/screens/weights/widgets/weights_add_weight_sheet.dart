@@ -598,7 +598,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
-                        padding: const EdgeInsets.all(22),
+                        padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.carbs,
                         foregroundColor: context.colors.buttonText,
                       ),

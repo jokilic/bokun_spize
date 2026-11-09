@@ -34,6 +34,10 @@ Future<void> main() async {
     runApp(
       BokunSpizeInit(),
     );
+
+    unawaited(
+      initializeFirebaseMessaging(),
+    );
   } catch (error) {
     log(
       'Bokun spize startup failed',

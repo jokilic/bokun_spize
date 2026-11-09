@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_reminders_name">Podsjetnici</string>
+    <string name="notification_channel_reminders_description">Podsjetnici za unos težine</string>
+    <string name="notification_channel_daily_summaries_name">Dnevni napredak</string>
+    <string name="notification_channel_daily_summaries_description">Objašnjenje o dnevnom napretku</string>
+    <string name="notification_channel_announcements_name">Obavijesti</string>
+    <string name="notification_channel_announcements_description">Važne novosti aplikacije</string>
+</resources>
