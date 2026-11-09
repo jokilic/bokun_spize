@@ -12,7 +12,7 @@ class MessagesEmpty extends StatelessWidget {
   Widget build(BuildContext context) => SliverPadding(
     padding: const EdgeInsets.symmetric(
       horizontal: marginHorizontal * 4,
-      vertical: 12,
+      vertical: 8,
     ),
     sliver: SliverToBoxAdapter(
       child: Animate(

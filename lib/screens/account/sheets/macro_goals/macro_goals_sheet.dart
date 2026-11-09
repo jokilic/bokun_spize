@@ -531,11 +531,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   /// EXPLANATION
                                   ///
                                   Material(
-                                    color: context.colors.scaffoldBackground,
-                                    borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(listTileRadius),
                                     child: InkWell(
-                                      borderRadius: BorderRadius.circular(listTileRadius / 2),
-                                      highlightColor: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(listTileRadius),
+                                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                       splashColor: Colors.transparent,
                                       hoverColor: Colors.transparent,
                                       focusColor: Colors.transparent,
@@ -545,29 +545,25 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                           vertical: 14,
                                         ),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                          borderRadius: BorderRadius.circular(listTileRadius),
+                                          color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                                         ),
                                         child: Row(
                                           children: [
                                             ///
                                             /// ICON
                                             ///
-                                            Material(
-                                              color: context.colors.carbs,
-                                              borderRadius: BorderRadius.circular(12),
-                                              child: InkWell(
-                                                borderRadius: BorderRadius.circular(12),
-                                                highlightColor: Colors.transparent,
-                                                splashColor: Colors.transparent,
-                                                hoverColor: Colors.transparent,
-                                                focusColor: Colors.transparent,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(12),
-                                                  child: PhosphorIcon(
-                                                    PhosphorIconsBold.mathOperations,
-                                                    size: 22,
-                                                    color: context.colors.buttonText,
-                                                  ),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(100),
+                                              child: Container(
+                                                width: listTileIconRadius,
+                                                height: listTileIconRadius,
+                                                alignment: Alignment.center,
+                                                color: context.colors.carbs.withValues(alpha: 0.25),
+                                                child: PhosphorIcon(
+                                                  PhosphorIconsBold.mathOperations,
+                                                  color: context.colors.carbs,
+                                                  size: listTileIconRadius / 2,
                                                 ),
                                               ),
                                             ),
@@ -585,7 +581,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                     style: TextStyle(
                                                       fontFamily: 'PlusJakartaSans',
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight: FontWeight.w900,
                                                       color: context.colors.text,
                                                     ),
                                                   ),
@@ -596,7 +592,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       fontFamily: 'PlusJakartaSans',
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.w500,
-                                                      color: context.colors.text.withValues(alpha: 0.75),
+                                                      color: context.colors.text.withValues(alpha: 0.7),
                                                     ),
                                                   ),
                                                 ],
@@ -685,7 +681,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   /// PROTEIN
                                   ///
                                   Material(
-                                    color: context.colors.scaffoldBackground,
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
@@ -697,6 +693,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                          color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                                         ),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -816,7 +813,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   /// CARBS
                                   ///
                                   Material(
-                                    color: context.colors.scaffoldBackground,
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
@@ -828,6 +825,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                          color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                                         ),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -947,7 +945,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   /// FAT
                                   ///
                                   Material(
-                                    color: context.colors.scaffoldBackground,
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(listTileRadius / 2),
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(listTileRadius / 2),
@@ -959,6 +957,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(listTileRadius / 2),
+                                          color: context.colors.scaffoldBackground.withValues(alpha: 0.5),
                                         ),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

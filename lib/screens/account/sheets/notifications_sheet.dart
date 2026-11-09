@@ -305,14 +305,18 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
+            child: SizedBox(height: 10),
           ),
 
           ///
           /// NOTIFICATION STATUS
           ///
+          // TODO: Don't show if notifications are authorized
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
             sliver: SliverToBoxAdapter(
               child: Animate(
                 delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -329,11 +333,11 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: Material(
-                  color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(listTileRadius / 2),
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(listTileRadius / 2),
-                    highlightColor: Colors.transparent,
+                    borderRadius: BorderRadius.circular(listTileRadius),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     focusColor: Colors.transparent,
@@ -343,33 +347,25 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                         vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: permissionGranted ? context.colors.protein : context.colors.delete,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(listTileRadius / 2),
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
                       ),
                       child: Row(
                         children: [
                           ///
                           /// ICON
                           ///
-                          Material(
-                            color: permissionGranted ? context.colors.protein : context.colors.delete,
-                            borderRadius: BorderRadius.circular(12),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: PhosphorIcon(
-                                  permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
-                                  color: context.colors.buttonText,
-                                  size: 22,
-                                ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Container(
+                              width: listTileIconRadius,
+                              height: listTileIconRadius,
+                              alignment: Alignment.center,
+                              color: (permissionGranted ? context.colors.protein : context.colors.delete).withValues(alpha: 0.25),
+                              child: PhosphorIcon(
+                                permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
+                                color: permissionGranted ? context.colors.protein : context.colors.delete,
+                                size: listTileIconRadius / 2,
                               ),
                             ),
                           ),
@@ -387,7 +383,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                                   style: TextStyle(
                                     fontFamily: 'PlusJakartaSans',
                                     fontSize: 14,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w900,
                                     color: context.colors.text,
                                   ),
                                 ),
@@ -398,7 +394,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                                     fontFamily: 'PlusJakartaSans',
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: context.colors.text.withValues(alpha: 0.75),
+                                    color: context.colors.text.withValues(alpha: 0.7),
                                   ),
                                 ),
                               ],
@@ -412,12 +408,9 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 8),
-          ),
 
           ///
-          /// WEIGHT REMINDER
+          /// RECORD YOUR WEIGHT
           ///
           SliverPadding(
             padding: const EdgeInsets.symmetric(
@@ -457,51 +450,109 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   color: context.colors.carbs,
                   icon: PhosphorIconsBold.personSimple,
                   title: 'notificationsWeighReminderTitle'.tr(),
-                  // TODO
                   subtitle: 'notificationsWeighReminderSubtitle'.tr(),
                 ),
               ),
             ),
           ),
 
-          NotificationPreferenceTile(
-            title: 'notificationsDailySummaryTitle'.tr(),
-            subtitle: 'notificationsDailySummarySubtitle'.tr(),
-            enabled: settings.dailySummaryEnabled,
-            permissionGranted: permissionGranted,
-            onChanged: (enabled) => updateSettings(
-              settings.copyWith(dailySummaryEnabled: enabled),
-            ),
-          ),
-          NotificationPreferenceTile(
-            title: 'notificationsAnnouncementsTitle'.tr(),
-            subtitle: 'notificationsAnnouncementsSubtitle'.tr(),
-            enabled: settings.announcementsEnabled,
-            permissionGranted: permissionGranted,
-            onChanged: (enabled) => updateSettings(
-              settings.copyWith(announcementsEnabled: enabled),
-            ),
-          ),
+          ///
+          /// REVIEW PREVIOUS DAY
+          ///
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-              marginHorizontal,
-              12,
-              marginHorizontal,
-              0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
             ),
             sliver: SliverToBoxAdapter(
-              child: Text(
-                '${settings.timezone} · ${settings.locale.toUpperCase()}',
-                style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.text.withValues(alpha: 0.55),
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                  ScaleEffect(
+                    begin: Offset(0.98, 0.98),
+                    end: Offset(1, 1),
+                    alignment: Alignment.topCenter,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: NotificationsSheetListTile(
+                  onPressed: () => updateSettings(
+                    settings.copyWith(
+                      // TODO: Instead of this hardcoded `false` we need somekind of a toggle, because we don't have new value
+                      dailySummaryEnabled: false,
+                    ),
+                  ),
+                  isActive: settings.dailySummaryEnabled,
+                  color: context.colors.protein,
+                  icon: PhosphorIconsBold.graph,
+                  title: 'notificationsDailySummaryTitle'.tr(),
+                  subtitle: 'notificationsDailySummarySubtitle'.tr(),
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
           ),
+
+          ///
+          /// ANNOUNCEMENTS
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 18),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                  ScaleEffect(
+                    begin: Offset(0.98, 0.98),
+                    end: Offset(1, 1),
+                    alignment: Alignment.topCenter,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: NotificationsSheetListTile(
+                  onPressed: () => updateSettings(
+                    settings.copyWith(
+                      // TODO: Instead of this hardcoded `false` we need somekind of a toggle, because we don't have new value
+                      announcementsEnabled: false,
+                    ),
+                  ),
+                  isActive: settings.announcementsEnabled,
+                  color: context.colors.fat,
+                  icon: PhosphorIconsBold.megaphone,
+                  title: 'notificationsAnnouncementsTitle'.tr(),
+                  subtitle: 'notificationsAnnouncementsSubtitle'.tr(),
+                ),
+              ),
+            ),
+          ),
+
+          ///
+          /// BOTTOM SPACING
+          ///
           SliverToBoxAdapter(
             child: SizedBox(
               height: getBottomSpacing(context),

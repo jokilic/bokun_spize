@@ -179,7 +179,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 24),
+            child: SizedBox(height: 10),
           ),
 
           ///

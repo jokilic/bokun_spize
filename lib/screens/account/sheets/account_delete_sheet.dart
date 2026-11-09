@@ -9,6 +9,8 @@ import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/text_field_widget.dart';
 
+// TODO: Staggered animations like in other screens
+
 class AccountDeleteSheet extends StatefulWidget {
   final String deleteWord;
   final Function(String? password) onDeletePressed;
@@ -203,14 +205,17 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 20),
+              child: SizedBox(height: 10),
             ),
 
             ///
             /// EXPLANATION
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -227,11 +232,11 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                     ),
                   ],
                   child: Material(
-                    color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(listTileRadius / 2),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(listTileRadius / 2),
-                      highlightColor: Colors.transparent,
+                      borderRadius: BorderRadius.circular(listTileRadius),
+                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       focusColor: Colors.transparent,
@@ -241,33 +246,25 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                           vertical: 14,
                         ),
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: context.colors.delete,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(listTileRadius / 2),
+                          borderRadius: BorderRadius.circular(listTileRadius),
+                          color: context.colors.listTileBackground.withValues(alpha: 0.5),
                         ),
                         child: Row(
                           children: [
                             ///
                             /// ICON
                             ///
-                            Material(
-                              color: context.colors.delete,
-                              borderRadius: BorderRadius.circular(12),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12),
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12),
-                                  child: PhosphorIcon(
-                                    PhosphorIconsBold.warningOctagon,
-                                    size: 22,
-                                    color: context.colors.buttonText,
-                                  ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Container(
+                                width: listTileIconRadius,
+                                height: listTileIconRadius,
+                                alignment: Alignment.center,
+                                color: context.colors.delete.withValues(alpha: 0.25),
+                                child: PhosphorIcon(
+                                  PhosphorIconsBold.warningOctagon,
+                                  color: context.colors.delete,
+                                  size: listTileIconRadius / 2,
                                 ),
                               ),
                             ),
@@ -285,7 +282,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                                     style: TextStyle(
                                       fontFamily: 'PlusJakartaSans',
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.w900,
                                       color: context.colors.text,
                                     ),
                                   ),
@@ -296,7 +293,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                                       fontFamily: 'PlusJakartaSans',
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: context.colors.text.withValues(alpha: 0.75),
+                                      color: context.colors.text.withValues(alpha: 0.7),
                                     ),
                                   ),
                                 ],

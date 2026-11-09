@@ -210,7 +210,7 @@ class _MessagesSheetState extends State<MessagesSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
@@ -229,6 +229,7 @@ class _MessagesSheetState extends State<MessagesSheet> {
                   final message = contactMessages[index];
 
                   final listTileKey = ValueKey(message.id);
+
                   final listTile = MessageListTile(
                     onPressed: () {
                       HapticFeedback.lightImpact();

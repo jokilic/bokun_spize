@@ -178,7 +178,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 24),
+            child: SizedBox(height: 10),
           ),
 
           ///

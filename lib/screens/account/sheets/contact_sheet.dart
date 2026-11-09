@@ -188,14 +188,17 @@ class _ContactSheetState extends State<ContactSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
             /// NAME FIELD
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 3,

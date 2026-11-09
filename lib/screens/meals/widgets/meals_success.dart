@@ -33,6 +33,7 @@ class MealsSuccess extends StatelessWidget {
       final meal = meals[index];
 
       final listTileKey = ValueKey(meal.id);
+
       final listTile = MealsListTile(
         onPressed: () => onPressed(meal),
         onEditPressed: () => onEditPressed(meal),
