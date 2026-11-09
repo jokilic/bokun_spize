@@ -458,7 +458,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   icon: PhosphorIconsBold.personSimple,
                   title: 'notificationsWeighReminderTitle'.tr(),
                   // TODO
-                  subtitle: 'Jutarnji podsjetnik za vaganje prije prvog obroka',
+                  subtitle: 'notificationsWeighReminderSubtitle'.tr(),
                 ),
               ),
             ),
