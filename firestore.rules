@@ -131,9 +131,7 @@ service cloud.firestore {
     function isValidNotificationSettings(data) {
       let clientFields = [
         'weighReminderEnabled',
-        'weighReminderTime',
         'dailySummaryEnabled',
-        'dailySummaryTime',
         'announcementsEnabled',
         'timezone',
         'locale',
@@ -147,15 +145,8 @@ service cloud.firestore {
       ];
 
       return data.keys().hasAll(clientFields)
-        && data.keys().hasOnly(clientFields.concat(serverFields))
         && data.weighReminderEnabled is bool
-        && data.weighReminderTime is string
-        && data.weighReminderTime.size() == 5
-        && data.weighReminderTime.matches('([01][0-9]|2[0-3]):[0-5][0-9]')
         && data.dailySummaryEnabled is bool
-        && data.dailySummaryTime is string
-        && data.dailySummaryTime.size() == 5
-        && data.dailySummaryTime.matches('([01][0-9]|2[0-3]):[0-5][0-9]')
         && data.announcementsEnabled is bool
         && data.timezone is string
         && data.timezone.size() > 0
@@ -174,9 +165,7 @@ service cloud.firestore {
     function onlyClientNotificationFieldsChanged() {
       let clientFields = [
         'weighReminderEnabled',
-        'weighReminderTime',
         'dailySummaryEnabled',
-        'dailySummaryTime',
         'announcementsEnabled',
         'timezone',
         'locale',
@@ -248,9 +237,7 @@ service cloud.firestore {
         allow create: if isOwner(userId)
           && request.resource.data.keys().hasOnly([
             'weighReminderEnabled',
-            'weighReminderTime',
             'dailySummaryEnabled',
-            'dailySummaryTime',
             'announcementsEnabled',
             'timezone',
             'locale',

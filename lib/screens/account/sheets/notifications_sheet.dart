@@ -12,8 +12,6 @@ import '../../../constants/durations.dart';
 import '../../../models/notification_settings/notification_settings.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/spacing.dart';
-import '../../../widgets/blurred_modal_bottom_sheet.dart';
-import '../../../widgets/time_sheet.dart';
 
 class NotificationsSheet extends StatefulWidget {
   final NotificationSettings initialSettings;
@@ -159,33 +157,6 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
     }
 
     setState(() => permissionStatus = status);
-  }
-
-  /// Opens the shared time picker for a scheduled notification preference
-  Future<void> openTimePicker({required bool isWeighReminder}) async {
-    final initialTime = isWeighReminder ? settings.weighReminderTime : settings.dailySummaryTime;
-
-    await showBlurredModalBottomSheet(
-      context: context,
-      builder: (sheetContext) => TimeSheet(
-        primaryColor: context.colors.carbs,
-        dateValue: initialTime.toDateTime(),
-        subtitle: isWeighReminder ? 'notificationsWeighTimeSubtitle'.tr() : 'notificationsDailyTimeSubtitle'.tr(),
-        onTimeChanged: (newTime) {
-          HapticFeedback.lightImpact();
-          final notificationTime = NotificationTime(
-            hour: newTime.hour,
-            minute: newTime.minute,
-          );
-
-          unawaited(
-            updateSettings(
-              isWeighReminder ? settings.copyWith(weighReminderTime: notificationTime) : settings.copyWith(dailySummaryTime: notificationTime),
-            ),
-          );
-        },
-      ),
-    );
   }
 
   /// Builds the notification preferences sheet
@@ -366,22 +337,18 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             subtitle: 'notificationsWeighReminderSubtitle'.tr(),
             enabled: settings.weighReminderEnabled,
             permissionGranted: permissionGranted,
-            time: settings.weighReminderTime,
             onChanged: (enabled) => updateSettings(
               settings.copyWith(weighReminderEnabled: enabled),
             ),
-            onTimePressed: () => openTimePicker(isWeighReminder: true),
           ),
           NotificationPreferenceTile(
             title: 'notificationsDailySummaryTitle'.tr(),
             subtitle: 'notificationsDailySummarySubtitle'.tr(),
             enabled: settings.dailySummaryEnabled,
             permissionGranted: permissionGranted,
-            time: settings.dailySummaryTime,
             onChanged: (enabled) => updateSettings(
               settings.copyWith(dailySummaryEnabled: enabled),
             ),
-            onTimePressed: () => openTimePicker(isWeighReminder: false),
           ),
           NotificationPreferenceTile(
             title: 'notificationsAnnouncementsTitle'.tr(),
@@ -428,9 +395,7 @@ class NotificationPreferenceTile extends StatelessWidget {
   final String subtitle;
   final bool enabled;
   final bool permissionGranted;
-  final NotificationTime? time;
   final ValueChanged<bool> onChanged;
-  final VoidCallback? onTimePressed;
 
   const NotificationPreferenceTile({
     required this.title,
@@ -438,8 +403,6 @@ class NotificationPreferenceTile extends StatelessWidget {
     required this.enabled,
     required this.permissionGranted,
     required this.onChanged,
-    this.time,
-    this.onTimePressed,
   });
 
   /// Builds one persisted notification preference control
@@ -504,22 +467,6 @@ class NotificationPreferenceTile extends StatelessWidget {
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: context.colors.delete,
-                ),
-              ),
-            ],
-            if (enabled && time != null && onTimePressed != null) ...[
-              const SizedBox(height: 12),
-              TextButton.icon(
-                onPressed: onTimePressed,
-                icon: const PhosphorIcon(
-                  PhosphorIconsBold.clock,
-                  size: 18,
-                ),
-                label: Text(time!.toFirestoreValue()),
-                style: TextButton.styleFrom(
-                  foregroundColor: context.colors.carbs,
-                  padding: EdgeInsets.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
             ],
