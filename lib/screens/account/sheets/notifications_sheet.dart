@@ -122,8 +122,12 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
       return;
     }
 
-    HapticFeedback.lightImpact();
-    setState(() => isUpdatingPermission = true);
+    unawaited(
+      HapticFeedback.lightImpact(),
+    );
+    setState(
+      () => isUpdatingPermission = true,
+    );
 
     final status = await widget.onPermissionRequested();
 
@@ -139,7 +143,9 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
 
   /// Opens application settings and refreshes the resulting permission state
   Future<void> openSettings() async {
-    HapticFeedback.lightImpact();
+    unawaited(
+      HapticFeedback.lightImpact(),
+    );
     await widget.onOpenSettingsPressed();
     await refreshPermission();
   }
@@ -214,12 +220,12 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                 ],
                 child: Row(
                   children: [
-                    Opacity(
+                    const Opacity(
                       opacity: 0,
                       child: IgnorePointer(
                         child: IconButton(
                           onPressed: null,
-                          icon: const PhosphorIcon(
+                          icon: PhosphorIcon(
                             PhosphorIconsBold.x,
                             size: 22,
                           ),

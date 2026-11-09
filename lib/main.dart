@@ -17,6 +17,7 @@ import 'theme/extensions.dart';
 import 'theme/theme.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
+import 'util/firebase.dart';
 
 Future<void> main() async {
   /// Initialize Flutter related tasks

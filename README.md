@@ -22,6 +22,7 @@
 - [ ] Crashlytics
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
+- [ ] Identifier should maybe be `com.josipkilic.bokunspize`
 
 # Bokun spize 🥗
 
