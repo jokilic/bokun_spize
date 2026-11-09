@@ -51,6 +51,7 @@ Color getRandomPrimaryColor() {
     BokunSpizeColors.blue,
     BokunSpizeColors.bordeaux,
     BokunSpizeColors.red,
+    BokunSpizeColors.yellow,
   ];
 
   return primaryColors[Random().nextInt(primaryColors.length)];

@@ -418,7 +418,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   );
                 },
                 icon: PhosphorIconsBold.globeStand,
-                iconBackgroundColor: context.colors.protein,
+                iconBackgroundColor: context.colors.account,
                 title: 'language'.tr(),
                 subtitle: 'accountLanguageSubtitle'.tr(),
               ),
@@ -433,7 +433,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   accountController.openNotificationsSheet(context);
                 },
                 icon: PhosphorIconsBold.notification,
-                iconBackgroundColor: context.colors.carbs,
+                iconBackgroundColor: context.colors.protein,
                 title: 'notificationsTitle'.tr(),
                 subtitle: 'notificationsAccountSubtitle'.tr(),
               ),
@@ -448,7 +448,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   accountController.openContactSheet(context);
                 },
                 icon: PhosphorIconsBold.envelopeSimple,
-                iconBackgroundColor: context.colors.fat,
+                iconBackgroundColor: context.colors.carbs,
                 title: 'accountContactMeTitle'.tr(),
                 subtitle: 'accountContactMeSubtitle'.tr(),
               ),
@@ -464,7 +464,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     accountController.openMessagesSheet(context);
                   },
                   icon: PhosphorIconsBold.chatCircleText,
-                  iconBackgroundColor: context.colors.protein,
+                  iconBackgroundColor: context.colors.fat,
                   title: 'messages'.tr(),
                   subtitle: 'accountMessagesSubtitle'.tr(),
                 ),
@@ -479,7 +479,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   handleLogOut();
                 },
                 icon: PhosphorIconsBold.signOut,
-                iconBackgroundColor: context.colors.carbs,
+                iconBackgroundColor: context.colors.account,
                 title: 'accountLogoutTitle'.tr(),
                 subtitle: 'accountLogoutSubtitle'.tr(),
               ),
@@ -501,7 +501,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         showSnackbar(
                           context,
                           text: 'entranceErrorUnknown'.tr(),
-                          icon: PhosphorIconsBold.warningCircle,
+                          icon: PhosphorIconsBold.warningOctagon,
                         );
                       }
                     },

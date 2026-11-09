@@ -25,6 +25,7 @@ abstract class BokunSpizeColors {
   static const blue = Color(0xFF4F5094);
   static const bordeaux = Color(0xFF885A89);
   static const red = Color(0xFF9D5C63);
+  static const yellow = Color(0xFFDDA77B);
 }
 
 class BokunSpizeColorsExtension extends ThemeExtension<BokunSpizeColorsExtension> {

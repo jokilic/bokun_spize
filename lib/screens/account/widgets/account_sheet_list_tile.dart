@@ -122,6 +122,7 @@ class AccountSheetListTile extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(width: 8),
 
             ///
             /// CHECKBOX

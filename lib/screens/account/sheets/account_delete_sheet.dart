@@ -203,7 +203,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 20),
             ),
 
             ///
@@ -264,7 +264,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: PhosphorIcon(
-                                    PhosphorIconsBold.warningCircle,
+                                    PhosphorIconsBold.warningOctagon,
                                     size: 22,
                                     color: context.colors.buttonText,
                                   ),
@@ -453,7 +453,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                           fontWeight: FontWeight.w800,
                         ),
                         padding: const EdgeInsets.all(20),
-                        backgroundColor: context.colors.account,
+                        backgroundColor: context.colors.delete,
                         foregroundColor: context.colors.buttonText,
                       ),
                       child: Text(
