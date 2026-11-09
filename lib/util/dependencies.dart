@@ -70,6 +70,10 @@ Future<void> initializeBeforeAppStart() async {
   );
 
   await initializeFirebaseAppCheck();
+
+  unawaited(
+    initializeFirebaseMessaging(),
+  );
 }
 
 /// Registers app services and loads saved preferences before the app starts

@@ -430,9 +430,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * 5,
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  accountController.openNotificationsSheet(
-                    context,
-                  );
+                  accountController.openNotificationsSheet(context);
                 },
                 icon: PhosphorIconsBold.notification,
                 iconBackgroundColor: context.colors.carbs,
