@@ -41,56 +41,17 @@ Future<void> initializeFirebaseAppCheck() async {
 }
 
 /// Configures foreground notification presentation without prompting the user
-Future<AuthorizationStatus?> initializeFirebaseMessaging() async {
+Future<void> initializeFirebaseMessaging() async {
   try {
-    final messaging = FirebaseMessaging.instance;
-
-    await messaging.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
-
-    final settings = await messaging.getNotificationSettings();
-
-    log(
-      'Notification permission status: ${settings.authorizationStatus.name}',
-    );
-
-    return settings.authorizationStatus;
   } catch (error) {
     log(
       'Firebase Messaging initialization failed',
       error: error,
     );
-    return null;
-  }
-}
-
-/// Returns the current operating-system notification permission state
-Future<AuthorizationStatus> getFirebaseMessagingPermissionStatus() async {
-  try {
-    final settings = await FirebaseMessaging.instance.getNotificationSettings();
-    return settings.authorizationStatus;
-  } catch (error) {
-    log(
-      'Reading notification permission failed',
-      error: error,
-    );
-    return AuthorizationStatus.denied;
-  }
-}
-
-/// Requests notification permission after an explicit user action
-Future<AuthorizationStatus> requestFirebaseMessagingPermission() async {
-  try {
-    final settings = await FirebaseMessaging.instance.requestPermission();
-    return settings.authorizationStatus;
-  } catch (error) {
-    log(
-      'Requesting notification permission failed',
-      error: error,
-    );
-    return AuthorizationStatus.denied;
   }
 }

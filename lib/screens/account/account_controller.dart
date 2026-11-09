@@ -17,7 +17,7 @@ import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
 import '../../util/device_info.dart';
-import '../../util/firebase.dart';
+import '../../util/firebase_messaging.dart';
 import '../../util/snackbars.dart';
 import '../../util/theme.dart';
 import '../../util/timezone.dart';
@@ -236,10 +236,14 @@ class AccountController extends ValueNotifier<SettingsValues> {
 
   /// Loads preferences and captures the current locale and timezone
   Future<NotificationSettings> loadNotificationSettings(Locale locale) async {
+    /// Get current `NotificationSettings` from [Firebase]
     final storedSettings = await firebase.getNotificationSettings();
+
+    /// Get current `timezone`
     final timezone = await getLocalTimezoneIdentifier(
       fallback: storedSettings?.timezone ?? 'UTC',
     );
+
     final settings =
         storedSettings ??
         NotificationSettings.defaults(
@@ -251,6 +255,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
       locale: locale.languageCode,
     );
 
+    /// Update new `NotificationSettings` in [Firebase]
     if (storedSettings == null || storedSettings.timezone != timezone || storedSettings.locale != locale.languageCode) {
       await firebase.writeNotificationSettings(
         settings: synchronizedSettings,
