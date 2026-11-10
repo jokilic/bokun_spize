@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import '../models/notification/notification_payload.dart';
 import '../util/firebase.dart';
@@ -15,7 +16,7 @@ enum NotificationType {
   announcement,
 }
 
-class NotificationService extends ValueNotifier<AuthorizationStatus> with WidgetsBindingObserver {
+class NotificationService extends ValueNotifier<AuthorizationStatus> with WidgetsBindingObserver implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -25,7 +26,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   final Stream<RemoteMessage> foregroundMessages;
   final Stream<RemoteMessage> openedMessages;
   final Future<bool> Function() openSystemSettingsCallback;
-  final TargetPlatform platform;
 
   NotificationService({
     required this.messaging,
@@ -34,9 +34,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     required this.foregroundMessages,
     required this.openedMessages,
     required this.openSystemSettingsCallback,
-    TargetPlatform? platform,
-  }) : platform = platform ?? defaultTargetPlatform,
-       super(AuthorizationStatus.notDetermined);
+  }) : super(AuthorizationStatus.notDetermined);
 
   ///
   /// INIT
@@ -73,17 +71,13 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   ///
 
   @override
-  void dispose() {
+  Future<void> onDispose() async {
     WidgetsBinding.instance.removeObserver(this);
 
     foregroundBannerTimer?.cancel();
 
-    unawaited(
-      foregroundMessageSubscription?.cancel(),
-    );
-    unawaited(
-      openedMessageSubscription?.cancel(),
-    );
+    await foregroundMessageSubscription?.cancel();
+    await openedMessageSubscription?.cancel();
 
     isInitialized = false;
 
@@ -145,7 +139,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// Enables native foreground alerts on iOS without requesting permission
   Future<void> configureForegroundPresentation() async {
     try {
-      final useNativePresentation = platform == TargetPlatform.iOS;
+      final useNativePresentation = defaultTargetPlatform == TargetPlatform.iOS;
 
       await messaging.setForegroundNotificationPresentationOptions(
         alert: useNativePresentation,
@@ -220,7 +214,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   void handleForegroundMessage(RemoteMessage message) {
     final payload = parsePayload(message);
 
-    if (platform == TargetPlatform.android) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
       showAndroidForegroundBanner(
         message,
         payload: payload,

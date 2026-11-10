@@ -156,22 +156,26 @@ Future<void> registerServices() async {
   /// NOTIFICATIONS
   ///
   if (!getIt.isRegistered<NotificationService>()) {
-    final notificationService = NotificationService(
-      messaging: FirebaseMessaging.instance,
-      screen: getIt.get<ScreenService>(),
-      scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(),
-      foregroundMessages: FirebaseMessaging.onMessage,
-      openedMessages: FirebaseMessaging.onMessageOpenedApp,
-      openSystemSettingsCallback: openAppSettings,
-    );
+    getIt.registerLazySingletonAsync<NotificationService>(
+      () async {
+        final notificationService = NotificationService(
+          messaging: FirebaseMessaging.instance,
+          screen: getIt.get<ScreenService>(),
+          scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(),
+          foregroundMessages: FirebaseMessaging.onMessage,
+          openedMessages: FirebaseMessaging.onMessageOpenedApp,
+          openSystemSettingsCallback: openAppSettings,
+        );
 
-    getIt.registerSingleton(
-      notificationService,
-      dispose: (service) => service.dispose(),
-    );
+        await notificationService.initialize();
 
-    await notificationService.initialize();
+        return notificationService;
+      },
+    );
   }
+
+  /// Load `NotificationService` so message handlers are ready before `runApp`
+  await getIt.getAsync<NotificationService>();
 
   ///
   /// THEME
