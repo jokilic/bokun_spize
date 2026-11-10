@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import '../screens/account/account_controller.dart';
 import '../util/typedefs.dart';
@@ -69,6 +70,7 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
   static const walksCalendarDaysKey = 'walksCalendarDays';
 
   static const themeKey = 'theme';
+  static const notificationDeviceIdKey = 'notificationDeviceId';
 
   ///
   /// METHODS
@@ -108,6 +110,29 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
     updateState(
       theme: theme,
     );
+  }
+
+  /// Returns the stable identifier used for this application installation
+  Future<String> getNotificationDeviceId() async {
+    final storedDeviceId = await sharedPreferences.getString(
+      notificationDeviceIdKey,
+    );
+    final deviceIdPattern = RegExp(
+      r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+    );
+
+    if (storedDeviceId != null && deviceIdPattern.hasMatch(storedDeviceId)) {
+      return storedDeviceId;
+    }
+
+    final deviceId = const Uuid().v4();
+
+    await sharedPreferences.setString(
+      notificationDeviceIdKey,
+      deviceId,
+    );
+
+    return deviceId;
   }
 
   /// Updates `state`

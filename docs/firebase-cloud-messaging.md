@@ -36,6 +36,28 @@ A trusted scheduler must calculate the next delivery timestamps, send FCM messag
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 
+## Per-device registrations
+
+After notification permission is granted, each signed-in installation writes one document at `users/{uid}/notificationDevices/{deviceId}`. The device ID is a random installation UUID persisted in shared preferences and is deliberately unrelated to the FCM token. A token refresh therefore updates the existing installation document instead of creating another active record.
+
+Each document contains the current `token`, `platform`, `locale`, IANA `timezone`, `appVersion`, `createdAt`, `updatedAt`, `lastActiveAt` and `expiresAt`. The app refreshes the document after authentication, token, permission, locale, preference and foreground-lifecycle changes. Failed synchronization is retried with a bounded backoff.
+
+On logout, the app removes the document, leaves announcement topics and deletes the FCM token before signing out. Deleting the token prevents user-specific delivery even if an offline Firestore deletion has not reached the server yet. A later sign-in obtains a new token and reuses the installation UUID.
+
+Firestore rules allow an owner to get, create, update or delete only a UUID-addressed device document. Collection listing is denied, registration fields are allow-listed and client timestamps used for activity are required to resolve to the server request time.
+
+## Announcement topics
+
+Announcements use locale-specific `announcements_en` and `announcements_hr` topics. An authorized, signed-in installation subscribes only when `announcementsEnabled` is true. The client reconciles both known topics after startup, token refresh, authentication changes and preference changes so a locale switch cannot leave an old subscription active.
+
+## Sender cleanup and retention
+
+Trusted sender code must retain each token's device-document reference while sending. Delete that document when FCM returns `messaging/registration-token-not-registered`. Delete it for `messaging/invalid-argument` only after the sender has independently validated the complete message payload; otherwise the payload itself may be invalid and healthy registrations must be kept. Handle other per-token failures without aborting delivery to the user's remaining devices.
+
+Never write a complete registration token to application, function or crash logs. Use the device document path or a short irreversible digest when correlation is necessary.
+
+Registrations expire 90 days after their latest successful client synchronization. Enable a Firestore TTL policy for the `expiresAt` field on the `notificationDevices` collection group. Senders must also ignore expired documents because Firestore TTL deletion is asynchronous. Active clients continuously extend `expiresAt`; expired or invalid documents are safe to delete.
+
 ## Data payload contract
 
 Every actionable message uses these stable string fields in its FCM `data` payload:
@@ -52,7 +74,7 @@ Unknown, missing or malformed values are ignored safely. Notification taps route
 ## Physical-device verification
 
 1. Install and open a fresh build on a physical device, open Account → Notifications, press **Allow notifications** and respond to the system prompt
-2. Retrieve the FCM registration token while debugging or from the device-registration implementation
+2. Read the token from the installation's protected `notificationDevices` document using trusted tooling without adding it to logs
 3. In Firebase Console, use **Messaging → Send test message** and target that token
 4. Verify foreground delivery on iOS and confirm Android stays silent while foregrounded
 5. Verify delivery while the app is backgrounded and terminated on both platforms

@@ -1,14 +1,20 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
 import '../models/notification/notification_payload.dart';
+import '../models/notification/notification_settings.dart';
+import '../util/app_version.dart';
 import '../util/firebase.dart';
+import '../util/timezone.dart';
 import 'screen_service.dart';
+import 'storage_service.dart';
 
 enum NotificationType {
   weightReminder,
@@ -43,6 +49,9 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// CONSTRUCTOR
   ///
   final FirebaseMessaging messaging;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  final StorageService storage;
   final ScreenService screen;
   final Stream<RemoteMessage> foregroundMessages;
   final Stream<RemoteMessage> openedMessages;
@@ -50,6 +59,9 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   NotificationService({
     required this.messaging,
+    required this.auth,
+    required this.firestore,
+    required this.storage,
     required this.screen,
     required this.foregroundMessages,
     required this.openedMessages,
@@ -81,6 +93,8 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     await configureForegroundPresentation();
     subscribeToMessages();
+    subscribeToTokenRefreshes();
+    subscribeToAuthenticationChanges();
 
     await refreshPermissionStatus();
     await handleInitialMessage();
@@ -96,6 +110,11 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     await foregroundMessageSubscription?.cancel();
     await openedMessageSubscription?.cancel();
+    await tokenRefreshSubscription?.cancel();
+    await authStateSubscription?.cancel();
+    await notificationSettingsSubscription?.cancel();
+
+    registrationRetryTimer?.cancel();
 
     isInitialized = false;
 
@@ -110,6 +129,33 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
   StreamSubscription<RemoteMessage>? openedMessageSubscription;
+  StreamSubscription<String>? tokenRefreshSubscription;
+  StreamSubscription<User?>? authStateSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? notificationSettingsSubscription;
+
+  Timer? registrationRetryTimer;
+  Future<void> registrationSynchronization = Future<void>.value();
+
+  NotificationSettings? notificationSettings;
+  String? activeUserId;
+  String? activeAnnouncementTopic;
+  String? registrationLocale;
+
+  int registrationRetryAttempt = 0;
+  bool announcementTopicsReconciled = false;
+
+  static const registrationRetention = Duration(days: 90);
+  static const registrationRetryDelays = <Duration>[
+    Duration(seconds: 15),
+    Duration(seconds: 30),
+    Duration(minutes: 1),
+    Duration(minutes: 2),
+    Duration(minutes: 5),
+  ];
+  static const announcementTopics = <String>[
+    'announcements_en',
+    'announcements_hr',
+  ];
 
   ///
   /// METHODS
@@ -122,6 +168,88 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       refreshPermissionStatus();
     }
   }
+
+  /// Listens for token rotations and associates the replacement with the same installation
+  void subscribeToTokenRefreshes() {
+    try {
+      tokenRefreshSubscription = messaging.onTokenRefresh.listen(
+        handleTokenRefresh,
+        onError: handleTokenRefreshError,
+      );
+    } catch (error) {
+      log(
+        'Subscribing to FCM token refreshes failed',
+        error: error,
+      );
+    }
+  }
+
+  /// Listens for sign-in changes so the installation follows the current user
+  void subscribeToAuthenticationChanges() {
+    authStateSubscription = auth.authStateChanges().listen(
+      handleAuthenticationChanged,
+      onError: handleAuthenticationStreamError,
+    );
+  }
+
+  /// Re-associates the installation when the authenticated user changes
+  Future<void> handleAuthenticationChanged(User? user) async {
+    if (user == null) {
+      if (activeUserId != null) {
+        await unregisterCurrentUser(
+          deleteToken: true,
+          removeDocument: false,
+        );
+      }
+      return;
+    }
+
+    if (activeUserId == user.uid) {
+      return;
+    }
+
+    if (activeUserId != null) {
+      await unregisterCurrentUser(
+        deleteToken: true,
+        removeDocument: false,
+      );
+    }
+
+    activeUserId = user.uid;
+    announcementTopicsReconciled = false;
+
+    await listenToNotificationSettings(user.uid);
+
+    if (canDeliverNotifications) {
+      await synchronizeRegistration();
+    }
+  }
+
+  /// Replaces the stored token without exposing it in application logs
+  void handleTokenRefresh(String token) {
+    announcementTopicsReconciled = false;
+
+    unawaited(
+      synchronizeRegistration(
+        token: token,
+      ),
+    );
+  }
+
+  /// Schedules another synchronization when the token refresh stream fails
+  void handleTokenRefreshError(Object error) {
+    log(
+      'Listening to FCM token refreshes failed',
+      error: error,
+    );
+    scheduleRegistrationRetry();
+  }
+
+  /// Logs authentication listener failures without exposing user data
+  void handleAuthenticationStreamError(Object error) => log(
+    'Listening to authentication changes failed',
+    error: error,
+  );
 
   /// Subscribes to foreground messages and notification interactions
   void subscribeToMessages() {
@@ -179,6 +307,8 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     try {
       final settings = await messaging.requestPermission();
       value = settings.authorizationStatus;
+
+      synchronizePermissionState();
     } catch (error) {
       log(
         'Requesting notification permission failed',
@@ -194,6 +324,8 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     try {
       final settings = await messaging.getNotificationSettings();
       value = settings.authorizationStatus;
+
+      synchronizePermissionState();
     } catch (error) {
       log(
         'Reading notification permission failed',
@@ -202,6 +334,287 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     }
 
     return value;
+  }
+
+  /// Reports whether the current authorization can display notifications
+  bool get canDeliverNotifications => value == AuthorizationStatus.authorized || value == AuthorizationStatus.provisional;
+
+  /// Creates or removes the registration after permission changes
+  void synchronizePermissionState() {
+    if (canDeliverNotifications) {
+      synchronizeRegistration();
+      return;
+    }
+
+    removeCurrentRegistration();
+  }
+
+  /// Starts listening to preferences that control announcement topic membership
+  Future<void> listenToNotificationSettings(String userId) async {
+    await notificationSettingsSubscription?.cancel();
+
+    notificationSettings = null;
+    notificationSettingsSubscription = firestore
+        .collection('users')
+        .doc(userId)
+        .collection('notificationSettings')
+        .doc('preferences')
+        .snapshots()
+        .listen(
+          handleNotificationSettingsChanged,
+          onError: handleNotificationSettingsError,
+        );
+  }
+
+  /// Applies preference changes to registration metadata and announcement topics
+  void handleNotificationSettingsChanged(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final data = snapshot.data();
+
+    notificationSettings = data == null ? null : NotificationSettings.fromMap(data);
+    registrationLocale = notificationSettings?.locale;
+
+    unawaited(
+      synchronizeRegistration(),
+    );
+  }
+
+  /// Retries registration after preference synchronization errors
+  void handleNotificationSettingsError(Object error) {
+    log(
+      'Listening to notification preferences for registration failed',
+      error: error,
+    );
+    scheduleRegistrationRetry();
+  }
+
+  /// Queues registration work so token and preference changes cannot race
+  Future<void> synchronizeRegistration({
+    String? token,
+    String? locale,
+  }) {
+    if (locale != null) {
+      registrationLocale = normalizeRegistrationLocale(locale);
+    }
+
+    registrationSynchronization = registrationSynchronization.then(
+      (_) => synchronizeRegistrationNow(
+        token: token,
+      ),
+    );
+
+    return registrationSynchronization;
+  }
+
+  /// Writes the latest installation metadata to its stable device document
+  Future<void> synchronizeRegistrationNow({String? token}) async {
+    final user = auth.currentUser;
+
+    if (!canDeliverNotifications || user == null || activeUserId != user.uid) {
+      return;
+    }
+
+    try {
+      final registrationToken = token ?? await messaging.getToken();
+
+      if (registrationToken == null || registrationToken.isEmpty) {
+        scheduleRegistrationRetry();
+        return;
+      }
+
+      final deviceId = await storage.getNotificationDeviceId();
+      final locale = normalizeRegistrationLocale(
+        registrationLocale ?? notificationSettings?.locale ?? WidgetsBinding.instance.platformDispatcher.locale.languageCode,
+      );
+      final metadata = await Future.wait<Object?>([
+        getAppVersion(),
+        getLocalTimezoneIdentifier(
+          fallback: notificationSettings?.timezone ?? 'UTC',
+        ),
+      ]);
+      final appVersion = metadata[0] as String? ?? '--';
+      final timezone = metadata[1] as String;
+      final deviceDocument = firestore.collection('users').doc(user.uid).collection('notificationDevices').doc(deviceId);
+      final expiresAt = Timestamp.fromDate(
+        DateTime.now().toUtc().add(registrationRetention),
+      );
+
+      await firestore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(deviceDocument);
+        final data = <String, dynamic>{
+          'token': registrationToken,
+          'platform': registrationPlatform,
+          'locale': locale,
+          'timezone': timezone,
+          'appVersion': appVersion,
+          'updatedAt': FieldValue.serverTimestamp(),
+          'lastActiveAt': FieldValue.serverTimestamp(),
+          'expiresAt': expiresAt,
+          if (!snapshot.exists) 'createdAt': FieldValue.serverTimestamp(),
+        };
+
+        transaction.set(
+          deviceDocument,
+          data,
+          SetOptions(merge: true),
+        );
+      });
+
+      activeUserId = user.uid;
+      registrationRetryAttempt = 0;
+      registrationRetryTimer?.cancel();
+
+      await synchronizeAnnouncementTopics(locale);
+    } catch (error, stackTrace) {
+      log(
+        'Synchronizing the notification registration failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      scheduleRegistrationRetry();
+    }
+  }
+
+  /// Returns the platform value stored with registration metadata
+  String get registrationPlatform => kIsWeb ? 'web' : defaultTargetPlatform.name;
+
+  /// Restricts registration locales to the translations supported by the app
+  String normalizeRegistrationLocale(String locale) => switch (locale) {
+    'en' => 'en',
+    'hr' => 'hr',
+    _ => 'hr',
+  };
+
+  /// Reconciles the locale-specific announcement topic for this token
+  Future<void> synchronizeAnnouncementTopics(String locale) async {
+    final desiredTopic = notificationSettings?.announcementsEnabled == true && canDeliverNotifications && auth.currentUser != null ? 'announcements_$locale' : null;
+
+    if (announcementTopicsReconciled && activeAnnouncementTopic == desiredTopic) {
+      return;
+    }
+
+    try {
+      for (final topic in announcementTopics) {
+        if (topic != desiredTopic) {
+          await messaging.unsubscribeFromTopic(topic);
+        }
+      }
+
+      if (desiredTopic != null) {
+        await messaging.subscribeToTopic(desiredTopic);
+      }
+
+      activeAnnouncementTopic = desiredTopic;
+      announcementTopicsReconciled = true;
+    } catch (error) {
+      log(
+        'Synchronizing announcement topics failed',
+        error: error,
+      );
+      scheduleRegistrationRetry();
+    }
+  }
+
+  /// Removes all announcement topic memberships known by this client
+  Future<void> unsubscribeFromAnnouncementTopics() async {
+    for (final topic in announcementTopics) {
+      try {
+        await messaging.unsubscribeFromTopic(topic);
+      } catch (error) {
+        log(
+          'Unsubscribing from an announcement topic failed',
+          error: error,
+        );
+      }
+    }
+
+    activeAnnouncementTopic = null;
+    announcementTopicsReconciled = false;
+  }
+
+  /// Removes this installation from the current user's device collection
+  Future<void> removeCurrentRegistration({bool deleteToken = false}) async {
+    final userId = auth.currentUser?.uid ?? activeUserId;
+
+    registrationRetryTimer?.cancel();
+    await unsubscribeFromAnnouncementTopics();
+
+    if (userId != null && auth.currentUser?.uid == userId) {
+      try {
+        final deviceId = await storage.getNotificationDeviceId();
+
+        await firestore.collection('users').doc(userId).collection('notificationDevices').doc(deviceId).delete();
+      } catch (error, stackTrace) {
+        log(
+          'Removing the notification registration failed',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
+
+    if (deleteToken) {
+      try {
+        await messaging.deleteToken();
+      } catch (error) {
+        log(
+          'Invalidating the notification token failed',
+          error: error,
+        );
+      }
+    }
+  }
+
+  /// Detaches this installation before logout or an authentication replacement
+  Future<void> unregisterCurrentUser({
+    bool deleteToken = false,
+    bool removeDocument = true,
+  }) async {
+    activeUserId = null;
+    registrationRetryTimer?.cancel();
+    registrationRetryAttempt = 0;
+
+    await registrationSynchronization;
+    await notificationSettingsSubscription?.cancel();
+    notificationSettingsSubscription = null;
+
+    if (removeDocument) {
+      await removeCurrentRegistration(
+        deleteToken: deleteToken,
+      );
+    } else {
+      await unsubscribeFromAnnouncementTopics();
+
+      if (deleteToken) {
+        try {
+          await messaging.deleteToken();
+        } catch (error) {
+          log(
+            'Invalidating the notification token after authentication changed failed',
+            error: error,
+          );
+        }
+      }
+    }
+
+    notificationSettings = null;
+  }
+
+  /// Retries failed synchronization with a bounded exponential delay
+  void scheduleRegistrationRetry() {
+    if (!isInitialized || registrationRetryTimer?.isActive == true) {
+      return;
+    }
+
+    final delayIndex = registrationRetryAttempt < registrationRetryDelays.length ? registrationRetryAttempt : registrationRetryDelays.length - 1;
+    final delay = registrationRetryDelays[delayIndex];
+
+    registrationRetryAttempt += 1;
+    registrationRetryTimer = Timer(
+      delay,
+      () => unawaited(
+        synchronizeRegistration(),
+      ),
+    );
   }
 
   /// Opens this application's operating-system settings

@@ -204,6 +204,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
       onLanguageChanged: (newLocale) async {
         await context.setLocale(newLocale);
         await firebase.getAndRefreshNotificationSettings(newLocale);
+        await notification.synchronizeRegistration(
+          locale: newLocale.languageCode,
+        );
       },
     ),
   );

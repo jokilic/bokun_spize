@@ -41,6 +41,7 @@ class FirebaseService {
   final FirebaseStorage storage;
   final GoogleSignIn googleSignIn;
   final CacheService cache;
+  Future<void> Function()? beforeSignOut;
 
   FirebaseService({
     required this.auth,
@@ -327,8 +328,11 @@ class FirebaseService {
     }
   }
 
-  /// Logs user out of [Firebase]
-  Future<void> logOut() async => auth.signOut();
+  /// Removes user-scoped resources before logging out of [Firebase]
+  Future<void> logOut() async {
+    await beforeSignOut?.call();
+    await auth.signOut();
+  }
 
   /// Logs user into [Firebase]
   Future<({User? user, String? error})> loginUser({
@@ -814,6 +818,9 @@ class FirebaseService {
       );
       await deleteCollectionPaged(
         userDocument.collection('notificationSettings'),
+      );
+      await deleteCollectionPaged(
+        userDocument.collection('notificationDevices'),
       );
 
       /// Deletes user document

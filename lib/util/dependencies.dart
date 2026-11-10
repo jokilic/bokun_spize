@@ -159,6 +159,9 @@ Future<void> registerServices() async {
       () async {
         final notificationService = NotificationService(
           messaging: FirebaseMessaging.instance,
+          auth: FirebaseAuth.instance,
+          firestore: FirebaseFirestore.instance,
+          storage: getIt.get<StorageService>(),
           screen: getIt.get<ScreenService>(),
           foregroundMessages: FirebaseMessaging.onMessage,
           openedMessages: FirebaseMessaging.onMessageOpenedApp,
@@ -166,6 +169,10 @@ Future<void> registerServices() async {
         );
 
         await notificationService.initialize();
+
+        getIt.get<FirebaseService>().beforeSignOut = () => notificationService.unregisterCurrentUser(
+          deleteToken: true,
+        );
 
         return notificationService;
       },
