@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
 import '../models/notification/notification_payload.dart';
@@ -44,7 +44,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   ///
   final FirebaseMessaging messaging;
   final ScreenService screen;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
   final Stream<RemoteMessage> foregroundMessages;
   final Stream<RemoteMessage> openedMessages;
   final Future<bool> Function() openSystemSettingsCallback;
@@ -52,7 +51,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   NotificationService({
     required this.messaging,
     required this.screen,
-    required this.scaffoldMessengerKey,
     required this.foregroundMessages,
     required this.openedMessages,
     required this.openSystemSettingsCallback,
@@ -96,8 +94,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   Future<void> onDispose() async {
     WidgetsBinding.instance.removeObserver(this);
 
-    foregroundBannerTimer?.cancel();
-
     await foregroundMessageSubscription?.cancel();
     await openedMessageSubscription?.cancel();
 
@@ -114,8 +110,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
   StreamSubscription<RemoteMessage>? openedMessageSubscription;
-
-  Timer? foregroundBannerTimer;
 
   ///
   /// METHODS
@@ -224,16 +218,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   }
 
   /// Handles a notification received while the application is visible
-  void handleForegroundMessage(RemoteMessage message) {
-    final payload = parsePayload(message);
-
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      showAndroidForegroundBanner(
-        message,
-        payload: payload,
-      );
-    }
-  }
+  void handleForegroundMessage(RemoteMessage message) => parsePayload(message);
 
   /// Handles a notification that opened the application from the background
   void handleMessageInteraction(RemoteMessage message) {
@@ -277,70 +262,4 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   void openPayload(NotificationPayload payload) => screen.changeNavigationBarItem(
     payload.route,
   );
-
-  /// Shows an in-app banner for a foreground Android notification
-  void showAndroidForegroundBanner(
-    RemoteMessage message, {
-    required NotificationPayload? payload,
-  }) {
-    final notification = message.notification;
-
-    final title = notification?.title ?? (message.data['title'] is String ? message.data['title'] as String : null);
-    final body = notification?.body ?? (message.data['body'] is String ? message.data['body'] as String : null);
-
-    final messenger = scaffoldMessengerKey.currentState;
-
-    if (messenger == null || (title == null && body == null)) {
-      return;
-    }
-
-    hideAndroidForegroundBanner();
-
-    messenger.showMaterialBanner(
-      MaterialBanner(
-        leading: const Icon(Icons.notifications_rounded),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (title != null)
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-            if (body != null) Text(body),
-          ],
-        ),
-        actions: [
-          if (payload != null)
-            IconButton(
-              onPressed: () {
-                hideAndroidForegroundBanner();
-                openPayload(payload);
-              },
-              icon: const Icon(
-                Icons.arrow_forward_rounded,
-              ),
-            ),
-          IconButton(
-            onPressed: hideAndroidForegroundBanner,
-            icon: const Icon(
-              Icons.close_rounded,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    foregroundBannerTimer = Timer(
-      const Duration(seconds: 8),
-      hideAndroidForegroundBanner,
-    );
-  }
-
-  /// Hides the current Android foreground notification banner
-  void hideAndroidForegroundBanner() {
-    foregroundBannerTimer?.cancel();
-    foregroundBannerTimer = null;
-    scaffoldMessengerKey.currentState?.hideCurrentMaterialBanner();
-  }
 }

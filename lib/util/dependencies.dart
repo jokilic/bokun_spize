@@ -4,7 +4,6 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -161,7 +160,6 @@ Future<void> registerServices() async {
         final notificationService = NotificationService(
           messaging: FirebaseMessaging.instance,
           screen: getIt.get<ScreenService>(),
-          scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(),
           foregroundMessages: FirebaseMessaging.onMessage,
           openedMessages: FirebaseMessaging.onMessageOpenedApp,
           openSystemSettingsCallback: openAppSettings,

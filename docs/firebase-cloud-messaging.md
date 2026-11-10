@@ -26,7 +26,7 @@ Android uses `announcements` when a payload does not specify a channel. The app 
 
 ## iOS authorization
 
-The app requests alert, badge and sound authorization only after the user presses **Allow notifications**. Firebase can return `authorized`, `denied`, `deniedPermanently`, `notDetermined` or `provisional`; callers preserve these states instead of reducing them to a Boolean. Foreground notifications present alerts, badges and sounds.
+The app requests alert, badge and sound authorization only after the user presses **Allow notifications**. Firebase can return `authorized`, `denied`, `deniedPermanently`, `notDetermined` or `provisional`; callers preserve these states instead of reducing them to a Boolean. iOS presents foreground alerts, badges and sounds. Android intentionally does not present notifications while the app is in the foreground.
 
 ## Notification preferences
 
@@ -54,8 +54,9 @@ Unknown, missing or malformed values are ignored safely. Notification taps route
 1. Install and open a fresh build on a physical device, open Account → Notifications, press **Allow notifications** and respond to the system prompt
 2. Retrieve the FCM registration token while debugging or from the device-registration implementation
 3. In Firebase Console, use **Messaging → Send test message** and target that token
-4. Verify delivery while the app is foregrounded, backgrounded and terminated
-5. On Android 13 or newer, repeat once after denying permission and once after granting it in system settings
-6. On iOS, verify denied and provisional authorization states separately, using a clean install or device notification settings as needed
+4. Verify foreground delivery on iOS and confirm Android stays silent while foregrounded
+5. Verify delivery while the app is backgrounded and terminated on both platforms
+6. On Android 13 or newer, repeat once after denying permission and once after granting it in system settings
+7. On iOS, verify denied and provisional authorization states separately, using a clean install or device notification settings as needed
 
 Console/APNs configuration and physical-device delivery cannot be verified from source control alone and must be completed for each Firebase and Apple environment.
