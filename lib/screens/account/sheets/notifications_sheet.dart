@@ -424,8 +424,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger *
-                    (permissionStatus == AuthorizationStatus.authorized ? 3 : 4),
+                delay: BokunSpizeDurations.stateTransitionStagger * (permissionStatus == AuthorizationStatus.authorized ? 3 : 4),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -471,8 +470,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger *
-                    (permissionStatus == AuthorizationStatus.authorized ? 4 : 5),
+                delay: BokunSpizeDurations.stateTransitionStagger * (permissionStatus == AuthorizationStatus.authorized ? 4 : 5),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -500,7 +498,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                   isActive: settings.dailySummaryEnabled,
                   color: context.colors.protein,
-                  icon: PhosphorIconsBold.graph,
+                  icon: PhosphorIconsBold.chartLine,
                   title: 'notificationsDailySummaryTitle'.tr(),
                   subtitle: 'notificationsDailySummarySubtitle'.tr(),
                 ),
@@ -518,8 +516,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger *
-                    (permissionStatus == AuthorizationStatus.authorized ? 5 : 6),
+                delay: BokunSpizeDurations.stateTransitionStagger * (permissionStatus == AuthorizationStatus.authorized ? 5 : 6),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,

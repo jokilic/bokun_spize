@@ -127,7 +127,7 @@
     "notificationsPermissionDenied": "Notifications blocked",
     "notificationsPermissionNotDetermined": "Notifications not set",
     "notificationsPermissionReady": "Your phone will deliver enabled notifications",
-    "notificationsPermissionBlocked": "Preferences are saved, but your phone will not deliver enabled notifications",
+    "notificationsPermissionBlocked": "Your phone will not deliver enabled notifications",
     "notificationsAllowAction": "Allow notifications",
     "notificationsOpenSettingsAction": "Open settings",
     "notificationsWeighReminderTitle": "Record your weight",

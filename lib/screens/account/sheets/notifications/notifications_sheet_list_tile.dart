@@ -110,6 +110,9 @@ class NotificationsSheetListTile extends StatelessWidget {
               activeTrackColor: color.withValues(alpha: 0.25),
               inactiveThumbColor: context.colors.listTileBackground,
               inactiveTrackColor: context.colors.scaffoldBackground,
+              trackOutlineColor: WidgetStateColor.resolveWith(
+                (states) => Colors.transparent,
+              ),
               onChanged: (_) => onPressed(),
             ),
           ],
