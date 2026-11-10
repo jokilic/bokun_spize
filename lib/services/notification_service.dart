@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
+import '../models/notification/notification_device.dart';
 import '../models/notification/notification_payload.dart';
 import '../models/notification/notification_settings.dart';
 import '../util/app_version.dart';
@@ -130,12 +131,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
   StreamSubscription<RemoteMessage>? openedMessageSubscription;
 
-  // TODO: Why these subscriptions
   StreamSubscription<String>? tokenRefreshSubscription;
   StreamSubscription<User?>? authStateSubscription;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? notificationSettingsSubscription;
 
-  // TODO: Why this timer and Future
   Timer? registrationRetryTimer;
   Future<void> registrationSynchronization = Future<void>.value();
 
@@ -146,7 +145,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   String? registrationLocale;
 
   int registrationRetryAttempt = 0;
-  // TODO: What is this
   bool announcementTopicsReconciled = false;
 
   static const registrationRetention = Duration(days: 90);
@@ -157,7 +155,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     Duration(minutes: 2),
     Duration(minutes: 5),
   ];
-  // TODO: Why do we need this
   static const announcementTopics = <String>[
     'announcements_en',
     'announcements_hr',
@@ -281,8 +278,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// FOREGROUND MESSAGES
   ///
 
-  // TODO: What are these foreground messages
-  /// Subscribes to foreground messages and notification interactions
+  /// Subscribes to foreground messages and taps that reopen the app
   void subscribeToMessages() {
     try {
       foregroundMessageSubscription = foregroundMessages.listen(
@@ -489,28 +485,24 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       final appVersion = metadata[0] as String? ?? '--';
       final timezone = metadata[1] as String? ?? '--';
       final deviceDocument = firestore.collection('users').doc(user.uid).collection('notificationDevices').doc(deviceId);
-      final expiresAt = Timestamp.fromDate(
-        DateTime.now().toUtc().add(registrationRetention),
+
+      final notificationDevice = NotificationDevice(
+        token: registrationToken,
+        platform: defaultTargetPlatform.name,
+        locale: locale,
+        timezone: timezone,
+        appVersion: appVersion,
+        expiresAt: DateTime.now().toUtc().add(registrationRetention),
       );
 
       await firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(deviceDocument);
-        // TODO: Make a proper model instead of this Map
-        final data = <String, dynamic>{
-          'token': registrationToken,
-          'platform': defaultTargetPlatform.name,
-          'locale': locale,
-          'timezone': timezone,
-          'appVersion': appVersion,
-          'updatedAt': FieldValue.serverTimestamp(),
-          'lastActiveAt': FieldValue.serverTimestamp(),
-          'expiresAt': expiresAt,
-          if (!snapshot.exists) 'createdAt': FieldValue.serverTimestamp(),
-        };
 
         transaction.set(
           deviceDocument,
-          data,
+          notificationDevice.toMap(
+            includeCreatedAt: !snapshot.exists,
+          ),
           SetOptions(merge: true),
         );
       });
