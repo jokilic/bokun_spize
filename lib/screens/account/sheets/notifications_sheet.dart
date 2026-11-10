@@ -15,8 +15,6 @@ import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';
 import 'notifications/notifications_sheet_list_tile.dart';
 
-// TODO: Staggered animations like in other screens
-
 class NotificationsSheet extends StatefulWidget {
   final NotificationSettings initialSettings;
   final AuthorizationStatus initialPermissionStatus;
@@ -338,6 +336,11 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(listTileRadius),
                     child: InkWell(
+                      onTap: isUpdatingPermission
+                          ? null
+                          : permissionStatus == AuthorizationStatus.notDetermined
+                          ? requestPermission
+                          : openSettings,
                       borderRadius: BorderRadius.circular(listTileRadius),
                       highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                       splashColor: Colors.transparent,
@@ -421,7 +424,8 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                delay: BokunSpizeDurations.stateTransitionStagger *
+                    (permissionStatus == AuthorizationStatus.authorized ? 3 : 4),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -467,7 +471,8 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                delay: BokunSpizeDurations.stateTransitionStagger *
+                    (permissionStatus == AuthorizationStatus.authorized ? 4 : 5),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
@@ -513,7 +518,8 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
             ),
             sliver: SliverToBoxAdapter(
               child: Animate(
-                delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                delay: BokunSpizeDurations.stateTransitionStagger *
+                    (permissionStatus == AuthorizationStatus.authorized ? 5 : 6),
                 effects: const [
                   FadeEffect(
                     duration: BokunSpizeDurations.animation,
