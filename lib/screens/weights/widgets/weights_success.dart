@@ -89,7 +89,7 @@ class WeightsSuccess extends StatelessWidget {
             index: index,
           );
 
-          if (index >= 5) {
+          if (index >= 6) {
             return KeyedSubtree(
               key: listTileKey,
               child: listTile,

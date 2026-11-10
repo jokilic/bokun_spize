@@ -299,7 +299,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 24),
+                    child: SizedBox(height: 10),
                   ),
 
                   ///
@@ -406,14 +406,17 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 32),
+                    child: SizedBox(height: 24),
                   ),
 
                   ///
                   /// OR CONNECT WITH TEXT
                   ///
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: marginHorizontal,
+                      vertical: 8,
+                    ),
                     sliver: SliverToBoxAdapter(
                       child: Animate(
                         delay: BokunSpizeDurations.stateTransitionStagger * 5,
@@ -445,14 +448,17 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 32),
+                    child: SizedBox(height: 16),
                   ),
 
                   ///
                   /// BUTTONS
                   ///
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: marginHorizontal,
+                      vertical: 8,
+                    ),
                     sliver: SliverToBoxAdapter(
                       child: Animate(
                         delay: BokunSpizeDurations.stateTransitionStagger * 6,
@@ -496,7 +502,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                     fontFamily: 'Epilogue',
                                     fontSize: 16,
                                     height: 1.6,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                   padding: const EdgeInsets.all(16),
                                   backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
@@ -537,7 +543,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                       fontFamily: 'Epilogue',
                                       fontSize: 16,
                                       height: 1.6,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                     padding: const EdgeInsets.all(16),
                                     backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
@@ -557,14 +563,17 @@ class _EntranceScreenState extends State<EntranceScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 32),
+                    child: SizedBox(height: 16),
                   ),
 
                   ///
                   /// CREATE ACCOUNT / SIGN IN
                   ///
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: marginHorizontal,
+                      vertical: 8,
+                    ),
                     sliver: SliverToBoxAdapter(
                       child: Animate(
                         delay: BokunSpizeDurations.stateTransitionStagger * 7,

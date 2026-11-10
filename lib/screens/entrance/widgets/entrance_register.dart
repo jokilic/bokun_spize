@@ -38,7 +38,10 @@ class EntranceRegister extends StatelessWidget {
       /// EMAIL TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal,
+          vertical: 8,
+        ),
         child: TextFieldWidget(
           controller: emailTextEditingController,
           focusNode: emailFocusNode,
@@ -52,13 +55,16 @@ class EntranceRegister extends StatelessWidget {
           textFieldFontSize: 18,
         ),
       ),
-      const SizedBox(height: 20),
+      const SizedBox(height: 4),
 
       ///
       /// PASSWORD TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal,
+          vertical: 8,
+        ),
         child: TextFieldWidget(
           obscureText: true,
           controller: passwordTextEditingController,
@@ -73,13 +79,16 @@ class EntranceRegister extends StatelessWidget {
           textFieldFontSize: 18,
         ),
       ),
-      const SizedBox(height: 20),
+      const SizedBox(height: 4),
 
       ///
       /// NAME TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal,
+          vertical: 8,
+        ),
         child: TextFieldWidget(
           controller: nameTextEditingController,
           focusNode: nameFocusNode,
@@ -100,11 +109,11 @@ class EntranceRegister extends StatelessWidget {
           textFieldFontSize: 18,
         ),
       ),
-      const SizedBox(height: 32),
 
       ///
       /// SIGN IN BUTTON
       ///
+      const SizedBox(height: 32),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: SizedBox(

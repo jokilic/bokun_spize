@@ -301,6 +301,9 @@ class _MealsScreenState extends State<MealsScreen> {
                   dailyCarbs: userMetrics?.dailyCarbs,
                   dailyFat: userMetrics?.dailyFat,
                 ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 8),
+                ),
 
                 ///
                 /// SUCCESS

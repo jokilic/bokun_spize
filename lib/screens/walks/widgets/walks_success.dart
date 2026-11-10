@@ -81,7 +81,7 @@ class WalksSuccess extends StatelessWidget {
             isWalking: isToday && isWalking,
           );
 
-          if (index >= 5) {
+          if (index >= 6) {
             return listTile;
           }
 

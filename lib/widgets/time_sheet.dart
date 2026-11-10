@@ -170,14 +170,17 @@ class _TimeSheetState extends State<TimeSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 24),
+            child: SizedBox(height: 10),
           ),
 
           ///
           /// TIME
           ///
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
             sliver: SliverToBoxAdapter(
               child: Animate(
                 delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -250,13 +253,13 @@ class _TimeSheetState extends State<TimeSheet> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
 
           ///
           /// SAVE BUTTON
           ///
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 32),
+          ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
             sliver: SliverToBoxAdapter(

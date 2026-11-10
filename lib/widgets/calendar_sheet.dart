@@ -172,14 +172,17 @@ class _CalendarSheetState extends State<CalendarSheet> {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 24),
+            child: SizedBox(height: 10),
           ),
 
           ///
           /// CALENDAR
           ///
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
             sliver: SliverToBoxAdapter(
               child: Animate(
                 delay: BokunSpizeDurations.stateTransitionStagger * 3,

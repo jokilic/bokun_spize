@@ -190,14 +190,17 @@ class ViewMessageSheet extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
             /// TEXT
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -236,7 +239,7 @@ class ViewMessageSheet extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
+              child: SizedBox(height: 4),
             ),
 
             ///

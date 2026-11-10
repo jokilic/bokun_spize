@@ -283,14 +283,17 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
             /// DATE
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -318,9 +321,6 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   ),
                 ),
               ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 4),
             ),
 
             ///
@@ -378,7 +378,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 20),
+              child: SizedBox(height: 10),
             ),
 
             ///
@@ -455,14 +455,17 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 20),
             ),
 
             ///
             /// DATE & TIME
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 6,
@@ -559,13 +562,13 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
-            ),
 
             ///
             /// SAVE BUTTON
             ///
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(

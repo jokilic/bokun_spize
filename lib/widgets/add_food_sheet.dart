@@ -277,14 +277,17 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
             /// TEXT FIELD
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -313,14 +316,17 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 16),
             ),
 
             ///
             /// QUANTITY & UNIT TITLE
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 4,
@@ -349,15 +355,15 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
 
             ///
             /// QUANTITY & UNIT
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 5,
@@ -413,14 +419,17 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
+              child: SizedBox(height: 16),
             ),
 
             ///
             /// NUTRITION TITLE
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 6,
@@ -449,15 +458,15 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
 
             ///
             /// CALORIES
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 7,
@@ -487,14 +496,17 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 20),
+              child: SizedBox(height: 8),
             ),
 
             ///
             /// NUTRITION
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 8,
@@ -564,13 +576,13 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
-            ),
 
             ///
             /// SAVE BUTTON
             ///
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(

@@ -221,14 +221,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 24),
+                child: SizedBox(height: 10),
               ),
 
               ///
               /// TEXT FIELD & SPEECH TO TEXT
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -315,7 +318,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 10),
+                child: SizedBox(height: 8),
               ),
 
               ///

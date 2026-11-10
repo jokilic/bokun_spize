@@ -272,7 +272,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
@@ -280,7 +280,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ///
             if (showText) ...[
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * 3,
@@ -368,7 +371,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
               if (showImage)
                 const SliverToBoxAdapter(
-                  child: SizedBox(height: 20),
+                  child: SizedBox(height: 8),
                 ),
             ],
 
@@ -377,7 +380,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ///
             if (imageStoragePath != null && imageFile == null)
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     key: ValueKey('meal-image-$imageStoragePath'),
@@ -463,7 +469,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ///
             else if (imageFile != null)
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     key: ValueKey('meal-image-$imageFile'),
@@ -551,7 +560,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             ///
             else if (!isCopyingMeal)
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     key: ValueKey(
@@ -725,7 +737,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 28),
+              child: SizedBox(height: 16),
             ),
 
             if (!isCopyingMeal) ...[
@@ -733,7 +745,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               /// NUTRITION TITLE
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * nutritionAnimationStep,
@@ -762,15 +777,15 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ),
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
 
               ///
               /// CALORIES
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * (nutritionAnimationStep + 1),
@@ -802,14 +817,17 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 20),
+                child: SizedBox(height: 8),
               ),
 
               ///
               /// NUTRITION
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * (nutritionAnimationStep + 2),
@@ -885,14 +903,17 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 28),
+                child: SizedBox(height: 16),
               ),
 
               ///
               /// FOODS TITLE
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * (foodListAnimationStep - 1),
@@ -920,9 +941,6 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ),
                   ),
                 ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
               ),
 
               ///
@@ -984,7 +1002,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ///
               if (!isCopyingMeal)
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: marginHorizontal,
+                    vertical: 8,
+                  ),
                   sliver: SliverToBoxAdapter(
                     child: Animate(
                       delay: BokunSpizeDurations.stateTransitionStagger * addFoodAnimationStep,
@@ -1039,7 +1060,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ),
                 ),
               const SliverToBoxAdapter(
-                child: SizedBox(height: 28),
+                child: SizedBox(height: 16),
               ),
             ],
 
@@ -1047,7 +1068,10 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             /// DATE & TIME TITLE
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * dateTimeAnimationStep,
@@ -1076,15 +1100,15 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
 
             ///
             /// DATE
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * (dateTimeAnimationStep + 1),
@@ -1176,14 +1200,17 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 20),
+              child: SizedBox(height: 8),
             ),
 
             ///
             /// TIME
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * (dateTimeAnimationStep + 2),
@@ -1274,13 +1301,13 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
-            ),
 
             ///
             /// SAVE BUTTON
             ///
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(

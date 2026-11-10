@@ -461,14 +461,17 @@ class ViewMealScreen extends WatchingWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+              child: SizedBox(height: 10),
             ),
 
             ///
             /// NUTRITION TITLE
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 4,
@@ -497,15 +500,15 @@ class ViewMealScreen extends WatchingWidget {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
 
             ///
             /// CALORIES & NUTRITION
             ///
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+              padding: const EdgeInsets.symmetric(
+                horizontal: marginHorizontal,
+                vertical: 8,
+              ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
                   delay: BokunSpizeDurations.stateTransitionStagger * 5,
@@ -809,14 +812,17 @@ class ViewMealScreen extends WatchingWidget {
 
             if (foods?.isNotEmpty ?? false) ...[
               const SliverToBoxAdapter(
-                child: SizedBox(height: 28),
+                child: SizedBox(height: 16),
               ),
 
               ///
               /// FOODS TITLE
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * 6,
@@ -844,9 +850,6 @@ class ViewMealScreen extends WatchingWidget {
                     ),
                   ),
                 ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 8),
               ),
 
               ///
@@ -889,8 +892,12 @@ class ViewMealScreen extends WatchingWidget {
               const SliverToBoxAdapter(
                 child: SizedBox(height: 16),
               ),
+
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * 8,
@@ -919,15 +926,15 @@ class ViewMealScreen extends WatchingWidget {
                   ),
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
 
               ///
               /// ORIGINAL TEXT TEXT FIELD
               ///
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     delay: BokunSpizeDurations.stateTransitionStagger * 9,

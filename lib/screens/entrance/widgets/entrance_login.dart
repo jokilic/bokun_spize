@@ -37,7 +37,10 @@ class EntranceLogin extends StatelessWidget {
       /// EMAIL TEXTFIELD
       ///
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+        padding: const EdgeInsets.symmetric(
+          horizontal: marginHorizontal,
+          vertical: 8,
+        ),
         child: TextFieldWidget(
           controller: emailTextEditingController,
           title: 'emailAddress'.tr(),
@@ -50,7 +53,7 @@ class EntranceLogin extends StatelessWidget {
           textFieldFontSize: 18,
         ),
       ),
-      const SizedBox(height: 20),
+      const SizedBox(height: 4),
 
       ///
       /// PASSWORD TEXTFIELD & FORGOT PASSWORD
@@ -61,7 +64,10 @@ class EntranceLogin extends StatelessWidget {
           /// PASSWORD TEXTFIELD
           ///
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
             child: TextFieldWidget(
               obscureText: true,
               controller: passwordTextEditingController,
@@ -132,11 +138,10 @@ class EntranceLogin extends StatelessWidget {
         ],
       ),
 
-      const SizedBox(height: 32),
-
       ///
       /// SIGN IN BUTTON
       ///
+      const SizedBox(height: 32),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
         child: SizedBox(
