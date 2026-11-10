@@ -16,6 +16,28 @@ enum NotificationType {
   announcement,
 }
 
+/// Handles data-only background messages without performing UI work
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  try {
+    await initializeFirebase();
+
+    final payload = NotificationPayload.fromMessage(message);
+
+    if (payload == null) {
+      log(
+        'Ignoring malformed or unknown background FCM payload for message ${message.messageId}',
+      );
+    }
+  } catch (error, stackTrace) {
+    log(
+      'Handling a background FCM message failed',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
+}
+
 class NotificationService extends ValueNotifier<AuthorizationStatus> with WidgetsBindingObserver implements Disposable {
   ///
   /// CONSTRUCTOR
@@ -88,24 +110,24 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// VARIABLES
   ///
 
-  StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
-  StreamSubscription<RemoteMessage>? openedMessageSubscription;
-  Timer? foregroundBannerTimer;
   bool isInitialized = false;
 
-  ///
-  /// GETTERS
-  ///
+  StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
+  StreamSubscription<RemoteMessage>? openedMessageSubscription;
 
-  /// Reports whether the operating system can currently deliver notifications
-  bool get permissionGranted => switch (value) {
-    AuthorizationStatus.authorized || AuthorizationStatus.provisional => true,
-    AuthorizationStatus.denied || AuthorizationStatus.deniedPermanently || AuthorizationStatus.notDetermined => false,
-  };
+  Timer? foregroundBannerTimer;
 
   ///
   /// METHODS
   ///
+
+  /// Refreshes permission state after returning from operating-system settings
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshPermissionStatus();
+    }
+  }
 
   /// Subscribes to foreground messages and notification interactions
   void subscribeToMessages() {
@@ -114,11 +136,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         handleForegroundMessage,
         onError: handleMessageStreamError,
       );
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Subscribing to foreground FCM messages failed',
-        error,
-        stackTrace,
+        error: error,
       );
     }
 
@@ -127,14 +148,19 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         handleMessageInteraction,
         onError: handleMessageStreamError,
       );
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Subscribing to opened FCM messages failed',
-        error,
-        stackTrace,
+        error: error,
       );
     }
   }
+
+  /// Logs message stream failures without interrupting application startup
+  void handleMessageStreamError(Object error) => log(
+    'Listening to FCM messages failed',
+    error: error,
+  );
 
   /// Enables native foreground alerts on iOS without requesting permission
   Future<void> configureForegroundPresentation() async {
@@ -146,11 +172,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         badge: useNativePresentation,
         sound: useNativePresentation,
       );
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Configuring FCM foreground presentation failed',
-        error,
-        stackTrace,
+        error: error,
       );
     }
   }
@@ -159,13 +184,11 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   Future<AuthorizationStatus> requestPermission() async {
     try {
       final settings = await messaging.requestPermission();
-
       value = settings.authorizationStatus;
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Requesting notification permission failed',
-        error,
-        stackTrace,
+        error: error,
       );
     }
 
@@ -177,11 +200,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     try {
       final settings = await messaging.getNotificationSettings();
       value = settings.authorizationStatus;
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Reading notification permission failed',
-        error,
-        stackTrace,
+        error: error,
       );
     }
 
@@ -192,21 +214,12 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   Future<bool> openSystemSettings() async {
     try {
       return await openSystemSettingsCallback();
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Opening application settings failed',
-        error,
-        stackTrace,
+        error: error,
       );
       return false;
-    }
-  }
-
-  /// Refreshes permission state after returning from operating-system settings
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      unawaited(refreshPermissionStatus());
     }
   }
 
@@ -239,11 +252,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       if (message != null) {
         handleMessageInteraction(message);
       }
-    } catch (error, stackTrace) {
-      logNotificationError(
+    } catch (error) {
+      log(
         'Reading the initial FCM message failed',
-        error,
-        stackTrace,
+        error: error,
       );
     }
   }
@@ -272,8 +284,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     required NotificationPayload? payload,
   }) {
     final notification = message.notification;
+
     final title = notification?.title ?? (message.data['title'] is String ? message.data['title'] as String : null);
     final body = notification?.body ?? (message.data['body'] is String ? message.data['body'] as String : null);
+
     final messenger = scaffoldMessengerKey.currentState;
 
     if (messenger == null || (title == null && body == null)) {
@@ -303,11 +317,15 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
                 hideAndroidForegroundBanner();
                 openPayload(payload);
               },
-              icon: const Icon(Icons.arrow_forward_rounded),
+              icon: const Icon(
+                Icons.arrow_forward_rounded,
+              ),
             ),
           IconButton(
             onPressed: hideAndroidForegroundBanner,
-            icon: const Icon(Icons.close_rounded),
+            icon: const Icon(
+              Icons.close_rounded,
+            ),
           ),
         ],
       ),
@@ -324,45 +342,5 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     foregroundBannerTimer?.cancel();
     foregroundBannerTimer = null;
     scaffoldMessengerKey.currentState?.hideCurrentMaterialBanner();
-  }
-
-  /// Logs message stream failures without interrupting application startup
-  void handleMessageStreamError(Object error, StackTrace stackTrace) => logNotificationError(
-    'Listening to FCM messages failed',
-    error,
-    stackTrace,
-  );
-
-  /// Logs a notification failure with its stack trace
-  void logNotificationError(
-    String message,
-    Object error,
-    StackTrace stackTrace,
-  ) => log(
-    message,
-    error: error,
-    stackTrace: stackTrace,
-  );
-}
-
-/// Handles data-only background messages without performing UI work
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  try {
-    await initializeFirebase();
-
-    final payload = NotificationPayload.fromMessage(message);
-
-    if (payload == null) {
-      log(
-        'Ignoring malformed or unknown background FCM payload for message ${message.messageId}',
-      );
-    }
-  } catch (error, stackTrace) {
-    log(
-      'Handling a background FCM message failed',
-      error: error,
-      stackTrace: stackTrace,
-    );
   }
 }
