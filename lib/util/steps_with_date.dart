@@ -34,14 +34,14 @@ List<StepsWithDate> getStepsWithDateForGraph({
         );
         final differenceInDays = latestDate.difference(date).inDays;
 
-        return differenceInDays >= 0 && differenceInDays <= calendarDays;
+        return differenceInDays >= 0 && differenceInDays < calendarDays;
       })
       .toList()
       .reversed
       .toList();
 }
 
-/// Gets step totals from the requested calendar days before the latest entry
+/// Gets earlier step totals within the selected calendar-date range
 List<StepsWithDate> getPreviousStepsWithinDays({
   required List<StepsWithDate> stepsWithDate,
   required int calendarDays,
@@ -66,7 +66,7 @@ List<StepsWithDate> getPreviousStepsWithinDays({
     final date = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
     final differenceInDays = currentDate.difference(date).inDays;
 
-    return differenceInDays >= 1 && differenceInDays <= calendarDays;
+    return differenceInDays >= 1 && differenceInDays < calendarDays;
   }).toList();
 }
 

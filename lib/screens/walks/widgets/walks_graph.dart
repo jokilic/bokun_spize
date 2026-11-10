@@ -307,7 +307,7 @@ class WalksGraphWidget extends StatelessWidget {
   }) {
     final lastDateTime = stepsWithDate.last.dateTime;
     final firstDateTime = lastDateTime.subtract(
-      Duration(days: calendarDays),
+      Duration(days: calendarDays - 1),
     );
 
     final timeSpan = lastDateTime.difference(firstDateTime);

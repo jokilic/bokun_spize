@@ -476,11 +476,11 @@ class WalksController
         return;
       }
 
-      /// Include the left endpoint because the graph accepts differences up to graphCalendarDays
+      /// Include exactly graphCalendarDays calendar dates ending at the latest completed date
       final historyStart = DateTime(
         latestCompletedDate.year,
         latestCompletedDate.month,
-        latestCompletedDate.day - graphCalendarDays,
+        latestCompletedDate.day - (graphCalendarDays - 1),
       );
 
       /// Fetch only the graph interval not covered by the initial window
@@ -600,23 +600,23 @@ class WalksController
           }
         }
 
+        /// Publish every completed batch while preserving newer and live step data
+        final allStepsByDate = <DateTime, StepsWithDate>{
+          ...historicalStepsByDate,
+          for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,
+        };
+
+        updateState(
+          stepsWithDate: allStepsByDate.values.toList()
+            ..sort(
+              (a, b) => a.dateTime.compareTo(
+                b.dateTime,
+              ),
+            ),
+        );
+
         batchEnd = batchStart;
       }
-
-      /// Merge older entries with current data and publish the complete history
-      final allStepsByDate = <DateTime, StepsWithDate>{
-        ...historicalStepsByDate,
-        for (final entry in value.stepsWithDate ?? const <StepsWithDate>[]) entry.dateTime: entry,
-      };
-
-      updateState(
-        stepsWithDate: allStepsByDate.values.toList()
-          ..sort(
-            (a, b) => a.dateTime.compareTo(
-              b.dateTime,
-            ),
-          ),
-      );
     } catch (error) {
       log(
         'Fetching remaining step history failed',
