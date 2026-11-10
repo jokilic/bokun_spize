@@ -157,7 +157,7 @@ Future<void> registerServices() async {
   if (!getIt.isRegistered<NotificationService>()) {
     getIt.registerLazySingletonAsync<NotificationService>(
       () async {
-        final notificationService = NotificationService(
+        final notification = NotificationService(
           messaging: FirebaseMessaging.instance,
           auth: FirebaseAuth.instance,
           firestore: FirebaseFirestore.instance,
@@ -168,13 +168,13 @@ Future<void> registerServices() async {
           openSystemSettingsCallback: openAppSettings,
         );
 
-        await notificationService.initialize();
+        await notification.init();
 
-        getIt.get<FirebaseService>().beforeSignOut = () => notificationService.unregisterCurrentUser(
+        getIt.get<FirebaseService>().beforeSignOut = () => notification.unregisterCurrentUser(
           deleteToken: true,
         );
 
-        return notificationService;
+        return notification;
       },
     );
   }
