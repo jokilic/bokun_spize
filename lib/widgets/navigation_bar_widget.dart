@@ -35,7 +35,7 @@ class NavigationBarWidget extends WatchingWidget {
         onDestinationSelected: (newIndex) {
           HapticFeedback.lightImpact();
           screen.changeNavigationBarItem(
-            NavigationBarItem.values[newIndex],
+            MainScreenItem.values[newIndex],
           );
         },
         destinations: [

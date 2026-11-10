@@ -9,7 +9,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
-import '../../../models/notification_settings/notification_settings.dart';
+import '../../../models/notification/notification_settings.dart';
 import '../../../theme/extensions.dart';
 import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';

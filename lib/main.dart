@@ -11,6 +11,7 @@ import 'package:watch_it/watch_it.dart';
 import 'constants/durations.dart';
 import 'generated/codegen_loader.g.dart';
 import 'screens/entrance/entrance_screen.dart';
+import 'services/notification_service.dart';
 import 'services/screen_service.dart';
 import 'services/theme_service.dart';
 import 'theme/extensions.dart';
@@ -61,6 +62,7 @@ class BokunSpizeApp extends WatchingWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
+    scaffoldMessengerKey: getIt.get<NotificationService>().scaffoldMessengerKey,
     home: StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       initialData: FirebaseAuth.instance.currentUser,

@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 import '../constants/durations.dart';
 import '../models/contact_message/contact_message.dart';
 import '../models/meal/meal.dart';
-import '../models/notification_settings/notification_settings.dart';
+import '../models/notification/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
 import '../util/ai_schema.dart';

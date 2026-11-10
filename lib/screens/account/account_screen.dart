@@ -12,6 +12,7 @@ import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
+import '../../services/notification_service.dart';
 import '../../services/screen_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
@@ -41,6 +42,7 @@ class _AccountScreenState extends State<AccountScreen> {
     registerIfNotInitialized<AccountController>(
       () => AccountController(
         firebase: getIt.get<FirebaseService>(),
+        notification: getIt.get<NotificationService>(),
         theme: getIt.get<ThemeService>(),
       ),
     );
@@ -58,7 +60,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     /// Reset navigation after authentication has removed the signed-in screens
     getIt.get<ScreenService>().changeNavigationBarItem(
-      NavigationBarItem.meals,
+      MainScreenItem.meals,
     );
 
     await Future.wait([

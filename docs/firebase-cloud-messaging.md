@@ -36,6 +36,19 @@ A trusted scheduler must calculate the next delivery timestamps, send FCM messag
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 
+## Data payload contract
+
+Every actionable message uses these stable string fields in its FCM `data` payload:
+
+| Field | Required | Supported values |
+| --- | --- | --- |
+| `type` | Yes | `weigh_reminder`, `daily_summary`, `announcement` |
+| `route` | Yes | `meals`, `weights`, `walks`, `account` |
+| `entityId` | No | A non-empty application entity identifier |
+| `sentAt` | Yes | An ISO-8601 timestamp |
+
+Unknown, missing or malformed values are ignored safely. Notification taps route to the matching primary application screen. More specific entity routing can be added without changing the base contract.
+
 ## Physical-device verification
 
 1. Install and open a fresh build on a physical device, open Account → Notifications, press **Allow notifications** and respond to the system prompt

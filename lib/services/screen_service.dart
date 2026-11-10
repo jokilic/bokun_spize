@@ -5,21 +5,21 @@ import '../screens/meals/meals_screen.dart';
 import '../screens/walks/walks_screen.dart';
 import '../screens/weights/weights_screen.dart';
 
-enum NavigationBarItem {
+enum MainScreenItem {
   meals,
   weights,
   walks,
   account,
 }
 
-class ScreenService extends ValueNotifier<NavigationBarItem> {
+class ScreenService extends ValueNotifier<MainScreenItem> {
   ///
   /// CONSTRUCTOR
   ///
 
   ScreenService()
     : super(
-        NavigationBarItem.meals,
+        MainScreenItem.meals,
       );
 
   ///
@@ -27,7 +27,7 @@ class ScreenService extends ValueNotifier<NavigationBarItem> {
   ///
 
   /// Triggered when the user presses navigation bar
-  void changeNavigationBarItem(NavigationBarItem item) {
+  void changeNavigationBarItem(MainScreenItem item) {
     /// User pressed same item
     if (value == item) {
       return;
@@ -37,13 +37,13 @@ class ScreenService extends ValueNotifier<NavigationBarItem> {
     value = item;
   }
 
-  /// Returns proper [Widget], depending on [NavigationBarItem]
-  Widget getProperWidget(NavigationBarItem item) {
+  /// Returns proper [Widget], depending on [MainScreenItem]
+  Widget getProperWidget(MainScreenItem item) {
     final newScreen = switch (item) {
-      NavigationBarItem.meals => MealsScreen(),
-      NavigationBarItem.weights => WeightsScreen(),
-      NavigationBarItem.walks => WalksScreen(),
-      NavigationBarItem.account => AccountScreen(),
+      MainScreenItem.meals => MealsScreen(),
+      MainScreenItem.weights => WeightsScreen(),
+      MainScreenItem.walks => WalksScreen(),
+      MainScreenItem.account => AccountScreen(),
     };
 
     return newScreen;

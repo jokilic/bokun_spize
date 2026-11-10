@@ -4,20 +4,19 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/contact_message/contact_message.dart';
-import '../../models/notification_settings/notification_settings.dart';
+import '../../models/notification/notification_settings.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
+import '../../services/notification_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/app_version.dart';
 import '../../util/device_info.dart';
-import '../../util/firebase_messaging.dart';
 import '../../util/snackbars.dart';
 import '../../util/theme.dart';
 import '../../util/typedefs.dart';
@@ -44,10 +43,12 @@ class AccountController extends ValueNotifier<SettingsValues> {
   ///
 
   final FirebaseService firebase;
+  final NotificationService notification;
   final ThemeService theme;
 
   AccountController({
     required this.firebase,
+    required this.notification,
     required this.theme,
   }) : super((
          theme: getThemeEnumFromMode(
@@ -214,7 +215,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
       firebase.getAndRefreshNotificationSettings(context.locale),
 
       /// Get current notification permission status
-      getFirebaseMessagingPermissionStatus(),
+      notification.refreshPermissionStatus(),
     ]);
 
     if (!context.mounted) {
@@ -229,9 +230,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
         onSettingsChanged: (settings) => firebase.writeNotificationSettings(
           settings: settings,
         ),
-        onPermissionRequested: requestFirebaseMessagingPermission,
-        onPermissionRefreshed: getFirebaseMessagingPermissionStatus,
-        onOpenSettingsPressed: openAppSettings,
+        onPermissionRequested: notification.requestPermission,
+        onPermissionRefreshed: notification.refreshPermissionStatus,
+        onOpenSettingsPressed: notification.openSystemSettings,
       ),
     );
   }

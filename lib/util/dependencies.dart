@@ -1,18 +1,20 @@
-import 'dart:async';
-
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/ai_service.dart';
 import '../services/cache_service.dart';
 import '../services/firebase_service.dart';
+import '../services/notification_service.dart';
 import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
 import '../services/storage_service.dart';
@@ -70,10 +72,6 @@ Future<void> initializeBeforeAppStart() async {
   );
 
   await initializeFirebaseAppCheck();
-
-  unawaited(
-    initializeFirebaseMessaging(),
-  );
 }
 
 /// Registers app services and loads saved preferences before the app starts
@@ -152,6 +150,27 @@ Future<void> registerServices() async {
     getIt.registerLazySingleton(
       ScreenService.new,
     );
+  }
+
+  ///
+  /// NOTIFICATIONS
+  ///
+  if (!getIt.isRegistered<NotificationService>()) {
+    final notificationService = NotificationService(
+      messaging: FirebaseMessaging.instance,
+      screen: getIt.get<ScreenService>(),
+      scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(),
+      foregroundMessages: FirebaseMessaging.onMessage,
+      openedMessages: FirebaseMessaging.onMessageOpenedApp,
+      openSystemSettingsCallback: openAppSettings,
+    );
+
+    getIt.registerSingleton(
+      notificationService,
+      dispose: (service) => service.dispose(),
+    );
+
+    await notificationService.initialize();
   }
 
   ///

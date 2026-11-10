@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
 import '../firebase_options.dart';
@@ -35,22 +34,6 @@ Future<void> initializeFirebaseAppCheck() async {
   } catch (error) {
     log(
       'Firebase App Check initialization failed',
-      error: error,
-    );
-  }
-}
-
-/// Configures foreground notification presentation without prompting the user
-Future<void> initializeFirebaseMessaging() async {
-  try {
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  } catch (error) {
-    log(
-      'Firebase Messaging initialization failed',
       error: error,
     );
   }
