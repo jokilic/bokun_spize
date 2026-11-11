@@ -183,8 +183,7 @@ service cloud.firestore {
         'appVersion',
         'deviceInfo',
         'createdAt',
-        'updatedAt',
-        'expiresAt',
+        'lastActiveAt',
       ];
 
       return data.keys().hasAll(fields)
@@ -206,17 +205,14 @@ service cloud.firestore {
         && data.deviceInfo.size() > 0
         && data.deviceInfo.size() <= 1000
         && data.createdAt is timestamp
-        && data.updatedAt is timestamp
-        && data.expiresAt is timestamp
-        && data.expiresAt > request.time
-        && data.expiresAt <= request.time + duration.value(91, 'd');
+        && data.lastActiveAt is timestamp;
     }
 
     // Preserve registration creation time and require trusted server timestamps on updates
     function isValidNotificationDeviceUpdate(deviceId) {
       return isValidNotificationDevice(request.resource.data, deviceId)
         && request.resource.data.createdAt == resource.data.createdAt
-        && request.resource.data.updatedAt == request.time;
+        && request.resource.data.lastActiveAt == request.time;
     }
 
     // Validate contact messages using the fields serialized by the app
@@ -299,7 +295,7 @@ service cloud.firestore {
         allow create: if isOwner(userId)
           && isValidNotificationDevice(request.resource.data, deviceId)
           && request.resource.data.createdAt == request.time
-          && request.resource.data.updatedAt == request.time;
+          && request.resource.data.lastActiveAt == request.time;
         allow update: if isOwner(userId)
           && isValidNotificationDeviceUpdate(deviceId);
       }

@@ -148,7 +148,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   int registrationRetryAttempt = 0;
   bool announcementTopicsReconciled = false;
 
-  static const registrationRetention = Duration(days: 30);
   static const registrationRetryDelays = <Duration>[
     Duration(seconds: 15),
     Duration(seconds: 30),
@@ -497,7 +496,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         timezone: timezone,
         appVersion: appVersion,
         deviceInfo: deviceInfo,
-        expiresAt: DateTime.now().toUtc().add(registrationRetention),
       );
 
       await firestore.runTransaction((transaction) async {

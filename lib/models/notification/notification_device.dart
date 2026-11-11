@@ -6,7 +6,6 @@ class NotificationDevice {
   final String timezone;
   final String appVersion;
   final String deviceInfo;
-  final DateTime expiresAt;
 
   const NotificationDevice({
     required this.token,
@@ -14,7 +13,6 @@ class NotificationDevice {
     required this.timezone,
     required this.appVersion,
     required this.deviceInfo,
-    required this.expiresAt,
   });
 
   Map<String, dynamic> toMap({Timestamp? createdAt}) => {
@@ -24,7 +22,6 @@ class NotificationDevice {
     'appVersion': appVersion,
     'deviceInfo': deviceInfo,
     'createdAt': createdAt ?? FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-    'expiresAt': Timestamp.fromDate(expiresAt),
+    'lastActiveAt': FieldValue.serverTimestamp(),
   };
 }
