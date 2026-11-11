@@ -12,6 +12,7 @@ import '../models/notification/notification_device.dart';
 import '../models/notification/notification_payload.dart';
 import '../models/notification/notification_settings.dart';
 import '../util/app_version.dart';
+import '../util/device_info.dart';
 import '../util/firebase.dart';
 import '../util/timezone.dart';
 import 'screen_service.dart';
@@ -147,7 +148,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   int registrationRetryAttempt = 0;
   bool announcementTopicsReconciled = false;
 
-  static const registrationRetention = Duration(days: 90);
+  static const registrationRetention = Duration(days: 30);
   static const registrationRetryDelays = <Duration>[
     Duration(seconds: 15),
     Duration(seconds: 30),
@@ -476,22 +477,26 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
       final deviceId = await storage.getNotificationDeviceId();
       final locale = registrationLocale ?? notificationSettings?.locale ?? WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+
       final metadata = await Future.wait<Object?>([
         getAppVersion(),
+        getDeviceInfo(),
         getLocalTimezoneIdentifier(
           fallback: notificationSettings?.timezone ?? 'UTC',
         ),
       ]);
+
       final appVersion = metadata[0] as String? ?? '--';
-      final timezone = metadata[1] as String? ?? '--';
+      final deviceInfo = metadata[1] as String? ?? '--';
+      final timezone = metadata[2] as String? ?? '--';
       final deviceDocument = firestore.collection('users').doc(user.uid).collection('notificationDevices').doc(deviceId);
 
       final notificationDevice = NotificationDevice(
         token: registrationToken,
-        platform: defaultTargetPlatform.name,
         locale: locale,
         timezone: timezone,
         appVersion: appVersion,
+        deviceInfo: deviceInfo,
         expiresAt: DateTime.now().toUtc().add(registrationRetention),
       );
 
@@ -501,9 +506,8 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         transaction.set(
           deviceDocument,
           notificationDevice.toMap(
-            includeCreatedAt: !snapshot.exists,
+            createdAt: snapshot.data()?['createdAt'] as Timestamp?,
           ),
-          SetOptions(merge: true),
         );
       });
 

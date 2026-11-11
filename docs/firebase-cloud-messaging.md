@@ -40,11 +40,11 @@ The debug build signs with the development APNs environment. Profile and release
 
 After notification permission is granted, each signed-in installation writes one document at `users/{uid}/notificationDevices/{deviceId}`. The device ID is a random installation UUID persisted in shared preferences and is deliberately unrelated to the FCM token. A token refresh therefore updates the existing installation document instead of creating another active record.
 
-Each document contains the current `token`, `platform`, `locale`, IANA `timezone`, `appVersion`, `createdAt`, `updatedAt`, `lastActiveAt` and `expiresAt`. The app refreshes the document after authentication, token, permission, locale, preference and foreground-lifecycle changes. Failed synchronization is retried with a bounded backoff.
+Each document contains the current `token`, `locale`, IANA `timezone`, `appVersion`, `deviceInfo`, `createdAt`, `updatedAt` and `expiresAt`. `deviceInfo` is the device name reported by Android or iOS, or the browser user agent on web. The app refreshes the document after authentication, token, permission, locale, preference and foreground-lifecycle changes. Failed synchronization is retried with a bounded backoff.
 
 On logout, the app removes the document, leaves announcement topics and deletes the FCM token before signing out. Deleting the token prevents user-specific delivery even if an offline Firestore deletion has not reached the server yet. A later sign-in obtains a new token and reuses the installation UUID.
 
-Firestore rules allow an owner to get, create, update or delete only a UUID-addressed device document. Collection listing is denied, registration fields are allow-listed and client timestamps used for activity are required to resolve to the server request time.
+Firestore rules allow an owner to get, create, update or delete only a UUID-addressed device document. Collection listing is denied, registration fields are allow-listed and `updatedAt` must resolve to the server request time.
 
 ## Announcement topics
 
@@ -56,7 +56,7 @@ Trusted sender code must retain each token's device-document reference while sen
 
 Never write a complete registration token to application, function or crash logs. Use the device document path or a short irreversible digest when correlation is necessary.
 
-Registrations expire 90 days after their latest successful client synchronization. Enable a Firestore TTL policy for the `expiresAt` field on the `notificationDevices` collection group. Senders must also ignore expired documents because Firestore TTL deletion is asynchronous. Active clients continuously extend `expiresAt`; expired or invalid documents are safe to delete.
+Registrations expire 30 days after their latest successful client synchronization. Enable a Firestore TTL policy for the `expiresAt` field on the `notificationDevices` collection group. Senders must also ignore expired documents because Firestore TTL deletion is asynchronous. Active clients continuously extend `expiresAt`; expired or invalid documents are safe to delete.
 
 ## Data payload contract
 

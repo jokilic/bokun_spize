@@ -2,32 +2,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationDevice {
   final String token;
-  final String platform;
   final String locale;
   final String timezone;
   final String appVersion;
+  final String deviceInfo;
   final DateTime expiresAt;
 
   const NotificationDevice({
     required this.token,
-    required this.platform,
     required this.locale,
     required this.timezone,
     required this.appVersion,
+    required this.deviceInfo,
     required this.expiresAt,
   });
 
-  Map<String, dynamic> toMap({
-    required bool includeCreatedAt,
-  }) => {
+  Map<String, dynamic> toMap({Timestamp? createdAt}) => {
     'token': token,
-    'platform': platform,
     'locale': locale,
     'timezone': timezone,
     'appVersion': appVersion,
+    'deviceInfo': deviceInfo,
+    'createdAt': createdAt ?? FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
-    'lastActiveAt': FieldValue.serverTimestamp(),
     'expiresAt': Timestamp.fromDate(expiresAt),
-    if (includeCreatedAt) 'createdAt': FieldValue.serverTimestamp(),
   };
 }

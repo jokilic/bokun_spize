@@ -125,6 +125,7 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
       return storedDeviceId;
     }
 
+    /// Uses `v4` because the installation ID should be random and opaque
     final deviceId = const Uuid().v4();
 
     await sharedPreferences.setString(

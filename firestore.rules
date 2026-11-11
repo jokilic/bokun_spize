@@ -178,13 +178,12 @@ service cloud.firestore {
     function isValidNotificationDevice(data, deviceId) {
       let fields = [
         'token',
-        'platform',
         'locale',
         'timezone',
         'appVersion',
+        'deviceInfo',
         'createdAt',
         'updatedAt',
-        'lastActiveAt',
         'expiresAt',
       ];
 
@@ -194,8 +193,6 @@ service cloud.firestore {
         && data.token is string
         && data.token.size() > 0
         && data.token.size() <= 4096
-        && data.platform is string
-        && data.platform in ['android', 'iOS', 'macOS', 'windows', 'linux', 'fuchsia', 'web']
         && data.locale is string
         && data.locale in ['en', 'hr']
         && data.timezone is string
@@ -205,9 +202,11 @@ service cloud.firestore {
         && data.appVersion is string
         && data.appVersion.size() > 0
         && data.appVersion.size() <= 100
+        && data.deviceInfo is string
+        && data.deviceInfo.size() > 0
+        && data.deviceInfo.size() <= 1000
         && data.createdAt is timestamp
         && data.updatedAt is timestamp
-        && data.lastActiveAt is timestamp
         && data.expiresAt is timestamp
         && data.expiresAt > request.time
         && data.expiresAt <= request.time + duration.value(91, 'd');
@@ -217,8 +216,7 @@ service cloud.firestore {
     function isValidNotificationDeviceUpdate(deviceId) {
       return isValidNotificationDevice(request.resource.data, deviceId)
         && request.resource.data.createdAt == resource.data.createdAt
-        && request.resource.data.updatedAt == request.time
-        && request.resource.data.lastActiveAt == request.time;
+        && request.resource.data.updatedAt == request.time;
     }
 
     // Validate contact messages using the fields serialized by the app
@@ -301,8 +299,7 @@ service cloud.firestore {
         allow create: if isOwner(userId)
           && isValidNotificationDevice(request.resource.data, deviceId)
           && request.resource.data.createdAt == request.time
-          && request.resource.data.updatedAt == request.time
-          && request.resource.data.lastActiveAt == request.time;
+          && request.resource.data.updatedAt == request.time;
         allow update: if isOwner(userId)
           && isValidNotificationDeviceUpdate(deviceId);
       }
