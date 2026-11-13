@@ -3,11 +3,11 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  cloud_firestore
   file_selector_windows
+  firebase_core
+  cloud_firestore
   firebase_app_check
   firebase_auth
-  firebase_core
   firebase_storage
   flutter_timezone
   permission_handler_windows
