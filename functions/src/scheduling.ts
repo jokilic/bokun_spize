@@ -57,6 +57,28 @@ export function getNextOccurrence(
   return next.toUTC().toJSDate();
 }
 
+/** Returns the ISO local calendar date for an instant in the user's timezone */
+export function getLocalDate(value: Date, timezone: string): string {
+  return DateTime.fromJSDate(value, {zone: "utc"})
+    .setZone(getValidTimezone(timezone))
+    .toFormat("yyyy-LL-dd");
+}
+
+/** Returns the UTC bounds of the local calendar day containing an instant */
+export function getLocalDayBounds(
+  value: Date,
+  timezone: string,
+): {start: Date; end: Date} {
+  const localDay = DateTime.fromJSDate(value, {zone: "utc"})
+    .setZone(getValidTimezone(timezone))
+    .startOf("day");
+
+  return {
+    start: localDay.toUTC().toJSDate(),
+    end: localDay.plus({days: 1}).toUTC().toJSDate(),
+  };
+}
+
 /** Converts Firestore or JavaScript date values into a Date */
 export function getDate(value: unknown): Date | null {
   // Production settings read timestamps through the Firebase Admin SDK
@@ -91,9 +113,7 @@ export function getDispatchId(
   timezone: string,
 ): string {
   // The local date is intentional because one logical occurrence exists per user day
-  const localDate = DateTime.fromJSDate(dueAt, {zone: "utc"})
-    .setZone(getValidTimezone(timezone))
-    .toFormat("yyyy-LL-dd");
+  const localDate = getLocalDate(dueAt, timezone);
 
   // This value is also the Firestore dispatch document ID
   return `${definition.type}_${localDate}`;

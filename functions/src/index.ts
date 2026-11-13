@@ -12,6 +12,7 @@ import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {dispatchDueNotifications} from "./dispatcher";
+import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 
 // Use Application Default Credentials supplied by the Cloud Functions runtime
@@ -37,12 +38,15 @@ export const syncNotificationSchedule = onDocumentWritten(
       return;
     }
 
+    const definitions = await getConfiguredNotificationDefinitions(getFirestore());
+
     // Passing before and after data reveals activation and timezone changes
     await synchronizeNotificationSchedule(
       event.data?.before.data(),
       after.data() ?? {},
       after.ref,
       new Date(),
+      definitions,
     );
   },
 );

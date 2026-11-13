@@ -32,11 +32,26 @@ The app requests alert, badge and sound authorization only after the user presse
 
 Client-managed preferences are stored at `users/{uid}/notificationSettings/preferences`. Firestore rules restrict access to the owning user, reject unexpected fields and prevent clients from writing server-managed scheduling timestamps.
 
-The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled or the user's timezone changes. Weigh reminders run at 07:00 local time and daily summaries run at 08:00 local time. The mobile client does not schedule local notifications.
+The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled or the user's timezone changes. Weigh reminders run at 09:00 local time and daily summaries run at 08:00 local time. The mobile client does not schedule local notifications.
 
 The `dispatchScheduledNotifications` Cloud Function runs every 10 minutes. It queries the indexed `nextWeighReminderAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates `users/{uid}/notificationDispatches/{type_localDate}` and advances the next occurrence in one Firestore transaction. That reservation makes overlapping and retried executions idempotent. Dispatch documents are server-only and must not be made client-writable.
 
-Occurrence calculation uses the user's IANA timezone through timezone database rules, so the local delivery hour remains stable across daylight-saving changes. A missing or invalid timezone falls back to UTC. Each user is isolated during processing, so one failed query or FCM request does not stop delivery for other users.
+For weigh reminders, the reservation checks `users/{uid}/weightTracks` within the UTC bounds of the due local calendar day. A matching entry records a `skipped_weight_recorded` dispatch and advances the next occurrence without contacting FCM. The dispatcher repeats this check immediately before sending to cover entries committed while active devices are being loaded. An entry committed after the final check can race with an FCM request that has already started; every active device then receives the same logical reminder and idempotency key. This is the only unavoidable near-dispatch race because an accepted FCM request cannot be recalled.
+
+Each reminder expires relative to its scheduled due time, not the scheduler's execution time. Occurrences already outside their useful TTL are recorded as `skipped_stale`, while slightly delayed sends receive only the remaining TTL. Android, APNs and WebPush use the stable notification type as their collapse identifier, so one pending weigh reminder replaces another for the same device.
+
+Occurrence calculation uses the user's IANA timezone through timezone database rules, so the configured local delivery hour remains stable across daylight-saving changes. Nonexistent spring-forward wall times move to the next valid instant and ambiguous fall-back wall times resolve to one occurrence for that local date. A missing or invalid timezone falls back to UTC. Each user is isolated during processing, so one failed query or FCM request does not stop delivery for other users.
+
+### Temporary weigh reminder time override
+
+The production fallback is always 09:00 local time. Trusted testers can temporarily create or update `config/notifications` in Firebase Console with:
+
+```text
+weighReminderHour: 14
+weighReminderMinute: 30
+```
+
+Both fields must be Firestore integers. After changing them, disable and re-enable the weigh reminder in the app so `syncNotificationSchedule` recalculates `nextWeighReminderAt`. Choose a time at least ten minutes ahead because the dispatcher runs every ten minutes. Delete the two fields or the whole config document to restore 09:00. This document is server-only and is not readable or writable by the mobile client.
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 

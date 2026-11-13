@@ -12,10 +12,14 @@ import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {afterAll, describe, expect, it} from "vitest";
 
 import {reserveDueNotification} from "../src/dispatcher";
-import {NOTIFICATION_DEFINITIONS} from "../src/notification-config";
+import {
+  getNotificationDefinitions,
+  NOTIFICATION_DEFINITIONS,
+} from "../src/notification-config";
 import {buildSchedulePatch} from "../src/schedule-sync";
 import {
   getDispatchId,
+  getLocalDayBounds,
   getNextOccurrence,
   isNotificationDue,
 } from "../src/scheduling";
@@ -70,6 +74,17 @@ describe("notification scheduling", () => {
     expect(next.toISOString()).toBe("2026-10-25T07:00:00.000Z");
   });
 
+  /** Verifies local-day bounds follow a shortened spring DST calendar day */
+  it("calculates weight-entry bounds for the user's local calendar day", () => {
+    const bounds = getLocalDayBounds(
+      new Date("2026-03-29T10:00:00.000Z"),
+      "Europe/Zagreb",
+    );
+
+    expect(bounds.start.toISOString()).toBe("2026-03-28T23:00:00.000Z");
+    expect(bounds.end.toISOString()).toBe("2026-03-29T22:00:00.000Z");
+  });
+
   /** Verifies one local day always produces the same duplicate-prevention key */
   it("creates a stable idempotency key for a local occurrence", () => {
     const definition = NOTIFICATION_DEFINITIONS.dailySummary;
@@ -91,7 +106,7 @@ describe("notification scheduling", () => {
 
   /** Verifies enabling a preference initializes its server-managed timestamp */
   it("initializes a newly enabled schedule", () => {
-    // 07:00 in summer Zagreb is 05:00 UTC
+    // 09:00 in summer Zagreb is 07:00 UTC
     const patch = buildSchedulePatch(
       {
         weighReminderEnabled: false,
@@ -105,7 +120,16 @@ describe("notification scheduling", () => {
       new Date("2026-06-01T04:00:00.000Z"),
     );
 
-    expect(patch.nextWeighReminderAt?.toISOString()).toBe("2026-06-01T05:00:00.000Z");
+    expect(patch.nextWeighReminderAt?.toISOString()).toBe("2026-06-01T07:00:00.000Z");
+  });
+
+  /** Verifies a trusted global override can move the fixed time for testing */
+  it("overrides the weigh reminder time without changing user preferences", () => {
+    const definitions = getNotificationDefinitions(14, 30);
+
+    expect(definitions.weightReminder.hour).toBe(14);
+    expect(definitions.weightReminder.minute).toBe(30);
+    expect(definitions.dailySummary.hour).toBe(8);
   });
 });
 
@@ -139,7 +163,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
       .doc(randomUUID())
       .collection("notificationSettings")
       .doc("preferences");
-    const now = new Date("2026-06-01T08:00:00.000Z");
+    const now = new Date("2026-06-01T07:05:00.000Z");
     const definition = NOTIFICATION_DEFINITIONS.weightReminder;
 
     // Seed one settings document whose reminder is already due
@@ -149,7 +173,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
       announcementsEnabled: false,
       timezone: "Europe/Zagreb",
       locale: "en",
-      nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-01T05:00:00.000Z")),
+      nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-01T07:00:00.000Z")),
     });
 
     // Start both reservations before either promise is awaited
@@ -160,5 +184,48 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
 
     // Counts successful reservations from both overlapping executions
     expect(reservations.filter((reservation) => reservation !== null)).toHaveLength(1);
+  });
+
+  /** Verifies a same-local-day weight entry suppresses the reserved reminder */
+  it("skips a weigh reminder when weight was already recorded", async () => {
+    if (emulatorApp === null) {
+      return;
+    }
+
+    const firestore = getFirestore(emulatorApp);
+    const userReference = firestore.collection("users").doc(randomUUID());
+    const settingsReference = userReference.collection("notificationSettings").doc("preferences");
+    const dueAt = new Date("2026-06-01T07:00:00.000Z");
+    const now = new Date("2026-06-01T07:05:00.000Z");
+
+    await settingsReference.set({
+      weighReminderEnabled: true,
+      dailySummaryEnabled: false,
+      announcementsEnabled: false,
+      timezone: "Europe/Zagreb",
+      locale: "en",
+      nextWeighReminderAt: Timestamp.fromDate(dueAt),
+    });
+    await userReference.collection("weightTracks").doc(randomUUID()).set({
+      dateTime: Timestamp.fromDate(new Date("2026-06-01T04:30:00.000Z")),
+      weight: 75,
+    });
+
+    const reservation = await reserveDueNotification(
+      firestore,
+      settingsReference,
+      NOTIFICATION_DEFINITIONS.weightReminder,
+      now,
+    );
+
+    expect(reservation?.skipReason).toBe("weight_recorded");
+
+    const dispatch = await userReference
+      .collection("notificationDispatches")
+      .doc("weightReminder_2026-06-01")
+      .get();
+
+    expect(dispatch.data()?.status).toBe("skipped_weight_recorded");
+    expect(dispatch.data()?.localDate).toBe("2026-06-01");
   });
 });

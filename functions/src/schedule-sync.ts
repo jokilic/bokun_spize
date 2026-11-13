@@ -15,6 +15,8 @@ import {
 import {
   NOTIFICATION_DEFINITIONS,
   NOTIFICATION_TYPES,
+  NotificationDefinition,
+  NotificationType,
 } from "./notification-config";
 import {getNextOccurrence} from "./scheduling";
 
@@ -28,6 +30,7 @@ export function buildSchedulePatch(
   before: DocumentData | undefined,
   after: DocumentData,
   now: Date,
+  definitions: Record<NotificationType, NotificationDefinition> = NOTIFICATION_DEFINITIONS,
 ): SchedulePatch {
   const patch: SchedulePatch = {};
 
@@ -35,7 +38,7 @@ export function buildSchedulePatch(
   const timezoneChanged = before?.timezone !== after.timezone;
 
   for (const type of NOTIFICATION_TYPES) {
-    const definition = NOTIFICATION_DEFINITIONS[type];
+    const definition = definitions[type];
     const wasEnabled = before?.[definition.enabledField] === true;
     const isEnabled = after[definition.enabledField] === true;
     const hasNextOccurrence = after[definition.nextAtField] !== undefined;
@@ -65,9 +68,10 @@ export async function synchronizeNotificationSchedule(
   after: DocumentData,
   settingsReference: DocumentReference,
   now: Date,
+  definitions: Record<NotificationType, NotificationDefinition> = NOTIFICATION_DEFINITIONS,
 ): Promise<void> {
   // Keep calculation separate from persistence so scheduling rules remain easy to test
-  const schedulePatch = buildSchedulePatch(before, after, now);
+  const schedulePatch = buildSchedulePatch(before, after, now, definitions);
   const entries = Object.entries(schedulePatch);
 
   // Avoid writing the document again when client changes do not affect scheduling

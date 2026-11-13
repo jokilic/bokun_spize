@@ -138,13 +138,11 @@ service cloud.firestore {
       ];
       let serverFields = [
         'nextWeighReminderAt',
-        'lastWeighReminderSentAt',
         'nextDailySummaryAt',
-        'lastDailySummarySentAt',
-        'lastAnnouncementSentAt',
       ];
 
       return data.keys().hasAll(clientFields)
+        && data.keys().hasOnly(clientFields.concat(serverFields))
         && data.weighReminderEnabled is bool
         && data.dailySummaryEnabled is bool
         && data.announcementsEnabled is bool
@@ -155,10 +153,7 @@ service cloud.firestore {
         && data.locale is string
         && data.locale in ['en', 'hr']
         && (!('nextWeighReminderAt' in data) || data.nextWeighReminderAt is timestamp)
-        && (!('lastWeighReminderSentAt' in data) || data.lastWeighReminderSentAt is timestamp)
-        && (!('nextDailySummaryAt' in data) || data.nextDailySummaryAt is timestamp)
-        && (!('lastDailySummarySentAt' in data) || data.lastDailySummarySentAt is timestamp)
-        && (!('lastAnnouncementSentAt' in data) || data.lastAnnouncementSentAt is timestamp);
+        && (!('nextDailySummaryAt' in data) || data.nextDailySummaryAt is timestamp);
     }
 
     // Keep scheduling fields writable only by trusted server environments

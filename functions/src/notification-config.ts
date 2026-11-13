@@ -28,9 +28,6 @@ export interface NotificationDefinition {
   /** Server-managed timestamp queried by the scheduled dispatcher */
   nextAtField: "nextWeighReminderAt" | "nextDailySummaryAt";
 
-  /** Server-managed timestamp updated after at least one successful delivery */
-  lastSentAtField: "lastWeighReminderSentAt" | "lastDailySummarySentAt";
-
   /** Local wall-clock delivery time interpreted in the user's IANA timezone */
   hour: number;
   minute: number;
@@ -44,6 +41,9 @@ export interface NotificationDefinition {
   /** Maximum time FCM and platform services may keep an obsolete message */
   ttlSeconds: number;
 
+  /** Suppresses delivery when a weight entry already exists for the due local date */
+  skipWhenWeightRecorded: boolean;
+
   /** Localized copy sent to devices grouped by locale */
   copy: Record<SupportedLocale, NotificationCopy>;
 }
@@ -51,55 +51,63 @@ export interface NotificationDefinition {
 /**
  * Source of truth for scheduled notification behavior
  *
- * Field names must remain aligned with the Flutter settings model and
- * Firestore indexes while route and type values must match the Flutter enums
+ * Field names must remain aligned with the Firestore settings schema and
+ * indexes while route and type values must match the Flutter enums
  */
-export const NOTIFICATION_DEFINITIONS: Record<NotificationType, NotificationDefinition> = {
-  // Morning reminder intended to arrive before the user's first meal
-  weightReminder: {
-    type: "weightReminder",
-    enabledField: "weighReminderEnabled",
-    nextAtField: "nextWeighReminderAt",
-    lastSentAtField: "lastWeighReminderSentAt",
-    hour: 7,
-    minute: 0,
-    route: "weights",
-    androidChannelId: "reminders",
-    ttlSeconds: 30 * 60,
-    copy: {
-      en: {
-        title: "Time to weigh in",
-        body: "Record your weight before your first meal",
-      },
-      hr: {
-        title: "Vrijeme je za vaganje",
-        body: "Zabilježi težinu prije prvog obroka",
-      },
-    },
-  },
-  // Morning recap of the user's previous day
-  dailySummary: {
-    type: "dailySummary",
-    enabledField: "dailySummaryEnabled",
-    nextAtField: "nextDailySummaryAt",
-    lastSentAtField: "lastDailySummarySentAt",
-    hour: 8,
-    minute: 0,
-    route: "meals",
-    androidChannelId: "daily_summaries",
-    ttlSeconds: 2 * 60 * 60,
-    copy: {
-      en: {
-        title: "Yesterday at a glance",
-        body: "Review your meals, weight and walks",
-      },
-      hr: {
-        title: "Jučerašnji pregled",
-        body: "Pregledaj obroke, težinu i šetnje",
+export function getNotificationDefinitions(
+  weighReminderHour = 9,
+  weighReminderMinute = 0,
+): Record<NotificationType, NotificationDefinition> {
+  return {
+    // Morning reminder intended to arrive before the user's first meal
+    weightReminder: {
+      type: "weightReminder",
+      enabledField: "weighReminderEnabled",
+      nextAtField: "nextWeighReminderAt",
+      hour: weighReminderHour,
+      minute: weighReminderMinute,
+      route: "weights",
+      androidChannelId: "reminders",
+      ttlSeconds: 30 * 60,
+      skipWhenWeightRecorded: true,
+      copy: {
+        en: {
+          title: "Time to weigh in",
+          body: "Record your weight before your first meal",
+        },
+        hr: {
+          title: "Vrijeme je za vaganje",
+          body: "Zabilježi težinu prije prvog obroka",
+        },
       },
     },
-  },
-};
+    // Morning recap of the user's previous day
+    dailySummary: {
+      type: "dailySummary",
+      enabledField: "dailySummaryEnabled",
+      nextAtField: "nextDailySummaryAt",
+      hour: 8,
+      minute: 0,
+      route: "meals",
+      androidChannelId: "daily_summaries",
+      ttlSeconds: 2 * 60 * 60,
+      skipWhenWeightRecorded: false,
+      copy: {
+        en: {
+          title: "Yesterday at a glance",
+          body: "Review your meals, weight and walks",
+        },
+        hr: {
+          title: "Jučerašnji pregled",
+          body: "Pregledaj obroke, težinu i šetnje",
+        },
+      },
+    },
+  };
+}
+
+/** Default definitions used when no server-side testing override exists */
+export const NOTIFICATION_DEFINITIONS = getNotificationDefinitions();
 
 /** Iterable list derived from the definitions to avoid maintaining two sources */
 export const NOTIFICATION_TYPES = Object.keys(NOTIFICATION_DEFINITIONS) as NotificationType[];

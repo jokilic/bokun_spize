@@ -30,7 +30,6 @@ import {
   DUE_QUERY_LIMIT,
   FCM_MULTICAST_LIMIT,
   getSupportedLocale,
-  NOTIFICATION_DEFINITIONS,
   NOTIFICATION_TYPES,
   NotificationDefinition,
   SupportedLocale,
@@ -38,9 +37,15 @@ import {
 import {
   getDate,
   getDispatchId,
+  getLocalDate,
+  getLocalDayBounds,
   getNextOccurrence,
   isNotificationDue,
 } from "./scheduling";
+import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
+
+/** Reason a reserved notification is completed without contacting FCM */
+export type DispatchSkipReason = "weight_recorded" | "stale";
 
 /** Immutable context created when a due occurrence is successfully reserved */
 export interface ReservedDispatch {
@@ -65,8 +70,14 @@ export interface ReservedDispatch {
   /** Stable type and local-date key shared by Firestore and the FCM payload */
   idempotencyKey: string;
 
+  /** Optional reason this occurrence was reserved but should not be delivered */
+  skipReason: DispatchSkipReason | null;
+
   /** Common timestamp used for message metadata and active-device filtering */
   reservedAt: Date;
+
+  /** Scheduled instant used to preserve the reminder's original expiration */
+  dueAt: Date;
 }
 
 /** Active FCM token together with the Firestore document that owns it */
@@ -123,6 +134,41 @@ export function getUserReference(
   return userReference;
 }
 
+/** Builds the bounded query used to detect a weight entry on one local day */
+export function getLocalDateWeightQuery(
+  userReference: DocumentReference<DocumentData>,
+  localDateReference: Date,
+  timezone: string,
+) {
+  const bounds = getLocalDayBounds(localDateReference, timezone);
+
+  // The range is evaluated in UTC but represents exactly one local day, including DST days
+  return userReference
+    .collection("weightTracks")
+    .where("dateTime", ">=", Timestamp.fromDate(bounds.start))
+    .where("dateTime", "<", Timestamp.fromDate(bounds.end))
+    .orderBy("dateTime", "desc")
+    .limit(1);
+}
+
+/** Checks weight state immediately before FCM delivery to narrow dispatch races */
+export async function hasWeightForReservedLocalDate(
+  dispatch: ReservedDispatch,
+): Promise<boolean> {
+  if (!dispatch.definition.skipWhenWeightRecorded) {
+    return false;
+  }
+
+  const userReference = getUserReference(dispatch.settingsReference);
+  const snapshot = await getLocalDateWeightQuery(
+    userReference,
+    dispatch.dueAt,
+    dispatch.timezone,
+  ).get();
+
+  return !snapshot.empty;
+}
+
 /** Reserves and advances a due occurrence in one transaction */
 export async function reserveDueNotification(
   firestore: Firestore,
@@ -149,26 +195,45 @@ export async function reserveDueNotification(
 
     const timezone = typeof settings.timezone === "string" ? settings.timezone : "UTC";
     const userReference = getUserReference(settingsReference);
+    const nextAt = getNextOccurrence(now, timezone, definition);
 
     // One document per type and local date acts as the durable idempotency record
     const idempotencyKey = getDispatchId(definition, dueAt, timezone);
+    const localDate = getLocalDate(dueAt, timezone);
     const dispatchReference = userReference.collection("notificationDispatches").doc(idempotencyKey);
     const dispatchSnapshot = await transaction.get(dispatchReference);
 
     // Existing documents mean this logical occurrence was already claimed
     if (dispatchSnapshot.exists) {
+      // Preference or timezone changes can recreate a same-day due time after dispatch
+      transaction.update(settingsReference, {
+        [definition.nextAtField]: Timestamp.fromDate(nextAt),
+      });
       return null;
     }
 
-    const nextAt = getNextOccurrence(now, timezone, definition);
+    const isStale = now.getTime() >= dueAt.getTime() + definition.ttlSeconds * 1000;
+    const weightSnapshot = definition.skipWhenWeightRecorded && !isStale ? await transaction.get(
+      getLocalDateWeightQuery(userReference, dueAt, timezone),
+    ) : null;
+    const skipReason: DispatchSkipReason | null = isStale
+      ? "stale"
+      : weightSnapshot !== null && !weightSnapshot.empty
+        ? "weight_recorded"
+        : null;
 
     // Create fails on duplicate IDs while the transaction retries on concurrent settings changes
     transaction.create(dispatchReference, {
       type: definition.type,
       idempotencyKey,
+      localDate,
       dueAt: Timestamp.fromDate(dueAt),
       reservedAt: Timestamp.fromDate(now),
-      status: "reserved",
+      status: skipReason === null ? "reserved" : `skipped_${skipReason}`,
+      ...(skipReason === null ? {} : {
+        skipReason,
+        completedAt: Timestamp.fromDate(now),
+      }),
     });
 
     // Advance immediately so the next scheduler run does not repeatedly select this occurrence
@@ -184,7 +249,9 @@ export async function reserveDueNotification(
       timezone,
       defaultLocale: getSupportedLocale(settings.locale),
       idempotencyKey,
+      skipReason,
       reservedAt: now,
+      dueAt,
     };
   });
 }
@@ -257,8 +324,12 @@ export function buildMulticastMessage(
   const {definition} = dispatch;
   const copy = definition.copy[locale];
 
-  // APNs expects an absolute Unix expiration while Android and WebPush use durations
-  const expiration = Math.floor(dispatch.reservedAt.getTime() / 1000) + definition.ttlSeconds;
+  // Preserve the original useful window when a scheduler run starts slightly late
+  const expiration = Math.floor(dispatch.dueAt.getTime() / 1000) + definition.ttlSeconds;
+  const remainingTtlSeconds = Math.max(
+    1,
+    expiration - Math.floor(dispatch.reservedAt.getTime() / 1000),
+  );
 
   return {
     // Preserves response order so FCM failures map back to device documents
@@ -279,7 +350,7 @@ export function buildMulticastMessage(
     // High transport priority delivers reminders promptly while TTL and collapse discard stale copies
     android: {
       priority: "high",
-      ttl: definition.ttlSeconds * 1000,
+      ttl: remainingTtlSeconds * 1000,
       collapseKey: definition.type,
       notification: {
         channelId: definition.androidChannelId,
@@ -307,7 +378,7 @@ export function buildMulticastMessage(
     // Web registrations receive equivalent urgency, expiration and replacement behavior
     webpush: {
       headers: {
-        TTL: String(definition.ttlSeconds),
+        TTL: String(remainingTtlSeconds),
         Urgency: "high",
       },
       notification: {
@@ -409,7 +480,7 @@ export async function deleteInvalidDevices(
   });
 }
 
-/** Records aggregate delivery results and the last successful send timestamp */
+/** Records aggregate delivery results on the idempotency document */
 export async function completeDispatch(
   dispatch: ReservedDispatch,
   result: DeliveryResult,
@@ -423,13 +494,18 @@ export async function completeDispatch(
     successCount: result.successCount,
     failureCount: result.failureCount,
   });
+}
 
-  // Last-sent means at least one device accepted the message rather than only an attempt
-  if (result.successCount > 0) {
-    await dispatch.settingsReference.update({
-      [dispatch.definition.lastSentAtField]: Timestamp.now(),
-    });
-  }
+/** Completes a reservation that became unnecessary before FCM delivery */
+export async function completeSkippedDispatch(
+  dispatch: ReservedDispatch,
+  skipReason: DispatchSkipReason,
+): Promise<void> {
+  await dispatch.dispatchReference.update({
+    status: `skipped_${skipReason}`,
+    skipReason,
+    completedAt: Timestamp.now(),
+  });
 }
 
 /** Processes one due settings document without exposing failures to other users */
@@ -452,9 +528,21 @@ export async function processDueSettings(
     return;
   }
 
+  // The reservation transaction already completed stale and pre-recorded occurrences
+  if (dispatch.skipReason !== null) {
+    return;
+  }
+
   try {
     // Delivery is intentionally performed after the transaction to avoid external calls in retries
     const devices = await getActiveDevices(dispatch);
+
+    // Recheck after device loading so entries committed near dispatch suppress the reminder
+    if (await hasWeightForReservedLocalDate(dispatch)) {
+      await completeSkippedDispatch(dispatch, "weight_recorded");
+      return;
+    }
+
     const result = await sendReservedNotification(messaging, dispatch, devices);
 
     // Record the outcome before cleaning invalid devices so cleanup cannot hide delivery success
@@ -510,12 +598,14 @@ export async function dispatchDueNotifications(
   messaging: Messaging,
   now: Date,
 ): Promise<void> {
+  const definitions = await getConfiguredNotificationDefinitions(firestore);
+
   // Processes notification types independently
   const outcomes = await Promise.allSettled(
     NOTIFICATION_TYPES.map((type) => dispatchNotificationType(
       firestore,
       messaging,
-      NOTIFICATION_DEFINITIONS[type],
+      definitions[type],
       now,
     )),
   );
