@@ -126,3 +126,8 @@ android/fastlane/.env.default
 ios/fastlane/.env.default
 ios/vendor/
 assets/key.pem
+
+# Firebase Functions
+functions/lib/
+functions/node_modules/
+functions/coverage/

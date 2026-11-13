@@ -32,7 +32,11 @@ The app requests alert, badge and sound authorization only after the user presse
 
 Client-managed preferences are stored at `users/{uid}/notificationSettings/preferences`. Firestore rules restrict access to the owning user, reject unexpected fields and prevent clients from writing server-managed scheduling timestamps.
 
-A trusted scheduler must calculate the next delivery timestamps, send FCM messages and update the last-sent timestamps. The mobile client does not schedule local notifications.
+The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled or the user's timezone changes. Weigh reminders run at 07:00 local time and daily summaries run at 08:00 local time. The mobile client does not schedule local notifications.
+
+The `dispatchScheduledNotifications` Cloud Function runs every 10 minutes. It queries the indexed `nextWeighReminderAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates `users/{uid}/notificationDispatches/{type_localDate}` and advances the next occurrence in one Firestore transaction. That reservation makes overlapping and retried executions idempotent. Dispatch documents are server-only and must not be made client-writable.
+
+Occurrence calculation uses the user's IANA timezone through timezone database rules, so the local delivery hour remains stable across daylight-saving changes. A missing or invalid timezone falls back to UTC. Each user is isolated during processing, so one failed query or FCM request does not stop delivery for other users.
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 
@@ -64,10 +68,10 @@ Every actionable message uses these stable string fields in its FCM `data` paylo
 
 | Field | Required | Supported values |
 | --- | --- | --- |
-| `type` | Yes | `weigh_reminder`, `daily_summary`, `announcement` |
+| `type` | Yes | `weightReminder`, `dailySummary`, `announcement` |
 | `route` | Yes | `meals`, `weights`, `walks`, `account` |
-| `entityId` | No | A non-empty application entity identifier |
 | `sentAt` | Yes | An ISO-8601 timestamp |
+| `idempotencyKey` | Server notifications | A stable `{type}_{localDate}` delivery key |
 
 Unknown, missing or malformed values are ignored safely. Notification taps route to the matching primary application screen. More specific entity routing can be added without changing the base contract.
 
@@ -82,3 +86,28 @@ Unknown, missing or malformed values are ignored safely. Notification taps route
 7. On iOS, verify denied and provisional authorization states separately, using a clean install or device notification settings as needed
 
 Console/APNs configuration and physical-device delivery cannot be verified from source control alone and must be completed for each Firebase and Apple environment.
+
+## Functions deployment
+
+Scheduled Functions require the Firebase project to use the **Blaze** pay-as-you-go plan. Before the first deployment, enable the **Cloud Scheduler API**, **Cloud Functions API**, **Cloud Build API**, **Artifact Registry API**, **Eventarc API**, **Pub/Sub API** and **Firebase Cloud Messaging API** for `bokun-spize`. The deployed Node.js service account needs Firestore read/write access and permission to send FCM messages. Application Default Credentials are supplied by the Functions runtime; do not add a service-account key or any Admin credential to the Flutter application.
+
+Install and deploy from the repository root:
+
+```sh
+cd functions
+npm install
+npm run build
+cd ..
+firebase deploy --only firestore,functions
+```
+
+The first index deployment may take several minutes to finish. Wait until both `notificationSettings` collection-group indexes report **Enabled** before relying on the scheduled dispatcher.
+
+For local unit and Firestore emulator coverage:
+
+```sh
+cd functions
+npm run test:emulator
+```
+
+The emulator test starts two concurrent reservations against the same due occurrence and verifies that only one succeeds. Unit coverage also verifies due selection and Europe/Zagreb spring and autumn DST transitions. FCM calls are not made by the emulator test.

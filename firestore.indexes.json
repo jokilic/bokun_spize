@@ -1,0 +1,33 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "notificationSettings",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "weighReminderEnabled",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextWeighReminderAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notificationSettings",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "dailySummaryEnabled",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nextDailySummaryAt",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
