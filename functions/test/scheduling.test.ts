@@ -16,6 +16,7 @@ import {
   getNotificationDefinitions,
   NOTIFICATION_DEFINITIONS,
 } from "../src/notification-config";
+import {getWeightReminderTimeParts} from "../src/remote-notification-config";
 import {buildSchedulePatch} from "../src/schedule-sync";
 import {
   getDispatchId,
@@ -125,11 +126,18 @@ describe("notification scheduling", () => {
 
   /** Verifies a trusted global override can move the fixed time for testing */
   it("overrides the weigh reminder time without changing user preferences", () => {
-    const definitions = getNotificationDefinitions(14, 30);
+    const configuredTime = Timestamp.fromDate(new Date("2030-04-12T14:30:45.000Z"));
+    const {hour, minute} = getWeightReminderTimeParts(configuredTime);
+    const definitions = getNotificationDefinitions(hour, minute);
 
     expect(definitions.weightReminder.hour).toBe(14);
     expect(definitions.weightReminder.minute).toBe(30);
     expect(definitions.dailySummary.hour).toBe(8);
+  });
+
+  /** Verifies a missing or invalid timestamp retains the production default */
+  it("falls back to the default weigh reminder time", () => {
+    expect(getWeightReminderTimeParts(null)).toEqual({hour: 9, minute: 0});
   });
 });
 

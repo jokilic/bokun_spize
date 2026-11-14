@@ -5,7 +5,7 @@
  * temporarily move the weigh reminder for end-to-end delivery testing
  */
 
-import {Firestore} from "firebase-admin/firestore";
+import {Firestore, Timestamp} from "firebase-admin/firestore";
 
 import {
   getNotificationDefinitions,
@@ -16,20 +16,29 @@ import {
 /** Firestore document editable through Firebase Console by trusted operators */
 export const NOTIFICATION_CONFIG_PATH = "config/notifications";
 
+/** Extracts the UTC hour and minute while deliberately ignoring the timestamp date */
+export function getWeightReminderTimeParts(
+  value: unknown,
+): {hour: number; minute: number} {
+  if (!(value instanceof Timestamp)) {
+    return {hour: 9, minute: 0};
+  }
+
+  const time = value.toDate();
+
+  return {
+    hour: time.getUTCHours(),
+    minute: time.getUTCMinutes(),
+  };
+}
+
 /** Loads a valid global weigh reminder time and falls back to 09:00 */
 export async function getConfiguredNotificationDefinitions(
   firestore: Firestore,
 ): Promise<Record<NotificationType, NotificationDefinition>> {
   const snapshot = await firestore.doc(NOTIFICATION_CONFIG_PATH).get();
   const data = snapshot.data();
-  const configuredHour = data?.weighReminderHour;
-  const configuredMinute = data?.weighReminderMinute;
-  const hour = typeof configuredHour === "number" && Number.isInteger(configuredHour) && configuredHour >= 0 && configuredHour <= 23
-    ? configuredHour
-    : 9;
-  const minute = typeof configuredMinute === "number" && Number.isInteger(configuredMinute) && configuredMinute >= 0 && configuredMinute <= 59
-    ? configuredMinute
-    : 0;
+  const {hour, minute} = getWeightReminderTimeParts(data?.weightReminderTime);
 
   return getNotificationDefinitions(hour, minute);
 }
