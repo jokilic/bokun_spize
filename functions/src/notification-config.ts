@@ -99,12 +99,12 @@ export function getNotificationDefinitions(
       skipWhenWeightRecorded: false,
       copy: {
         en: {
-          title: "Yesterday at a glance",
-          body: "Review your meals, weight and walks",
+          title: "Overview of yesterday",
+          body: "Summary of your meals, weight & steps",
         },
         hr: {
-          title: "Jučerašnji pregled",
-          body: "Pregledaj obroke, težinu i šetnje",
+          title: "Pregled prošlog dana",
+          body: "Sažetak tvojih obroka, težine i koraka",
         },
       },
     },

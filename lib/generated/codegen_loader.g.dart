@@ -148,7 +148,7 @@ class CodegenLoader extends AssetLoader{
   "notificationsOpenSettingsAction": "Open settings",
   "notificationsWeighReminderTitle": "Reminder to weigh",
   "notificationsWeighReminderSubtitle": "Log your daily weight",
-  "notificationsDailySummaryTitle": "Overview of yesterday ",
+  "notificationsDailySummaryTitle": "Overview of yesterday",
   "notificationsDailySummarySubtitle": "Summary of your meals, weight & steps",
   "notificationsAnnouncementsTitle": "Announcements",
   "notificationsAnnouncementsSubtitle": "App news and updates",
