@@ -5,6 +5,8 @@
  * the user preference fields to its delivery time, route, channel and copy
  */
 
+import {Timestamp} from "firebase-admin/firestore";
+
 /** Notification identifiers shared with the Flutter FCM payload parser */
 export type NotificationType = "weightReminder" | "dailySummary";
 
@@ -58,8 +60,8 @@ export interface NotificationDefinition {
  * indexes while route and type values must match the Flutter enums
  */
 export function getNotificationDefinitions(
-  weighReminderHour = 9,
-  weighReminderMinute = 0,
+  weightReminderHour = 9,
+  weightReminderMinute = 0,
 ): Record<NotificationType, NotificationDefinition> {
   return {
     // Morning reminder intended to arrive before the user's first meal
@@ -67,8 +69,8 @@ export function getNotificationDefinitions(
       type: "weightReminder",
       enabledField: "weighReminderEnabled",
       nextAtField: "nextWeighReminderAt",
-      hour: weighReminderHour,
-      minute: weighReminderMinute,
+      hour: weightReminderHour,
+      minute: weightReminderMinute,
       route: "weights",
       androidChannelId: "reminders",
       androidColor: "#4F5094",
@@ -126,25 +128,19 @@ export function getNotificationDefinitionForSettings(
     return definition;
   }
 
-  const hour = settings.weighReminderHour;
-  const minute = settings.weighReminderMinute;
-  const hasValidTime = typeof hour === "number" &&
-    typeof minute === "number" &&
-    Number.isInteger(hour) &&
-    Number.isInteger(minute) &&
-    hour >= 0 &&
-    hour <= 23 &&
-    minute >= 0 &&
-    minute <= 59;
+  const weighReminderTime = settings.weighReminderTime;
 
-  if (!hasValidTime) {
+  if (!(weighReminderTime instanceof Timestamp)) {
     return definition;
   }
 
+  const time = weighReminderTime.toDate();
+
   return {
     ...definition,
-    hour: hour as number,
-    minute: minute as number,
+    // The calendar date is intentionally ignored because this timestamp stores wall-clock time only
+    hour: time.getUTCHours(),
+    minute: time.getUTCMinutes(),
   };
 }
 

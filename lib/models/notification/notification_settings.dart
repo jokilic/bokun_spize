@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class NotificationSettings {
   final bool weighReminderEnabled;
-  final int weighReminderHour;
-  final int weighReminderMinute;
+  final DateTime weighReminderTime;
   final bool dailySummaryEnabled;
   final bool announcementsEnabled;
   final String timezone;
@@ -9,8 +10,7 @@ class NotificationSettings {
 
   const NotificationSettings({
     required this.weighReminderEnabled,
-    required this.weighReminderHour,
-    required this.weighReminderMinute,
+    required this.weighReminderTime,
     required this.dailySummaryEnabled,
     required this.announcementsEnabled,
     required this.timezone,
@@ -22,36 +22,46 @@ class NotificationSettings {
     required String locale,
   }) => NotificationSettings(
     weighReminderEnabled: false,
-    weighReminderHour: 9,
-    weighReminderMinute: 0,
+    weighReminderTime: DateTime.utc(2020, 1, 1, 9),
     dailySummaryEnabled: false,
     announcementsEnabled: false,
     timezone: timezone,
     locale: locale,
   );
 
-  factory NotificationSettings.fromMap(Map<String, dynamic> map) => NotificationSettings(
-    weighReminderEnabled: map['weighReminderEnabled'] as bool? ?? false,
-    weighReminderHour: map['weighReminderHour'] as int? ?? 9,
-    weighReminderMinute: map['weighReminderMinute'] as int? ?? 0,
-    dailySummaryEnabled: map['dailySummaryEnabled'] as bool? ?? false,
-    announcementsEnabled: map['announcementsEnabled'] as bool? ?? false,
-    timezone: map['timezone'] as String? ?? 'UTC',
-    locale: map['locale'] as String? ?? 'hr',
-  );
+  factory NotificationSettings.fromMap(Map<String, dynamic> map) {
+    final weighReminderTime = switch (map['weighReminderTime']) {
+      final Timestamp value => value.toDate().toUtc(),
+      final DateTime value => value.toUtc(),
+      _ => DateTime.utc(2020, 1, 1, 9),
+    };
+
+    return NotificationSettings(
+      weighReminderEnabled: map['weighReminderEnabled'] as bool? ?? false,
+      weighReminderTime: DateTime.utc(
+        2020,
+        1,
+        1,
+        weighReminderTime.hour,
+        weighReminderTime.minute,
+      ),
+      dailySummaryEnabled: map['dailySummaryEnabled'] as bool? ?? false,
+      announcementsEnabled: map['announcementsEnabled'] as bool? ?? false,
+      timezone: map['timezone'] as String? ?? 'UTC',
+      locale: map['locale'] as String? ?? 'hr',
+    );
+  }
 
   NotificationSettings copyWith({
     bool? weighReminderEnabled,
-    int? weighReminderHour,
-    int? weighReminderMinute,
+    DateTime? weighReminderTime,
     bool? dailySummaryEnabled,
     bool? announcementsEnabled,
     String? timezone,
     String? locale,
   }) => NotificationSettings(
     weighReminderEnabled: weighReminderEnabled ?? this.weighReminderEnabled,
-    weighReminderHour: weighReminderHour ?? this.weighReminderHour,
-    weighReminderMinute: weighReminderMinute ?? this.weighReminderMinute,
+    weighReminderTime: weighReminderTime ?? this.weighReminderTime,
     dailySummaryEnabled: dailySummaryEnabled ?? this.dailySummaryEnabled,
     announcementsEnabled: announcementsEnabled ?? this.announcementsEnabled,
     timezone: timezone ?? this.timezone,
@@ -60,8 +70,7 @@ class NotificationSettings {
 
   Map<String, dynamic> toMap() => {
     'weighReminderEnabled': weighReminderEnabled,
-    'weighReminderHour': weighReminderHour,
-    'weighReminderMinute': weighReminderMinute,
+    'weighReminderTime': Timestamp.fromDate(weighReminderTime),
     'dailySummaryEnabled': dailySummaryEnabled,
     'announcementsEnabled': announcementsEnabled,
     'timezone': timezone,

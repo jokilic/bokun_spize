@@ -197,25 +197,22 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
 
   /// Opens [TimeSheet] and updates the weigh reminder time
   Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async {
-    final selectedDateTime = DateTime(
-      2020,
-      1,
-      1,
-      settings.weighReminderHour,
-      settings.weighReminderMinute,
-    );
-
     await showBlurredModalBottomSheet(
       context: context,
       builder: (context) => TimeSheet(
         subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
         primaryColor: context.colors.carbs,
-        dateValue: selectedDateTime,
+        dateValue: settings.weighReminderTime,
         onTimeChanged: (newTime) => unawaited(
           updateSettings(
             settings.copyWith(
-              weighReminderHour: newTime.hour,
-              weighReminderMinute: newTime.minute,
+              weighReminderTime: DateTime.utc(
+                2020,
+                1,
+                1,
+                newTime.hour,
+                newTime.minute,
+              ),
             ),
           ),
         ),
@@ -225,13 +222,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
 
   /// Returns the localized weigh reminder time
   String getWeighReminderTime(BuildContext context) => getDateString(
-    date: DateTime(
-      2020,
-      1,
-      1,
-      settings.weighReminderHour,
-      settings.weighReminderMinute,
-    ),
+    date: settings.weighReminderTime,
     dateFormat: 'HH:mm',
     useTodayYesterdayTomorrow: false,
     languageCode: context.locale.languageCode,

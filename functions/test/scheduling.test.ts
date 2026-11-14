@@ -125,13 +125,12 @@ describe("notification scheduling", () => {
     expect(patch.nextWeighReminderAt?.toISOString()).toBe("2026-06-01T07:00:00.000Z");
   });
 
-  /** Verifies a user-specific time replaces the default weigh reminder time */
-  it("uses the user's custom weigh reminder time", () => {
+  /** Verifies only the time portion replaces the default weigh reminder time */
+  it("uses the user's custom weigh reminder time and ignores its date", () => {
     const definition = getNotificationDefinitionForSettings(
       NOTIFICATION_DEFINITIONS.weightReminder,
       {
-        weighReminderHour: 18,
-        weighReminderMinute: 35,
+        weighReminderTime: Timestamp.fromDate(new Date("2035-04-18T18:35:00.000Z")),
       },
     );
 
@@ -139,20 +138,40 @@ describe("notification scheduling", () => {
     expect(definition.minute).toBe(35);
   });
 
+  /** Verifies equal timestamp values do not continuously reschedule */
+  it("preserves the schedule when the weigh reminder timestamp is unchanged", () => {
+    const patch = buildSchedulePatch(
+      {
+        weighReminderEnabled: true,
+        weighReminderTime: Timestamp.fromDate(new Date("2035-04-18T18:35:00.000Z")),
+        timezone: "Europe/Zagreb",
+        nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-02T16:35:00.000Z")),
+      },
+      {
+        weighReminderEnabled: true,
+        weighReminderTime: Timestamp.fromDate(new Date("2035-04-18T18:35:00.000Z")),
+        dailySummaryEnabled: false,
+        timezone: "Europe/Zagreb",
+        nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-02T16:35:00.000Z")),
+      },
+      new Date("2026-06-01T12:00:00.000Z"),
+    );
+
+    expect(patch).toEqual({});
+  });
+
   /** Verifies changing the custom time recalculates an enabled schedule */
   it("reschedules an enabled weigh reminder after its time changes", () => {
     const patch = buildSchedulePatch(
       {
         weighReminderEnabled: true,
-        weighReminderHour: 9,
-        weighReminderMinute: 0,
+        weighReminderTime: Timestamp.fromDate(new Date("2020-01-01T09:00:00.000Z")),
         timezone: "Europe/Zagreb",
         nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
       },
       {
         weighReminderEnabled: true,
-        weighReminderHour: 18,
-        weighReminderMinute: 35,
+        weighReminderTime: Timestamp.fromDate(new Date("2035-04-18T18:35:00.000Z")),
         dailySummaryEnabled: false,
         timezone: "Europe/Zagreb",
         nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),

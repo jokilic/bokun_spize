@@ -19,7 +19,7 @@ import {
   NotificationDefinition,
   NotificationType,
 } from "./notification-config";
-import {getNextOccurrence} from "./scheduling";
+import {getDate, getNextOccurrence} from "./scheduling";
 
 /**
  * Pure schedule update where a Date writes a timestamp and null deletes a field
@@ -37,8 +37,9 @@ export function buildSchedulePatch(
 
   // Every enabled schedule must be recalculated when its local timezone changes
   const timezoneChanged = before?.timezone !== after.timezone;
-  const weighReminderTimeChanged = before?.weighReminderHour !== after.weighReminderHour ||
-    before?.weighReminderMinute !== after.weighReminderMinute;
+  const beforeWeighReminderTime = getDate(before?.weighReminderTime);
+  const afterWeighReminderTime = getDate(after.weighReminderTime);
+  const weighReminderTimeChanged = beforeWeighReminderTime?.getTime() !== afterWeighReminderTime?.getTime();
 
   for (const type of NOTIFICATION_TYPES) {
     const definition = getNotificationDefinitionForSettings(
