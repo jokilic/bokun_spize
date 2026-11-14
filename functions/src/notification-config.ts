@@ -6,6 +6,7 @@
  */
 
 import {Timestamp} from "firebase-admin/firestore";
+import {DateTime} from "luxon";
 
 /** Notification identifiers shared with the Flutter FCM payload parser */
 export type NotificationType = "weightReminder" | "dailySummary";
@@ -119,6 +120,27 @@ export const NOTIFICATION_DEFINITIONS = getNotificationDefinitions();
 /** Iterable list derived from the definitions to avoid maintaining two sources */
 export const NOTIFICATION_TYPES = Object.keys(NOTIFICATION_DEFINITIONS) as NotificationType[];
 
+/** Extracts wall-clock time from a timestamp in the supplied IANA timezone */
+export function getTimestampTimeParts(
+  value: unknown,
+  timezone: string,
+): {hour: number; minute: number} | null {
+  if (!(value instanceof Timestamp)) {
+    return null;
+  }
+
+  const time = DateTime.fromJSDate(value.toDate(), {zone: "utc"}).setZone(timezone);
+
+  if (!time.isValid) {
+    return null;
+  }
+
+  return {
+    hour: time.hour,
+    minute: time.minute,
+  };
+}
+
 /** Applies a valid user-specific weigh reminder time to its definition */
 export function getNotificationDefinitionForSettings(
   definition: NotificationDefinition,
@@ -128,19 +150,17 @@ export function getNotificationDefinitionForSettings(
     return definition;
   }
 
-  const weighReminderTime = settings.weighReminderTime;
+  const timezone = typeof settings.timezone === "string" ? settings.timezone : DEFAULT_TIMEZONE;
+  const time = getTimestampTimeParts(settings.weighReminderTime, timezone);
 
-  if (!(weighReminderTime instanceof Timestamp)) {
+  if (time === null) {
     return definition;
   }
 
-  const time = weighReminderTime.toDate();
-
   return {
     ...definition,
-    // The calendar date is intentionally ignored because this timestamp stores wall-clock time only
-    hour: time.getUTCHours(),
-    minute: time.getUTCMinutes(),
+    hour: time.hour,
+    minute: time.minute,
   };
 }
 

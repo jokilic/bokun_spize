@@ -206,7 +206,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
         onTimeChanged: (newTime) => unawaited(
           updateSettings(
             settings.copyWith(
-              weighReminderTime: DateTime.utc(
+              weighReminderTime: DateTime(
                 2020,
                 1,
                 1,

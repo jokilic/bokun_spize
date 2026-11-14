@@ -22,7 +22,7 @@ class NotificationSettings {
     required String locale,
   }) => NotificationSettings(
     weighReminderEnabled: false,
-    weighReminderTime: DateTime.utc(2020, 1, 1, 9),
+    weighReminderTime: DateTime(2020, 1, 1, 9),
     dailySummaryEnabled: false,
     announcementsEnabled: false,
     timezone: timezone,
@@ -31,14 +31,14 @@ class NotificationSettings {
 
   factory NotificationSettings.fromMap(Map<String, dynamic> map) {
     final weighReminderTime = switch (map['weighReminderTime']) {
-      final Timestamp value => value.toDate().toUtc(),
-      final DateTime value => value.toUtc(),
-      _ => DateTime.utc(2020, 1, 1, 9),
+      final Timestamp value => value.toDate(),
+      final DateTime value => value.toLocal(),
+      _ => DateTime(2020, 1, 1, 9),
     };
 
     return NotificationSettings(
       weighReminderEnabled: map['weighReminderEnabled'] as bool? ?? false,
-      weighReminderTime: DateTime.utc(
+      weighReminderTime: DateTime(
         2020,
         1,
         1,

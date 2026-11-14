@@ -5,11 +5,11 @@
  * temporarily move the weigh reminder for end-to-end delivery testing
  */
 
-import {Firestore, Timestamp} from "firebase-admin/firestore";
-import {DateTime} from "luxon";
+import {Firestore} from "firebase-admin/firestore";
 
 import {
   getNotificationDefinitions,
+  getTimestampTimeParts,
   NotificationDefinition,
   NotificationType,
 } from "./notification-config";
@@ -23,20 +23,10 @@ export const NOTIFICATION_CONFIG_TIMEZONE = "Europe/Zagreb";
 /** Extracts the Zagreb wall-clock time entered through Firebase Console */
 export function getWeightReminderTimeParts(
   value: unknown,
-): {hour: number; minute: number} {
-  if (!(value instanceof Timestamp)) {
-    return {hour: 9, minute: 0};
-  }
-
-  const time = DateTime.fromJSDate(value.toDate(), {zone: "utc"}).setZone(
-    NOTIFICATION_CONFIG_TIMEZONE,
-  );
-
-  return {
-    hour: time.hour,
-    minute: time.minute,
-  };
-}
+): {hour: number; minute: number} => getTimestampTimeParts(
+  value,
+  NOTIFICATION_CONFIG_TIMEZONE,
+) ?? {hour: 9, minute: 0};
 
 /** Loads a valid global weigh reminder time and falls back to 09:00 */
 export async function getConfiguredNotificationDefinitions(
