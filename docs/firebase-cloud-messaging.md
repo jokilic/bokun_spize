@@ -6,7 +6,7 @@ The app uses Firebase Cloud Messaging for every user-visible system notification
 
 1. Open the `bokun-spize` project in Google Cloud Console and verify that **Firebase Cloud Messaging API (V1)** is enabled
 2. In Apple Developer, create an APNs authentication key with the **Apple Push Notifications service (APNs)** capability and securely download the `.p8` file
-3. In Firebase Console, open **Project settings → Cloud Messaging → Apple app configuration** for `com.josipkilic.bokunSpize`
+3. In Firebase Console, open **Project settings → Cloud Messaging → Apple app configuration** for `com.josipkilic.bokunspize`
 4. Upload the `.p8` file and enter its key ID and Apple team ID (`QDS42PXGRU`)
 5. Keep the APNs key outside source control and the application bundle
 
