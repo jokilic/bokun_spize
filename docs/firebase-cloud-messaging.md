@@ -60,6 +60,8 @@ The debug build signs with the development APNs environment. Profile and release
 
 After notification permission is granted, each signed-in installation writes one document at `users/{uid}/notificationDevices/{deviceId}`. The device ID is a random installation UUID persisted in shared preferences and is deliberately unrelated to the Firebase Installation ID (FID). A registration change therefore updates the existing installation document instead of creating another active record.
 
+Reinstalling the app or clearing simulator storage can replace the shared-preferences UUID while Firebase still reuses the same direct-send registration. The sender orders active documents by `lastActiveAt` and targets only the newest document for each FID, preventing duplicate delivery and duplicate failure records while older documents await TTL cleanup.
+
 Each document contains the current `fid`, `locale`, IANA `timezone`, `appVersion`, `deviceInfo`, `createdAt` and `lastActiveAt`. `deviceInfo` is the device name reported by Android or iOS, or the browser user agent on web. The app refreshes the document after authentication, registration, permission, locale, preference and foreground-lifecycle changes. Failed synchronization is retried with a bounded backoff.
 
 On logout, the app removes the document, leaves announcement topics and unregisters the FID before signing out. Unregistering prevents user-specific delivery even if an offline Firestore deletion has not reached the server yet. A later sign-in registers again and reuses the installation UUID.

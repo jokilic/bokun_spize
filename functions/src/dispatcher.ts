@@ -276,10 +276,11 @@ export async function getActiveDevices(
   const snapshot = await userReference
     .collection("notificationDevices")
     .where("lastActiveAt", ">=", Timestamp.fromDate(cutoff))
+    .orderBy("lastActiveAt", "desc")
     .get();
 
-  // Converts valid device snapshots into delivery registrations
-  return snapshot.docs.flatMap((document) => {
+  // Convert valid snapshots before collapsing registrations reused after an app reinstall
+  const devices = snapshot.docs.flatMap((document) => {
     const data = document.data();
 
     // Ignore malformed registrations without exposing or attempting an empty FID
@@ -294,6 +295,25 @@ export async function getActiveDevices(
       // Device locale is more current and specific than the settings fallback
       locale: getSupportedLocale(data.locale ?? dispatch.defaultLocale),
     }];
+  });
+
+  return deduplicateDevices(devices);
+}
+
+/** Keeps the newest document for each direct-send registration */
+export function deduplicateDevices(
+  devices: DeviceRegistration[],
+): DeviceRegistration[] {
+  const registrations = new Set<string>();
+
+  // Active-device queries are newest first so the retained metadata is current
+  return devices.filter((device) => {
+    if (registrations.has(device.fid)) {
+      return false;
+    }
+
+    registrations.add(device.fid);
+    return true;
   });
 }
 
