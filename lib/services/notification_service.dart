@@ -95,7 +95,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     await configureForegroundPresentation();
     subscribeToMessages();
-    subscribeToTokenRefreshes();
+    subscribeToRegistrations();
     subscribeToAuthenticationChanges();
 
     await refreshPermissionStatus();
@@ -112,7 +112,8 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     await foregroundMessageSubscription?.cancel();
     await openedMessageSubscription?.cancel();
-    await tokenRefreshSubscription?.cancel();
+    await registrationSubscription?.cancel();
+    await unregistrationSubscription?.cancel();
     await authStateSubscription?.cancel();
     await notificationSettingsSubscription?.cancel();
 
@@ -132,7 +133,8 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
   StreamSubscription<RemoteMessage>? openedMessageSubscription;
 
-  StreamSubscription<String>? tokenRefreshSubscription;
+  StreamSubscription<String>? registrationSubscription;
+  StreamSubscription<String>? unregistrationSubscription;
   StreamSubscription<User?>? authStateSubscription;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? notificationSettingsSubscription;
 
@@ -142,6 +144,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   NotificationSettings? notificationSettings;
 
   String? activeUserId;
+  String? activeRegistrationId;
   String? activeAnnouncementTopic;
   String? registrationLocale;
 
@@ -156,6 +159,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     Duration(minutes: 2),
     Duration(minutes: 5),
   ];
+
   ///
   /// GETTERS
   ///
@@ -179,41 +183,64 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   }
 
   ///
-  /// TOKEN
+  /// REGISTRATION
   ///
 
-  /// Listens for token rotations and associates the replacement with the same installation
-  void subscribeToTokenRefreshes() {
+  /// Listens for FCM registrations and associates their IDs with this installation
+  void subscribeToRegistrations() {
     try {
-      tokenRefreshSubscription = messaging.onTokenRefresh.listen(
-        handleTokenRefresh,
-        onError: handleTokenRefreshError,
+      registrationSubscription = messaging.onRegistered.listen(
+        handleRegistration,
+        onError: handleRegistrationError,
+      );
+      unregistrationSubscription = messaging.onUnregistered.listen(
+        handleUnregistration,
+        onError: handleUnregistrationError,
       );
     } catch (error) {
       log(
-        'Subscribing to FCM token refreshes failed',
+        'Subscribing to FCM registrations failed',
         error: error,
       );
     }
   }
 
-  /// Replaces the stored token without exposing it in application logs
-  void handleTokenRefresh(String token) {
+  /// Stores the latest direct-send registration ID without exposing it in logs
+  void handleRegistration(String registrationId) {
+    if (registrationId.isEmpty) {
+      scheduleRegistrationRetry();
+      return;
+    }
+
+    activeRegistrationId = registrationId;
     announcementTopicsReconciled = false;
 
     synchronizeRegistration(
-      token: token,
+      registrationId: registrationId,
     );
   }
 
-  /// Schedules another synchronization when the token refresh stream fails
-  void handleTokenRefreshError(Object error) {
+  /// Clears a direct-send registration ID after FCM unregisters it
+  void handleUnregistration(String registrationId) {
+    if (activeRegistrationId == registrationId) {
+      activeRegistrationId = null;
+    }
+  }
+
+  /// Schedules another synchronization when the registration stream fails
+  void handleRegistrationError(Object error) {
     log(
-      'Listening to FCM token refreshes failed',
+      'Listening to FCM registrations failed',
       error: error,
     );
     scheduleRegistrationRetry();
   }
+
+  /// Logs unregistration stream failures without exposing registration IDs
+  void handleUnregistrationError(Object error) => log(
+    'Listening to FCM unregistrations failed',
+    error: error,
+  );
 
   ///
   /// AUTH
@@ -239,7 +266,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     if (user == null) {
       if (activeUserId != null) {
         await unregisterCurrentUser(
-          deleteToken: true,
+          unregisterMessaging: true,
           removeDocument: false,
         );
       }
@@ -252,7 +279,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     if (activeUserId != null) {
       await unregisterCurrentUser(
-        deleteToken: true,
+        unregisterMessaging: true,
         removeDocument: false,
       );
     }
@@ -441,9 +468,9 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// REGISTRATION
   ///
 
-  /// Queues registration work so token and preference changes cannot race
+  /// Queues registration work so identifier and preference changes cannot race
   Future<void> synchronizeRegistration({
-    String? token,
+    String? registrationId,
     String? locale,
   }) {
     if (locale != null) {
@@ -452,13 +479,13 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     return registrationSynchronization = registrationSynchronization.then(
       (_) => synchronizeRegistrationNow(
-        token: token,
+        registrationId: registrationId,
       ),
     );
   }
 
   /// Writes the latest installation metadata to its stable device document
-  Future<void> synchronizeRegistrationNow({String? token}) async {
+  Future<void> synchronizeRegistrationNow({String? registrationId}) async {
     final user = auth.currentUser;
 
     if (!canDeliverNotifications || user == null || activeUserId != user.uid) {
@@ -471,9 +498,15 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         return;
       }
 
-      final registrationToken = token ?? await messaging.getToken();
+      final currentRegistrationId = registrationId ?? activeRegistrationId;
 
-      if (registrationToken == null || registrationToken.isEmpty) {
+      if (currentRegistrationId == null) {
+        await messaging.register();
+        scheduleRegistrationRetry();
+        return;
+      }
+
+      if (currentRegistrationId.isEmpty) {
         scheduleRegistrationRetry();
         return;
       }
@@ -495,7 +528,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       final deviceDocument = firestore.collection('users').doc(user.uid).collection('notificationDevices').doc(deviceId);
 
       final notificationDevice = NotificationDevice(
-        token: registrationToken,
+        token: currentRegistrationId,
         locale: locale,
         timezone: timezone,
         appVersion: appVersion,
@@ -529,7 +562,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   }
 
   /// Removes this installation from the current user's device collection
-  Future<void> removeCurrentRegistration({bool deleteToken = false}) async {
+  Future<void> removeCurrentRegistration({bool unregisterMessaging = false}) async {
     final userId = auth.currentUser?.uid ?? activeUserId;
 
     registrationRetryTimer?.cancel();
@@ -549,12 +582,13 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       }
     }
 
-    if (deleteToken) {
+    if (unregisterMessaging) {
       try {
-        await messaging.deleteToken();
+        activeRegistrationId = null;
+        await messaging.unregister();
       } catch (error) {
         log(
-          'Invalidating the notification token failed',
+          'Unregistering from FCM failed',
           error: error,
         );
       }
@@ -563,7 +597,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   /// Detaches this installation before logout or an authentication replacement
   Future<void> unregisterCurrentUser({
-    bool deleteToken = false,
+    bool unregisterMessaging = false,
     bool removeDocument = true,
   }) async {
     activeUserId = null;
@@ -576,17 +610,18 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     if (removeDocument) {
       await removeCurrentRegistration(
-        deleteToken: deleteToken,
+        unregisterMessaging: unregisterMessaging,
       );
     } else {
       await unsubscribeFromAnnouncementTopics();
 
-      if (deleteToken) {
+      if (unregisterMessaging) {
         try {
-          await messaging.deleteToken();
+          activeRegistrationId = null;
+          await messaging.unregister();
         } catch (error) {
           log(
-            'Invalidating the notification token after authentication changed failed',
+            'Unregistering from FCM after authentication changed failed',
             error: error,
           );
         }
@@ -621,7 +656,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     }
 
     try {
-      return await messaging.getAPNSToken() != null;
+      final token = await messaging.getAPNSToken();
+      log('NOTIFICATION APNS TOKEN -> $token');
+
+      return token != null;
     } catch (error, stackTrace) {
       log(
         'Reading APNs token availability failed',

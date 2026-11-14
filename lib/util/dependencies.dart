@@ -171,7 +171,7 @@ Future<void> registerServices() async {
         await notification.init();
 
         getIt.get<FirebaseService>().beforeSignOut = () => notification.unregisterCurrentUser(
-          deleteToken: true,
+          unregisterMessaging: true,
         );
 
         return notification;
