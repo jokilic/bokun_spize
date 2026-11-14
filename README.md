@@ -1,22 +1,15 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Update deprecated `material.dart`
 - [ ] Replace all `TextStyle()`
 - [ ] Animations
 - [ ] Think about `constants.dart`
 - [ ] App name -> Bokun / Bite
-- [ ] Email that user gets when logged in using Google and probably Apple
 - [ ] Go through every hardcoded text and check if it makes sense
 - [ ] Add Meal screens - show dismissible widgets with info
 - [ ] `AccountScreen`
     - [ ] Notifications
-        - [ ] Notifications reminding to weight
-            - [ ] Add functionality for the user to use his custom reminding time
-            - [ ] changeable in `NotificationSheet` -> RECORD YOUR WEIGHT -> `belowTextWidget` in `NotificationsSheetListTile`
-            - [ ] Use time picker logic and button like we have in `WeightsAddWeightSheet`
         - [ ] Notifications analyzing previous day (meals, weight, walks)
         - [ ] Announcements
-        - [ ] Provisional notifications
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required
@@ -27,7 +20,6 @@
 - [ ] Crashlytics
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
-- [ ] Identifier should maybe be `com.josipkilic.bokunspize`
 
 # Bokun spize 🥗
 
