@@ -11,9 +11,9 @@
       "ios": {
         "default": {
           "projectId": "bokun-spize",
-          "appId": "1:178689254446:ios:483406a68793b017edabbf",
+          "appId": "1:178689254446:ios:4020bb666ca89b55edabbf",
           "uploadDebugSymbols": false,
-          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+          "fileOutput": "ios/GoogleService-Info.plist"
         }
       },
       "macos": {
@@ -29,7 +29,7 @@
           "projectId": "bokun-spize",
           "configurations": {
             "android": "1:178689254446:android:c95263b04b1a8d27edabbf",
-            "ios": "1:178689254446:ios:483406a68793b017edabbf",
+            "ios": "1:178689254446:ios:4020bb666ca89b55edabbf",
             "macos": "1:178689254446:ios:483406a68793b017edabbf",
             "web": "1:178689254446:web:7d4e1c39511a9ce4edabbf",
             "windows": "1:178689254446:web:0c36947f22efcac7edabbf"
