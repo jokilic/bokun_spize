@@ -37,7 +37,6 @@ import {
 import {
   getDate,
   getDispatchId,
-  getLocalDate,
   getLocalDayBounds,
   getNextOccurrence,
   isNotificationDue,
@@ -90,7 +89,6 @@ export interface DeviceRegistration {
 
 /** Aggregate result from one user delivery across locales and FCM chunks */
 export interface DeliveryResult {
-  successCount: number;
   failureCount: number;
 
   /** Bounded token-free diagnostics retained for failed FCM recipients */
@@ -102,14 +100,14 @@ export interface DeliveryResult {
 
 /** Source and sanitized FCM error retained for one failed device */
 export interface DeliveryFailureDetail {
-  devicePath: string;
+  deviceId: string;
   source: "fcm_response" | "multicast_request";
   code: string;
   message: string;
 }
 
 /** Maximum failure records stored on one dispatch document */
-export const DELIVERY_FAILURE_DETAIL_LIMIT = 20;
+export const DELIVERY_FAILURE_DETAIL_LIMIT = 5;
 
 /** Maximum stored length for one sanitized FCM error message */
 export const DELIVERY_FAILURE_MESSAGE_LIMIT = 500;
@@ -216,7 +214,6 @@ export async function reserveDueNotification(
 
     // One document per type and local date acts as the durable idempotency record
     const idempotencyKey = getDispatchId(definition, dueAt, timezone);
-    const localDate = getLocalDate(dueAt, timezone);
     const dispatchReference = userReference.collection("notificationDispatches").doc(idempotencyKey);
     const dispatchSnapshot = await transaction.get(dispatchReference);
 
@@ -241,11 +238,7 @@ export async function reserveDueNotification(
 
     // Create fails on duplicate IDs while the transaction retries on concurrent settings changes
     transaction.create(dispatchReference, {
-      type: definition.type,
-      idempotencyKey,
-      localDate,
       dueAt: Timestamp.fromDate(dueAt),
-      reservedAt: Timestamp.fromDate(now),
       status: skipReason === null ? "reserved" : `skipped_${skipReason}`,
       ...(skipReason === null ? {} : {
         skipReason,
@@ -361,7 +354,7 @@ export function createDeliveryFailureDetail(
     .slice(0, DELIVERY_FAILURE_MESSAGE_LIMIT);
 
   return {
-    devicePath: device.reference.path,
+    deviceId: device.reference.id,
     source,
     code: getDeliveryErrorCode(error),
     message: sanitizedMessage,
@@ -468,7 +461,6 @@ export async function sendDeviceGroup(
   devices: DeviceRegistration[],
 ): Promise<DeliveryResult> {
   const result: DeliveryResult = {
-    successCount: 0,
     failureCount: 0,
     failureDetails: [],
     invalidDeviceReferences: [],
@@ -480,7 +472,6 @@ export async function sendDeviceGroup(
       const response = await messaging.sendEachForMulticast(
         buildMulticastMessage(dispatch, locale, chunk),
       );
-      result.successCount += response.successCount;
       result.failureCount += response.failureCount;
 
       // Maps each FCM result to the corresponding registration
@@ -537,7 +528,6 @@ export async function sendReservedNotification(
   devices: DeviceRegistration[],
 ): Promise<DeliveryResult> {
   const total: DeliveryResult = {
-    successCount: 0,
     failureCount: 0,
     failureDetails: [],
     invalidDeviceReferences: [],
@@ -546,7 +536,6 @@ export async function sendReservedNotification(
   // A failed locale group does not prevent delivery to devices in another locale
   for (const [locale, group] of groupDevicesByLocale(devices)) {
     const result = await sendDeviceGroup(messaging, dispatch, locale, group);
-    total.successCount += result.successCount;
     total.failureCount += result.failureCount;
     total.failureDetails.push(
       ...result.failureDetails.slice(
@@ -591,11 +580,9 @@ export async function completeDispatch(
     status: result.failureCount === 0 ? "completed" : "completed_with_failures",
     completedAt: Timestamp.now(),
     deviceCount,
-    successCount: result.successCount,
     failureCount: result.failureCount,
     ...(result.failureCount === 0 ? {} : {
       failureDetails: result.failureDetails,
-      failureDetailsTruncated: result.failureDetails.length < result.failureCount,
     }),
   });
 }

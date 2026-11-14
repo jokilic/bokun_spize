@@ -72,7 +72,9 @@ Announcements use locale-specific `announcements_en` and `announcements_hr` topi
 
 Trusted sender code must retain each token's device-document reference while sending. Delete that document when FCM returns `messaging/registration-token-not-registered`. Delete it for `messaging/invalid-argument` only after the sender has independently validated the complete message payload; otherwise the payload itself may be invalid and healthy registrations must be kept. Handle other per-token failures without aborting delivery to the user's remaining devices.
 
-Failed scheduled dispatches store a bounded `failureDetails` array on the dispatch document. Each entry contains the affected notification-device document path, whether the error came from an individual FCM response or the multicast request, and the sanitized Firebase error code and message. Registration tokens are never persisted in dispatch diagnostics. At most 20 entries and 500 characters per message are retained; `failureDetailsTruncated` reports whether additional failed recipients were omitted.
+Failed scheduled dispatches store `failureCount` and a bounded `failureDetails` array on the dispatch document. Each detail contains the affected notification-device UUID, whether the error came from an individual FCM response or the multicast request, and the sanitized Firebase error code and message. Registration tokens are never persisted in dispatch diagnostics. At most 5 entries and 500 characters per message are retained. A `failureCount` greater than the number of stored details means additional failed recipients were omitted.
+
+Dispatch status can be `reserved`, `completed`, `completed_with_failures`, `skipped_weight_recorded`, `skipped_stale` or `failed`. `reserved` is the in-progress state written before contacting FCM; every other value is a terminal delivery or skip outcome.
 
 Never write a complete registration token to application, function or crash logs. Use the device document path or a short irreversible digest when correlation is necessary.
 

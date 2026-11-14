@@ -246,6 +246,9 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
       .get();
 
     expect(dispatch.data()?.status).toBe("skipped_weight_recorded");
-    expect(dispatch.data()?.localDate).toBe("2026-06-01");
+    expect(dispatch.data()?.type).toBeUndefined();
+    expect(dispatch.data()?.idempotencyKey).toBeUndefined();
+    expect(dispatch.data()?.localDate).toBeUndefined();
+    expect(dispatch.data()?.reservedAt).toBeUndefined();
   });
 });

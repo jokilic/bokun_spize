@@ -14,6 +14,7 @@
         - [ ] Announcements
         - [ ] Test on iOS
         - [ ] Provisional notifications
+        - [ ] Proper notification icon
         - [ ] If notification permissions are not accepted, pressing any button in NotificationSheet (record weight, review previous day, announcements) should trigger the method which gets triggered when pressing the permission status widget
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
