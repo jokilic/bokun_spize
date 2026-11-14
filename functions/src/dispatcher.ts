@@ -439,6 +439,7 @@ export function buildMulticastMessage(
       collapseKey: definition.type,
       notification: {
         channelId: definition.androidChannelId,
+        color: definition.androidColor,
         priority: "high",
         tag: definition.type,
       },

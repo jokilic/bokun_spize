@@ -38,6 +38,9 @@ export interface NotificationDefinition {
   /** Android channel created by the Flutter application */
   androidChannelId: "reminders" | "daily_summaries";
 
+  /** Android notification icon accent sent in the FCM payload */
+  androidColor: string;
+
   /** Maximum time FCM and platform services may keep an obsolete message */
   ttlSeconds: number;
 
@@ -68,6 +71,7 @@ export function getNotificationDefinitions(
       minute: weighReminderMinute,
       route: "weights",
       androidChannelId: "reminders",
+      androidColor: "#4F5094",
       ttlSeconds: 30 * 60,
       skipWhenWeightRecorded: true,
       copy: {
@@ -90,6 +94,7 @@ export function getNotificationDefinitions(
       minute: 0,
       route: "meals",
       androidChannelId: "daily_summaries",
+      androidColor: "#3B7D5E",
       ttlSeconds: 2 * 60 * 60,
       skipWhenWeightRecorded: false,
       copy: {

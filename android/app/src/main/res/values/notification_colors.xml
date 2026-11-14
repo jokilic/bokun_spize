@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="notification_icon">#3B7D5E</color>
+    <color name="notification_announcements">#9D5C63</color>
 </resources>
