@@ -66,7 +66,10 @@ class BokunSpizeApp extends WatchingWidget {
       initialData: FirebaseAuth.instance.currentUser,
       builder: (_, authSnapshot) => authSnapshot.data == null ? EntranceScreen() : BokunSpizeScreen(),
     ),
-    localizationsDelegates: context.localizationDelegates,
+    localizationsDelegates: [
+      ...context.localizationDelegates,
+      ...GlobalMaterialLocalizations.delegates,
+    ],
     supportedLocales: context.supportedLocales,
     locale: context.locale,
     onGenerateTitle: (_) => 'appName'.tr(),
