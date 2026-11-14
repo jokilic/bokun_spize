@@ -165,6 +165,30 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
     );
   }
 
+  /// Handles notification permission status presses
+  Future<void> handlePermissionStatusPressed() async {
+    if (isUpdatingPermission) {
+      return;
+    }
+
+    if (permissionStatus == AuthorizationStatus.notDetermined) {
+      await requestPermission();
+      return;
+    }
+
+    await openSettings();
+  }
+
+  /// Updates notification settings when notification permission is granted
+  Future<void> handleSettingsPressed(NotificationSettings newSettings) async {
+    if (!permissionGranted) {
+      await handlePermissionStatusPressed();
+      return;
+    }
+
+    await updateSettings(newSettings);
+  }
+
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
@@ -336,11 +360,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
-                    onTap: isUpdatingPermission
-                        ? null
-                        : permissionStatus == AuthorizationStatus.notDetermined
-                        ? requestPermission
-                        : openSettings,
+                    onTap: isUpdatingPermission ? null : handlePermissionStatusPressed,
                     borderRadius: BorderRadius.circular(listTileRadius),
                     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
@@ -445,7 +465,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: NotificationsSheetListTile(
-                  onPressed: () => updateSettings(
+                  onPressed: () => handleSettingsPressed(
                     settings.copyWith(
                       weighReminderEnabled: !settings.weighReminderEnabled,
                     ),
@@ -491,7 +511,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: NotificationsSheetListTile(
-                  onPressed: () => updateSettings(
+                  onPressed: () => handleSettingsPressed(
                     settings.copyWith(
                       dailySummaryEnabled: !settings.dailySummaryEnabled,
                     ),
@@ -537,7 +557,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: NotificationsSheetListTile(
-                  onPressed: () => updateSettings(
+                  onPressed: () => handleSettingsPressed(
                     settings.copyWith(
                       announcementsEnabled: !settings.announcementsEnabled,
                     ),
