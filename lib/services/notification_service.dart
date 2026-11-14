@@ -657,8 +657,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     try {
       final token = await messaging.getAPNSToken();
-      log('NOTIFICATION APNS TOKEN -> $token');
-
       return token != null;
     } catch (error, stackTrace) {
       log(
