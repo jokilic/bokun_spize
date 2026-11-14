@@ -343,27 +343,26 @@ class _EntranceScreenState extends State<EntranceScreen> {
                               if (currentChild != null) currentChild,
                             ],
                           ),
-                          transitionBuilder: (child, animation) {
-                            final isLoginChild = child.key == const ValueKey('entrance-login');
-
-                            return FadeTransition(
-                              opacity: animation,
-                              child: SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: Offset(isLoginChild ? -0.06 : 0.06, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: ScaleTransition(
-                                  scale: Tween<double>(
-                                    begin: 0.98,
-                                    end: 1,
-                                  ).animate(animation),
-                                  alignment: Alignment.topCenter,
-                                  child: child,
+                          transitionBuilder: (child, animation) => FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: Offset(
+                                  child.key == const ValueKey('entrance-login') ? -0.06 : 0.06,
+                                  0,
                                 ),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: ScaleTransition(
+                                scale: Tween<double>(
+                                  begin: 0.98,
+                                  end: 1,
+                                ).animate(animation),
+                                alignment: Alignment.topCenter,
+                                child: child,
                               ),
-                            );
-                          },
+                            ),
+                          ),
                           child: showLogin
                               ? KeyedSubtree(
                                   key: const ValueKey('entrance-login'),

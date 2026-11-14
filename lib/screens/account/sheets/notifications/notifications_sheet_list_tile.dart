@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../../../constants/constants.dart';
+import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 
 class NotificationsSheetListTile extends StatelessWidget {
@@ -40,91 +41,144 @@ class NotificationsSheetListTile extends StatelessWidget {
           color: context.colors.listTileBackground.withValues(alpha: 0.5),
         ),
         padding: const EdgeInsets.all(20),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ///
-            /// ICON
-            ///
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
-                width: listTileIconRadius,
-                height: listTileIconRadius,
-                alignment: Alignment.center,
-                color: color.withValues(alpha: 0.25),
-                child: PhosphorIcon(
-                  icon,
-                  color: color,
-                  size: listTileIconRadius / 2,
+            Row(
+              children: [
+                ///
+                /// ICON
+                ///
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Container(
+                    width: listTileIconRadius,
+                    height: listTileIconRadius,
+                    alignment: Alignment.center,
+                    color: color.withValues(alpha: 0.25),
+                    child: PhosphorIcon(
+                      icon,
+                      color: color,
+                      size: listTileIconRadius / 2,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 20),
+
+                ///
+                /// TEXT
+                ///
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ///
+                      /// TITLE
+                      ///
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: context.colors.text,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+
+                      ///
+                      /// SUBTITLE
+                      ///
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: context.colors.text.withValues(alpha: 0.7),
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+
+                ///
+                /// SWITCH
+                ///
+                Switch.adaptive(
+                  value: isActive,
+                  activeThumbColor: color,
+                  activeTrackColor: color.withValues(alpha: 0.25),
+                  inactiveThumbColor: context.colors.listTileBackground,
+                  inactiveTrackColor: context.colors.scaffoldBackground,
+                  trackOutlineColor: WidgetStateColor.resolveWith(
+                    (states) => Colors.transparent,
+                  ),
+                  onChanged: (_) => onPressed(),
+                ),
+              ],
             ),
-            const SizedBox(width: 20),
 
             ///
-            /// TEXT
+            /// BELOW TEXT WIDGET
             ///
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ///
-                  /// TITLE
-                  ///
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      color: context.colors.text,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-
-                  ///
-                  /// SUBTITLE
-                  ///
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text.withValues(alpha: 0.7),
-                    ),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  ///
-                  /// BELOW TEXT WIDGET
-                  ///
-                  // TODO: Animate this by using AnimatedSize, AnimatedSwitcher, etc.
-                  if (belowTextWidget != null) ...[
-                    const SizedBox(height: 10),
-                    belowTextWidget!,
+            AnimatedSize(
+              duration: BokunSpizeDurations.animation,
+              curve: Curves.easeOutCubic,
+              alignment: Alignment.topCenter,
+              clipBehavior: Clip.none,
+              child: AnimatedSwitcher(
+                duration: BokunSpizeDurations.animation,
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                layoutBuilder: (currentChild, previousChildren) => Stack(
+                  alignment: Alignment.topCenter,
+                  clipBehavior: Clip.none,
+                  children: [
+                    for (final previousChild in previousChildren)
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        child: previousChild,
+                      ),
+                    if (currentChild != null) currentChild,
                   ],
-                ],
+                ),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(
+                        child.key == const ValueKey(true) ? -0.06 : 0.06,
+                        0,
+                      ),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: ScaleTransition(
+                      scale: Tween<double>(
+                        begin: 0.98,
+                        end: 1,
+                      ).animate(animation),
+                      alignment: Alignment.topCenter,
+                      child: child,
+                    ),
+                  ),
+                ),
+                child: belowTextWidget == null
+                    ? const SizedBox.shrink(
+                        key: ValueKey(false),
+                      )
+                    : SizedBox(
+                        key: const ValueKey(true),
+                        child: belowTextWidget,
+                      ),
               ),
-            ),
-            const SizedBox(width: 8),
-
-            ///
-            /// SWITCH
-            ///
-            Switch.adaptive(
-              value: isActive,
-              activeThumbColor: color,
-              activeTrackColor: color.withValues(alpha: 0.25),
-              inactiveThumbColor: context.colors.listTileBackground,
-              inactiveTrackColor: context.colors.scaffoldBackground,
-              trackOutlineColor: WidgetStateColor.resolveWith(
-                (states) => Colors.transparent,
-              ),
-              onChanged: (_) => onPressed(),
             ),
           ],
         ),

@@ -512,11 +512,10 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   subtitle: 'notificationsWeighReminderSubtitle'.tr(),
                   belowTextWidget: settings.weighReminderEnabled
                       ? Container(
-                          height: 40,
-                          width: 40,
-                          color: Colors.cyan,
-                        )
-                      : Align(
+                          padding: const EdgeInsets.only(
+                            top: 6,
+                            left: 76,
+                          ),
                           alignment: Alignment.centerLeft,
                           child: ElevatedButton.icon(
                             onPressed: () {
@@ -548,7 +547,8 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                               textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
+                        )
+                      : null,
                 ),
               ),
             ),
