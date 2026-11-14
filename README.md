@@ -13,9 +13,7 @@
         - [ ] Notifications reminding to weight
         - [ ] Notifications analyzing previous day (meals, weight, walks)
         - [ ] Announcements
-        - [ ] Test on iOS
         - [ ] Provisional notifications
-        - [ ] Proper notification icon
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required
