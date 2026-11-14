@@ -23,10 +23,12 @@ export const NOTIFICATION_CONFIG_TIMEZONE = "Europe/Zagreb";
 /** Extracts the Zagreb wall-clock time entered through Firebase Console */
 export function getWeightReminderTimeParts(
   value: unknown,
-): {hour: number; minute: number} => getTimestampTimeParts(
-  value,
-  NOTIFICATION_CONFIG_TIMEZONE,
-) ?? {hour: 9, minute: 0};
+): {hour: number; minute: number} {
+  return getTimestampTimeParts(
+    value,
+    NOTIFICATION_CONFIG_TIMEZONE,
+  ) ?? {hour: 9, minute: 0};
+}
 
 /** Loads a valid global weigh reminder time and falls back to 09:00 */
 export async function getConfiguredNotificationDefinitions(
