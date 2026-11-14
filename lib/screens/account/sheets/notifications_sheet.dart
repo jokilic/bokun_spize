@@ -183,7 +183,10 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
   Future<void> handleSettingsPressed(NotificationSettings newSettings) async {
     if (!permissionGranted) {
       await handlePermissionStatusPressed();
-      return;
+
+      if (!permissionGranted) {
+        return;
+      }
     }
 
     await updateSettings(newSettings);
