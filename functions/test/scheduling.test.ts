@@ -126,13 +126,25 @@ describe("notification scheduling", () => {
 
   /** Verifies a trusted global override can move the fixed time for testing */
   it("overrides the weigh reminder time without changing user preferences", () => {
-    const configuredTime = Timestamp.fromDate(new Date("2030-04-12T14:30:45.000Z"));
+    // Firebase stores 02:40 entered in Zagreb during standard time as 01:40 UTC
+    const configuredTime = Timestamp.fromDate(new Date("2026-11-14T01:40:45.000Z"));
     const {hour, minute} = getWeightReminderTimeParts(configuredTime);
     const definitions = getNotificationDefinitions(hour, minute);
 
-    expect(definitions.weightReminder.hour).toBe(14);
-    expect(definitions.weightReminder.minute).toBe(30);
+    expect(definitions.weightReminder.hour).toBe(2);
+    expect(definitions.weightReminder.minute).toBe(40);
     expect(definitions.dailySummary.hour).toBe(8);
+  });
+
+  /** Verifies console input remains unchanged while Zagreb observes daylight saving time */
+  it("reads a summer weigh reminder override as Zagreb wall-clock time", () => {
+    // Firebase stores 02:40 entered in Zagreb during daylight time as 00:40 UTC
+    const configuredTime = Timestamp.fromDate(new Date("2026-06-01T00:40:00.000Z"));
+
+    expect(getWeightReminderTimeParts(configuredTime)).toEqual({
+      hour: 2,
+      minute: 40,
+    });
   });
 
   /** Verifies a missing or invalid timestamp retains the production default */

@@ -50,7 +50,7 @@ The production fallback is always 09:00 local time. Trusted testers can temporar
 weightReminderTime: <Firestore Timestamp>
 ```
 
-Only the timestamp's UTC hour and minute are used. Its date, seconds and milliseconds are ignored. After changing it, disable and re-enable the weigh reminder in the app so `syncNotificationSchedule` recalculates `nextWeighReminderAt`. Choose a time at least ten minutes ahead because the dispatcher runs every ten minutes. Delete the field or the whole config document to restore 09:00. This document is server-only and is not readable or writable by the mobile client.
+The timestamp is interpreted in `Europe/Zagreb`, matching the wall-clock value entered by operators in the Firebase Console. Its seconds and milliseconds are ignored, while its date supplies the correct daylight-saving offset. The extracted hour and minute are then scheduled in each user's own timezone. After changing it, disable and re-enable the weigh reminder in the app so `syncNotificationSchedule` recalculates `nextWeighReminderAt`. Choose a time at least ten minutes ahead because the dispatcher runs every ten minutes. Delete the field or the whole config document to restore 09:00. This document is server-only and is not readable or writable by the mobile client.
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 

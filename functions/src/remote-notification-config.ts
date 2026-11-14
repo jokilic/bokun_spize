@@ -6,6 +6,7 @@
  */
 
 import {Firestore, Timestamp} from "firebase-admin/firestore";
+import {DateTime} from "luxon";
 
 import {
   getNotificationDefinitions,
@@ -16,7 +17,10 @@ import {
 /** Firestore document editable through Firebase Console by trusted operators */
 export const NOTIFICATION_CONFIG_PATH = "config/notifications";
 
-/** Extracts the UTC hour and minute while deliberately ignoring the timestamp date */
+/** Timezone used by Firebase Console operators when entering reminder overrides */
+export const NOTIFICATION_CONFIG_TIMEZONE = "Europe/Zagreb";
+
+/** Extracts the Zagreb wall-clock time entered through Firebase Console */
 export function getWeightReminderTimeParts(
   value: unknown,
 ): {hour: number; minute: number} {
@@ -24,11 +28,13 @@ export function getWeightReminderTimeParts(
     return {hour: 9, minute: 0};
   }
 
-  const time = value.toDate();
+  const time = DateTime.fromJSDate(value.toDate(), {zone: "utc"}).setZone(
+    NOTIFICATION_CONFIG_TIMEZONE,
+  );
 
   return {
-    hour: time.getUTCHours(),
-    minute: time.getUTCMinutes(),
+    hour: time.hour,
+    minute: time.minute,
   };
 }
 
