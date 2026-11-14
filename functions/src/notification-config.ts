@@ -76,12 +76,12 @@ export function getNotificationDefinitions(
       skipWhenWeightRecorded: true,
       copy: {
         en: {
-          title: "Time to weigh in",
-          body: "Record your weight before your first meal",
+          title: "Reminder to weigh",
+          body: "Log your daily weight",
         },
         hr: {
-          title: "Vrijeme je za vaganje",
-          body: "Zabilježi težinu prije prvog obroka",
+          title: "Podsjetnik za vaganje",
+          body: "Zabilježi svoju dnevnu težinu",
         },
       },
     },
