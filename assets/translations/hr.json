@@ -132,6 +132,7 @@
     "notificationsOpenSettingsAction": "Otvori postavke",
     "notificationsWeighReminderTitle": "Podsjetnik za vaganje",
     "notificationsWeighReminderSubtitle": "Zabilježi svoju dnevnu težinu",
+    "notificationsWeighReminderTimeSubtitle": "Odaberi kada želiš dobiti podsjetnik za vaganje",
     "notificationsDailySummaryTitle": "Pregled prošlog dana",
     "notificationsDailySummarySubtitle": "Sažetak tvojih obroka, težine i koraka",
     "notificationsAnnouncementsTitle": "Objave",

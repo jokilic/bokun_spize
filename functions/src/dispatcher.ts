@@ -29,6 +29,7 @@ import {
   DEVICE_ACTIVE_DAYS,
   DUE_QUERY_LIMIT,
   FCM_MULTICAST_LIMIT,
+  getNotificationDefinitionForSettings,
   getSupportedLocale,
   NOTIFICATION_TYPES,
   NotificationDefinition,
@@ -201,7 +202,11 @@ export async function reserveDueNotification(
       return null;
     }
 
-    const dueAt = getDate(settings[definition.nextAtField]);
+    const scheduledDefinition = getNotificationDefinitionForSettings(
+      definition,
+      settings,
+    );
+    const dueAt = getDate(settings[scheduledDefinition.nextAtField]);
 
     // Malformed timestamps are ignored rather than risking an invalid reservation
     if (dueAt === null) {
@@ -210,10 +215,10 @@ export async function reserveDueNotification(
 
     const timezone = typeof settings.timezone === "string" ? settings.timezone : "UTC";
     const userReference = getUserReference(settingsReference);
-    const nextAt = getNextOccurrence(now, timezone, definition);
+    const nextAt = getNextOccurrence(now, timezone, scheduledDefinition);
 
     // One document per type and local date acts as the durable idempotency record
-    const idempotencyKey = getDispatchId(definition, dueAt, timezone);
+    const idempotencyKey = getDispatchId(scheduledDefinition, dueAt, timezone);
     const dispatchReference = userReference.collection("notificationDispatches").doc(idempotencyKey);
     const dispatchSnapshot = await transaction.get(dispatchReference);
 
@@ -221,13 +226,13 @@ export async function reserveDueNotification(
     if (dispatchSnapshot.exists) {
       // Preference or timezone changes can recreate a same-day due time after dispatch
       transaction.update(settingsReference, {
-        [definition.nextAtField]: Timestamp.fromDate(nextAt),
+        [scheduledDefinition.nextAtField]: Timestamp.fromDate(nextAt),
       });
       return null;
     }
 
-    const isStale = now.getTime() >= dueAt.getTime() + definition.ttlSeconds * 1000;
-    const weightSnapshot = definition.skipWhenWeightRecorded && !isStale ? await transaction.get(
+    const isStale = now.getTime() >= dueAt.getTime() + scheduledDefinition.ttlSeconds * 1000;
+    const weightSnapshot = scheduledDefinition.skipWhenWeightRecorded && !isStale ? await transaction.get(
       getLocalDateWeightQuery(userReference, dueAt, timezone),
     ) : null;
     const skipReason: DispatchSkipReason | null = isStale
@@ -248,13 +253,13 @@ export async function reserveDueNotification(
 
     // Advance immediately so the next scheduler run does not repeatedly select this occurrence
     transaction.update(settingsReference, {
-      [definition.nextAtField]: Timestamp.fromDate(nextAt),
+      [scheduledDefinition.nextAtField]: Timestamp.fromDate(nextAt),
     });
 
     return {
       settingsReference,
       dispatchReference,
-      definition,
+      definition: scheduledDefinition,
       userId: userReference.id,
       timezone,
       defaultLocale: getSupportedLocale(settings.locale),

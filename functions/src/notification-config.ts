@@ -117,6 +117,37 @@ export const NOTIFICATION_DEFINITIONS = getNotificationDefinitions();
 /** Iterable list derived from the definitions to avoid maintaining two sources */
 export const NOTIFICATION_TYPES = Object.keys(NOTIFICATION_DEFINITIONS) as NotificationType[];
 
+/** Applies a valid user-specific weigh reminder time to its definition */
+export function getNotificationDefinitionForSettings(
+  definition: NotificationDefinition,
+  settings: Record<string, unknown>,
+): NotificationDefinition {
+  if (definition.type !== "weightReminder") {
+    return definition;
+  }
+
+  const hour = settings.weighReminderHour;
+  const minute = settings.weighReminderMinute;
+  const hasValidTime = typeof hour === "number" &&
+    typeof minute === "number" &&
+    Number.isInteger(hour) &&
+    Number.isInteger(minute) &&
+    hour >= 0 &&
+    hour <= 23 &&
+    minute >= 0 &&
+    minute <= 59;
+
+  if (!hasValidTime) {
+    return definition;
+  }
+
+  return {
+    ...definition,
+    hour: hour as number,
+    minute: minute as number,
+  };
+}
+
 /** Safe scheduling fallback when a stored timezone is missing or invalid */
 export const DEFAULT_TIMEZONE = "UTC";
 

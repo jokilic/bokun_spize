@@ -34,7 +34,7 @@ The app requests alert, badge and sound authorization only after the user presse
 
 Client-managed preferences are stored at `users/{uid}/notificationSettings/preferences`. Firestore rules restrict access to the owning user, reject unexpected fields and prevent clients from writing server-managed scheduling timestamps.
 
-The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled or the user's timezone changes. Weigh reminders run at 09:00 local time and daily summaries run at 08:00 local time. The mobile client does not schedule local notifications.
+The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled, the user's timezone changes or the user changes their weigh reminder time. Weigh reminders default to 09:00 local time and can be customized from Account → Notifications. Daily summaries run at 08:00 local time. The mobile client does not schedule local notifications.
 
 The `dispatchScheduledNotifications` Cloud Function runs every 10 minutes. It queries the indexed `nextWeighReminderAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates `users/{uid}/notificationDispatches/{type_localDate}` and advances the next occurrence in one Firestore transaction. That reservation makes overlapping and retried executions idempotent. Dispatch documents are server-only and must not be made client-writable.
 
@@ -46,13 +46,13 @@ Occurrence calculation uses the user's IANA timezone through timezone database r
 
 ### Temporary weigh reminder time override
 
-The production fallback is always 09:00 local time. Trusted testers can temporarily create or update `config/notifications` in Firebase Console with:
+The production fallback for legacy preference documents without a user-selected time is 09:00 local time. Trusted testers can temporarily create or update `config/notifications` in Firebase Console with:
 
 ```text
 weightReminderTime: <Firestore Timestamp>
 ```
 
-The timestamp is interpreted in `Europe/Zagreb`, matching the wall-clock value entered by operators in the Firebase Console. Its seconds and milliseconds are ignored, while its date supplies the correct daylight-saving offset. The extracted hour and minute are then scheduled in each user's own timezone. After changing it, disable and re-enable the weigh reminder in the app so `syncNotificationSchedule` recalculates `nextWeighReminderAt`. Choose a time at least ten minutes ahead because the dispatcher runs every ten minutes. Delete the field or the whole config document to restore 09:00. This document is server-only and is not readable or writable by the mobile client.
+The timestamp is interpreted in `Europe/Zagreb`, matching the wall-clock value entered by operators in the Firebase Console. Its seconds and milliseconds are ignored, while its date supplies the correct daylight-saving offset. The extracted hour and minute are then scheduled in each user's own timezone only when their preference document does not contain `weighReminderHour` and `weighReminderMinute`. A user-selected time always takes precedence. Choose a time at least ten minutes ahead because the dispatcher runs every ten minutes. Delete the field or the whole config document to restore the 09:00 fallback. This document is server-only and is not readable or writable by the mobile client.
 
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 

@@ -11,6 +11,9 @@
 - [ ] `AccountScreen`
     - [ ] Notifications
         - [ ] Notifications reminding to weight
+            - [ ] Add functionality for the user to use his custom reminding time
+            - [ ] changeable in `NotificationSheet` -> RECORD YOUR WEIGHT -> `belowTextWidget` in `NotificationsSheetListTile`
+            - [ ] Use time picker logic and button like we have in `WeightsAddWeightSheet`
         - [ ] Notifications analyzing previous day (meals, weight, walks)
         - [ ] Announcements
         - [ ] Provisional notifications

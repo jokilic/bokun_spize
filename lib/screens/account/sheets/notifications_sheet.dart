@@ -11,8 +11,11 @@ import '../../../constants/constants.dart';
 import '../../../constants/durations.dart';
 import '../../../models/notification/notification_settings.dart';
 import '../../../theme/extensions.dart';
+import '../../../util/date_time.dart';
 import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';
+import '../../../widgets/blurred_modal_bottom_sheet.dart';
+import '../../../widgets/time_sheet.dart';
 import 'notifications/notifications_sheet_list_tile.dart';
 
 class NotificationsSheet extends StatefulWidget {
@@ -191,6 +194,48 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
 
     await updateSettings(newSettings);
   }
+
+  /// Opens [TimeSheet] and updates the weigh reminder time
+  Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async {
+    final selectedDateTime = DateTime(
+      2020,
+      1,
+      1,
+      settings.weighReminderHour,
+      settings.weighReminderMinute,
+    );
+
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (context) => TimeSheet(
+        subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
+        primaryColor: context.colors.carbs,
+        dateValue: selectedDateTime,
+        onTimeChanged: (newTime) => unawaited(
+          updateSettings(
+            settings.copyWith(
+              weighReminderHour: newTime.hour,
+              weighReminderMinute: newTime.minute,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Returns the localized weigh reminder time
+  String getWeighReminderTime(BuildContext context) => getDateString(
+    date: DateTime(
+      2020,
+      1,
+      1,
+      settings.weighReminderHour,
+      settings.weighReminderMinute,
+    ),
+    dateFormat: 'HH:mm',
+    useTodayYesterdayTomorrow: false,
+    languageCode: context.locale.languageCode,
+  );
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -478,6 +523,45 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   icon: PhosphorIconsBold.personSimple,
                   title: 'notificationsWeighReminderTitle'.tr(),
                   subtitle: 'notificationsWeighReminderSubtitle'.tr(),
+                  belowTextWidget: Align(
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton.icon(
+                      onPressed: isSaving
+                          ? null
+                          : () {
+                              unawaited(
+                                HapticFeedback.lightImpact(),
+                              );
+                              unawaited(
+                                updateWeighReminderTimeViaPicker(context),
+                              );
+                            },
+                      icon: PhosphorIcon(
+                        PhosphorIconsBold.clock,
+                        color: context.colors.text,
+                        size: 18,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        backgroundColor: context.colors.scaffoldBackground,
+                        foregroundColor: context.colors.text,
+                      ),
+                      label: Text(
+                        getWeighReminderTime(context),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

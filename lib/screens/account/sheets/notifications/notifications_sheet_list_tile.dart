@@ -11,6 +11,7 @@ class NotificationsSheetListTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final Widget? belowTextWidget;
 
   const NotificationsSheetListTile({
     required this.onPressed,
@@ -19,6 +20,7 @@ class NotificationsSheetListTile extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.belowTextWidget,
   });
 
   @override
@@ -96,6 +98,14 @@ class NotificationsSheetListTile extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
+
+                  ///
+                  /// BELOW TEXT WIDGET
+                  ///
+                  if (belowTextWidget != null) ...[
+                    const SizedBox(height: 10),
+                    belowTextWidget!,
+                  ],
                 ],
               ),
             ),

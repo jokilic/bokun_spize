@@ -13,6 +13,7 @@ import {afterAll, describe, expect, it} from "vitest";
 
 import {reserveDueNotification} from "../src/dispatcher";
 import {
+  getNotificationDefinitionForSettings,
   getNotificationDefinitions,
   NOTIFICATION_DEFINITIONS,
 } from "../src/notification-config";
@@ -122,6 +123,44 @@ describe("notification scheduling", () => {
     );
 
     expect(patch.nextWeighReminderAt?.toISOString()).toBe("2026-06-01T07:00:00.000Z");
+  });
+
+  /** Verifies a user-specific time replaces the default weigh reminder time */
+  it("uses the user's custom weigh reminder time", () => {
+    const definition = getNotificationDefinitionForSettings(
+      NOTIFICATION_DEFINITIONS.weightReminder,
+      {
+        weighReminderHour: 18,
+        weighReminderMinute: 35,
+      },
+    );
+
+    expect(definition.hour).toBe(18);
+    expect(definition.minute).toBe(35);
+  });
+
+  /** Verifies changing the custom time recalculates an enabled schedule */
+  it("reschedules an enabled weigh reminder after its time changes", () => {
+    const patch = buildSchedulePatch(
+      {
+        weighReminderEnabled: true,
+        weighReminderHour: 9,
+        weighReminderMinute: 0,
+        timezone: "Europe/Zagreb",
+        nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
+      },
+      {
+        weighReminderEnabled: true,
+        weighReminderHour: 18,
+        weighReminderMinute: 35,
+        dailySummaryEnabled: false,
+        timezone: "Europe/Zagreb",
+        nextWeighReminderAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
+      },
+      new Date("2026-06-01T12:00:00.000Z"),
+    );
+
+    expect(patch.nextWeighReminderAt?.toISOString()).toBe("2026-06-01T16:35:00.000Z");
   });
 
   /** Verifies a trusted global override can move the fixed time for testing */

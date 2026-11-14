@@ -129,21 +129,42 @@ service cloud.firestore {
 
     // Validate notification preferences and optional server scheduling metadata
     function isValidNotificationSettings(data) {
-      let clientFields = [
+      let requiredClientFields = [
         'weighReminderEnabled',
         'dailySummaryEnabled',
         'announcementsEnabled',
         'timezone',
         'locale',
       ];
+      let optionalClientFields = [
+        'weighReminderHour',
+        'weighReminderMinute',
+      ];
       let serverFields = [
         'nextWeighReminderAt',
         'nextDailySummaryAt',
       ];
 
-      return data.keys().hasAll(clientFields)
-        && data.keys().hasOnly(clientFields.concat(serverFields))
+      return data.keys().hasAll(requiredClientFields)
+        && data.keys().hasOnly(requiredClientFields.concat(optionalClientFields).concat(serverFields))
         && data.weighReminderEnabled is bool
+        && (('weighReminderHour' in data) == ('weighReminderMinute' in data))
+        && (
+          !('weighReminderHour' in data)
+          || (
+            data.weighReminderHour is int
+            && data.weighReminderHour >= 0
+            && data.weighReminderHour <= 23
+          )
+        )
+        && (
+          !('weighReminderMinute' in data)
+          || (
+            data.weighReminderMinute is int
+            && data.weighReminderMinute >= 0
+            && data.weighReminderMinute <= 59
+          )
+        )
         && data.dailySummaryEnabled is bool
         && data.announcementsEnabled is bool
         && data.timezone is string
@@ -160,6 +181,8 @@ service cloud.firestore {
     function onlyClientNotificationFieldsChanged() {
       let clientFields = [
         'weighReminderEnabled',
+        'weighReminderHour',
+        'weighReminderMinute',
         'dailySummaryEnabled',
         'announcementsEnabled',
         'timezone',
@@ -273,6 +296,8 @@ service cloud.firestore {
         allow create: if isOwner(userId)
           && request.resource.data.keys().hasOnly([
             'weighReminderEnabled',
+            'weighReminderHour',
+            'weighReminderMinute',
             'dailySummaryEnabled',
             'announcementsEnabled',
             'timezone',

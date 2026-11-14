@@ -132,6 +132,7 @@
     "notificationsOpenSettingsAction": "Open settings",
     "notificationsWeighReminderTitle": "Reminder to weigh",
     "notificationsWeighReminderSubtitle": "Log your daily weight",
+    "notificationsWeighReminderTimeSubtitle": "Choose when you want to be reminded to weigh",
     "notificationsDailySummaryTitle": "Overview of yesterday",
     "notificationsDailySummarySubtitle": "Summary of your meals, weight & steps",
     "notificationsAnnouncementsTitle": "Announcements",

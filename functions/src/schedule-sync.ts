@@ -13,6 +13,7 @@ import {
 } from "firebase-admin/firestore";
 
 import {
+  getNotificationDefinitionForSettings,
   NOTIFICATION_DEFINITIONS,
   NOTIFICATION_TYPES,
   NotificationDefinition,
@@ -36,9 +37,14 @@ export function buildSchedulePatch(
 
   // Every enabled schedule must be recalculated when its local timezone changes
   const timezoneChanged = before?.timezone !== after.timezone;
+  const weighReminderTimeChanged = before?.weighReminderHour !== after.weighReminderHour ||
+    before?.weighReminderMinute !== after.weighReminderMinute;
 
   for (const type of NOTIFICATION_TYPES) {
-    const definition = definitions[type];
+    const definition = getNotificationDefinitionForSettings(
+      definitions[type],
+      after,
+    );
     const wasEnabled = before?.[definition.enabledField] === true;
     const isEnabled = after[definition.enabledField] === true;
     const hasNextOccurrence = after[definition.nextAtField] !== undefined;
@@ -50,7 +56,9 @@ export function buildSchedulePatch(
     }
 
     // Preserve an existing timestamp unless activation, repair or timezone change requires a new one
-    if (isEnabled && (!wasEnabled || !hasNextOccurrence || timezoneChanged)) {
+    const scheduleTimeChanged = type === "weightReminder" && weighReminderTimeChanged;
+
+    if (isEnabled && (!wasEnabled || !hasNextOccurrence || timezoneChanged || scheduleTimeChanged)) {
       patch[definition.nextAtField] = getNextOccurrence(
         now,
         String(after.timezone ?? "UTC"),
