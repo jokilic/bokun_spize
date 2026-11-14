@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../screens/account/account_screen.dart';
 import '../screens/meals/meals_screen.dart';

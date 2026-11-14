@@ -1,7 +1,7 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../constants/constants.dart';
 import '../constants/durations.dart';

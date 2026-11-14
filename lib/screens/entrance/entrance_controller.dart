@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../services/firebase_service.dart';
 import '../../util/email.dart';

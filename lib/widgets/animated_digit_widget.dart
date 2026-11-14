@@ -14,7 +14,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The smallest possible value of an int within 64 bits.
 const int intMinValue = -9007199254740991;

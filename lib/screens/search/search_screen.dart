@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart' hide SearchController;
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:material_ui/material_ui.dart' hide SearchController;
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 

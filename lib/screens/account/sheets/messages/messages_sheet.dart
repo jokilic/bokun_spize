@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 

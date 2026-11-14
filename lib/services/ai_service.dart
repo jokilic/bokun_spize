@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../util/ai_schema.dart';
 import '../util/meal_image.dart';

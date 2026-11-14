@@ -4,8 +4,8 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'constants/durations.dart';

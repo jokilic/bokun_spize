@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 

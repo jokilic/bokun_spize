@@ -2,11 +2,11 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
