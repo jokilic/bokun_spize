@@ -93,9 +93,26 @@ export interface DeliveryResult {
   successCount: number;
   failureCount: number;
 
+  /** Bounded token-free diagnostics retained for failed FCM recipients */
+  failureDetails: DeliveryFailureDetail[];
+
   /** Documents whose tokens FCM explicitly reports as unregistered */
   invalidDeviceReferences: DocumentReference<DocumentData>[];
 }
+
+/** Source and sanitized FCM error retained for one failed device */
+export interface DeliveryFailureDetail {
+  devicePath: string;
+  source: "fcm_response" | "multicast_request";
+  code: string;
+  message: string;
+}
+
+/** Maximum failure records stored on one dispatch document */
+export const DELIVERY_FAILURE_DETAIL_LIMIT = 20;
+
+/** Maximum stored length for one sanitized FCM error message */
+export const DELIVERY_FAILURE_MESSAGE_LIMIT = 500;
 
 /** Queries only indexed timestamps that are due for one notification type */
 export async function getDueSettings(
@@ -315,6 +332,61 @@ export function chunkDevices(devices: DeviceRegistration[]): DeviceRegistration[
   return chunks;
 }
 
+/** Reads a stable Firebase error code without assuming a specific error class */
+export function getDeliveryErrorCode(error: unknown): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof error.code === "string"
+  ) {
+    return error.code;
+  }
+
+  return "unknown";
+}
+
+/** Creates bounded diagnostics without persisting the FCM registration token */
+export function createDeliveryFailureDetail(
+  device: DeviceRegistration,
+  error: unknown,
+  source: DeliveryFailureDetail["source"],
+): DeliveryFailureDetail {
+  const rawMessage = error instanceof Error
+    ? error.message
+    : "Unknown FCM delivery error";
+  const sanitizedMessage = rawMessage
+    .split(device.token)
+    .join("[redacted]")
+    .slice(0, DELIVERY_FAILURE_MESSAGE_LIMIT);
+
+  return {
+    devicePath: device.reference.path,
+    source,
+    code: getDeliveryErrorCode(error),
+    message: sanitizedMessage,
+  };
+}
+
+/** Adds one diagnostic while keeping the dispatch document size bounded */
+export function recordDeliveryFailure(
+  result: DeliveryResult,
+  device: DeviceRegistration | undefined,
+  error: unknown,
+  source: DeliveryFailureDetail["source"],
+): void {
+  if (
+    device === undefined ||
+    result.failureDetails.length >= DELIVERY_FAILURE_DETAIL_LIMIT
+  ) {
+    return;
+  }
+
+  result.failureDetails.push(
+    createDeliveryFailureDetail(device, error, source),
+  );
+}
+
 /** Builds a platform-specific alert with expiration and collapse metadata */
 export function buildMulticastMessage(
   dispatch: ReservedDispatch,
@@ -398,6 +470,7 @@ export async function sendDeviceGroup(
   const result: DeliveryResult = {
     successCount: 0,
     failureCount: 0,
+    failureDetails: [],
     invalidDeviceReferences: [],
   };
 
@@ -414,6 +487,15 @@ export async function sendDeviceGroup(
       response.responses.forEach((sendResponse, index) => {
         const device = chunk[index];
 
+        if (!sendResponse.success) {
+          recordDeliveryFailure(
+            result,
+            device,
+            sendResponse.error,
+            "fcm_response",
+          );
+        }
+
         if (
           device !== undefined &&
           sendResponse.error?.code === "messaging/registration-token-not-registered"
@@ -425,6 +507,17 @@ export async function sendDeviceGroup(
     } catch (error) {
       // A request-level failure counts the entire chunk but later chunks still continue
       result.failureCount += chunk.length;
+
+      // Retain the shared request error against each affected device up to the audit limit
+      chunk.forEach((device) => {
+        recordDeliveryFailure(
+          result,
+          device,
+          error,
+          "multicast_request",
+        );
+      });
+
       logger.error("FCM multicast request failed", {
         error,
         userId: dispatch.userId,
@@ -446,6 +539,7 @@ export async function sendReservedNotification(
   const total: DeliveryResult = {
     successCount: 0,
     failureCount: 0,
+    failureDetails: [],
     invalidDeviceReferences: [],
   };
 
@@ -454,6 +548,12 @@ export async function sendReservedNotification(
     const result = await sendDeviceGroup(messaging, dispatch, locale, group);
     total.successCount += result.successCount;
     total.failureCount += result.failureCount;
+    total.failureDetails.push(
+      ...result.failureDetails.slice(
+        0,
+        DELIVERY_FAILURE_DETAIL_LIMIT - total.failureDetails.length,
+      ),
+    );
     total.invalidDeviceReferences.push(...result.invalidDeviceReferences);
   }
 
@@ -493,6 +593,10 @@ export async function completeDispatch(
     deviceCount,
     successCount: result.successCount,
     failureCount: result.failureCount,
+    ...(result.failureCount === 0 ? {} : {
+      failureDetails: result.failureDetails,
+      failureDetailsTruncated: result.failureDetails.length < result.failureCount,
+    }),
   });
 }
 
