@@ -102,6 +102,7 @@ class NotificationsSheetListTile extends StatelessWidget {
                   ///
                   /// BELOW TEXT WIDGET
                   ///
+                  // TODO: Animate this by using AnimatedSize, AnimatedSwitcher, etc.
                   if (belowTextWidget != null) ...[
                     const SizedBox(height: 10),
                     belowTextWidget!,

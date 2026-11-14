@@ -196,29 +196,25 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
   }
 
   /// Opens [TimeSheet] and updates the weigh reminder time
-  Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async {
-    await showBlurredModalBottomSheet(
-      context: context,
-      builder: (context) => TimeSheet(
-        subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
-        primaryColor: context.colors.carbs,
-        dateValue: settings.weighReminderTime,
-        onTimeChanged: (newTime) => unawaited(
-          updateSettings(
-            settings.copyWith(
-              weighReminderTime: DateTime(
-                2020,
-                1,
-                1,
-                newTime.hour,
-                newTime.minute,
-              ),
-            ),
+  Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (context) => TimeSheet(
+      subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
+      primaryColor: context.colors.carbs,
+      dateValue: settings.weighReminderTime,
+      onTimeChanged: (newTime) => updateSettings(
+        settings.copyWith(
+          weighReminderTime: DateTime(
+            2020,
+            1,
+            1,
+            newTime.hour,
+            newTime.minute,
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 
   /// Returns the localized weigh reminder time
   String getWeighReminderTime(BuildContext context) => getDateString(
@@ -514,45 +510,45 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   icon: PhosphorIconsBold.personSimple,
                   title: 'notificationsWeighReminderTitle'.tr(),
                   subtitle: 'notificationsWeighReminderSubtitle'.tr(),
-                  belowTextWidget: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton.icon(
-                      onPressed: isSaving
-                          ? null
-                          : () {
-                              unawaited(
-                                HapticFeedback.lightImpact(),
-                              );
-                              unawaited(
-                                updateWeighReminderTimeViaPicker(context),
-                              );
+                  belowTextWidget: settings.weighReminderEnabled
+                      ? Container(
+                          height: 40,
+                          width: 40,
+                          color: Colors.cyan,
+                        )
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              updateWeighReminderTimeViaPicker(context);
                             },
-                      icon: PhosphorIcon(
-                        PhosphorIconsBold.clock,
-                        color: context.colors.text,
-                        size: 18,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                            icon: PhosphorIcon(
+                              PhosphorIconsBold.clock,
+                              color: context.colors.text,
+                              size: 18,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              shape: const StadiumBorder(),
+                              textStyle: const TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                              foregroundColor: context.colors.text,
+                            ),
+                            label: Text(
+                              getWeighReminderTime(context),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        backgroundColor: context.colors.scaffoldBackground,
-                        foregroundColor: context.colors.text,
-                      ),
-                      label: Text(
-                        getWeighReminderTime(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ),
