@@ -147,6 +147,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   int registrationRetryAttempt = 0;
   bool announcementTopicsReconciled = false;
+  bool announcementTopicLoaded = false;
 
   static const registrationRetryDelays = <Duration>[
     Duration(seconds: 15),
@@ -155,17 +156,15 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     Duration(minutes: 2),
     Duration(minutes: 5),
   ];
-  static const announcementTopics = <String>[
-    'announcements_en',
-    'announcements_hr',
-  ];
-
   ///
   /// GETTERS
   ///
 
   /// Reports whether the current authorization can display notifications
   bool get canDeliverNotifications => value == AuthorizationStatus.authorized || value == AuthorizationStatus.provisional;
+
+  /// Reports whether this platform requires an APNs token before FCM calls
+  bool get requiresAPNSToken => !kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS);
 
   ///
   /// METHODS
@@ -467,6 +466,11 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     }
 
     try {
+      if (!await hasRequiredAPNSToken()) {
+        scheduleRegistrationRetry();
+        return;
+      }
+
       final registrationToken = token ?? await messaging.getToken();
 
       if (registrationToken == null || registrationToken.isEmpty) {
@@ -610,6 +614,24 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     );
   }
 
+  /// Waits for Apple registration before using APIs that depend on the APNs token
+  Future<bool> hasRequiredAPNSToken() async {
+    if (!requiresAPNSToken) {
+      return true;
+    }
+
+    try {
+      return await messaging.getAPNSToken() != null;
+    } catch (error, stackTrace) {
+      log(
+        'Reading APNs token availability failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return false;
+    }
+  }
+
   ///
   /// ANNOUNCEMENT TOPICS
   ///
@@ -618,27 +640,53 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   Future<void> synchronizeAnnouncementTopics(String locale) async {
     final desiredTopic = notificationSettings?.announcementsEnabled == true && canDeliverNotifications && auth.currentUser != null ? 'announcements_$locale' : null;
 
+    if (!announcementTopicLoaded) {
+      activeAnnouncementTopic = await storage.getNotificationAnnouncementTopic();
+      announcementTopicLoaded = true;
+    }
+
     if (announcementTopicsReconciled && activeAnnouncementTopic == desiredTopic) {
       return;
     }
 
-    try {
-      for (final topic in announcementTopics) {
-        if (topic != desiredTopic) {
-          await messaging.unsubscribeFromTopic(topic);
-        }
-      }
+    if (activeAnnouncementTopic == null && desiredTopic == null) {
+      announcementTopicsReconciled = true;
+      return;
+    }
 
+    if (!await hasRequiredAPNSToken()) {
+      announcementTopicsReconciled = false;
+      scheduleRegistrationRetry();
+      return;
+    }
+
+    var operation = 'subscribe';
+    var topicName = '';
+
+    try {
       if (desiredTopic != null) {
+        operation = 'subscribe';
+        topicName = desiredTopic;
         await messaging.subscribeToTopic(desiredTopic);
       }
 
+      if (activeAnnouncementTopic != null && activeAnnouncementTopic != desiredTopic) {
+        operation = 'unsubscribe';
+        topicName = activeAnnouncementTopic!;
+        await messaging.unsubscribeFromTopic(activeAnnouncementTopic!);
+      }
+
+      operation = 'persist';
+      topicName = desiredTopic ?? activeAnnouncementTopic ?? '';
+      await storage.setNotificationAnnouncementTopic(desiredTopic);
+
       activeAnnouncementTopic = desiredTopic;
       announcementTopicsReconciled = true;
-    } catch (error) {
+    } catch (error, stackTrace) {
       log(
-        'Synchronizing announcement topics failed',
+        'Announcement topic $operation failed for $topicName',
         error: error,
+        stackTrace: stackTrace,
       );
       scheduleRegistrationRetry();
     }
@@ -646,15 +694,35 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   /// Removes all announcement topic memberships known by this client
   Future<void> unsubscribeFromAnnouncementTopics() async {
-    for (final topic in announcementTopics) {
-      try {
-        await messaging.unsubscribeFromTopic(topic);
-      } catch (error) {
-        log(
-          'Unsubscribing from an announcement topic failed',
-          error: error,
-        );
-      }
+    if (!announcementTopicLoaded) {
+      activeAnnouncementTopic = await storage.getNotificationAnnouncementTopic();
+      announcementTopicLoaded = true;
+    }
+
+    final topic = activeAnnouncementTopic;
+
+    if (topic == null) {
+      announcementTopicsReconciled = false;
+      return;
+    }
+
+    if (!await hasRequiredAPNSToken()) {
+      activeAnnouncementTopic = null;
+      announcementTopicsReconciled = false;
+      await storage.setNotificationAnnouncementTopic(null);
+      return;
+    }
+
+    try {
+      await messaging.unsubscribeFromTopic(topic);
+      await storage.setNotificationAnnouncementTopic(null);
+    } catch (error, stackTrace) {
+      log(
+        'Unsubscribing from announcement topic $topic failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return;
     }
 
     activeAnnouncementTopic = null;

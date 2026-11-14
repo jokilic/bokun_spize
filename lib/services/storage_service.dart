@@ -71,6 +71,7 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
 
   static const themeKey = 'theme';
   static const notificationDeviceIdKey = 'notificationDeviceId';
+  static const notificationAnnouncementTopicKey = 'notificationAnnouncementTopic';
 
   ///
   /// METHODS
@@ -134,6 +135,24 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
     );
 
     return deviceId;
+  }
+
+  /// Returns the announcement topic last synchronized for this installation
+  Future<String?> getNotificationAnnouncementTopic() => sharedPreferences.getString(
+    notificationAnnouncementTopicKey,
+  );
+
+  /// Persists the announcement topic currently synchronized for this installation
+  Future<void> setNotificationAnnouncementTopic(String? topic) async {
+    if (topic == null) {
+      await sharedPreferences.remove(notificationAnnouncementTopicKey);
+      return;
+    }
+
+    await sharedPreferences.setString(
+      notificationAnnouncementTopicKey,
+      topic,
+    );
   }
 
   /// Updates `state`
