@@ -20,8 +20,8 @@ import {
   Timestamp,
 } from "firebase-admin/firestore";
 import {
+  FidMulticastMessage,
   Messaging,
-  MulticastMessage,
 } from "firebase-admin/messaging";
 import * as logger from "firebase-functions/logger";
 
@@ -79,11 +79,11 @@ export interface ReservedDispatch {
   dueAt: Date;
 }
 
-/** Active FCM token together with the Firestore document that owns it */
+/** Active Firebase Installation ID together with its Firestore document */
 export interface DeviceRegistration {
   /** Document reference retained so invalid registrations can be deleted safely */
   reference: DocumentReference<DocumentData>;
-  token: string;
+  fid: string;
   locale: SupportedLocale;
 }
 
@@ -91,10 +91,10 @@ export interface DeviceRegistration {
 export interface DeliveryResult {
   failureCount: number;
 
-  /** Bounded token-free diagnostics retained for failed FCM recipients */
+  /** Bounded identifier-free diagnostics retained for failed FCM recipients */
   failureDetails: DeliveryFailureDetail[];
 
-  /** Documents whose tokens FCM explicitly reports as unregistered */
+  /** Documents whose FIDs FCM explicitly reports as unregistered */
   invalidDeviceReferences: DocumentReference<DocumentData>[];
 }
 
@@ -282,14 +282,14 @@ export async function getActiveDevices(
   return snapshot.docs.flatMap((document) => {
     const data = document.data();
 
-    // Ignore malformed registrations without exposing or attempting an empty token
-    if (typeof data.token !== "string" || data.token.length === 0) {
+    // Ignore malformed registrations without exposing or attempting an empty FID
+    if (typeof data.fid !== "string" || data.fid.length === 0) {
       return [];
     }
 
     return [{
       reference: document.ref,
-      token: data.token,
+      fid: data.fid,
 
       // Device locale is more current and specific than the settings fallback
       locale: getSupportedLocale(data.locale ?? dispatch.defaultLocale),
@@ -339,7 +339,7 @@ export function getDeliveryErrorCode(error: unknown): string {
   return "unknown";
 }
 
-/** Creates bounded diagnostics without persisting the FCM registration token */
+/** Creates bounded diagnostics without persisting the Firebase Installation ID */
 export function createDeliveryFailureDetail(
   device: DeviceRegistration,
   error: unknown,
@@ -349,7 +349,7 @@ export function createDeliveryFailureDetail(
     ? error.message
     : "Unknown FCM delivery error";
   const sanitizedMessage = rawMessage
-    .split(device.token)
+    .split(device.fid)
     .join("[redacted]")
     .slice(0, DELIVERY_FAILURE_MESSAGE_LIMIT);
 
@@ -385,7 +385,7 @@ export function buildMulticastMessage(
   dispatch: ReservedDispatch,
   locale: SupportedLocale,
   devices: DeviceRegistration[],
-): MulticastMessage {
+): FidMulticastMessage {
   const {definition} = dispatch;
   const copy = definition.copy[locale];
 
@@ -398,7 +398,7 @@ export function buildMulticastMessage(
 
   return {
     // Preserves response order so FCM failures map back to device documents
-    tokens: devices.map((device) => device.token),
+    fids: devices.map((device) => device.fid),
     notification: {
       title: copy.title,
       body: copy.body,
@@ -453,7 +453,7 @@ export function buildMulticastMessage(
   };
 }
 
-/** Sends one locale group and maps token failures back to device documents */
+/** Sends one locale group and maps FID failures back to device documents */
 export async function sendDeviceGroup(
   messaging: Messaging,
   dispatch: ReservedDispatch,
@@ -489,9 +489,9 @@ export async function sendDeviceGroup(
 
         if (
           device !== undefined &&
-          sendResponse.error?.code === "messaging/registration-token-not-registered"
+          sendResponse.error?.code === "messaging/installation-id-not-registered"
         ) {
-          // Only definitive unregistered-token errors are safe to delete automatically
+          // Only definitive unregistered-FID errors are safe to delete automatically
           result.invalidDeviceReferences.push(device.reference);
         }
       });
@@ -558,7 +558,7 @@ export async function deleteInvalidDevices(
     references.map((reference) => reference.delete()),
   );
 
-  // Logs document paths without exposing registration tokens
+  // Logs document paths without exposing Firebase Installation IDs
   deletions.forEach((deletion, index) => {
     if (deletion.status === "rejected") {
       logger.error("Deleting an invalid notification device failed", {
@@ -575,7 +575,7 @@ export async function completeDispatch(
   result: DeliveryResult,
   deviceCount: number,
 ): Promise<void> {
-  // The dispatch document provides a server-only audit trail without storing tokens
+  // The dispatch document provides a server-only audit trail without storing FIDs
   await dispatch.dispatchReference.update({
     status: result.failureCount === 0 ? "completed" : "completed_with_failures",
     completedAt: Timestamp.now(),
@@ -640,7 +640,7 @@ export async function processDueSettings(
     await completeDispatch(dispatch, result, devices.length);
     await deleteInvalidDevices(result.invalidDeviceReferences);
   } catch (error) {
-    // Store a bounded error message without tokens or other registration data
+    // Store a bounded error message without FIDs or other registration data
     await dispatch.dispatchReference.update({
       status: "failed",
       completedAt: Timestamp.now(),

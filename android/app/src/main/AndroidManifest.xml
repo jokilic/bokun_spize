@@ -10,6 +10,10 @@
         android:label="Bokun spize"
         android:name=".BokunSpizeApplication"
         android:icon="@mipmap/ic_launcher">
+        <!-- Enables Firebase Installation IDs for direct FCM targeting -->
+        <meta-data
+            android:name="firebase_messaging_installation_id_enabled"
+            android:value="true" />
         <!-- Defaults used when an FCM message does not provide Android metadata -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

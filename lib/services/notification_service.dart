@@ -528,7 +528,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       final deviceDocument = firestore.collection('users').doc(user.uid).collection('notificationDevices').doc(deviceId);
 
       final notificationDevice = NotificationDevice(
-        token: currentRegistrationId,
+        fid: currentRegistrationId,
         locale: locale,
         timezone: timezone,
         appVersion: appVersion,
@@ -674,7 +674,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// ANNOUNCEMENT TOPICS
   ///
 
-  /// Reconciles the locale-specific announcement topic for this token
+  /// Reconciles the locale-specific announcement topic for this registration
   Future<void> synchronizeAnnouncementTopics(String locale) async {
     final desiredTopic = notificationSettings?.announcementsEnabled == true && canDeliverNotifications && auth.currentUser != null ? 'announcements_$locale' : null;
 

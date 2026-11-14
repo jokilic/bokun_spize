@@ -12,6 +12,8 @@ The app uses Firebase Cloud Messaging for every user-visible system notification
 
 The Xcode project enables **Push Notifications** and **Background Modes → Remote notifications**. Firebase method swizzling is explicitly enabled through `FirebaseAppDelegateProxyEnabled` in `Info.plist`. Do not disable it unless APNs token forwarding is implemented in `AppDelegate`.
 
+FID registration is explicitly enabled through `FirebaseMessagingInstallationIdEnabled` in the iOS `Info.plist` and `firebase_messaging_installation_id_enabled` in the Android application manifest.
+
 ## Android channels
 
 Server payloads must use one of these stable `android.notification.channel_id` values:
@@ -56,27 +58,29 @@ The debug build signs with the development APNs environment. Profile and release
 
 ## Per-device registrations
 
-After notification permission is granted, each signed-in installation writes one document at `users/{uid}/notificationDevices/{deviceId}`. The device ID is a random installation UUID persisted in shared preferences and is deliberately unrelated to the FCM token. A token refresh therefore updates the existing installation document instead of creating another active record.
+After notification permission is granted, each signed-in installation writes one document at `users/{uid}/notificationDevices/{deviceId}`. The device ID is a random installation UUID persisted in shared preferences and is deliberately unrelated to the Firebase Installation ID (FID). A registration change therefore updates the existing installation document instead of creating another active record.
 
-Each document contains the current `token`, `locale`, IANA `timezone`, `appVersion`, `deviceInfo`, `createdAt` and `lastActiveAt`. `deviceInfo` is the device name reported by Android or iOS, or the browser user agent on web. The app refreshes the document after authentication, token, permission, locale, preference and foreground-lifecycle changes. Failed synchronization is retried with a bounded backoff.
+Each document contains the current `fid`, `locale`, IANA `timezone`, `appVersion`, `deviceInfo`, `createdAt` and `lastActiveAt`. `deviceInfo` is the device name reported by Android or iOS, or the browser user agent on web. The app refreshes the document after authentication, registration, permission, locale, preference and foreground-lifecycle changes. Failed synchronization is retried with a bounded backoff.
 
-On logout, the app removes the document, leaves announcement topics and deletes the FCM token before signing out. Deleting the token prevents user-specific delivery even if an offline Firestore deletion has not reached the server yet. A later sign-in obtains a new token and reuses the installation UUID.
+On logout, the app removes the document, leaves announcement topics and unregisters the FID before signing out. Unregistering prevents user-specific delivery even if an offline Firestore deletion has not reached the server yet. A later sign-in registers again and reuses the installation UUID.
+
+The FID schema intentionally does not accept the deprecated `token` field. Deploy the updated Firestore rules and Functions before distributing the updated client. Existing token documents cannot be converted server-side and are ignored until the updated client registers and replaces its stable device document; old clients must update before they can refresh notification registration again.
 
 Firestore rules allow an owner to get, create, update or delete only a UUID-addressed device document. Collection listing is denied, registration fields are allow-listed and `lastActiveAt` must resolve to the server request time.
 
 ## Announcement topics
 
-Announcements use locale-specific `announcements_en` and `announcements_hr` topics. An authorized, signed-in installation subscribes only when `announcementsEnabled` is true. The client reconciles both known topics after startup, token refresh, authentication changes and preference changes so a locale switch cannot leave an old subscription active.
+Announcements use locale-specific `announcements_en` and `announcements_hr` topics. An authorized, signed-in installation subscribes only when `announcementsEnabled` is true. The client reconciles both known topics after startup, registration changes, authentication changes and preference changes so a locale switch cannot leave an old subscription active.
 
 ## Sender cleanup and retention
 
-Trusted sender code must retain each token's device-document reference while sending. Delete that document when FCM returns `messaging/registration-token-not-registered`. Delete it for `messaging/invalid-argument` only after the sender has independently validated the complete message payload; otherwise the payload itself may be invalid and healthy registrations must be kept. Handle other per-token failures without aborting delivery to the user's remaining devices.
+Trusted sender code must retain each FID's device-document reference while sending. Delete that document when FCM returns `messaging/installation-id-not-registered`. Delete it for `messaging/invalid-argument` only after the sender has independently validated the complete message payload; otherwise the payload itself may be invalid and healthy registrations must be kept. Handle other per-FID failures without aborting delivery to the user's remaining devices.
 
-Failed scheduled dispatches store `failureCount` and a bounded `failureDetails` array on the dispatch document. Each detail contains the affected notification-device UUID, whether the error came from an individual FCM response or the multicast request, and the sanitized Firebase error code and message. Registration tokens are never persisted in dispatch diagnostics. At most 5 entries and 500 characters per message are retained. A `failureCount` greater than the number of stored details means additional failed recipients were omitted.
+Failed scheduled dispatches store `failureCount` and a bounded `failureDetails` array on the dispatch document. Each detail contains the affected notification-device UUID, whether the error came from an individual FCM response or the multicast request, and the sanitized Firebase error code and message. FIDs are never persisted in dispatch diagnostics. At most 5 entries and 500 characters per message are retained. A `failureCount` greater than the number of stored details means additional failed recipients were omitted.
 
 Dispatch status can be `reserved`, `completed`, `completed_with_failures`, `skipped_weight_recorded`, `skipped_stale` or `failed`. `reserved` is the in-progress state written before contacting FCM; every other value is a terminal delivery or skip outcome.
 
-Never write a complete registration token to application, function or crash logs. Use the device document path or a short irreversible digest when correlation is necessary.
+Never write a complete FID to application, function or crash logs. Use the device document path or a short irreversible digest when correlation is necessary.
 
 Registrations expire 30 days after their latest successful client synchronization. Enable a Firestore TTL policy for the `lastActiveAt` field on the `notificationDevices` collection group with a 30-day expiration offset. Senders must also ignore documents whose `lastActiveAt` is more than 30 days old because Firestore TTL deletion is asynchronous. Active clients continuously refresh `lastActiveAt`; expired or invalid documents are safe to delete.
 
@@ -96,8 +100,8 @@ Unknown, missing or malformed values are ignored safely. Notification taps route
 ## Physical-device verification
 
 1. Install and open a fresh build on a physical device, open Account → Notifications, press **Allow notifications** and respond to the system prompt
-2. Read the token from the installation's protected `notificationDevices` document using trusted tooling without adding it to logs
-3. In Firebase Console, use **Messaging → Send test message** and target that token
+2. Read the `fid` from the installation's protected `notificationDevices` document using trusted tooling without adding it to logs
+3. In Firebase Console, use **Messaging → Send test message** and target that FID
 4. Verify foreground delivery on iOS and confirm Android stays silent while foregrounded
 5. Verify delivery while the app is backgrounded and terminated on both platforms
 6. On Android 13 or newer, repeat once after denying permission and once after granting it in system settings

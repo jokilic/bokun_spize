@@ -124,7 +124,7 @@ export const DEVICE_ACTIVE_DAYS = 30;
 /** Maximum number of due users processed per notification type and scheduler run */
 export const DUE_QUERY_LIMIT = 100;
 
-/** Maximum token count accepted by the Firebase Admin multicast API */
+/** Maximum FID count accepted by the Firebase Admin multicast API */
 export const FCM_MULTICAST_LIMIT = 500;
 
 /** Returns a supported locale and falls back to Croatian */
