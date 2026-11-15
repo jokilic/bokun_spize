@@ -34,7 +34,7 @@ class _CalendarSheetState extends State<CalendarSheet> {
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
-    child: ColoredBox(
+    child: Material(
       color: context.colors.scaffoldBackground,
       child: CustomScrollView(
         shrinkWrap: true,

@@ -9,6 +9,7 @@ import '../models/meal/food.dart';
 import '../models/meal/nutrition.dart';
 import '../theme/extensions.dart';
 import '../util/format.dart';
+import '../util/meal.dart';
 import '../util/parse.dart';
 import '../util/spacing.dart';
 import 'text_field_widget.dart';
@@ -44,6 +45,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   late final carbsFocusNode = FocusNode();
   late final fatsTextEditingController = TextEditingController();
   late final fatsFocusNode = FocusNode();
+
+  final randomFood = getRandomFoodExample();
 
   /// Initializes the food fields and registers validation listeners
   @override
@@ -308,7 +311,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     focusNode: nameFocusNode,
                     onSubmitted: (_) => quantityFocusNode.requestFocus(),
                     title: 'addFoodTextFieldTitleName'.tr(),
-                    hintText: 'whatWasIt'.tr(),
+                    hintText: randomFood,
                     textColor: context.colors.text,
                     autocorrect: true,
                   ),

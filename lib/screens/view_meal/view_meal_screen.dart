@@ -960,7 +960,6 @@ class ViewMealScreen extends WatchingWidget {
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
                       title: 'viewMealOriginalTextTextField'.tr(),
-                      hintText: 'whatWasIt'.tr(),
                       textColor: context.colors.text,
                     ),
                   ),
