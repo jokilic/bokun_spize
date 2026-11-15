@@ -72,7 +72,7 @@ class _MealsScreenState extends State<MealsScreen> {
 
     final fullDayString = getDateString(
       date: currentlyVisibleDate,
-      dateFormat: 'EEEE, dd.MM.yyyy.',
+      dateFormat: 'EEEE, dd MMM',
       languageCode: context.locale.languageCode,
     );
 

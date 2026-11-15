@@ -507,7 +507,7 @@ class WeightsGraphWidget extends StatelessWidget {
           );
     final label = getDateString(
       date: dateTime,
-      dateFormat: 'MMM dd',
+      dateFormat: 'dd MMM',
       languageCode: languageCode,
     ).toUpperCase();
 

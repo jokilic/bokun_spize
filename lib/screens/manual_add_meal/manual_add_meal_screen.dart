@@ -98,7 +98,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
 
     final date = getDateString(
       date: mealDate,
-      dateFormat: 'dd.MM.yyyy.',
+      dateFormat: 'dd MMM',
       languageCode: context.locale.languageCode,
     );
 
@@ -1378,7 +1378,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        isEditingMeal ? 'saveChanges'.tr() : 'logMeal'.tr(),
+                        isEditingMeal ? 'editMeal'.tr() : 'logMeal'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

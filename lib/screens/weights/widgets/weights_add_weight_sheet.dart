@@ -132,7 +132,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
   Widget build(BuildContext context) {
     final date = getDateString(
       date: selectedDateTime,
-      dateFormat: 'dd.MM.yyyy.',
+      dateFormat: 'dd MMM',
       languageCode: context.locale.languageCode,
     );
 

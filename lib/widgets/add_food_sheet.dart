@@ -204,7 +204,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       ///
                       Expanded(
                         child: Text(
-                          isEditingFood ? 'edit'.tr() : 'addFoodTitleAdd'.tr(),
+                          isEditingFood ? 'addFoodTitleEdit'.tr() : 'addFoodTitleAdd'.tr(),
                           style: TextStyle(
                             fontFamily: 'Epilogue',
                             fontSize: 24,
@@ -649,7 +649,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                         disabledForegroundColor: context.colors.buttonText.withValues(alpha: 0.75),
                       ),
                       child: Text(
-                        isEditingFood ? 'saveChanges'.tr() : 'addFoodButtonAdd'.tr(),
+                        isEditingFood ? 'addFoodButtonEdit'.tr() : 'addFoodButtonAdd'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

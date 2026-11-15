@@ -202,7 +202,7 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   dayString: lastWeightTrack != null
                       ? getDateString(
                           date: lastWeightTrack.dateTime,
-                          dateFormat: 'EEEE, dd.MM.yyyy.',
+                          dateFormat: 'EEEE, dd MMM',
                           languageCode: context.locale.languageCode,
                         )
                       : 'weightsErrorNoWeights'.tr(),

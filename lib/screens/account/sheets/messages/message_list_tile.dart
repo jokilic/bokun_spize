@@ -20,7 +20,7 @@ class MessageListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = getDateString(
       date: message.createdAt,
-      dateFormat: 'dd.MM.yyyy.',
+      dateFormat: 'dd MMM',
       languageCode: context.locale.languageCode,
     );
 

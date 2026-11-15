@@ -82,7 +82,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
 
     final date = getDateString(
       date: mealDate,
-      dateFormat: 'dd.MM.yyyy.',
+      dateFormat: 'dd MMM',
       languageCode: context.locale.languageCode,
     );
 
