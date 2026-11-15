@@ -1,8 +1,6 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 - [ ] Long dates - if older than current year, include the year
-- [ ] Think about ‘Što si mislio?’
-- [ ] WalksAppBar - Korak/koraka
 - [ ] Replace all `TextStyle()`
 - [ ] Animations
 - [ ] Think about `constants.dart`

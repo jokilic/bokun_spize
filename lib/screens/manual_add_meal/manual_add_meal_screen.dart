@@ -13,6 +13,7 @@ import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/meal.dart';
 import '../../util/parse.dart';
 import '../../util/spacing.dart';
 import '../../util/typedefs.dart';
@@ -39,6 +40,8 @@ class ManualAddMealScreen extends WatchingStatefulWidget {
 }
 
 class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
+  final randomMeal = getRandomManualMealExample();
+
   @override
   void initState() {
     super.initState();
@@ -311,7 +314,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                           onChanged: (_) => mealController.stopSpeechToTextIfListening(),
                           onSubmitted: (_) => mealController.caloriesFocusNode.requestFocus(),
                           title: 'manualAddMealTextFieldTitle'.tr(),
-                          hintText: isCopyingMeal ? 'manualAddMealTextFieldCopyHint'.tr() : 'whatWasIt'.tr(),
+                          hintText: isCopyingMeal ? 'manualAddMealTextFieldCopyHint'.tr() : '${'forExample'.tr()} $randomMeal',
                           textColor: context.colors.text,
                         ),
 

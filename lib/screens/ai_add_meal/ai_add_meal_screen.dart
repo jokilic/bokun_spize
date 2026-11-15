@@ -11,6 +11,7 @@ import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
+import '../../util/meal.dart';
 import '../../util/spacing.dart';
 import '../../widgets/text_field_widget.dart';
 import 'ai_add_meal_controller.dart';
@@ -27,6 +28,8 @@ class AIAddMealScreen extends WatchingStatefulWidget {
 }
 
 class _AIAddMealScreenState extends State<AIAddMealScreen> {
+  final randomMeal = getRandomAIMealExample();
+
   @override
   void initState() {
     super.initState();
@@ -273,7 +276,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                         keyboardType: TextInputType.multiline,
                         textInputAction: TextInputAction.newline,
                         title: 'aiAddMealTextFieldTitle'.tr(),
-                        hintText: 'whatWasIt'.tr(),
+                        hintText: '${'forExample'.tr()} $randomMeal',
                         textColor: context.colors.text,
                       ),
 
