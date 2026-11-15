@@ -532,7 +532,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 10 : 9),
+                    delay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 11 : 10),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,

@@ -311,7 +311,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     focusNode: nameFocusNode,
                     onSubmitted: (_) => quantityFocusNode.requestFocus(),
                     title: 'addFoodTextFieldTitleName'.tr(),
-                    hintText: randomFood,
+                    hintText: '${'forExample'.tr()} $randomFood',
                     textColor: context.colors.text,
                     autocorrect: true,
                   ),
