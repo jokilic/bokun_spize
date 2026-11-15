@@ -217,7 +217,7 @@ export async function reserveDueNotification(
     const userReference = getUserReference(settingsReference);
     const nextAt = getNextOccurrence(now, timezone, scheduledDefinition);
 
-    // One document per type and local date acts as the durable idempotency record
+    // One document per logical occurrence acts as the durable idempotency record
     const idempotencyKey = getDispatchId(scheduledDefinition, dueAt, timezone);
     const dispatchReference = userReference.collection("notificationDispatches").doc(idempotencyKey);
     const dispatchSnapshot = await transaction.get(dispatchReference);

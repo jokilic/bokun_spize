@@ -106,6 +106,36 @@ describe("notification scheduling", () => {
     expect(retry).toBe(first);
   });
 
+  /** Verifies changing the reminder time allows another delivery on the same local day */
+  it("creates separate weight reminder keys for different same-day times", () => {
+    const definition = NOTIFICATION_DEFINITIONS.weightReminder;
+    const morning = getDispatchId(
+      definition,
+      new Date("2026-06-01T06:00:00.000Z"),
+      "Europe/Zagreb",
+    );
+    const later = getDispatchId(
+      definition,
+      new Date("2026-06-01T09:00:00.000Z"),
+      "Europe/Zagreb",
+    );
+
+    expect(morning).toBe("weightReminder_2026-06-01_08-00");
+    expect(later).toBe("weightReminder_2026-06-01_11-00");
+    expect(later).not.toBe(morning);
+  });
+
+  /** Verifies a retry of the same weight reminder keeps its duplicate-prevention key */
+  it("keeps the same weight reminder key for the same occurrence", () => {
+    const definition = NOTIFICATION_DEFINITIONS.weightReminder;
+    const occurrence = new Date("2026-06-01T09:00:00.000Z");
+    const retry = new Date(occurrence.getTime());
+
+    expect(getDispatchId(definition, occurrence, "Europe/Zagreb")).toBe(
+      getDispatchId(definition, retry, "Europe/Zagreb"),
+    );
+  });
+
   /** Verifies enabling a preference initializes its server-managed timestamp */
   it("initializes a newly enabled schedule", () => {
     // 09:00 in summer Zagreb is 07:00 UTC
@@ -267,6 +297,46 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
     expect(reservations.filter((reservation) => reservation !== null)).toHaveLength(1);
   });
 
+  /** Verifies a changed time can reserve another weight reminder on the same day */
+  it("reserves a later same-day weight reminder", async () => {
+    if (emulatorApp === null) {
+      return;
+    }
+
+    const firestore = getFirestore(emulatorApp);
+    const userReference = firestore.collection("users").doc(randomUUID());
+    const settingsReference = userReference.collection("notificationSettings").doc("preferences");
+    const dueAt = new Date("2026-06-01T09:00:00.000Z");
+    const now = new Date("2026-06-01T09:05:00.000Z");
+
+    // The earlier 08:00 occurrence already completed before the user selected 11:00
+    await userReference.collection("notificationDispatches").doc(
+      "weightReminder_2026-06-01_08-00",
+    ).set({
+      dueAt: Timestamp.fromDate(new Date("2026-06-01T06:00:00.000Z")),
+      status: "sent",
+    });
+    await settingsReference.set({
+      weighReminderEnabled: true,
+      dailySummaryEnabled: false,
+      announcementsEnabled: false,
+      timezone: "Europe/Zagreb",
+      locale: "en",
+      weighReminderTime: Timestamp.fromDate(new Date("2020-01-01T10:00:00.000Z")),
+      nextWeighReminderAt: Timestamp.fromDate(dueAt),
+    });
+
+    const reservation = await reserveDueNotification(
+      firestore,
+      settingsReference,
+      NOTIFICATION_DEFINITIONS.weightReminder,
+      now,
+    );
+
+    expect(reservation?.idempotencyKey).toBe("weightReminder_2026-06-01_11-00");
+    expect(reservation?.dueAt).toEqual(dueAt);
+  });
+
   /** Verifies a same-local-day weight entry suppresses the reserved reminder */
   it("skips a weigh reminder when weight was already recorded", async () => {
     if (emulatorApp === null) {
@@ -303,7 +373,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
 
     const dispatch = await userReference
       .collection("notificationDispatches")
-      .doc("weightReminder_2026-06-01")
+      .doc("weightReminder_2026-06-01_09-00")
       .get();
 
     expect(dispatch.data()?.status).toBe("skipped_weight_recorded");

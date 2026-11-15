@@ -36,7 +36,7 @@ Client-managed preferences are stored at `users/{uid}/notificationSettings/prefe
 
 The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled, the user's timezone changes or the user changes their weigh reminder time. Weigh reminders default to 09:00 local time and can be customized from Account → Notifications. The preference is stored as `weighReminderTime`, a Firestore timestamp interpreted in the user's saved IANA timezone using the same conversion as the global configuration override. Its calendar date does not select a delivery day. Daily summaries run at 08:00 local time. The mobile client does not schedule local notifications.
 
-The `dispatchScheduledNotifications` Cloud Function runs every 10 minutes. It queries the indexed `nextWeighReminderAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates `users/{uid}/notificationDispatches/{type_localDate}` and advances the next occurrence in one Firestore transaction. That reservation makes overlapping and retried executions idempotent. Dispatch documents are server-only and must not be made client-writable.
+The `dispatchScheduledNotifications` Cloud Function runs every 10 minutes. It queries the indexed `nextWeighReminderAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates a document in `users/{uid}/notificationDispatches` and advances the next occurrence in one Firestore transaction. Daily summaries use `{type}_{localDate}` as their document ID. Weight reminders use `{type}_{localDate}_{HH-mm}`, allowing a changed reminder time to produce another notification later on the same day while retries of the same occurrence remain idempotent. Dispatch documents are server-only and must not be made client-writable.
 
 For weigh reminders, the reservation checks `users/{uid}/weightTracks` within the UTC bounds of the due local calendar day. A matching entry records a `skipped_weight_recorded` dispatch and advances the next occurrence without contacting FCM. The dispatcher repeats this check immediately before sending to cover entries committed while active devices are being loaded. An entry committed after the final check can race with an FCM request that has already started; every active device then receives the same logical reminder and idempotency key. This is the only unavoidable near-dispatch race because an accepted FCM request cannot be recalled.
 
@@ -95,7 +95,7 @@ Every actionable message uses these stable string fields in its FCM `data` paylo
 | `type` | Yes | `weightReminder`, `dailySummary`, `announcement` |
 | `route` | Yes | `meals`, `weights`, `walks`, `account` |
 | `sentAt` | Yes | An ISO-8601 timestamp |
-| `idempotencyKey` | Server notifications | A stable `{type}_{localDate}` delivery key |
+| `idempotencyKey` | Server notifications | A stable occurrence key: `{type}_{localDate}` or `{type}_{localDate}_{HH-mm}` for weight reminders |
 
 Unknown, missing or malformed values are ignored safely. Notification taps route to the matching primary application screen. More specific entity routing can be added without changing the base contract.
 
