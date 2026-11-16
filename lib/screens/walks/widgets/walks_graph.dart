@@ -364,6 +364,7 @@ class WalksGraphWidget extends StatelessWidget {
               (touchedSpot) {
                 final stepWithDate = stepsWithDate[touchedSpot.spotIndex];
 
+                // TODO: Here
                 final date = getDateString(
                   date: stepWithDate.dateTime,
                   dateFormat: 'dd MMM',
@@ -505,6 +506,8 @@ class WalksGraphWidget extends StatelessWidget {
               milliseconds: (value * Duration.millisecondsPerDay).round(),
             ),
           );
+
+    // TODO: Here
     final label = getDateString(
       date: dateTime,
       dateFormat: 'dd MMM',

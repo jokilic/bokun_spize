@@ -200,7 +200,9 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   isLoading: isLoading,
                   isHistoryLoading: isHistoryLoading,
                   dayString: lastWeightTrack != null
-                      ? getDateString(
+                      ?
+                        // TODO: Here
+                        getDateString(
                           date: lastWeightTrack.dateTime,
                           dateFormat: 'EEEE, dd MMM',
                           languageCode: context.locale.languageCode,

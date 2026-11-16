@@ -337,6 +337,7 @@ class WeightsGraphWidget extends StatelessWidget {
               (touchedSpot) {
                 final weightTrack = weightTracks[touchedSpot.spotIndex];
 
+// TODO: Here
                 final date = getDateString(
                   date: weightTrack.dateTime,
                   dateFormat: 'dd MMM',
@@ -474,6 +475,8 @@ class WeightsGraphWidget extends StatelessWidget {
               milliseconds: (value * Duration.millisecondsPerDay).round(),
             ),
           );
+
+          // TODO: Here
     final label = getDateString(
       date: dateTime,
       dateFormat: 'dd MMM',

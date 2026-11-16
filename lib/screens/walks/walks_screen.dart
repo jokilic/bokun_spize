@@ -167,7 +167,9 @@ class _WalksScreenState extends State<WalksScreen> {
                   isLoading: isLoading,
                   isHistoryLoading: isHistoryLoading,
                   dayString: latestStepsWithDate != null
-                      ? getDateString(
+                      ?
+                        // TODO: Here
+                        getDateString(
                           date: latestStepsWithDate.dateTime,
                           dateFormat: 'EEEE, dd MMM',
                           languageCode: context.locale.languageCode,
