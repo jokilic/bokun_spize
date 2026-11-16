@@ -13,9 +13,6 @@ class BokunSpizeTheme {
       useMaterial3: true,
     );
 
-    final lightAppColors = getLightAppColors();
-    final lightTextTheme = getLightTextTheme();
-
     return defaultTheme.copyWith(
       colorScheme: ColorScheme.fromSeed(
         seedColor: lightAppColors.protein,
@@ -39,7 +36,7 @@ class BokunSpizeTheme {
     );
   }
 
-  static BokunSpizeColorsExtension getLightAppColors() => BokunSpizeColorsExtension(
+  static final lightAppColors = BokunSpizeColorsExtension(
     scaffoldBackground: BokunSpizeColors.lightThemeScaffold,
     listTileBackground: BokunSpizeColors.lightThemeBackground,
     text: BokunSpizeColors.lightThemeText,
@@ -51,9 +48,8 @@ class BokunSpizeTheme {
     account: BokunSpizeColors.yellow,
   );
 
-  /// Creates the complete light typography extension
-  static BokunSpizeTextThemesExtension getLightTextTheme() => getTextThemesExtension(
-    colorsExtension: getLightAppColors(),
+  static final lightTextTheme = getTextThemesExtension(
+    colorsExtension: lightAppColors,
   );
 
   ///
@@ -64,9 +60,6 @@ class BokunSpizeTheme {
     final defaultTheme = ThemeData.dark(
       useMaterial3: true,
     );
-
-    final darkAppColors = getDarkAppColors();
-    final darkTextTheme = getDarkTextTheme();
 
     return defaultTheme.copyWith(
       colorScheme: ColorScheme.fromSeed(
@@ -92,7 +85,7 @@ class BokunSpizeTheme {
     );
   }
 
-  static BokunSpizeColorsExtension getDarkAppColors() => BokunSpizeColorsExtension(
+  static final darkAppColors = BokunSpizeColorsExtension(
     scaffoldBackground: BokunSpizeColors.darkThemeScaffold,
     listTileBackground: BokunSpizeColors.darkThemeBackground,
     text: BokunSpizeColors.darkThemeText,
@@ -104,8 +97,7 @@ class BokunSpizeTheme {
     account: BokunSpizeColors.yellow,
   );
 
-  /// Creates the complete dark typography extension
-  static BokunSpizeTextThemesExtension getDarkTextTheme() => getTextThemesExtension(
-    colorsExtension: getDarkAppColors(),
+  static final darkTextTheme = getTextThemesExtension(
+    colorsExtension: darkAppColors,
   );
 }

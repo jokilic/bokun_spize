@@ -5,8 +5,8 @@ import 'text_style.dart';
 import 'theme.dart';
 
 extension BokunSpizeThemeExtension on ThemeData {
-  BokunSpizeColorsExtension get bokunSpizeColors => extension<BokunSpizeColorsExtension>() ?? BokunSpizeTheme.getLightAppColors();
-  BokunSpizeTextThemesExtension get bokunSpizeTextStyles => extension<BokunSpizeTextThemesExtension>() ?? BokunSpizeTheme.getLightTextTheme();
+  BokunSpizeColorsExtension get bokunSpizeColors => extension<BokunSpizeColorsExtension>() ?? BokunSpizeTheme.lightAppColors;
+  BokunSpizeTextThemesExtension get bokunSpizeTextStyles => extension<BokunSpizeTextThemesExtension>() ?? BokunSpizeTheme.lightTextTheme;
 }
 
 extension ThemeGetter on BuildContext {
