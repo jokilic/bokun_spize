@@ -76,6 +76,8 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
   /// VARIABLES
   ///
 
+  final minimumFuzzyScore = 80;
+
   late final textEditingController = TextEditingController();
   late final focusNode = FocusNode();
 
