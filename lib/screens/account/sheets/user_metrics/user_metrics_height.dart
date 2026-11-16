@@ -99,21 +99,11 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
               ),
               TextSpan(
                 text: 'centimeter'.tr(),
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.text.withValues(alpha: 0.7),
-                ),
+                style: context.textStyles.metricEditorUnit,
               ),
             ],
           ),
-          style: TextStyle(
-            fontFamily: 'Epilogue',
-            fontSize: 36,
-            fontWeight: FontWeight.w900,
-            color: context.colors.text,
-          ),
+          style: context.textStyles.metricEditorValue,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
@@ -210,10 +200,7 @@ class UserMetricsHeightState extends State<UserMetricsHeight> {
                   child: Text(
                     height.toStringAsFixed(0),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                    style: context.textStyles.rulerLabel.copyWith(
                       color: color,
                     ),
                   ),

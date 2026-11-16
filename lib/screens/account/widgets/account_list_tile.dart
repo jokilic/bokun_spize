@@ -100,12 +100,7 @@ class AccountListTile extends StatelessWidget {
                         ///
                         Text(
                           title,
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.listTileTitle,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -119,12 +114,7 @@ class AccountListTile extends StatelessWidget {
                         else
                           Text(
                             subtitle,
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: context.colors.text.withValues(alpha: 0.7),
-                            ),
+                            style: context.textStyles.listTileSubtitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

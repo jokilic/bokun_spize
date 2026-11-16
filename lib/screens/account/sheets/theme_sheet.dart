@@ -107,14 +107,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                     Expanded(
                       child: Text(
                         'theme'.tr(),
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          height: 1.2,
-                          letterSpacing: 0.6,
-                          color: context.colors.text,
-                        ),
+                        style: context.textStyles.sheetTitle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -167,12 +160,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                 ],
                 child: Text(
                   'accountThemeSheetSubtitle'.tr(),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.sheetSubtitle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -369,11 +357,7 @@ class _ThemeSheetState extends State<ThemeSheet> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.protein,
                         foregroundColor: context.colors.buttonText,

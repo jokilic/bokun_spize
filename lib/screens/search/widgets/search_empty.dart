@@ -52,13 +52,7 @@ class SearchEmpty extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               query.characters.length < minimumSearchLength ? 'searchEmptyTitle'.tr() : 'searchEmptyNoMealsFoundTitle'.tr(),
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.6,
-                color: context.colors.text,
-              ),
+              style: context.textStyles.emptyStateTitle,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
@@ -68,13 +62,7 @@ class SearchEmpty extends StatelessWidget {
                       args: ['$minimumSearchLength'],
                     )
                   : 'searchEmptyNoMealsFoundSubtitle'.tr(),
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.6,
-                color: context.colors.text.withValues(alpha: 0.75),
-              ),
+              style: context.textStyles.emptyStateDescription,
               textAlign: TextAlign.center,
             ),
           ],

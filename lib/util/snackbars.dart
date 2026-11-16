@@ -24,12 +24,7 @@ void showSnackbar(
           Expanded(
             child: Text(
               text,
-              style: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: context.colors.text,
-              ),
+              style: context.textStyles.snackbarText,
             ),
           ),
         ],

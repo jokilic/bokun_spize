@@ -96,12 +96,7 @@ class WalksListTile extends StatelessWidget {
                               ),
                             ) ??
                             '--',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: context.colors.text,
-                        ),
+                        style: context.textStyles.listTileTitle,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -120,12 +115,7 @@ class WalksListTile extends StatelessWidget {
                               ),
                             ) ??
                             '--',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.text.withValues(alpha: 0.7),
-                        ),
+                        style: context.textStyles.listTileSubtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -146,26 +136,14 @@ class WalksListTile extends StatelessWidget {
                     Text.rich(
                       TextSpan(
                         text: stepWithDate.steps.round().toStringAsFixed(0),
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          color: context.colors.text,
-                        ),
+                        style: context.textStyles.listTilePrimaryValue,
                         children: [
                           const WidgetSpan(
                             child: SizedBox(width: 4),
                           ),
                           TextSpan(
                             text: 'steps'.tr(),
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              height: 1.2,
-                              letterSpacing: 1.2,
-                              color: context.colors.text.withValues(alpha: 0.7),
-                            ),
+                            style: context.textStyles.listTilePrimaryValueUnit,
                           ),
                         ],
                       ),
@@ -204,10 +182,7 @@ class WalksListTile extends StatelessWidget {
                                 const SizedBox(width: 3),
                                 Text(
                                   'walksWalkingNow'.tr(),
-                                  style: TextStyle(
-                                    fontFamily: 'PlusJakartaSans',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
+                                  style: context.textStyles.listTileStatus.copyWith(
                                     color: context.colors.fat,
                                   ),
                                   textAlign: TextAlign.right,
@@ -236,10 +211,7 @@ class WalksListTile extends StatelessWidget {
                           const SizedBox(width: 2),
                           Text(
                             stepsChange.abs().round().toStringAsFixed(0),
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                            style: context.textStyles.listTileStatus.copyWith(
                               color: changeColor,
                             ),
                             textAlign: TextAlign.right,

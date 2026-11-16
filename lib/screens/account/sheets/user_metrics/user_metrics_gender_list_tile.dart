@@ -80,10 +80,7 @@ class UserMetricsGenderListTile extends StatelessWidget {
                   ///
                   Text(
                     title,
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
+                    style: context.textStyles.listTileTitle.copyWith(
                       color: isActive ? context.colors.buttonText : context.colors.text,
                     ),
                     maxLines: 2,

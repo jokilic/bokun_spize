@@ -102,10 +102,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   food.emoji!,
-                                  style: const TextStyle(
-                                    fontFamily: 'PlusJakartaSans',
-                                    fontSize: 24,
-                                  ),
+                                  style: context.textStyles.listTileEmoji,
                                   maxLines: 1,
                                   softWrap: false,
                                 ),
@@ -131,12 +128,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                           ///
                           Text(
                             food.name,
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.listTileTitle,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -150,10 +142,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                               '${formatNutritionValue(
                                 food.quantity,
                               )} ${food.unit}',
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                              style: context.textStyles.listTileNutritionValue.copyWith(
                                 color: context.colors.text.withValues(alpha: 0.7),
                               ),
                               maxLines: 1,
@@ -173,10 +162,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                         food.nutrition.protein,
                                       )}${'gramUnit'.tr()}'
                                     : null,
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                style: context.textStyles.listTileNutritionValue.copyWith(
                                   color: context.colors.protein,
                                 ),
                                 children: [
@@ -190,10 +176,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                             food.nutrition.carbs,
                                           )}${'gramUnit'.tr()}'
                                         : null,
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
+                                    style: context.textStyles.listTileNutritionValue.copyWith(
                                       color: context.colors.carbs,
                                     ),
                                   ),
@@ -207,10 +190,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                             food.nutrition.fat,
                                           )}${'gramUnit'.tr()}'
                                         : null,
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
+                                    style: context.textStyles.listTileNutritionValue.copyWith(
                                       color: context.colors.fat,
                                     ),
                                   ),
@@ -239,10 +219,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                                   food.nutrition.calories,
                                 ) ??
                                 '',
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
+                            style: context.textStyles.listTileCaloriesValue.copyWith(
                               color: primaryColor,
                             ),
                             maxLines: 1,
@@ -255,12 +232,7 @@ class ManualAddMealFoodListTile extends StatelessWidget {
                           ///
                           Text(
                             'caloriesUnit'.tr().toUpperCase(),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.text.withValues(alpha: 0.5),
-                            ),
+                            style: context.textStyles.listTileCaloriesUnit,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.right,

@@ -98,14 +98,7 @@ class _TimeSheetState extends State<TimeSheet> {
                     Expanded(
                       child: Text(
                         'timeSheetTitle'.tr(),
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          height: 1.2,
-                          letterSpacing: 0.6,
-                          color: context.colors.text,
-                        ),
+                        style: context.textStyles.sheetTitle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -158,12 +151,7 @@ class _TimeSheetState extends State<TimeSheet> {
                 ],
                 child: Text(
                   widget.subtitle,
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.sheetSubtitle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -206,24 +194,11 @@ class _TimeSheetState extends State<TimeSheet> {
                     onChange: (newDateTime) => selectedDateTime = newDateTime,
                     itemExtent: 64,
                     style: DateTimePickerStyle(
-                      activeStyle: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
+                      activeStyle: context.textStyles.timePickerActiveValue.copyWith(
                         color: widget.primaryColor,
                       ),
-                      inactiveStyle: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500,
-                        color: context.colors.text.withValues(alpha: 0.45),
-                      ),
-                      disabledStyle: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500,
-                        color: context.colors.text.withValues(alpha: 0.2),
-                      ),
+                      inactiveStyle: context.textStyles.timePickerInactiveValue,
+                      disabledStyle: context.textStyles.timePickerDisabledValue,
                     ),
                     wheelOption: const DateTimePickerWheelOption(
                       physics: BouncingScrollPhysics(),
@@ -287,11 +262,7 @@ class _TimeSheetState extends State<TimeSheet> {
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      textStyle: context.textStyles.mainButton,
                       padding: const EdgeInsets.all(20),
                       backgroundColor: widget.primaryColor,
                       foregroundColor: context.colors.buttonText,

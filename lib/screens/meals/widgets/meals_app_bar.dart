@@ -133,12 +133,7 @@ class MealsAppBar extends StatelessWidget {
                           child: Text(
                             shortDayString,
                             key: ValueKey(shortDayString),
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 18,
-                              height: 1.2,
-                              letterSpacing: 0.6,
-                              fontWeight: FontWeight.w900,
+                            style: context.textStyles.appBarTitle.copyWith(
                               color: context.colors.protein,
                             ),
                             maxLines: 1,
@@ -352,13 +347,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                 child: Text(
                   fullDayString.toUpperCase(),
                   key: ValueKey(fullDayString),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.2,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.appBarCaption,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -405,12 +394,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                     loop: false,
                     duration: BokunSpizeDurations.animation,
                     curve: Curves.easeIn,
-                    textStyle: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800,
-                      height: 1.2,
-                      letterSpacing: 1.2,
+                    textStyle: context.textStyles.appBarPrimaryValue.copyWith(
                       color: context.colors.protein,
                     ),
                   ),
@@ -455,13 +439,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                                 const TextSpan(text: '/ '),
                                 TextSpan(
                                   text: dailyCalories!.toStringAsFixed(0),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 1.2,
-                                    color: context.colors.text,
-                                  ),
+                                  style: context.textStyles.appBarCalorieValue,
                                 ),
                                 TextSpan(
                                   text: ' ${'caloriesUnit'.tr()}',
@@ -473,13 +451,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                                 ),
                               ],
                       ),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1.2,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.appBarValueUnit,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -602,14 +574,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             ///
                             Text(
                               'protein'.tr().toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 8,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2,
-                                letterSpacing: 0.4,
-                                color: context.colors.text,
-                              ),
+                              style: context.textStyles.appBarNutritionLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -659,14 +624,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             ///
                             Text(
                               'carbs'.tr().toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 8,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2,
-                                letterSpacing: 0.4,
-                                color: context.colors.text,
-                              ),
+                              style: context.textStyles.appBarNutritionLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -716,14 +674,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                             ///
                             Text(
                               'fats'.tr().toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 8,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2,
-                                letterSpacing: 0.4,
-                                color: context.colors.text,
-                              ),
+                              style: context.textStyles.appBarNutritionLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -765,14 +716,7 @@ class FadingFlexibleTitle extends StatelessWidget {
     if (isLoading) {
       return Text(
         '--',
-        style: TextStyle(
-          fontFamily: 'PlusJakartaSans',
-          fontSize: 8,
-          fontWeight: FontWeight.w500,
-          height: 1.2,
-          letterSpacing: 0.4,
-          color: context.colors.text,
-        ),
+        style: context.textStyles.appBarNutritionUnit,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -787,14 +731,7 @@ class FadingFlexibleTitle extends StatelessWidget {
       loop: false,
       duration: BokunSpizeDurations.animation,
       curve: Curves.easeIn,
-      textStyle: TextStyle(
-        fontFamily: 'PlusJakartaSans',
-        fontSize: 8,
-        fontWeight: FontWeight.w600,
-        height: 1.2,
-        letterSpacing: 0.4,
-        color: context.colors.text,
-      ),
+      textStyle: context.textStyles.appBarNutritionValue,
     );
 
     if (dailyValue == null) {
@@ -807,25 +744,11 @@ class FadingFlexibleTitle extends StatelessWidget {
             ),
             TextSpan(
               text: 'gramUnit'.tr(),
-              style: TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 8,
-                fontWeight: FontWeight.w500,
-                height: 1.2,
-                letterSpacing: 0.4,
-                color: context.colors.text,
-              ),
+              style: context.textStyles.appBarNutritionUnit,
             ),
           ],
         ),
-        style: TextStyle(
-          fontFamily: 'PlusJakartaSans',
-          fontSize: 8,
-          fontWeight: FontWeight.w500,
-          height: 1.2,
-          letterSpacing: 0.4,
-          color: context.colors.text,
-        ),
+        style: context.textStyles.appBarNutritionUnit,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -846,28 +769,14 @@ class FadingFlexibleTitle extends StatelessWidget {
           ),
           TextSpan(
             text: formatNutritionValue(dailyValue),
-            style: TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 8,
-              fontWeight: FontWeight.w600,
-              height: 1.2,
-              letterSpacing: 0.4,
-              color: context.colors.text,
-            ),
+            style: context.textStyles.appBarNutritionValue,
           ),
           TextSpan(
             text: 'gramUnit'.tr(),
           ),
         ],
       ),
-      style: TextStyle(
-        fontFamily: 'PlusJakartaSans',
-        fontSize: 8,
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        letterSpacing: 0.4,
-        color: context.colors.text,
-      ),
+      style: context.textStyles.appBarNutritionUnit,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );

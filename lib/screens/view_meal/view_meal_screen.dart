@@ -146,10 +146,7 @@ class ViewMealScreen extends WatchingWidget {
                                     fit: BoxFit.scaleDown,
                                     child: Text(
                                       emoji,
-                                      style: const TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 80,
-                                      ),
+                                      style: context.textStyles.largeEmoji,
                                       maxLines: 1,
                                       softWrap: false,
                                     ),
@@ -237,12 +234,7 @@ class ViewMealScreen extends WatchingWidget {
                                           Expanded(
                                             child: Text(
                                               'viewMealCopy'.tr(),
-                                              style: TextStyle(
-                                                fontFamily: 'Epilogue',
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: context.colors.text,
-                                              ),
+                                              style: context.textStyles.secondaryAction,
                                             ),
                                           ),
                                         ],
@@ -269,12 +261,7 @@ class ViewMealScreen extends WatchingWidget {
                                           Expanded(
                                             child: Text(
                                               'edit'.tr(),
-                                              style: TextStyle(
-                                                fontFamily: 'Epilogue',
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: context.colors.text,
-                                              ),
+                                              style: context.textStyles.secondaryAction,
                                             ),
                                           ),
                                         ],
@@ -301,12 +288,7 @@ class ViewMealScreen extends WatchingWidget {
                                           Expanded(
                                             child: Text(
                                               'viewMealDelete'.tr(),
-                                              style: TextStyle(
-                                                fontFamily: 'Epilogue',
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: context.colors.text,
-                                              ),
+                                              style: context.textStyles.secondaryAction,
                                             ),
                                           ),
                                         ],
@@ -395,14 +377,7 @@ class ViewMealScreen extends WatchingWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 22),
                     child: Text(
                       mealName,
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2,
-                        letterSpacing: 0.6,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.screenTitle,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -449,12 +424,7 @@ class ViewMealScreen extends WatchingWidget {
                         ),
                       ],
                     ),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -489,13 +459,7 @@ class ViewMealScreen extends WatchingWidget {
                   ],
                   child: Text(
                     'nutritionalValues'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sectionTitle,
                   ),
                 ),
               ),
@@ -548,12 +512,7 @@ class ViewMealScreen extends WatchingWidget {
                               loop: false,
                               duration: BokunSpizeDurations.animation,
                               curve: Curves.easeIn,
-                              textStyle: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 40 * 1.5,
-                                fontWeight: FontWeight.w800,
-                                height: 1.2,
-                                letterSpacing: 1.2,
+                              textStyle: context.textStyles.expandedAppBarPrimaryValue.copyWith(
                                 color: context.colors.protein,
                               ),
                             ),
@@ -565,13 +524,7 @@ class ViewMealScreen extends WatchingWidget {
                               offset: const Offset(0, 8),
                               child: Text(
                                 'caloriesUnit'.tr(),
-                                style: TextStyle(
-                                  fontFamily: 'Epilogue',
-                                  fontSize: 12 * 1.5,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 1.2,
-                                  color: context.colors.text,
-                                ),
+                                style: context.textStyles.expandedAppBarValueUnit,
                               ),
                             ),
                           ],
@@ -659,14 +612,7 @@ class ViewMealScreen extends WatchingWidget {
                                       ///
                                       Text(
                                         'protein'.tr().toUpperCase(),
-                                        style: TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 8 * 1.5,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1.2,
-                                          letterSpacing: 0.4,
-                                          color: context.colors.text,
-                                        ),
+                                        style: context.textStyles.expandedAppBarNutritionLabel,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -715,14 +661,7 @@ class ViewMealScreen extends WatchingWidget {
                                       ///
                                       Text(
                                         'carbs'.tr().toUpperCase(),
-                                        style: TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 8 * 1.5,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1.2,
-                                          letterSpacing: 0.4,
-                                          color: context.colors.text,
-                                        ),
+                                        style: context.textStyles.expandedAppBarNutritionLabel,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -771,14 +710,7 @@ class ViewMealScreen extends WatchingWidget {
                                       ///
                                       Text(
                                         'fats'.tr().toUpperCase(),
-                                        style: TextStyle(
-                                          fontFamily: 'PlusJakartaSans',
-                                          fontSize: 8 * 1.5,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1.2,
-                                          letterSpacing: 0.4,
-                                          color: context.colors.text,
-                                        ),
+                                        style: context.textStyles.expandedAppBarNutritionLabel,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -840,13 +772,7 @@ class ViewMealScreen extends WatchingWidget {
                     ],
                     child: Text(
                       'foods'.tr(),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.sectionTitle,
                     ),
                   ),
                 ),
@@ -915,13 +841,7 @@ class ViewMealScreen extends WatchingWidget {
                     ],
                     child: Text(
                       'viewMealOriginalTextTitle'.tr(),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.sectionTitle,
                     ),
                   ),
                 ),
@@ -995,14 +915,7 @@ class ViewMealScreen extends WatchingWidget {
       loop: false,
       duration: BokunSpizeDurations.animation,
       curve: Curves.easeIn,
-      textStyle: TextStyle(
-        fontFamily: 'PlusJakartaSans',
-        fontSize: 8 * 1.5,
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        letterSpacing: 0.4,
-        color: context.colors.text,
-      ),
+      textStyle: context.textStyles.expandedAppBarNutritionValue,
     );
   }
 }

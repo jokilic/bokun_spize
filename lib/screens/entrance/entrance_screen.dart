@@ -247,14 +247,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 22),
                           child: Text(
                             'entranceTitle'.tr(),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 28,
-                              fontWeight: FontWeight.w800,
-                              height: 1.2,
-                              letterSpacing: 0.6,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.entranceTitle,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -287,12 +280,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         ],
                         child: Text(
                           'entranceSubtitle'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.sheetSubtitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -433,14 +421,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                         ],
                         child: Text(
                           'entranceOrConnectWith'.tr().toUpperCase(),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                            letterSpacing: 1,
-                            color: context.colors.text.withValues(alpha: 0.5),
-                          ),
+                          style: context.textStyles.entranceSeparator,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -497,12 +478,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                 style: ElevatedButton.styleFrom(
                                   elevation: 0,
                                   shape: const StadiumBorder(),
-                                  textStyle: const TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 16,
-                                    height: 1.6,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  textStyle: context.textStyles.secondaryButton,
                                   padding: const EdgeInsets.all(16),
                                   backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                   foregroundColor: context.colors.text,
@@ -538,12 +514,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,
                                     shape: const StadiumBorder(),
-                                    textStyle: const TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 16,
-                                      height: 1.6,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    textStyle: context.textStyles.secondaryButton,
                                     padding: const EdgeInsets.all(16),
                                     backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                                     foregroundColor: context.colors.text,
@@ -613,21 +584,13 @@ class _EntranceScreenState extends State<EntranceScreen> {
                                 TextSpan(
                                   recognizer: TapGestureRecognizer()..onTap = toggleLoginRegister,
                                   text: showLogin ? 'entranceCreateAnAccount'.tr() : 'signIn'.tr(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
+                                  style: context.textStyles.inlineAction.copyWith(
                                     color: context.colors.protein,
                                   ),
                                 ),
                               ],
                             ),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.sheetSubtitle,
                             textAlign: TextAlign.center,
                           ),
                         ),

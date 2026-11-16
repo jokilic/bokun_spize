@@ -211,14 +211,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       Expanded(
                         child: Text(
                           'weightsAddWeightTitle'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -271,12 +264,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   ],
                   child: Text(
                     'weightsAddWeightSubtitle'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -311,12 +299,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   ],
                   child: Text(
                     '$date, $time',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.dateTimeSummary,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -356,21 +339,11 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                           ),
                           TextSpan(
                             text: 'kilogram'.tr(),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.text.withValues(alpha: 0.7),
-                            ),
+                            style: context.textStyles.weightPickerUnit,
                           ),
                         ],
                       ),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 56,
-                        fontWeight: FontWeight.w900,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.weightPickerValue,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -503,11 +476,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             shape: const StadiumBorder(),
-                            textStyle: const TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            textStyle: context.textStyles.smallButton,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
@@ -539,11 +508,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             shape: const StadiumBorder(),
-                            textStyle: const TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            textStyle: context.textStyles.smallButton,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
@@ -596,11 +561,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.carbs,
                         foregroundColor: context.colors.buttonText,
@@ -666,10 +627,7 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
                   child: Text(
                     weight.toStringAsFixed(0),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                    style: context.textStyles.rulerLabel.copyWith(
                       color: color,
                     ),
                   ),

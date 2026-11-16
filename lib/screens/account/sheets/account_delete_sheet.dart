@@ -131,14 +131,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                       Expanded(
                         child: Text(
                           'accountDeleteSheetTitle'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -191,12 +184,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                   ],
                   child: Text(
                     'accountDeleteSheetSubtitle'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -277,22 +265,12 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                                 children: [
                                   Text(
                                     'deleteAccountExplanationTitle'.tr(),
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w900,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.infoCardTitle,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     'deleteAccountExplanationSubtitle'.tr(),
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: context.colors.text.withValues(alpha: 0.7),
-                                    ),
+                                    style: context.textStyles.infoCardDescription,
                                   ),
                                 ],
                               ),
@@ -442,11 +420,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.delete,
                         foregroundColor: context.colors.buttonText,

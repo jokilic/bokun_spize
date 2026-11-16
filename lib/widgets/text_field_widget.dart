@@ -83,13 +83,7 @@ class TextFieldWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 title.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: 'Epilogue',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.2,
-                  color: context.colors.text.withValues(alpha: 0.5),
-                ),
+                style: context.textStyles.textFieldLabel,
               ),
             ),
             const SizedBox(height: 8),
@@ -126,18 +120,14 @@ class TextFieldWidget extends StatelessWidget {
                     textInputAction: textInputAction,
                     hintStyle:
                         hintStyle ??
-                        TextStyle(
-                          fontFamily: 'PlusJakartaSans',
+                        context.textStyles.textFieldHint.copyWith(
                           fontSize: textFieldFontSize,
-                          fontWeight: FontWeight.w700,
                           color: textColor.withValues(alpha: 0.5),
                         ),
                     textStyle:
                         textStyle ??
-                        TextStyle(
-                          fontFamily: 'PlusJakartaSans',
+                        context.textStyles.textFieldText.copyWith(
                           fontSize: textFieldFontSize,
-                          fontWeight: FontWeight.w700,
                           color: textColor,
                         ),
                   ),
@@ -149,10 +139,7 @@ class TextFieldWidget extends StatelessWidget {
                 if (rightText?.isNotEmpty ?? false)
                   Text(
                     rightText!,
-                    style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                    style: context.textStyles.textFieldTrailingText.copyWith(
                       color: textColor,
                     ),
                     textAlign: TextAlign.right,
@@ -288,10 +275,7 @@ class TextFieldBody extends StatelessWidget {
       hintText: hintText,
       hintStyle:
           hintStyle ??
-          TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+          context.textStyles.listTileSubtitle.copyWith(
             color: context.colors.text.withValues(alpha: 0.5),
           ),
     ),
@@ -300,10 +284,7 @@ class TextFieldBody extends StatelessWidget {
     maxLines: maxLines,
     style:
         textStyle ??
-        TextStyle(
-          fontFamily: 'PlusJakartaSans',
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
+        context.textStyles.listTileSubtitle.copyWith(
           color: context.colors.text,
         ),
     textAlign: textAlign,

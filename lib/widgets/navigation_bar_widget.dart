@@ -54,12 +54,7 @@ class NavigationBarWidget extends WatchingWidget {
                 const SizedBox(height: 8),
                 Text(
                   'navigationBarMeals'.tr().toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.navigationBarLabel,
                 ),
               ],
             ),
@@ -93,12 +88,7 @@ class NavigationBarWidget extends WatchingWidget {
                 const SizedBox(height: 8),
                 Text(
                   'weights'.tr().toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.navigationBarLabel,
                 ),
               ],
             ),
@@ -132,12 +122,7 @@ class NavigationBarWidget extends WatchingWidget {
                 const SizedBox(height: 8),
                 Text(
                   'walks'.tr().toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.navigationBarLabel,
                 ),
               ],
             ),
@@ -183,12 +168,7 @@ class NavigationBarWidget extends WatchingWidget {
                 const SizedBox(height: 8),
                 Text(
                   'account'.tr().toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.navigationBarLabel,
                 ),
               ],
             ),

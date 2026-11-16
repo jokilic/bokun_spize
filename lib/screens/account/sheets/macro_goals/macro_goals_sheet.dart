@@ -245,14 +245,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                       Expanded(
                         child: Text(
                           'goalsTitle'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -305,12 +298,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                   ],
                   child: Text(
                     'goalsSubtitle'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -369,13 +357,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   ///
                                   Text(
                                     'calories'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 6),
 
@@ -430,12 +412,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                     loop: false,
                                                     duration: BokunSpizeDurations.animation,
                                                     curve: Curves.easeIn,
-                                                    textStyle: TextStyle(
-                                                      fontFamily: 'Epilogue',
-                                                      fontSize: 36,
-                                                      fontWeight: FontWeight.w900,
-                                                      color: context.colors.text,
-                                                    ),
+                                                    textStyle: context.textStyles.metricEditorValue,
                                                   ),
                                                 ),
                                                 const WidgetSpan(
@@ -443,21 +420,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                 ),
                                                 TextSpan(
                                                   text: 'caloriesUnit'.tr(),
-                                                  style: TextStyle(
-                                                    fontFamily: 'Epilogue',
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: context.colors.text.withValues(alpha: 0.7),
-                                                  ),
+                                                  style: context.textStyles.metricEditorUnit,
                                                 ),
                                               ],
                                             ),
-                                            style: TextStyle(
-                                              fontFamily: 'Epilogue',
-                                              fontSize: 36,
-                                              fontWeight: FontWeight.w900,
-                                              color: context.colors.text,
-                                            ),
+                                            style: context.textStyles.metricEditorValue,
                                             textAlign: TextAlign.center,
                                           ),
 
@@ -478,21 +445,11 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                 ),
                                                 TextSpan(
                                                   text: '${widget.bmr.toStringAsFixed(0)} ${'caloriesUnit'.tr()}',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Epilogue',
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: context.colors.text.withValues(alpha: 0.7),
-                                                  ),
+                                                  style: context.textStyles.goalCalculationValue,
                                                 ),
                                               ],
                                             ),
-                                            style: TextStyle(
-                                              fontFamily: 'Epilogue',
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: context.colors.text.withValues(alpha: 0.5),
-                                            ),
+                                            style: context.textStyles.goalCalculationLabel,
                                             textAlign: TextAlign.center,
                                           ),
                                         ],
@@ -578,22 +535,12 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                 children: [
                                                   Text(
                                                     'goalsExplanationTitle'.tr(),
-                                                    style: TextStyle(
-                                                      fontFamily: 'PlusJakartaSans',
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w900,
-                                                      color: context.colors.text,
-                                                    ),
+                                                    style: context.textStyles.infoCardTitle,
                                                   ),
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     'goalsExplanationSubtitle'.tr(),
-                                                    style: TextStyle(
-                                                      fontFamily: 'PlusJakartaSans',
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: context.colors.text.withValues(alpha: 0.7),
-                                                    ),
+                                                    style: context.textStyles.infoCardDescription,
                                                   ),
                                                 ],
                                               ),
@@ -667,13 +614,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                   ///
                                   Text(
                                     'macros'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 12),
 
@@ -722,12 +663,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         ///
                                                         Text(
                                                           'protein'.tr(),
-                                                          style: TextStyle(
-                                                            fontFamily: 'Epilogue',
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w700,
-                                                            color: context.colors.text,
-                                                          ),
+                                                          style: context.textStyles.macroCardTitle,
                                                         ),
 
                                                         ///
@@ -739,12 +675,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                           loop: false,
                                                           duration: BokunSpizeDurations.animation,
                                                           curve: Curves.easeIn,
-                                                          textStyle: TextStyle(
-                                                            fontFamily: 'PlusJakartaSans',
-                                                            fontSize: 10,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: context.colors.text.withValues(alpha: 0.75),
-                                                          ),
+                                                          textStyle: context.textStyles.macroCardDetail,
                                                         ),
                                                       ],
                                                     ),
@@ -771,12 +702,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       loop: false,
                                                       duration: BokunSpizeDurations.animation,
                                                       curve: Curves.easeIn,
-                                                      textStyle: TextStyle(
-                                                        fontFamily: 'Epilogue',
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w800,
-                                                        color: context.colors.text,
-                                                      ),
+                                                      textStyle: context.textStyles.macroCardValue,
                                                     ),
                                                   ),
 
@@ -791,12 +717,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       loop: false,
                                                       duration: BokunSpizeDurations.animation,
                                                       curve: Curves.easeIn,
-                                                      textStyle: TextStyle(
-                                                        fontFamily: 'PlusJakartaSans',
-                                                        fontSize: 10,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: context.colors.text.withValues(alpha: 0.75),
-                                                      ),
+                                                      textStyle: context.textStyles.macroCardDetail,
                                                     ),
                                                   ),
                                                 ],
@@ -854,12 +775,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         ///
                                                         Text(
                                                           'carbs'.tr(),
-                                                          style: TextStyle(
-                                                            fontFamily: 'Epilogue',
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w700,
-                                                            color: context.colors.text,
-                                                          ),
+                                                          style: context.textStyles.macroCardTitle,
                                                         ),
 
                                                         ///
@@ -871,12 +787,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                           loop: false,
                                                           duration: BokunSpizeDurations.animation,
                                                           curve: Curves.easeIn,
-                                                          textStyle: TextStyle(
-                                                            fontFamily: 'PlusJakartaSans',
-                                                            fontSize: 10,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: context.colors.text.withValues(alpha: 0.75),
-                                                          ),
+                                                          textStyle: context.textStyles.macroCardDetail,
                                                         ),
                                                       ],
                                                     ),
@@ -903,12 +814,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       loop: false,
                                                       duration: BokunSpizeDurations.animation,
                                                       curve: Curves.easeIn,
-                                                      textStyle: TextStyle(
-                                                        fontFamily: 'Epilogue',
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w800,
-                                                        color: context.colors.text,
-                                                      ),
+                                                      textStyle: context.textStyles.macroCardValue,
                                                     ),
                                                   ),
 
@@ -923,12 +829,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       loop: false,
                                                       duration: BokunSpizeDurations.animation,
                                                       curve: Curves.easeIn,
-                                                      textStyle: TextStyle(
-                                                        fontFamily: 'PlusJakartaSans',
-                                                        fontSize: 10,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: context.colors.text.withValues(alpha: 0.75),
-                                                      ),
+                                                      textStyle: context.textStyles.macroCardDetail,
                                                     ),
                                                   ),
                                                 ],
@@ -986,12 +887,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                         ///
                                                         Text(
                                                           'fats'.tr(),
-                                                          style: TextStyle(
-                                                            fontFamily: 'Epilogue',
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w700,
-                                                            color: context.colors.text,
-                                                          ),
+                                                          style: context.textStyles.macroCardTitle,
                                                         ),
 
                                                         ///
@@ -1003,12 +899,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                           loop: false,
                                                           duration: BokunSpizeDurations.animation,
                                                           curve: Curves.easeIn,
-                                                          textStyle: TextStyle(
-                                                            fontFamily: 'PlusJakartaSans',
-                                                            fontSize: 10,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: context.colors.text.withValues(alpha: 0.75),
-                                                          ),
+                                                          textStyle: context.textStyles.macroCardDetail,
                                                         ),
                                                       ],
                                                     ),
@@ -1035,12 +926,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       loop: false,
                                                       duration: BokunSpizeDurations.animation,
                                                       curve: Curves.easeIn,
-                                                      textStyle: TextStyle(
-                                                        fontFamily: 'Epilogue',
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w800,
-                                                        color: context.colors.text,
-                                                      ),
+                                                      textStyle: context.textStyles.macroCardValue,
                                                     ),
                                                   ),
 
@@ -1055,12 +941,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                                                       loop: false,
                                                       duration: BokunSpizeDurations.animation,
                                                       curve: Curves.easeIn,
-                                                      textStyle: TextStyle(
-                                                        fontFamily: 'PlusJakartaSans',
-                                                        fontSize: 10,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: context.colors.text.withValues(alpha: 0.75),
-                                                      ),
+                                                      textStyle: context.textStyles.macroCardDetail,
                                                     ),
                                                   ),
                                                 ],
@@ -1113,11 +994,7 @@ class _MacroGoalsSheetState extends State<MacroGoalsSheet> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: widget.activeColor,
                         foregroundColor: context.colors.buttonText,

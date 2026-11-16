@@ -104,14 +104,7 @@ class ViewMessageSheet extends StatelessWidget {
                       Expanded(
                         child: Text(
                           'message'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -178,12 +171,7 @@ class ViewMessageSheet extends StatelessWidget {
                         ),
                       ],
                     ),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),

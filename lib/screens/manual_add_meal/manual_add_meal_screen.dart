@@ -203,14 +203,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       Expanded(
                         child: Text(
                           isCopyingMeal ? 'manualAddMealCopyTitle'.tr() : (isEditingMeal ? 'manualAddMealEditTitle'.tr() : 'logMeal'.tr()),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.screenTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -263,12 +256,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ],
                   child: Text(
                     isEditingMeal ? 'manualAddMealEditSubtitle'.tr() : 'manualAddMealSubtitle'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -628,11 +616,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                 const SizedBox(height: 10),
                                 Text(
                                   'manualAddMealNoImage'.tr(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.6,
+                                  style: context.textStyles.emptyStateDescription.copyWith(
                                     color: context.colors.text,
                                   ),
                                   textAlign: TextAlign.center,
@@ -676,13 +660,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                       const SizedBox(height: 10),
                                       Text(
                                         'camera'.tr(),
-                                        style: TextStyle(
-                                          fontFamily: 'Epilogue',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.6,
-                                          color: context.colors.text,
-                                        ),
+                                        style: context.textStyles.imageSourceAction,
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -721,13 +699,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                       const SizedBox(height: 10),
                                       Text(
                                         'gallery'.tr(),
-                                        style: TextStyle(
-                                          fontFamily: 'Epilogue',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.6,
-                                          color: context.colors.text,
-                                        ),
+                                        style: context.textStyles.imageSourceAction,
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -769,13 +741,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ],
                     child: Text(
                       'nutritionalValues'.tr(),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.sectionTitle,
                     ),
                   ),
                 ),
@@ -934,13 +900,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                     ],
                     child: Text(
                       'foods'.tr(),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.sectionTitle,
                     ),
                   ),
                 ),
@@ -1039,12 +999,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           shape: const StadiumBorder(),
-                          textStyle: const TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 16,
-                            height: 1.6,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          textStyle: context.textStyles.secondaryButton,
                           padding: const EdgeInsets.all(16),
                           shadowColor: Colors.transparent,
                           overlayColor: Colors.transparent,
@@ -1092,13 +1047,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                   ],
                   child: Text(
                     'dateTime'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sectionTitle,
                   ),
                 ),
               ),
@@ -1159,13 +1108,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   ///
                                   Text(
                                     'date'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 6),
 
@@ -1174,13 +1117,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   ///
                                   Text(
                                     date,
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.6,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.sectionTitle,
                                   ),
                                 ],
                               ),
@@ -1261,13 +1198,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   ///
                                   Text(
                                     'time'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 6),
 
@@ -1276,13 +1207,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   ///
                                   Text(
                                     time,
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.6,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.sectionTitle,
                                   ),
                                 ],
                               ),
@@ -1369,11 +1294,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.protein,
                         foregroundColor: context.colors.buttonText,

@@ -87,12 +87,7 @@ class AccountAppBar extends StatelessWidget {
                 onPressed: () {},
                 icon: Text(
                   'account'.tr(),
-                  style: TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontSize: 18,
-                    height: 1.2,
-                    letterSpacing: 0.6,
-                    fontWeight: FontWeight.w900,
+                  style: context.textStyles.appBarTitle.copyWith(
                     color: context.colors.account,
                   ),
                   maxLines: 1,
@@ -201,13 +196,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   Text(
                     email?.toUpperCase() ?? '--',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.appBarCaption,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -217,12 +206,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   ///
                   AutoSizeText(
                     name ?? '--',
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800,
-                      height: 1.2,
-                      letterSpacing: 1.2,
+                    style: context.textStyles.appBarPrimaryValue.copyWith(
                       color: context.colors.account,
                     ),
                     minFontSize: 16,

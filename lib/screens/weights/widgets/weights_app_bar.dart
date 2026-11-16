@@ -74,12 +74,7 @@ class WeightsAppBar extends StatelessWidget {
                 onPressed: () {},
                 icon: Text(
                   'weights'.tr(),
-                  style: TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontSize: 18,
-                    height: 1.2,
-                    letterSpacing: 0.6,
-                    fontWeight: FontWeight.w900,
+                  style: context.textStyles.appBarTitle.copyWith(
                     color: context.colors.carbs,
                   ),
                   maxLines: 1,
@@ -235,13 +230,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                   else
                     Text(
                       dayString.toUpperCase(),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.appBarCaption,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -288,12 +277,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                           loop: false,
                           duration: BokunSpizeDurations.animation,
                           curve: Curves.easeIn,
-                          textStyle: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 40,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 1.2,
+                          textStyle: context.textStyles.appBarPrimaryValue.copyWith(
                             color: context.colors.carbs,
                           ),
                         )
@@ -303,12 +287,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       else
                         Text(
                           '--',
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 40,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 1.2,
+                          style: context.textStyles.appBarPrimaryValue.copyWith(
                             color: context.colors.carbs,
                           ),
                           maxLines: 1,
@@ -350,13 +329,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                           offset: const Offset(0, 6),
                           child: Text(
                             'kilogram'.tr(),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 1.2,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.appBarValueUnit,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -424,10 +397,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                       const SizedBox(width: 2),
                       Text(
                         '${weightChange! > 0 ? '+' : ''}${weightChange!.toStringAsFixed(1)}${'kilogram'.tr()}',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
+                        style: context.textStyles.appBarComparisonValue.copyWith(
                           color: changeColor,
                         ),
                         textAlign: TextAlign.right,
@@ -445,13 +415,7 @@ class FadingFlexibleTitle extends StatelessWidget {
                         ),
                         null => '-',
                       },
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.2,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.appBarComparisonUnit,
                       textAlign: TextAlign.right,
                     ),
                 ],

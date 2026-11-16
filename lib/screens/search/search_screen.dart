@@ -149,14 +149,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         Expanded(
                           child: Text(
                             'searchTitle'.tr(),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              height: 1.2,
-                              letterSpacing: 0.6,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.screenTitle,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -209,12 +202,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                     child: Text(
                       'searchSubtitle'.tr(),
-                      style: TextStyle(
-                        fontFamily: 'Epilogue',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: context.colors.text,
-                      ),
+                      style: context.textStyles.sheetSubtitle,
                       textAlign: TextAlign.center,
                     ),
                   ),

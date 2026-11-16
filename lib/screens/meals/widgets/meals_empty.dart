@@ -46,25 +46,13 @@ class MealsEmpty extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'mealsEmptyTitle'.tr(),
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.6,
-                color: context.colors.text,
-              ),
+              style: context.textStyles.emptyStateTitle,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
             Text(
               'mealsEmptySubtitle'.tr(),
-              style: TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.6,
-                color: context.colors.text.withValues(alpha: 0.75),
-              ),
+              style: context.textStyles.emptyStateDescription,
               textAlign: TextAlign.center,
             ),
           ],

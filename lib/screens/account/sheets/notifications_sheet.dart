@@ -292,14 +292,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                     Expanded(
                       child: Text(
                         'notificationsTitle'.tr(),
-                        style: TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          height: 1.2,
-                          letterSpacing: 0.6,
-                          color: context.colors.text,
-                        ),
+                        style: context.textStyles.sheetTitle,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -352,12 +345,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                 ],
                 child: Text(
                   'notificationsSheetSubtitle'.tr(),
-                  style: TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: context.colors.text,
-                  ),
+                  style: context.textStyles.sheetSubtitle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -440,22 +428,12 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                                 children: [
                                   Text(
                                     permissionStatusText,
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w900,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.infoCardTitle,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
-                                    style: TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: context.colors.text.withValues(alpha: 0.7),
-                                    ),
+                                    style: context.textStyles.infoCardDescription,
                                   ),
                                 ],
                               ),
@@ -530,11 +508,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
                               shape: const StadiumBorder(),
-                              textStyle: const TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              textStyle: context.textStyles.smallButton,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 8,

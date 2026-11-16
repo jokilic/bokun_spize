@@ -119,12 +119,7 @@ class WeightsListTile extends StatelessWidget {
                                   ),
                                 ) ??
                                 '--',
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.listTileTitle,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -140,12 +135,7 @@ class WeightsListTile extends StatelessWidget {
                               useTodayYesterdayTomorrow: false,
                               languageCode: context.locale.languageCode,
                             ),
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: context.colors.text.withValues(alpha: 0.7),
-                            ),
+                            style: context.textStyles.listTileSubtitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -166,26 +156,14 @@ class WeightsListTile extends StatelessWidget {
                         Text.rich(
                           TextSpan(
                             text: weightTrack.weight.toStringAsFixed(1),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.listTilePrimaryValue,
                             children: [
                               const WidgetSpan(
                                 child: SizedBox(width: 4),
                               ),
                               TextSpan(
                                 text: 'kilogram'.tr(),
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
-                                  letterSpacing: 1.2,
-                                  color: context.colors.text.withValues(alpha: 0.7),
-                                ),
+                                style: context.textStyles.listTilePrimaryValueUnit,
                               ),
                             ],
                           ),
@@ -212,10 +190,7 @@ class WeightsListTile extends StatelessWidget {
                               const SizedBox(width: 2),
                               Text(
                                 '${weightChange!.abs().toStringAsFixed(1)}${'kilogram'.tr()}',
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
+                                style: context.textStyles.listTileStatus.copyWith(
                                   color: changeColor,
                                 ),
                                 textAlign: TextAlign.right,

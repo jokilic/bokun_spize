@@ -202,6 +202,8 @@ class BokunSpizeTextStyles {
     fontWeight: FontWeight.w600,
   );
 
+  static const TextStyle smallButton = dateTimeButton;
+
   ///
   /// TEXT FIELDS
   ///
@@ -405,6 +407,8 @@ class BokunSpizeTextStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static const TextStyle accountMetricValue = dateTimeButton;
+
   static const TextStyle macroCardTitle = inlineAction;
 
   static const TextStyle macroCardValue = TextStyle(
@@ -520,6 +524,7 @@ enum BokunSpizeTextStyleToken {
   inlineAction(BokunSpizeTextStyles.inlineAction),
   imageSourceAction(BokunSpizeTextStyles.imageSourceAction),
   dateTimeButton(BokunSpizeTextStyles.dateTimeButton),
+  smallButton(BokunSpizeTextStyles.smallButton),
   textFieldLabel(BokunSpizeTextStyles.textFieldLabel),
   textFieldText(BokunSpizeTextStyles.textFieldText),
   textFieldHint(BokunSpizeTextStyles.textFieldHint),
@@ -560,6 +565,7 @@ enum BokunSpizeTextStyleToken {
   timePickerDisabledValue(BokunSpizeTextStyles.timePickerDisabledValue),
   metricEditorValue(BokunSpizeTextStyles.metricEditorValue),
   metricEditorUnit(BokunSpizeTextStyles.metricEditorUnit),
+  accountMetricValue(BokunSpizeTextStyles.accountMetricValue),
   macroCardTitle(BokunSpizeTextStyles.macroCardTitle),
   macroCardValue(BokunSpizeTextStyles.macroCardValue),
   macroCardDetail(BokunSpizeTextStyles.macroCardDetail),
@@ -618,6 +624,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
   TextStyle get inlineAction => resolve(BokunSpizeTextStyleToken.inlineAction);
   TextStyle get imageSourceAction => resolve(BokunSpizeTextStyleToken.imageSourceAction);
   TextStyle get dateTimeButton => resolve(BokunSpizeTextStyleToken.dateTimeButton);
+  TextStyle get smallButton => resolve(BokunSpizeTextStyleToken.smallButton);
   TextStyle get textFieldLabel => resolve(BokunSpizeTextStyleToken.textFieldLabel);
   TextStyle get textFieldText => resolve(BokunSpizeTextStyleToken.textFieldText);
   TextStyle get textFieldHint => resolve(BokunSpizeTextStyleToken.textFieldHint);
@@ -658,6 +665,7 @@ class BokunSpizeTextThemesExtension extends ThemeExtension<BokunSpizeTextThemesE
   TextStyle get timePickerDisabledValue => resolve(BokunSpizeTextStyleToken.timePickerDisabledValue);
   TextStyle get metricEditorValue => resolve(BokunSpizeTextStyleToken.metricEditorValue);
   TextStyle get metricEditorUnit => resolve(BokunSpizeTextStyleToken.metricEditorUnit);
+  TextStyle get accountMetricValue => resolve(BokunSpizeTextStyleToken.accountMetricValue);
   TextStyle get macroCardTitle => resolve(BokunSpizeTextStyleToken.macroCardTitle);
   TextStyle get macroCardValue => resolve(BokunSpizeTextStyleToken.macroCardValue);
   TextStyle get macroCardDetail => resolve(BokunSpizeTextStyleToken.macroCardDetail);
@@ -785,6 +793,9 @@ BokunSpizeTextThemesExtension getTextThemesExtension({
     color: colorsExtension.text.withValues(alpha: 0.2),
   );
   styles[BokunSpizeTextStyleToken.metricEditorUnit] = BokunSpizeTextStyleToken.metricEditorUnit.style.copyWith(
+    color: colorsExtension.text.withValues(alpha: 0.7),
+  );
+  styles[BokunSpizeTextStyleToken.accountMetricValue] = BokunSpizeTextStyleToken.accountMetricValue.style.copyWith(
     color: colorsExtension.text.withValues(alpha: 0.7),
   );
   styles[BokunSpizeTextStyleToken.macroCardDetail] = BokunSpizeTextStyleToken.macroCardDetail.style.copyWith(

@@ -247,14 +247,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       Expanded(
                         child: Text(
                           'userMetricsTitle'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -307,12 +300,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                   ],
                   child: Text(
                     'userMetricsSubtitle'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -444,13 +432,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                   ///
                                   Text(
                                     'age'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 6),
 
@@ -467,12 +449,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                             loop: false,
                                             duration: BokunSpizeDurations.animation,
                                             curve: Curves.easeIn,
-                                            textStyle: TextStyle(
-                                              fontFamily: 'Epilogue',
-                                              fontSize: 36,
-                                              fontWeight: FontWeight.w900,
-                                              color: context.colors.text,
-                                            ),
+                                            textStyle: context.textStyles.metricEditorValue,
                                           ),
                                         ),
                                         const WidgetSpan(
@@ -480,21 +457,11 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                                         ),
                                         TextSpan(
                                           text: 'years'.tr(),
-                                          style: TextStyle(
-                                            fontFamily: 'Epilogue',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            color: context.colors.text.withValues(alpha: 0.7),
-                                          ),
+                                          style: context.textStyles.metricEditorUnit,
                                         ),
                                       ],
                                     ),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 36,
-                                      fontWeight: FontWeight.w900,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.metricEditorValue,
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -626,13 +593,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             ///
                             Text(
                               'accountUserMetricsHeight'.tr().toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
-                                color: context.colors.text.withValues(alpha: 0.5),
-                              ),
+                              style: context.textStyles.compactFieldLabel,
                             ),
                             const SizedBox(height: 4),
 
@@ -701,13 +662,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                             ///
                             Text(
                               'accountUserMetricsWeight'.tr().toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
-                                color: context.colors.text.withValues(alpha: 0.5),
-                              ),
+                              style: context.textStyles.compactFieldLabel,
                             ),
                             const SizedBox(height: 4),
 
@@ -758,11 +713,7 @@ class _UserMetricsSheetState extends State<UserMetricsSheet> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: activeColor ?? context.colors.listTileBackground.withValues(alpha: 0.5),
                         foregroundColor: context.colors.buttonText,

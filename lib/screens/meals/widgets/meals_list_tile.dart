@@ -222,10 +222,7 @@ class MealsListTile extends StatelessWidget {
                                         fit: BoxFit.scaleDown,
                                         child: Text(
                                           meal.emoji!,
-                                          style: const TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 24,
-                                          ),
+                                          style: context.textStyles.listTileEmoji,
                                           maxLines: 1,
                                           softWrap: false,
                                         ),
@@ -276,12 +273,7 @@ class MealsListTile extends StatelessWidget {
                           else
                             Text(
                               titleText,
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w900,
-                                color: context.colors.text,
-                              ),
+                              style: context.textStyles.listTileTitle,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -319,22 +311,12 @@ class MealsListTile extends StatelessWidget {
                           else if (hasError)
                             Text(
                               errorText!,
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.listTileSubtitle,
                             )
                           else
                             Text(
                               subtitleText,
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.listTileSubtitle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -379,10 +361,7 @@ class MealsListTile extends StatelessWidget {
                                     meal.nutrition?.calories,
                                   ) ??
                                   '',
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
+                              style: context.textStyles.listTileCaloriesValue.copyWith(
                                 color: primaryColor,
                               ),
                               maxLines: 1,
@@ -418,12 +397,7 @@ class MealsListTile extends StatelessWidget {
                           ] else
                             Text(
                               'caloriesUnit'.tr().toUpperCase(),
-                              style: TextStyle(
-                                fontFamily: 'Epilogue',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.5),
-                              ),
+                              style: context.textStyles.listTileCaloriesUnit,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.right,

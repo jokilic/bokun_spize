@@ -112,13 +112,7 @@ class EntranceLogin extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    textStyle: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1.2,
-                      color: context.colors.text.withValues(alpha: 0.5),
-                    ),
+                    textStyle: context.textStyles.textFieldLabel,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: EdgeInsets.zero,
@@ -151,11 +145,7 @@ class EntranceLogin extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               elevation: 0,
               shape: const StadiumBorder(),
-              textStyle: const TextStyle(
-                fontFamily: 'Epilogue',
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
+              textStyle: context.textStyles.mainButton,
               padding: const EdgeInsets.all(20),
               backgroundColor: context.colors.protein,
               foregroundColor: context.colors.buttonText,

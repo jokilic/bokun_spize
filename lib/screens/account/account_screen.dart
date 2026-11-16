@@ -184,12 +184,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               text: normalizedHeight(
                                 userMetrics!.height!,
                               ).toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'centimeter'.tr(),
@@ -207,12 +202,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             ///
                             TextSpan(
                               text: userMetrics.weight!.toStringAsFixed(1),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'kilogram'.tr(),
@@ -230,24 +220,14 @@ class _AccountScreenState extends State<AccountScreen> {
                             ///
                             TextSpan(
                               text: userMetrics.age!.toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'yearUnit'.tr(),
                             ),
                           ],
                         ),
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.text.withValues(alpha: 0.7),
-                        ),
+                        style: context.textStyles.listTileSubtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       )
@@ -296,12 +276,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           children: [
                             TextSpan(
                               text: userMetrics!.dailyCalories!.toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'caloriesUnit'.tr(),
@@ -319,12 +294,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             ///
                             TextSpan(
                               text: userMetrics.dailyProtein!.toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'gramUnit'.tr(),
@@ -342,12 +312,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             ///
                             TextSpan(
                               text: userMetrics.dailyCarbs!.toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'gramUnit'.tr(),
@@ -365,24 +330,14 @@ class _AccountScreenState extends State<AccountScreen> {
                             ///
                             TextSpan(
                               text: userMetrics.dailyFat!.toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: context.colors.text.withValues(alpha: 0.7),
-                              ),
+                              style: context.textStyles.accountMetricValue,
                             ),
                             TextSpan(
                               text: 'gramUnit'.tr(),
                             ),
                           ],
                         ),
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.text.withValues(alpha: 0.7),
-                        ),
+                        style: context.textStyles.listTileSubtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       )
@@ -574,12 +529,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                               ],
                             ),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: context.colors.text.withValues(alpha: 0.7),
-                            ),
+                            style: context.textStyles.appVersion,
                             textAlign: TextAlign.center,
                           );
                         }

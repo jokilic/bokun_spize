@@ -164,14 +164,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                       Expanded(
                         child: Text(
                           'logMeal'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Epilogue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.6,
-                            color: context.colors.text,
-                          ),
+                          style: context.textStyles.screenTitle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -224,12 +217,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   ],
                   child: Text(
                     'aiAddMealSubtitle'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sheetSubtitle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -509,13 +497,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 const SizedBox(height: 10),
                                 Text(
                                   'camera'.tr(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.6,
-                                    color: context.colors.text,
-                                  ),
+                                  style: context.textStyles.imageSourceAction,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -554,13 +536,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 const SizedBox(height: 10),
                                 Text(
                                   'gallery'.tr(),
-                                  style: TextStyle(
-                                    fontFamily: 'Epilogue',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.6,
-                                    color: context.colors.text,
-                                  ),
+                                  style: context.textStyles.imageSourceAction,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -601,13 +577,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                   ],
                   child: Text(
                     'dateTime'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.sectionTitle,
                   ),
                 ),
               ),
@@ -668,13 +638,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   ///
                                   Text(
                                     'date'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 6),
 
@@ -683,13 +647,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   ///
                                   Text(
                                     date,
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.6,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.sectionTitle,
                                   ),
                                 ],
                               ),
@@ -770,13 +728,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   ///
                                   Text(
                                     'time'.tr().toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.2,
-                                      color: context.colors.text.withValues(alpha: 0.5),
-                                    ),
+                                    style: context.textStyles.compactFieldLabel,
                                   ),
                                   const SizedBox(height: 6),
 
@@ -785,13 +737,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   ///
                                   Text(
                                     time,
-                                    style: TextStyle(
-                                      fontFamily: 'Epilogue',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.6,
-                                      color: context.colors.text,
-                                    ),
+                                    style: context.textStyles.sectionTitle,
                                   ),
                                 ],
                               ),
@@ -863,11 +809,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Epilogue',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        textStyle: context.textStyles.mainButton,
                         padding: const EdgeInsets.all(20),
                         backgroundColor: context.colors.protein,
                         foregroundColor: context.colors.buttonText,

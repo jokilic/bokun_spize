@@ -70,13 +70,7 @@ class WeightsGraph extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'recentProgress'.tr(),
-                    style: TextStyle(
-                      fontFamily: 'Epilogue',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: context.colors.text,
-                    ),
+                    style: context.textStyles.graphTitle,
                   ),
                 ),
 
@@ -129,12 +123,7 @@ class WeightsGraph extends StatelessWidget {
                             'calendarDays'.tr(
                               args: ['$calendarDays'],
                             ),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.graphMenuItem,
                           ),
                         ),
                       )
@@ -159,13 +148,7 @@ class WeightsGraph extends StatelessWidget {
                             'calendarDays'.tr(
                               args: ['$calendarDays'],
                             ),
-                            style: TextStyle(
-                              fontFamily: 'Epilogue',
-                              fontSize: 16,
-                              height: 1.6,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.text,
-                            ),
+                            style: context.textStyles.graphMenuButton,
                           ),
                         ],
                       ),
@@ -247,14 +230,7 @@ class WeightsGraphWidget extends StatelessWidget {
                     ? Center(
                         child: Text(
                           'weightsNoWeightTracks'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.text.withValues(
-                              alpha: 0.4,
-                            ),
-                          ),
+                          style: context.textStyles.graphNoData,
                         ),
                       )
                     : Padding(
@@ -370,22 +346,12 @@ class WeightsGraphWidget extends StatelessWidget {
 
                 return LineTooltipItem(
                   date,
-                  TextStyle(
-                    fontFamily: 'Epilogue',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: context.colors.buttonText.withValues(alpha: 0.7),
-                  ),
+                  context.textStyles.graphTooltipDate,
                   children: [
                     const TextSpan(text: '\n'),
                     TextSpan(
                       text: '${weightTrack.weight.toStringAsFixed(1)} ${'kilogram'.tr()}',
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: context.colors.buttonText,
-                      ),
+                      style: context.textStyles.graphTooltipValue,
                     ),
                   ],
                 );
@@ -421,6 +387,7 @@ class WeightsGraphWidget extends StatelessWidget {
               reservedSize: 32,
               interval: titleInterval,
               getTitlesWidget: (value, meta) => buildBottomTitle(
+                context: context,
                 value: value,
                 meta: meta,
                 firstDateTime: firstDateTime,
@@ -481,7 +448,9 @@ class WeightsGraphWidget extends StatelessWidget {
     );
   }
 
+  /// Builds a bottom-axis date label for the visible graph range
   Widget buildBottomTitle({
+    required BuildContext context,
     required double value,
     required TitleMeta meta,
     required DateTime firstDateTime,
@@ -519,11 +488,7 @@ class WeightsGraphWidget extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          fontFamily: 'Epilogue',
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.6,
+        style: context.textStyles.graphAxisLabel.copyWith(
           color: labelColor.withValues(alpha: 0.7),
         ),
       ),
