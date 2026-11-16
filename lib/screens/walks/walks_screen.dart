@@ -167,12 +167,11 @@ class _WalksScreenState extends State<WalksScreen> {
                   isLoading: isLoading,
                   isHistoryLoading: isHistoryLoading,
                   dayString: latestStepsWithDate != null
-                      ?
-                        // TODO: Here
-                        getDateString(
+                      ? getDateString(
                           date: latestStepsWithDate.dateTime,
                           dateFormat: 'EEEE, dd MMM',
                           languageCode: context.locale.languageCode,
+                          includeYearIfNotCurrentYear: true,
                         )
                       : 'walksErrorNoSteps'.tr(),
                   currentSteps: latestStepsWithDate?.steps,

@@ -64,18 +64,18 @@ class _MealsScreenState extends State<MealsScreen> {
     final meals = state.meals;
 
     /// Localized `date` values
-    // TODO: Here
     final shortDayString = getDateString(
       date: currentlyVisibleDate,
       dateFormat: 'dd MMM',
       languageCode: context.locale.languageCode,
+      includeYearIfNotCurrentYear: true,
     );
 
-    // TODO: Here
     final fullDayString = getDateString(
       date: currentlyVisibleDate,
       dateFormat: 'EEEE, dd MMM',
       languageCode: context.locale.languageCode,
+      includeYearIfNotCurrentYear: true,
     );
 
     /// Listens to any changes in `userMetrics` from [Firebase]

@@ -112,11 +112,11 @@ class WeightsListTile extends StatelessWidget {
                           ///
                           Text(
                             capitalizeFirstLetter(
-                                  // TODO: Here
                                   getDateString(
                                     date: weightTrack.dateTime,
                                     dateFormat: 'EEE, dd MMM',
                                     languageCode: context.locale.languageCode,
+                                    includeYearIfNotCurrentYear: true,
                                   ),
                                 ) ??
                                 '--',

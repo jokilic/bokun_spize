@@ -58,11 +58,11 @@ class ViewMealScreen extends WatchingWidget {
 
     final hasError = passedMeal.errors?.isNotEmpty ?? false;
 
-    // TODO: Here
     final date = getDateString(
       date: createdAt,
       dateFormat: 'EEEE, dd MMM',
       languageCode: context.locale.languageCode,
+      includeYearIfNotCurrentYear: true,
     );
 
     final time = getDateString(

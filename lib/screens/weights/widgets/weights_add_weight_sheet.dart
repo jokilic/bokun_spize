@@ -130,11 +130,11 @@ class WeightsAddWeightSheetState extends State<WeightsAddWeightSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Here
     final date = getDateString(
       date: selectedDateTime,
       dateFormat: 'dd MMM',
       languageCode: context.locale.languageCode,
+      includeYearIfNotCurrentYear: true,
     );
 
     final time = getDateString(

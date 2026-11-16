@@ -337,12 +337,12 @@ class WeightsGraphWidget extends StatelessWidget {
               (touchedSpot) {
                 final weightTrack = weightTracks[touchedSpot.spotIndex];
 
-// TODO: Here
                 final date = getDateString(
                   date: weightTrack.dateTime,
                   dateFormat: 'dd MMM',
                   useTodayYesterdayTomorrow: false,
                   languageCode: context.locale.languageCode,
+                  includeYearIfNotCurrentYear: true,
                 );
 
                 return LineTooltipItem(
@@ -476,11 +476,11 @@ class WeightsGraphWidget extends StatelessWidget {
             ),
           );
 
-          // TODO: Here
     final label = getDateString(
       date: dateTime,
       dateFormat: 'dd MMM',
       languageCode: languageCode,
+      includeYearIfNotCurrentYear: true,
     ).toUpperCase();
 
     return SideTitleWidget(

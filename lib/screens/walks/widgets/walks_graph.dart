@@ -364,12 +364,12 @@ class WalksGraphWidget extends StatelessWidget {
               (touchedSpot) {
                 final stepWithDate = stepsWithDate[touchedSpot.spotIndex];
 
-                // TODO: Here
                 final date = getDateString(
                   date: stepWithDate.dateTime,
                   dateFormat: 'dd MMM',
                   useTodayYesterdayTomorrow: false,
                   languageCode: context.locale.languageCode,
+                  includeYearIfNotCurrentYear: true,
                 );
 
                 final steps = stepWithDate.steps.round().toStringAsFixed(0);
@@ -507,11 +507,11 @@ class WalksGraphWidget extends StatelessWidget {
             ),
           );
 
-    // TODO: Here
     final label = getDateString(
       date: dateTime,
       dateFormat: 'dd MMM',
       languageCode: languageCode,
+      includeYearIfNotCurrentYear: true,
     ).toUpperCase();
 
     return SideTitleWidget(

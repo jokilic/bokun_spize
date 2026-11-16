@@ -200,12 +200,11 @@ class _WeightsScreenState extends State<WeightsScreen> {
                   isLoading: isLoading,
                   isHistoryLoading: isHistoryLoading,
                   dayString: lastWeightTrack != null
-                      ?
-                        // TODO: Here
-                        getDateString(
+                      ? getDateString(
                           date: lastWeightTrack.dateTime,
                           dateFormat: 'EEEE, dd MMM',
                           languageCode: context.locale.languageCode,
+                          includeYearIfNotCurrentYear: true,
                         )
                       : 'weightsErrorNoWeights'.tr(),
                   currentWeight: lastWeightTrack?.weight,

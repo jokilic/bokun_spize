@@ -39,11 +39,11 @@ class SearchListTile extends StatelessWidget {
 
     final titleText = isLoading ? meal.originalText ?? '📷' : capitalizeFirstLetter(meal.name) ?? '📷';
 
-    // TODO: Here
     final date = getDateString(
       date: meal.createdAt,
       dateFormat: 'EEEE, dd MMM',
       languageCode: context.locale.languageCode,
+      includeYearIfNotCurrentYear: true,
     );
 
     final time = getDateString(

@@ -18,6 +18,7 @@ String getDateString({
   required String dateFormat,
   required String languageCode,
   bool useTodayYesterdayTomorrow = true,
+  bool includeYearIfNotCurrentYear = false,
 }) {
   final now = DateTime.now();
 
@@ -26,7 +27,7 @@ String getDateString({
 
   final dayDifference = providedDate.difference(today).inDays;
 
-  if (useTodayYesterdayTomorrow) {
+  if (useTodayYesterdayTomorrow && (!includeYearIfNotCurrentYear || date.year == now.year)) {
     if (dayDifference == 0) {
       return 'today'.tr();
     }
@@ -40,7 +41,12 @@ String getDateString({
     }
   }
 
-  return DateFormat(dateFormat, languageCode).format(date);
+  final resolvedDateFormat = includeYearIfNotCurrentYear && date.year != now.year ? '$dateFormat yyyy' : dateFormat;
+
+  return DateFormat(
+    resolvedDateFormat,
+    languageCode,
+  ).format(date);
 }
 
 /// Returns proper [DateTime] from passed `mealDate` and `mealTime`
