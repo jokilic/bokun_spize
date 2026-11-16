@@ -1,8 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'colors.dart';
-
-// TODO: Implement commented out text themes
+import 'text_style.dart';
 
 class BokunSpizeTheme {
   ///
@@ -15,8 +14,7 @@ class BokunSpizeTheme {
     );
 
     final lightAppColors = getLightAppColors();
-
-    // final lightTextTheme = getLightTextTheme();
+    final lightTextTheme = getLightTextTheme();
 
     return defaultTheme.copyWith(
       colorScheme: ColorScheme.fromSeed(
@@ -36,7 +34,7 @@ class BokunSpizeTheme {
       ),
       extensions: [
         lightAppColors,
-        // lightTextTheme,
+        lightTextTheme,
       ],
     );
   }
@@ -53,9 +51,10 @@ class BokunSpizeTheme {
     account: BokunSpizeColors.yellow,
   );
 
-  // static BokunSpizeTextThemesExtension getLightTextTheme() => getTextThemesExtension(
-  //   colorsExtension: getLightAppColors(),
-  // );
+  /// Creates the complete light typography extension
+  static BokunSpizeTextThemesExtension getLightTextTheme() => getTextThemesExtension(
+    colorsExtension: getLightAppColors(),
+  );
 
   ///
   /// DARK
@@ -67,8 +66,7 @@ class BokunSpizeTheme {
     );
 
     final darkAppColors = getDarkAppColors();
-
-    // final darkTextTheme = getDarkTextTheme();
+    final darkTextTheme = getDarkTextTheme();
 
     return defaultTheme.copyWith(
       colorScheme: ColorScheme.fromSeed(
@@ -89,7 +87,7 @@ class BokunSpizeTheme {
       ),
       extensions: [
         darkAppColors,
-        // darkTextTheme,
+        darkTextTheme,
       ],
     );
   }
@@ -106,7 +104,8 @@ class BokunSpizeTheme {
     account: BokunSpizeColors.yellow,
   );
 
-  // static BokunSpizeTextThemesExtension getDarkTextTheme() => getTextThemesExtension(
-  //   colorsExtension: getDarkAppColors(),
-  // );
+  /// Creates the complete dark typography extension
+  static BokunSpizeTextThemesExtension getDarkTextTheme() => getTextThemesExtension(
+    colorsExtension: getDarkAppColors(),
+  );
 }
