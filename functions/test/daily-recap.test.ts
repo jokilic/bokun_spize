@@ -1,9 +1,12 @@
 import {describe, expect, it} from "vitest";
+import {Timestamp} from "firebase-admin/firestore";
 
+import {getDailyRecapPeriod} from "../src/daily-recap";
 import {
-  buildDailyRecapCopy,
-  getDailyRecapPeriod,
-} from "../src/daily-recap";
+  buildDailyRecapPrompt,
+  buildGeneratedDailyRecapCopy,
+  parseDailyRecapResponse,
+} from "../src/daily-recap-ai";
 
 describe("daily meal recap", () => {
   it("targets the previous local day just after midnight", () => {
@@ -18,19 +21,29 @@ describe("daily meal recap", () => {
     expect(period.recapKey).toBe("2026-11-17_00-05");
   });
 
-  it("builds localized copy with the meal count and calories", () => {
-    const copy = buildDailyRecapCopy(
-      {
-        count: 2,
-        nutritionCount: 2,
-        calories: 1800,
-        protein: 100,
-        carbs: 200,
-        fat: 60,
+  it("passes complete meal data to the AI prompt", () => {
+    const prompt = buildDailyRecapPrompt([{
+      documentId: "meal-1",
+      data: {
+        name: "Fruit and yogurt",
+        foods: [{name: "Apple", quantity: 1, unit: "piece"}],
+        createdAt: Timestamp.fromDate(new Date("2026-11-16T08:00:00.000Z")),
       },
-    );
+    }]);
 
-    expect(copy.en.body).toBe("Meals: 2 · 1,800 kcal");
-    expect(copy.hr.body).toBe("Obroci: 2 · 1.800 kcal");
+    expect(prompt).toContain('"documentId":"meal-1"');
+    expect(prompt).toContain('"foods":[{"name":"Apple","quantity":1,"unit":"piece"}]');
+    expect(prompt).toContain('"createdAt":"2026-11-16T08:00:00.000Z"');
+  });
+
+  it("uses generated localized bodies as notification copy", () => {
+    const bodies = parseDailyRecapResponse(JSON.stringify({
+      en: "You included fruit today. Add an egg next time for more protein.",
+      hr: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
+    }));
+    const copy = buildGeneratedDailyRecapCopy(bodies);
+
+    expect(copy.en.body).toBe("You included fruit today. Add an egg next time for more protein.");
+    expect(copy.hr.body).toBe("Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.");
   });
 });

@@ -40,7 +40,9 @@ The `dispatchScheduledNotifications` Cloud Function runs every 5 minutes. It que
 
 ### Daily meal recap
 
-At the scheduled time, the dispatcher queries meals from the previous calendar day in the user's saved timezone. It counts completed meals, totals available nutrition, and stores the summary at `users/{uid}/dailyRecaps/{yyyy-MM-dd_HH-mm}`. The localized alert shows the meal count and calories when available.
+At the scheduled time, the dispatcher queries complete meal documents from the previous calendar day in the user's saved timezone. Gemini analyzes the full records and generates a short qualitative recap in English and Croatian. The localized notification copy is stored with the recap date and timezone at `users/{uid}/dailyRecaps/{yyyy-MM-dd_HH-mm}`, then sent to each device in its supported locale. Meal counts and nutrition totals are not aggregated or stored in the recap.
+
+Server-side generation uses Vertex AI with the Cloud Function's Application Default Credentials and the model fallback list in `config/ai`. The Google Cloud project must have the Vertex AI API enabled, and the function runtime service account must have permission to generate model content.
 
 For weigh reminders, the reservation checks `users/{uid}/weightTracks` within the UTC bounds of the due local calendar day. A matching entry records a `skipped_weight_recorded` dispatch and advances the next occurrence without contacting FCM. The dispatcher repeats this check immediately before sending to cover entries committed while active devices are being loaded. An entry committed after the final check can race with an FCM request that has already started; every active device then receives the same logical reminder and idempotency key. This is the only unavoidable near-dispatch race because an accepted FCM request cannot be recalled.
 
