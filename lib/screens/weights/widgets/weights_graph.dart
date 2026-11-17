@@ -175,7 +175,7 @@ class WeightsGraph extends StatelessWidget {
   );
 }
 
-class WeightsGraphWidget extends StatelessWidget {
+class WeightsGraphWidget extends StatefulWidget {
   final bool isLoading;
   final List<WeightTrack> weightTracks;
   final int calendarDays;
@@ -187,10 +187,58 @@ class WeightsGraphWidget extends StatelessWidget {
   });
 
   @override
+  State<WeightsGraphWidget> createState() => WeightsGraphWidgetState();
+}
+
+class WeightsGraphWidgetState extends State<WeightsGraphWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController lineAnimationController;
+  late final Animation<double> lineAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    lineAnimationController = AnimationController(
+      duration: BokunSpizeDurations.stateTransition,
+      vsync: this,
+    );
+    lineAnimation = CurvedAnimation(
+      parent: lineAnimationController,
+      curve: Curves.easeInOutCubic,
+    );
+
+    if (!widget.isLoading) {
+      lineAnimationController.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant WeightsGraphWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.isLoading) {
+      lineAnimationController.reset();
+      return;
+    }
+
+    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays || oldWidget.weightTracks != widget.weightTracks;
+
+    if (shouldRestartAnimation) {
+      lineAnimationController.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    lineAnimationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final visibleWeightTracks = getWeightTracksForGraph(
-      weightTracks: weightTracks,
-      calendarDays: calendarDays,
+      weightTracks: widget.weightTracks,
+      calendarDays: widget.calendarDays,
     );
 
     return SliverPadding(
@@ -205,7 +253,7 @@ class WeightsGraphWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(listTileRadius),
             child: Animate(
               onPlay: (controller) {
-                if (isLoading) {
+                if (widget.isLoading) {
                   controller.loop(
                     reverse: true,
                     min: 0.6,
@@ -213,7 +261,7 @@ class WeightsGraphWidget extends StatelessWidget {
                 }
               },
               effects: [
-                if (isLoading)
+                if (widget.isLoading)
                   const FadeEffect(
                     duration: BokunSpizeDurations.shimmer,
                     curve: Curves.easeIn,
@@ -224,7 +272,7 @@ class WeightsGraphWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(listTileRadius),
                   color: context.colors.listTileBackground.withValues(alpha: 0.5),
                 ),
-                child: isLoading
+                child: widget.isLoading
                     ? const SizedBox.shrink()
                     : visibleWeightTracks.isEmpty
                     ? Center(
@@ -233,12 +281,16 @@ class WeightsGraphWidget extends StatelessWidget {
                           style: context.textStyles.graphNoData,
                         ),
                       )
-                    : Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                        child: buildLineChart(
-                          weightTracks: visibleWeightTracks,
-                          calendarDays: calendarDays,
-                          context: context,
+                    : AnimatedBuilder(
+                        animation: lineAnimation,
+                        builder: (context, child) => Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: buildLineChart(
+                            weightTracks: visibleWeightTracks,
+                            calendarDays: widget.calendarDays,
+                            animationProgress: lineAnimation.value,
+                            context: context,
+                          ),
                         ),
                       ),
               ),
@@ -249,9 +301,11 @@ class WeightsGraphWidget extends StatelessWidget {
     );
   }
 
+  /// Builds the line chart at the current left-to-right reveal progress
   Widget buildLineChart({
     required List<WeightTrack> weightTracks,
     required int calendarDays,
+    required double animationProgress,
     required BuildContext context,
   }) {
     final lastDateTime = weightTracks.last.dateTime;
@@ -275,6 +329,10 @@ class WeightsGraphWidget extends StatelessWidget {
         weightTrack.weight,
       );
     }).toList();
+    final animatedSpots = buildAnimatedSpots(
+      spots: spots,
+      progress: animationProgress,
+    );
 
     final weights = weightTracks.map(
       (weightTrack) => weightTrack.weight,
@@ -325,6 +383,7 @@ class WeightsGraphWidget extends StatelessWidget {
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
         lineTouchData: LineTouchData(
+          enabled: animationProgress >= 1,
           touchSpotThreshold: double.infinity,
           touchTooltipData: LineTouchTooltipData(
             tooltipBorderRadius: BorderRadius.circular(100),
@@ -404,8 +463,8 @@ class WeightsGraphWidget extends StatelessWidget {
         lineBarsData: [
           LineChartBarData(
             curveSmoothness: 0.15,
-            spots: spots,
-            isCurved: spots.length > 2,
+            spots: animatedSpots,
+            isCurved: animatedSpots.length > 2,
             preventCurveOverShooting: true,
             preventCurveOvershootingThreshold: weightRange > 0 ? weightRange : 1,
             isStrokeCapRound: true,
@@ -444,9 +503,57 @@ class WeightsGraphWidget extends StatelessWidget {
           ),
         ],
       ),
-      duration: BokunSpizeDurations.animation,
-      curve: Curves.easeIn,
+      duration: Duration.zero,
     );
+  }
+
+  /// Returns the visible portion of the line for the current animation frame
+  List<FlSpot> buildAnimatedSpots({
+    required List<FlSpot> spots,
+    required double progress,
+  }) {
+    if (spots.length <= 1 || progress >= 1) {
+      return spots;
+    }
+
+    if (progress <= 0) {
+      return [spots.first];
+    }
+
+    final firstX = spots.first.x;
+    final lastX = spots.last.x;
+
+    if (lastX <= firstX) {
+      return [spots.first];
+    }
+
+    final revealX = firstX + (lastX - firstX) * progress;
+    final visibleSpots = <FlSpot>[spots.first];
+
+    for (var index = 1; index < spots.length; index++) {
+      final previousSpot = spots[index - 1];
+      final currentSpot = spots[index];
+
+      if (currentSpot.x <= revealX) {
+        visibleSpots.add(currentSpot);
+        continue;
+      }
+
+      final segmentWidth = currentSpot.x - previousSpot.x;
+
+      if (segmentWidth > 0 && previousSpot.x < revealX) {
+        final segmentProgress = (revealX - previousSpot.x) / segmentWidth;
+        final revealY = previousSpot.y + (currentSpot.y - previousSpot.y) * segmentProgress;
+
+        visibleSpots.add(
+          FlSpot(revealX, revealY),
+        );
+      }
+
+      break;
+    }
+
+    return visibleSpots;
   }
 
   /// Builds a bottom-axis date label for the visible graph range

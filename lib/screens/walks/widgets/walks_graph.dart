@@ -193,7 +193,7 @@ class WalksGraph extends StatelessWidget {
   );
 }
 
-class WalksGraphWidget extends StatelessWidget {
+class WalksGraphWidget extends StatefulWidget {
   final bool isLoading;
   final List<StepsWithDate> stepsWithDate;
   final int calendarDays;
@@ -205,10 +205,59 @@ class WalksGraphWidget extends StatelessWidget {
   });
 
   @override
+  State<WalksGraphWidget> createState() => WalksGraphWidgetState();
+}
+
+class WalksGraphWidgetState extends State<WalksGraphWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController lineAnimationController;
+  late final Animation<double> lineAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    lineAnimationController = AnimationController(
+      duration: BokunSpizeDurations.stateTransition,
+      vsync: this,
+    );
+    lineAnimation = CurvedAnimation(
+      parent: lineAnimationController,
+      curve: Curves.easeInOutCubic,
+    );
+
+    if (!widget.isLoading) {
+      lineAnimationController.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant WalksGraphWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.isLoading) {
+      lineAnimationController.reset();
+      return;
+    }
+
+    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays || oldWidget.stepsWithDate != widget.stepsWithDate;
+
+    if (shouldRestartAnimation) {
+      lineAnimationController.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    lineAnimationController.dispose();
+    super.dispose();
+  }
+
+  /// Builds the graph container and its current loading or data state
+  @override
   Widget build(BuildContext context) {
     final visibleStepsWithDate = getStepsWithDateForGraph(
-      stepsWithDate: stepsWithDate,
-      calendarDays: calendarDays,
+      stepsWithDate: widget.stepsWithDate,
+      calendarDays: widget.calendarDays,
     );
 
     return SliverPadding(
@@ -229,7 +278,7 @@ class WalksGraphWidget extends StatelessWidget {
                 opacity: animation,
                 child: child,
               ),
-              child: isLoading
+              child: widget.isLoading
                   ? Animate(
                       key: const ValueKey('walks-graph-loading'),
                       onPlay: (controller) => controller.loop(
@@ -262,12 +311,16 @@ class WalksGraphWidget extends StatelessWidget {
                                 style: context.textStyles.graphNoData,
                               ),
                             )
-                          : Padding(
-                              padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                              child: buildLineChart(
-                                stepsWithDate: visibleStepsWithDate,
-                                calendarDays: calendarDays,
-                                context: context,
+                          : AnimatedBuilder(
+                              animation: lineAnimation,
+                              builder: (context, child) => Padding(
+                                padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                                child: buildLineChart(
+                                  stepsWithDate: visibleStepsWithDate,
+                                  calendarDays: widget.calendarDays,
+                                  animationProgress: lineAnimation.value,
+                                  context: context,
+                                ),
                               ),
                             ),
                     ),
@@ -278,9 +331,11 @@ class WalksGraphWidget extends StatelessWidget {
     );
   }
 
+  /// Builds the line chart at the current left-to-right reveal progress
   Widget buildLineChart({
     required List<StepsWithDate> stepsWithDate,
     required int calendarDays,
+    required double animationProgress,
     required BuildContext context,
   }) {
     final lastDateTime = stepsWithDate.last.dateTime;
@@ -304,6 +359,10 @@ class WalksGraphWidget extends StatelessWidget {
         stepWithDate.steps.toDouble(),
       );
     }).toList();
+    final animatedSpots = buildAnimatedSpots(
+      spots: spots,
+      progress: animationProgress,
+    );
 
     final stepTotals = stepsWithDate.map(
       (stepWithDate) => stepWithDate.steps,
@@ -352,6 +411,7 @@ class WalksGraphWidget extends StatelessWidget {
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
         lineTouchData: LineTouchData(
+          enabled: animationProgress >= 1,
           touchSpotThreshold: double.infinity,
           touchTooltipData: LineTouchTooltipData(
             tooltipBorderRadius: BorderRadius.circular(100),
@@ -435,8 +495,8 @@ class WalksGraphWidget extends StatelessWidget {
         lineBarsData: [
           LineChartBarData(
             curveSmoothness: 0.15,
-            spots: spots,
-            isCurved: spots.length > 2,
+            spots: animatedSpots,
+            isCurved: animatedSpots.length > 2,
             preventCurveOverShooting: true,
             preventCurveOvershootingThreshold: stepsRange > 0 ? stepsRange : 1,
             isStrokeCapRound: true,
@@ -475,9 +535,57 @@ class WalksGraphWidget extends StatelessWidget {
           ),
         ],
       ),
-      duration: BokunSpizeDurations.animation,
-      curve: Curves.easeIn,
+      duration: Duration.zero,
     );
+  }
+
+  /// Returns the visible portion of the line for the current animation frame
+  List<FlSpot> buildAnimatedSpots({
+    required List<FlSpot> spots,
+    required double progress,
+  }) {
+    if (spots.length <= 1 || progress >= 1) {
+      return spots;
+    }
+
+    if (progress <= 0) {
+      return [spots.first];
+    }
+
+    final firstX = spots.first.x;
+    final lastX = spots.last.x;
+
+    if (lastX <= firstX) {
+      return [spots.first];
+    }
+
+    final revealX = firstX + (lastX - firstX) * progress;
+    final visibleSpots = <FlSpot>[spots.first];
+
+    for (var index = 1; index < spots.length; index++) {
+      final previousSpot = spots[index - 1];
+      final currentSpot = spots[index];
+
+      if (currentSpot.x <= revealX) {
+        visibleSpots.add(currentSpot);
+        continue;
+      }
+
+      final segmentWidth = currentSpot.x - previousSpot.x;
+
+      if (segmentWidth > 0 && previousSpot.x < revealX) {
+        final segmentProgress = (revealX - previousSpot.x) / segmentWidth;
+        final revealY = previousSpot.y + (currentSpot.y - previousSpot.y) * segmentProgress;
+
+        visibleSpots.add(
+          FlSpot(revealX, revealY),
+        );
+      }
+
+      break;
+    }
+
+    return visibleSpots;
   }
 
   /// Builds a bottom-axis date label for the visible graph range
