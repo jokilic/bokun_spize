@@ -9,11 +9,12 @@ import {
 } from "firebase-admin/firestore";
 import {DateTime} from "luxon";
 
-import {NotificationCopy, SupportedLocale} from "./notification-config";
 import {
   DailyRecapMeal,
-  generateDailyRecapCopy,
+  GeneratedDailyRecapBodies,
+  generateDailyRecapBodies,
 } from "./daily-recap-ai";
+import {SupportedLocale} from "./notification-config";
 import {getValidTimezone} from "./scheduling";
 
 /** Calendar-day interval used by the recap query */
@@ -25,12 +26,15 @@ export interface DailyRecapPeriod {
   recapKey: string;
 }
 
-/** Generated notification data written for one recap occurrence */
+/** Localized notification bodies written for one recap occurrence */
+export type DailyRecapNotification = Record<SupportedLocale, {body: string}>;
+
+/** Generated recap data written for one recap occurrence */
 export interface DailyRecap {
   dayBeingSummarized: Timestamp;
   recapAt: Timestamp;
   timezone: string;
-  notification: Record<SupportedLocale, NotificationCopy>;
+  notification: DailyRecapNotification;
 }
 
 /** Resolves yesterday's exact local-day bounds for a recap occurrence */
@@ -52,11 +56,21 @@ export function getDailyRecapPeriod(
   };
 }
 
-/** Loads Firestore data, stores the recap and returns its notification copy */
+/** Keeps generated bodies in the persisted locale structure without redundant titles */
+export function buildDailyRecapNotification(
+  bodies: GeneratedDailyRecapBodies,
+): DailyRecapNotification {
+  return {
+    en: {body: bodies.en},
+    hr: {body: bodies.hr},
+  };
+}
+
+/** Loads Firestore data, stores the recap and returns its notification bodies */
 export async function buildAndStoreDailyRecap(
   userReference: DocumentReference<DocumentData>,
   period: DailyRecapPeriod,
-): Promise<Record<SupportedLocale, NotificationCopy>> {
+): Promise<DailyRecapNotification> {
   const start = Timestamp.fromDate(period.start);
   const end = Timestamp.fromDate(period.end);
   const mealSnapshot = await userReference
@@ -69,9 +83,11 @@ export async function buildAndStoreDailyRecap(
     documentId: document.id,
     data: document.data(),
   }));
-  const notification = await generateDailyRecapCopy(
-    userReference.firestore,
-    mealDocuments,
+  const notification = buildDailyRecapNotification(
+    await generateDailyRecapBodies(
+      userReference.firestore,
+      mealDocuments,
+    ),
   );
   const recap: DailyRecap = {
     dayBeingSummarized: start,

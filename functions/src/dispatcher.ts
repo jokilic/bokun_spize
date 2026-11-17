@@ -675,12 +675,22 @@ export async function processDueSettings(
         dispatch.scheduledAt,
         dispatch.timezone,
       );
-      const copy = await buildAndStoreDailyRecap(
+      const notification = await buildAndStoreDailyRecap(
         userReference,
         period,
       );
 
-      dispatch.copy = copy;
+      // Generated bodies replace fallback copy while titles remain source-controlled
+      dispatch.copy = {
+        en: {
+          ...dispatch.copy.en,
+          body: notification.en.body,
+        },
+        hr: {
+          ...dispatch.copy.hr,
+          body: notification.hr.body,
+        },
+      };
     }
 
     const result = await sendReservedNotification(messaging, dispatch, devices);

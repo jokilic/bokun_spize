@@ -1,10 +1,12 @@
 import {describe, expect, it} from "vitest";
 import {Timestamp} from "firebase-admin/firestore";
 
-import {getDailyRecapPeriod} from "../src/daily-recap";
+import {
+  buildDailyRecapNotification,
+  getDailyRecapPeriod,
+} from "../src/daily-recap";
 import {
   buildDailyRecapPrompt,
-  buildGeneratedDailyRecapCopy,
   DAILY_RECAP_RESPONSE_SCHEMA,
   DAILY_RECAP_SYSTEM_INSTRUCTION,
   parseDailyRecapModelNames,
@@ -41,15 +43,21 @@ describe("daily meal recap", () => {
     expect(prompt).toContain('"createdAt":"2026-11-16T08:00:00.000Z"');
   });
 
-  it("uses generated localized bodies as notification copy", () => {
+  it("stores generated localized bodies without redundant titles", () => {
     const bodies = parseDailyRecapResponse(JSON.stringify({
       en: "You included fruit today. Add an egg next time for more protein.",
       hr: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
     }));
-    const copy = buildGeneratedDailyRecapCopy(bodies);
+    const notification = buildDailyRecapNotification(bodies);
 
-    expect(copy.en.body).toBe("You included fruit today. Add an egg next time for more protein.");
-    expect(copy.hr.body).toBe("Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.");
+    expect(notification).toEqual({
+      en: {
+        body: "You included fruit today. Add an egg next time for more protein.",
+      },
+      hr: {
+        body: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
+      },
+    });
   });
 
   it("parses independently configurable daily recap AI fields", () => {
