@@ -136,15 +136,12 @@ service cloud.firestore {
         'timezone',
         'locale',
       ];
-      // Older clients and settings documents can still carry this unused preference.
       let optionalClientFields = [
-        'dailyRecapStepsEnabled',
         'weighReminderTime',
         'dailyRecapTime',
       ];
       let serverFields = [
         'nextWeighReminderAt',
-        'nextDailySummaryPrepareAt',
         'nextDailySummaryAt',
       ];
 
@@ -153,7 +150,6 @@ service cloud.firestore {
         && data.weighReminderEnabled is bool
         && (!('weighReminderTime' in data) || data.weighReminderTime is timestamp)
         && data.dailySummaryEnabled is bool
-        && (!('dailyRecapStepsEnabled' in data) || data.dailyRecapStepsEnabled is bool)
         && (!('dailyRecapTime' in data) || data.dailyRecapTime is timestamp)
         && data.announcementsEnabled is bool
         && data.timezone is string
@@ -163,7 +159,6 @@ service cloud.firestore {
         && data.locale is string
         && data.locale in ['en', 'hr']
         && (!('nextWeighReminderAt' in data) || data.nextWeighReminderAt is timestamp)
-        && (!('nextDailySummaryPrepareAt' in data) || data.nextDailySummaryPrepareAt is timestamp)
         && (!('nextDailySummaryAt' in data) || data.nextDailySummaryAt is timestamp);
     }
 
@@ -174,7 +169,6 @@ service cloud.firestore {
         'weighReminderTime',
         'dailySummaryEnabled',
         'dailyRecapTime',
-        'dailyRecapStepsEnabled',
         'announcementsEnabled',
         'timezone',
         'locale',
@@ -290,7 +284,6 @@ service cloud.firestore {
             'weighReminderTime',
             'dailySummaryEnabled',
             'dailyRecapTime',
-            'dailyRecapStepsEnabled',
             'announcementsEnabled',
             'timezone',
             'locale',
@@ -310,11 +303,6 @@ service cloud.firestore {
           && request.resource.data.lastActiveAt == request.time;
         allow update: if isOwner(userId)
           && isValidNotificationDeviceUpdate(deviceId);
-      }
-
-      // Allow account deletion to clean up previously synced step totals.
-      match /dailyActivity/{recapKey} {
-        allow list, delete: if isOwner(userId);
       }
 
       match /dailyRecaps/{recapKey} {

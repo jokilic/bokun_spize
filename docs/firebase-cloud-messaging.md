@@ -91,7 +91,7 @@ Never write a complete FID to application, function or crash logs. Use the devic
 
 Registrations expire 30 days after their latest successful client synchronization. Enable a Firestore TTL policy for the `lastActiveAt` field on the `notificationDevices` collection group with a 30-day expiration offset. Senders must also ignore documents whose `lastActiveAt` is more than 30 days old because Firestore TTL deletion is asynchronous. Active clients continuously refresh `lastActiveAt`; expired or invalid documents are safe to delete.
 
-Account deletion explicitly removes legacy `dailyActivity` documents, `dailyRecaps` and notification dispatch records before deleting the Firebase Authentication account.
+Account deletion explicitly removes `dailyRecaps` and notification dispatch records before deleting the Firebase Authentication account.
 
 ## Data payload contract
 
