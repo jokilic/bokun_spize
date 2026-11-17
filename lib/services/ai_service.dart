@@ -53,8 +53,8 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
 
   Future<void>? configurationLoading;
 
-  String? systemInstructionTemplate;
-  Map<String, dynamic>? responseSchemaTemplate;
+  String? mealSystemInstructionTemplate;
+  Map<String, dynamic>? mealResponseSchemaTemplate;
 
   final modelNames = [
     'gemini-3.5-flash-lite',
@@ -70,8 +70,8 @@ class AIService extends ValueNotifier<List<GenerativeModel>> {
   ///
 
   /// Builds meal extraction instructions for the requested language
-  String getSystemInstruction({required String languageCode}) =>
-      systemInstructionTemplate?.replaceAll('{languageCode}', languageCode) ??
+  String getMealSystemInstruction({required String languageCode}) =>
+      mealSystemInstructionTemplate?.replaceAll('{languageCode}', languageCode) ??
       '''
 You will receive text and / or image describing what the user ate.
 Estimate nutrition and extract foods.
@@ -115,11 +115,11 @@ JSON structure to follow strictly:
 ''';
 
   /// Builds the remote response schema or uses the default when invalid or incompatible
-  Schema getResponseSchema({required String languageCode}) {
-    final fallback = getDefaultResponseSchema(
+  Schema getMealResponseSchema({required String languageCode}) {
+    final fallback = getDefaultMealResponseSchema(
       languageCode: languageCode,
     );
-    final template = responseSchemaTemplate;
+    final template = mealResponseSchemaTemplate;
 
     if (template == null) {
       return fallback;
@@ -144,7 +144,7 @@ JSON structure to follow strictly:
   }
 
   /// Builds the default meal response schema for the requested language
-  Schema getDefaultResponseSchema({required String languageCode}) => Schema.object(
+  Schema getDefaultMealResponseSchema({required String languageCode}) => Schema.object(
     title: 'Meal',
     description: 'Meal JSON schema',
     nullable: true,
@@ -313,8 +313,8 @@ JSON structure to follow strictly:
         ..addAll(names);
     }
 
-    systemInstructionTemplate = configuration?.systemInstruction;
-    responseSchemaTemplate = configuration?.responseSchema;
+    mealSystemInstructionTemplate = configuration?.mealSystemInstruction;
+    mealResponseSchemaTemplate = configuration?.mealResponseSchema;
   }
 
   /// Initializes `Gemini` models for requested `languageCode`, skipping models that fail
@@ -346,13 +346,13 @@ JSON structure to follow strictly:
   }) => ai.generativeModel(
     model: model,
     systemInstruction: Content.system(
-      getSystemInstruction(
+      getMealSystemInstruction(
         languageCode: languageCode,
       ),
     ),
     generationConfig: GenerationConfig(
       responseMimeType: 'application/json',
-      responseSchema: getResponseSchema(
+      responseSchema: getMealResponseSchema(
         languageCode: languageCode,
       ),
     ),

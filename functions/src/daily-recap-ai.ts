@@ -2,7 +2,7 @@
  * Generates short localized daily meal recaps with Gemini
  */
 
-import {GoogleGenAI, Type} from "@google/genai";
+import {GoogleGenAI} from "@google/genai";
 import {getApp} from "firebase-admin/app";
 import {
   DocumentData,
@@ -28,8 +28,15 @@ export interface GeneratedDailyRecapBodies {
   hr: string;
 }
 
-/** Models used when config/ai does not contain a usable model list */
-export const DEFAULT_DAILY_RECAP_MODELS = [
+/** Resolved remote configuration used for daily recap generation */
+export interface DailyRecapAIConfiguration {
+  modelNames: string[];
+  dailyRecapSystemInstruction: string;
+  dailyRecapResponseSchema: Record<string, unknown>;
+}
+
+/** Shared model fallback used when config/ai/modelNames is unavailable */
+export const DEFAULT_AI_MODEL_NAMES = [
   "gemini-3.5-flash-lite",
   "gemini-3.1-flash-lite",
   "gemini-3.8-flash",
@@ -61,21 +68,22 @@ The English and Croatian bodies must communicate the same advice naturally in th
 
 /** Structured response prevents model prose from leaking outside the notification fields */
 export const DAILY_RECAP_RESPONSE_SCHEMA = {
-  type: Type.OBJECT,
+  type: "object",
   properties: {
     en: {
-      type: Type.STRING,
+      type: "string",
       description: "Two or three concise English sentences for the notification body",
-      maxLength: String(DAILY_RECAP_BODY_MAX_LENGTH),
+      maxLength: DAILY_RECAP_BODY_MAX_LENGTH,
     },
     hr: {
-      type: Type.STRING,
+      type: "string",
       description: "Two or three concise Croatian sentences for the notification body",
-      maxLength: String(DAILY_RECAP_BODY_MAX_LENGTH),
+      maxLength: DAILY_RECAP_BODY_MAX_LENGTH,
     },
   },
   propertyOrdering: ["en", "hr"],
   required: ["en", "hr"],
+  additionalProperties: false,
 };
 
 /** Converts Firestore values into JSON the model can read without losing timestamps */
@@ -113,23 +121,116 @@ export function buildDailyRecapPrompt(meals: DailyRecapMeal[]): string {
   ].join("\n");
 }
 
-/** Reads model fallbacks shared with the app's existing AI configuration */
-export async function getDailyRecapModelNames(
-  firestore: Firestore,
-): Promise<string[]> {
-  const snapshot = await firestore.doc("config/ai").get();
-  const configuredNames = snapshot.data()?.modelNames;
-
-  if (!Array.isArray(configuredNames)) {
-    return DEFAULT_DAILY_RECAP_MODELS;
+/** Parses configured model names and falls back when the field is unusable */
+export function parseDailyRecapModelNames(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return DEFAULT_AI_MODEL_NAMES;
   }
 
-  const modelNames = configuredNames
+  const modelNames = value
     .filter((name: unknown): name is string => typeof name === "string")
     .map((name) => name.trim())
     .filter((name) => name.length > 0);
 
-  return modelNames.length > 0 ? [...new Set(modelNames)] : DEFAULT_DAILY_RECAP_MODELS;
+  return modelNames.length > 0 ? [...new Set(modelNames)] : DEFAULT_AI_MODEL_NAMES;
+}
+
+/** Parses the daily recap system instruction with its source-controlled fallback */
+export function parseDailyRecapSystemInstruction(value: unknown): string {
+  return typeof value === "string" && value.trim().length > 0 ?
+    value.trim() :
+    DAILY_RECAP_SYSTEM_INSTRUCTION;
+}
+
+/** Decodes and validates the configurable daily recap JSON response schema */
+export function parseDailyRecapResponseSchema(
+  value: unknown,
+): Record<string, unknown> {
+  try {
+    const decoded: unknown = typeof value === "string" ? JSON.parse(value) : value;
+
+    if (
+      typeof decoded !== "object" ||
+      decoded === null ||
+      Array.isArray(decoded)
+    ) {
+      return DAILY_RECAP_RESPONSE_SCHEMA;
+    }
+
+    const schema = decoded as Record<string, unknown>;
+    const properties = schema.properties;
+    const required = schema.required;
+
+    if (
+      schema.type !== "object" ||
+      typeof properties !== "object" ||
+      properties === null ||
+      Array.isArray(properties) ||
+      !Array.isArray(required) ||
+      !required.includes("en") ||
+      !required.includes("hr")
+    ) {
+      return DAILY_RECAP_RESPONSE_SCHEMA;
+    }
+
+    const propertyMap = properties as Record<string, unknown>;
+    const en = propertyMap.en;
+    const hr = propertyMap.hr;
+
+    if (
+      typeof en !== "object" ||
+      en === null ||
+      Array.isArray(en) ||
+      (en as Record<string, unknown>).type !== "string" ||
+      typeof hr !== "object" ||
+      hr === null ||
+      Array.isArray(hr) ||
+      (hr as Record<string, unknown>).type !== "string"
+    ) {
+      return DAILY_RECAP_RESPONSE_SCHEMA;
+    }
+
+    return schema;
+  } catch (error) {
+    logger.warn("Daily recap response schema is invalid", {
+      error: error instanceof Error ?
+        error.message.slice(0, 500) :
+        "Unknown schema error",
+    });
+    return DAILY_RECAP_RESPONSE_SCHEMA;
+  }
+}
+
+/** Loads daily recap AI settings from config/ai with independent field fallbacks */
+export async function getDailyRecapAIConfiguration(
+  firestore: Firestore,
+): Promise<DailyRecapAIConfiguration> {
+  try {
+    const snapshot = await firestore.doc("config/ai").get();
+    const data = snapshot.data();
+
+    return {
+      modelNames: parseDailyRecapModelNames(data?.modelNames),
+      dailyRecapSystemInstruction: parseDailyRecapSystemInstruction(
+        data?.dailyRecapSystemInstruction,
+      ),
+      dailyRecapResponseSchema: parseDailyRecapResponseSchema(
+        data?.dailyRecapResponseSchema,
+      ),
+    };
+  } catch (error) {
+    logger.warn("Loading daily recap AI configuration failed", {
+      error: error instanceof Error ?
+        error.message.slice(0, 500) :
+        "Unknown Firestore error",
+    });
+
+    return {
+      modelNames: DEFAULT_AI_MODEL_NAMES,
+      dailyRecapSystemInstruction: DAILY_RECAP_SYSTEM_INSTRUCTION,
+      dailyRecapResponseSchema: DAILY_RECAP_RESPONSE_SCHEMA,
+    };
+  }
 }
 
 /** Validates and normalizes one structured Gemini response */
@@ -194,19 +295,19 @@ export async function generateDailyRecapCopy(
     project,
     location: DAILY_RECAP_AI_LOCATION,
   });
-  const modelNames = await getDailyRecapModelNames(firestore);
+  const configuration = await getDailyRecapAIConfiguration(firestore);
   const prompt = buildDailyRecapPrompt(meals);
   const failures: string[] = [];
 
-  for (const model of modelNames) {
+  for (const model of configuration.modelNames) {
     try {
       const response = await ai.models.generateContent({
         model,
         contents: prompt,
         config: {
-          systemInstruction: DAILY_RECAP_SYSTEM_INSTRUCTION,
+          systemInstruction: configuration.dailyRecapSystemInstruction,
           responseMimeType: "application/json",
-          responseSchema: DAILY_RECAP_RESPONSE_SCHEMA,
+          responseJsonSchema: configuration.dailyRecapResponseSchema,
           temperature: 0.4,
           maxOutputTokens: 512,
         },

@@ -5,7 +5,12 @@ import {getDailyRecapPeriod} from "../src/daily-recap";
 import {
   buildDailyRecapPrompt,
   buildGeneratedDailyRecapCopy,
+  DAILY_RECAP_RESPONSE_SCHEMA,
+  DAILY_RECAP_SYSTEM_INSTRUCTION,
+  parseDailyRecapModelNames,
   parseDailyRecapResponse,
+  parseDailyRecapResponseSchema,
+  parseDailyRecapSystemInstruction,
 } from "../src/daily-recap-ai";
 
 describe("daily meal recap", () => {
@@ -45,5 +50,35 @@ describe("daily meal recap", () => {
 
     expect(copy.en.body).toBe("You included fruit today. Add an egg next time for more protein.");
     expect(copy.hr.body).toBe("Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.");
+  });
+
+  it("parses independently configurable daily recap AI fields", () => {
+    const schema = {
+      type: "object",
+      properties: {
+        en: {type: "string"},
+        hr: {type: "string"},
+      },
+      required: ["en", "hr"],
+    };
+
+    expect(parseDailyRecapModelNames([" model-a ", "model-a", "model-b"])).toEqual([
+      "model-a",
+      "model-b",
+    ]);
+    expect(
+      parseDailyRecapSystemInstruction(" Custom instruction "),
+    ).toBe("Custom instruction");
+    expect(parseDailyRecapResponseSchema(JSON.stringify(schema))).toEqual(schema);
+  });
+
+  it("falls back when daily recap AI fields are invalid", () => {
+    expect(parseDailyRecapModelNames(null).length).toBeGreaterThan(0);
+    expect(
+      parseDailyRecapSystemInstruction(" "),
+    ).toBe(DAILY_RECAP_SYSTEM_INSTRUCTION);
+    expect(
+      parseDailyRecapResponseSchema({type: "string"}),
+    ).toBe(DAILY_RECAP_RESPONSE_SCHEMA);
   });
 });

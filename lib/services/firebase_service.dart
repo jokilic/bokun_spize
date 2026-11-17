@@ -284,8 +284,8 @@ class FirebaseService {
     }
   }
 
-  /// Reads model names, the instruction template, and the response schema from `config/ai`
-  Future<({List<String>? modelNames, String? systemInstruction, Map<String, dynamic>? responseSchema})?> getAIConfiguration() async {
+  /// Reads shared model names and meal generation configuration from `config/ai`
+  Future<({List<String>? modelNames, String? mealSystemInstruction, Map<String, dynamic>? mealResponseSchema})?> getAIConfiguration() async {
     try {
       final snapshot = await firestore
           .doc('config/ai')
@@ -296,8 +296,8 @@ class FirebaseService {
 
       final data = snapshot.data();
       final remoteModelNames = data?['modelNames'];
-      final remoteSystemInstruction = data?['systemInstruction'];
-      final remoteResponseSchema = data?['responseSchema'];
+      final remoteMealSystemInstruction = data?['mealSystemInstruction'];
+      final remoteMealResponseSchema = data?['mealResponseSchema'];
 
       final modelNames = remoteModelNames is List
           ? remoteModelNames
@@ -314,9 +314,9 @@ class FirebaseService {
 
       return (
         modelNames: modelNames,
-        systemInstruction: remoteSystemInstruction is String && remoteSystemInstruction.trim().isNotEmpty ? remoteSystemInstruction.trim() : null,
-        responseSchema: decodeAIResponseSchema(
-          remoteResponseSchema,
+        mealSystemInstruction: remoteMealSystemInstruction is String && remoteMealSystemInstruction.trim().isNotEmpty ? remoteMealSystemInstruction.trim() : null,
+        mealResponseSchema: decodeAIResponseSchema(
+          remoteMealResponseSchema,
         ),
       );
     } catch (error) {
