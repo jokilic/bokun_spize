@@ -55,7 +55,7 @@ export interface DailyStepSummary {
 
 /** Complete data and localized copy written for a recap day */
 export interface DailyRecap {
-  localDate: string;
+  localDate: Timestamp;
   timezone: string;
   status: "ready" | "ready_without_steps";
   meals: DailyMealSummary;
@@ -282,7 +282,7 @@ export async function buildAndStoreDailyRecap(
   const steps = summarizeSteps(activitySnapshot.data());
   const copy = buildDailyRecapCopy(meals, weight, steps);
   const recap: DailyRecap = {
-    localDate: period.localDate,
+    localDate: start,
     timezone: period.timezone,
     status: steps.status === "available" ? "ready" : "ready_without_steps",
     meals,
@@ -295,7 +295,7 @@ export async function buildAndStoreDailyRecap(
     ...recap,
     dueAt: Timestamp.fromDate(dueAt),
     preparedAt: Timestamp.now(),
-    schemaVersion: 1,
+    schemaVersion: 2,
     expiresAt: Timestamp.fromDate(
       DateTime.fromJSDate(dueAt, {zone: "utc"})
         .plus({days: DAILY_RECAP_RETENTION_DAYS})

@@ -209,6 +209,7 @@ class DailyRecapService {
       await writeDailyActivity(
         userId: user.uid,
         localDate: localDate,
+        localDateTime: periodStart,
         timezone: timezone,
         status: status,
         steps: steps,
@@ -229,6 +230,7 @@ class DailyRecapService {
   Future<void> writeDailyActivity({
     required String userId,
     required String localDate,
+    required DateTime localDateTime,
     required String timezone,
     required DailyActivitySyncStatus status,
     required int? steps,
@@ -248,7 +250,7 @@ class DailyRecapService {
       DailyActivitySyncStatus.skipped => 'read_failed',
     };
     final data = <String, dynamic>{
-      'localDate': localDate,
+      'localDate': Timestamp.fromDate(localDateTime),
       'timezone': timezone,
       'status': statusName,
       'source': defaultTargetPlatform == TargetPlatform.iOS ? 'healthkit' : 'health_connect',
@@ -259,7 +261,7 @@ class DailyRecapService {
           const Duration(days: retentionDays),
         ),
       ),
-      'schemaVersion': 1,
+      'schemaVersion': 2,
       if (status == DailyActivitySyncStatus.available && steps != null) 'steps': steps,
     };
 

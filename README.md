@@ -1,6 +1,7 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 - [ ] Animations
+    - [ ] Animate graphs & graph changes (changing active days)
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
 - [ ] Add Meal screens - show dismissible widgets with info
