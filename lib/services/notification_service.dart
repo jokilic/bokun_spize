@@ -206,7 +206,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       refreshPermissionStatus();
-      dailyRecap.synchronizePreviousDay();
     }
   }
 
@@ -498,12 +497,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     notificationSettings = data == null ? null : NotificationSettings.fromMap(data);
     registrationLocale = notificationSettings?.locale;
-
-    if (notificationSettings?.dailySummaryEnabled == true && notificationSettings?.dailyRecapStepsEnabled == true) {
-      unawaited(
-        dailyRecap.synchronizePreviousDay(),
-      );
-    }
 
     unawaited(
       synchronizeRegistration(),

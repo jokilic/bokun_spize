@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
 
 import '../models/notification/notification_payload.dart';
-import '../util/timezone.dart';
 import 'storage_service.dart';
 
 enum DailyActivitySyncStatus {
@@ -95,7 +94,6 @@ class DailyRecapService {
     }
 
     return synchronizePeriod(
-      dayBeingSummarized: dayBeingSummarized,
       timezone: timezone,
       periodStart: periodStart,
       periodEnd: periodEnd,
@@ -105,35 +103,14 @@ class DailyRecapService {
     );
   }
 
-  /// Opportunistically syncs yesterday whenever the foreground app becomes active
-  Future<DailyActivitySyncStatus> synchronizePreviousDay() async {
-    final timezone = await getLocalTimezoneIdentifier();
-    final now = DateTime.now();
-    final startOfToday = DateTime(now.year, now.month, now.day);
-    final startOfYesterday = DateTime(
-      startOfToday.year,
-      startOfToday.month,
-      startOfToday.day - 1,
-    );
-
-    return synchronizePeriod(
-      dayBeingSummarized: formatLocalDate(startOfYesterday),
-      timezone: timezone,
-      periodStart: startOfYesterday,
-      periodEnd: startOfToday,
-      isBackground: false,
-    );
-  }
-
   /// Reads one aggregate and writes only its daily total and source status
   Future<DailyActivitySyncStatus> synchronizePeriod({
-    required String dayBeingSummarized,
     required String timezone,
     required DateTime periodStart,
     required DateTime periodEnd,
     required bool isBackground,
-    DateTime? recapAt,
-    String? recapKey,
+    required DateTime recapAt,
+    required String recapKey,
   }) async {
     final user = auth.currentUser;
 
@@ -158,14 +135,6 @@ class DailyRecapService {
     if (settings?['dailySummaryEnabled'] != true || settings?['dailyRecapStepsEnabled'] != true) {
       return DailyActivitySyncStatus.skipped;
     }
-
-    final resolvedRecapAt =
-        recapAt ??
-        getRecapAt(
-          settings?['dailyRecapTime'],
-          periodEnd,
-        );
-    final resolvedRecapKey = recapKey ?? formatRecapKey(resolvedRecapAt);
 
     if (defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS) {
       return DailyActivitySyncStatus.skipped;
@@ -221,8 +190,8 @@ class DailyRecapService {
       await writeDailyActivity(
         userId: user.uid,
         dayBeingSummarized: periodStart,
-        recapAt: resolvedRecapAt,
-        recapKey: resolvedRecapKey,
+        recapAt: recapAt,
+        recapKey: recapKey,
         timezone: timezone,
         status: status,
         steps: steps,
@@ -290,23 +259,4 @@ class DailyRecapService {
       );
     });
   }
-
-  /// Formats a local calendar date for Firestore document IDs
-  String formatLocalDate(DateTime value) => '${value.year.toString().padLeft(4, '0')}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
-
-  /// Resolves the visible recap occurrence from the configured wall-clock time
-  DateTime getRecapAt(Object? configuredTime, DateTime startOfRecapDay) {
-    final time = configuredTime is Timestamp ? configuredTime.toDate() : DateTime(2020, 1, 1, 8);
-
-    return DateTime(
-      startOfRecapDay.year,
-      startOfRecapDay.month,
-      startOfRecapDay.day,
-      time.hour,
-      time.minute,
-    );
-  }
-
-  /// Formats the visible recap occurrence used by daily document IDs
-  String formatRecapKey(DateTime value) => '${formatLocalDate(value)}_${value.hour.toString().padLeft(2, '0')}-${value.minute.toString().padLeft(2, '0')}';
 }

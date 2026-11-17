@@ -7,6 +7,7 @@
 - [ ] Add Meal screens - show dismissible widgets with info
 - [ ] `AccountScreen`
     - [ ] Notifications
+        - [ ] Fix small Android status bar notification
         - [ ] There are no `dailyRecapTime` in global config/notifications
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
