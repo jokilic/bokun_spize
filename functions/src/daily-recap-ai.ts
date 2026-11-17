@@ -48,12 +48,10 @@ export const DAILY_RECAP_BODY_MAX_LENGTH = 400;
 
 /** Instructions keep meal data untrusted and require direct, evidence-based feedback */
 export const DAILY_RECAP_SYSTEM_INSTRUCTION = `
-Analyze supplied meal records.
+Analyze supplied meal records from yesterday.
+Write a direct, honest and simple recap of meals in English and Croatian, using a couple sentences.
 
-Write a direct, honest daily recap in English and Croatian, using a couple sentences in relevant language.
-
-Assess the day as it was: do not force praise or soften poor choices.
-Give a practical suggestion for the next day.
+Regarding Croatian, you can use 'ti', not 'vi' when referring to user.
 
 If completed meal data is insufficient, say that briefly and encourage meal recording.
 `.trim();
@@ -69,12 +67,12 @@ export const DAILY_RECAP_RESPONSE_SCHEMA = {
   "properties": {
     "en": {
       "type": "string",
-      "description": "Couple English sentences with direct, honest daily recap of daily meals and a practical suggestion for the next day",
+      "description": "Couple English sentences with direct, honest and simple recap of meals and a practical suggestion for the next day",
       "maxLength": 400
     },
     "hr": {
       "type": "string",
-      "description": "Couple Croatian sentences with direct, honest daily recap of daily meals and a practical suggestion for the next day",
+      "description": "Couple Croatian sentences with direct, honest and simple recap of meals and a practical suggestion for the next day",
       "maxLength": 400
     }
   }

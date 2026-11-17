@@ -684,11 +684,11 @@ export async function processDueSettings(
       dispatch.copy = {
         en: {
           ...dispatch.copy.en,
-          body: notification.en.body,
+          body: notification.en,
         },
         hr: {
           ...dispatch.copy.hr,
-          body: notification.hr.body,
+          body: notification.hr,
         },
       };
     }

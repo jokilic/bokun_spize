@@ -51,12 +51,8 @@ describe("daily meal recap", () => {
     const notification = buildDailyRecapNotification(bodies);
 
     expect(notification).toEqual({
-      en: {
-        body: "You included fruit today. Add an egg next time for more protein.",
-      },
-      hr: {
-        body: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
-      },
+      en: "You included fruit today. Add an egg next time for more protein.",
+      hr: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
     });
   });
 

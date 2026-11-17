@@ -27,7 +27,7 @@ export interface DailyRecapPeriod {
 }
 
 /** Localized notification bodies written for one recap occurrence */
-export type DailyRecapNotification = Record<SupportedLocale, {body: string}>;
+export type DailyRecapNotification = Record<SupportedLocale, string>;
 
 /** Generated recap data written for one recap occurrence */
 export interface DailyRecap {
@@ -61,8 +61,8 @@ export function buildDailyRecapNotification(
   bodies: GeneratedDailyRecapBodies,
 ): DailyRecapNotification {
   return {
-    en: {body: bodies.en},
-    hr: {body: bodies.hr},
+    en: bodies.en,
+    hr: bodies.hr,
   };
 }
 
