@@ -14,6 +14,11 @@ import {onSchedule} from "firebase-functions/v2/scheduler";
 import {dispatchDueNotifications} from "./dispatcher";
 import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
+import {NOTIFICATION_TYPES} from "./notification-config";
+import {
+  buildAndStoreDailyRecap,
+  getDailyRecapPeriodForLocalDate,
+} from "./daily-recap";
 
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
@@ -51,11 +56,74 @@ export const syncNotificationSchedule = onDocumentWritten(
   },
 );
 
-/** Finds and sends due notifications every ten minutes */
+/** Reschedules fallback-based users when trusted global notification times change */
+export const syncNotificationConfigSchedules = onDocumentWritten(
+  {
+    document: "config/notifications",
+    region: "europe-west1",
+    retry: true,
+    timeoutSeconds: 540,
+  },
+  async () => {
+    const firestore = getFirestore();
+    const definitions = await getConfiguredNotificationDefinitions(firestore);
+    const snapshots = await Promise.all([
+      firestore.collectionGroup("notificationSettings").where("weighReminderEnabled", "==", true).get(),
+      firestore.collectionGroup("notificationSettings").where("dailySummaryEnabled", "==", true).get(),
+    ]);
+    const settingsDocuments = new Map(
+      snapshots.flatMap((snapshot) => snapshot.docs).map((document) => [
+        document.ref.path,
+        document,
+      ]),
+    );
+
+    await Promise.all(
+      [...settingsDocuments.values()].map((document) => synchronizeNotificationSchedule(
+        document.data(),
+        document.data(),
+        document.ref,
+        new Date(),
+        definitions,
+        NOTIFICATION_TYPES,
+      )),
+    );
+  },
+);
+
+/** Rebuilds the stored recap whenever a device uploads a daily step aggregate */
+export const prepareDailyRecap = onDocumentWritten(
+  {
+    document: "users/{userId}/dailyActivity/{localDate}",
+    region: "europe-west1",
+    retry: true,
+  },
+  async (event) => {
+    const after = event.data?.after;
+
+    if (after === undefined || !after.exists) {
+      return;
+    }
+
+    const data = after.data();
+    const timezone = typeof data?.timezone === "string" ? data.timezone : "UTC";
+    const localDate = event.params.localDate;
+    const period = getDailyRecapPeriodForLocalDate(localDate, timezone);
+    const userReference = getFirestore().collection("users").doc(event.params.userId);
+
+    await buildAndStoreDailyRecap(
+      userReference,
+      period,
+      new Date(),
+    );
+  },
+);
+
+/** Finds and sends due notifications every five minutes */
 export const dispatchScheduledNotifications = onSchedule(
   {
-    // The ten-minute cadence balances delivery delay with scheduler and query cost
-    schedule: "every 10 minutes",
+    // The five-minute cadence preserves the configured fifteen-minute prepare lead
+    schedule: "every 5 minutes",
 
     // User-local timing is handled per document rather than by the scheduler timezone
     timeZone: "Etc/UTC",

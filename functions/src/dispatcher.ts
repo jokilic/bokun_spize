@@ -33,8 +33,13 @@ import {
   getSupportedLocale,
   NOTIFICATION_TYPES,
   NotificationDefinition,
+  NotificationCopy,
   SupportedLocale,
 } from "./notification-config";
+import {
+  buildAndStoreDailyRecap,
+  getDailyRecapPeriod,
+} from "./daily-recap";
 import {
   getDate,
   getDispatchId,
@@ -57,6 +62,9 @@ export interface ReservedDispatch {
 
   /** Behavior and field mapping for this notification type */
   definition: NotificationDefinition;
+
+  /** Localized copy that may be replaced by a generated daily recap */
+  copy: Record<SupportedLocale, NotificationCopy>;
 
   /** Owning Firebase Authentication user ID used only in structured logs */
   userId: string;
@@ -260,6 +268,7 @@ export async function reserveDueNotification(
       settingsReference,
       dispatchReference,
       definition: scheduledDefinition,
+      copy: scheduledDefinition.copy,
       userId: userReference.id,
       timezone,
       defaultLocale: getSupportedLocale(settings.locale),
@@ -412,7 +421,14 @@ export function buildMulticastMessage(
   devices: DeviceRegistration[],
 ): FidMulticastMessage {
   const {definition} = dispatch;
-  const copy = definition.copy[locale];
+  const copy = dispatch.copy[locale];
+  const recapPeriod = definition.type === "dailySummary" || definition.type === "dailySummaryPrepare"
+    ? getDailyRecapPeriod(
+      dispatch.dueAt,
+      dispatch.timezone,
+      definition.type,
+    )
+    : null;
 
   // Preserve the original useful window when a scheduler run starts slightly late
   const expiration = Math.floor(dispatch.dueAt.getTime() / 1000) + definition.ttlSeconds;
@@ -420,6 +436,51 @@ export function buildMulticastMessage(
     1,
     expiration - Math.floor(dispatch.reservedAt.getTime() / 1000),
   );
+
+  const data = {
+    type: definition.type,
+    route: definition.route,
+    sentAt: dispatch.reservedAt.toISOString(),
+    idempotencyKey: dispatch.idempotencyKey,
+    ...(recapPeriod === null ? {} : {
+      localDate: recapPeriod.localDate,
+      timezone: recapPeriod.timezone,
+      periodStart: recapPeriod.start.toISOString(),
+      periodEnd: recapPeriod.end.toISOString(),
+    }),
+  };
+
+  if (definition.delivery === "background") {
+    return {
+      fids: devices.map((device) => device.fid),
+      data,
+      android: {
+        priority: "high",
+        ttl: remainingTtlSeconds * 1000,
+        collapseKey: definition.type,
+      },
+      apns: {
+        headers: {
+          "apns-push-type": "background",
+          "apns-priority": "5",
+          "apns-expiration": String(expiration),
+          "apns-collapse-id": definition.type,
+        },
+        payload: {
+          aps: {
+            contentAvailable: true,
+          },
+        },
+      },
+      webpush: {
+        headers: {
+          TTL: String(remainingTtlSeconds),
+          Urgency: "high",
+        },
+        data,
+      },
+    };
+  }
 
   return {
     // Preserves response order so FCM failures map back to device documents
@@ -430,12 +491,7 @@ export function buildMulticastMessage(
     },
 
     // Flutter reads these string values when a message is opened
-    data: {
-      type: definition.type,
-      route: definition.route,
-      sentAt: dispatch.reservedAt.toISOString(),
-      idempotencyKey: dispatch.idempotencyKey,
-    },
+    data,
 
     // High transport priority delivers reminders promptly while TTL and collapse discard stale copies
     android: {
@@ -652,12 +708,31 @@ export async function processDueSettings(
 
   try {
     // Delivery is intentionally performed after the transaction to avoid external calls in retries
-    const devices = await getActiveDevices(dispatch);
+    const activeDevices = await getActiveDevices(dispatch);
+    const devices = dispatch.definition.type === "dailySummaryPrepare"
+      ? activeDevices.slice(0, 1)
+      : activeDevices;
 
     // Recheck after device loading so entries committed near dispatch suppress the reminder
     if (await hasWeightForReservedLocalDate(dispatch)) {
       await completeSkippedDispatch(dispatch, "weight_recorded");
       return;
+    }
+
+    if (dispatch.definition.type === "dailySummary") {
+      const userReference = getUserReference(dispatch.settingsReference);
+      const period = getDailyRecapPeriod(
+        dispatch.dueAt,
+        dispatch.timezone,
+        dispatch.definition.type,
+      );
+      const recap = await buildAndStoreDailyRecap(
+        userReference,
+        period,
+        dispatch.dueAt,
+      );
+
+      dispatch.copy = recap.copy;
     }
 
     const result = await sendReservedNotification(messaging, dispatch, devices);

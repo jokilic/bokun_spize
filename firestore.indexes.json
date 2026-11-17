@@ -23,6 +23,20 @@
           "order": "ASCENDING"
         },
         {
+          "fieldPath": "nextDailySummaryPrepareAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notificationSettings",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "dailySummaryEnabled",
+          "order": "ASCENDING"
+        },
+        {
           "fieldPath": "nextDailySummaryAt",
           "order": "ASCENDING"
         }

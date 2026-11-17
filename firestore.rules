@@ -132,15 +132,18 @@ service cloud.firestore {
       let requiredClientFields = [
         'weighReminderEnabled',
         'dailySummaryEnabled',
+        'dailyRecapStepsEnabled',
         'announcementsEnabled',
         'timezone',
         'locale',
       ];
       let optionalClientFields = [
         'weighReminderTime',
+        'dailyRecapTime',
       ];
       let serverFields = [
         'nextWeighReminderAt',
+        'nextDailySummaryPrepareAt',
         'nextDailySummaryAt',
       ];
 
@@ -149,6 +152,8 @@ service cloud.firestore {
         && data.weighReminderEnabled is bool
         && (!('weighReminderTime' in data) || data.weighReminderTime is timestamp)
         && data.dailySummaryEnabled is bool
+        && data.dailyRecapStepsEnabled is bool
+        && (!('dailyRecapTime' in data) || data.dailyRecapTime is timestamp)
         && data.announcementsEnabled is bool
         && data.timezone is string
         && data.timezone.size() > 0
@@ -157,6 +162,7 @@ service cloud.firestore {
         && data.locale is string
         && data.locale in ['en', 'hr']
         && (!('nextWeighReminderAt' in data) || data.nextWeighReminderAt is timestamp)
+        && (!('nextDailySummaryPrepareAt' in data) || data.nextDailySummaryPrepareAt is timestamp)
         && (!('nextDailySummaryAt' in data) || data.nextDailySummaryAt is timestamp);
     }
 
@@ -166,12 +172,69 @@ service cloud.firestore {
         'weighReminderEnabled',
         'weighReminderTime',
         'dailySummaryEnabled',
+        'dailyRecapTime',
+        'dailyRecapStepsEnabled',
         'announcementsEnabled',
         'timezone',
         'locale',
       ];
 
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(clientFields);
+    }
+
+    // Validate one consented daily aggregate without accepting raw health samples
+    function isValidDailyActivity(data, localDate) {
+      let requiredFields = [
+        'localDate',
+        'timezone',
+        'status',
+        'source',
+        'deviceId',
+        'capturedAt',
+        'expiresAt',
+        'schemaVersion',
+      ];
+
+      return data.keys().hasAll(requiredFields)
+        && data.keys().hasOnly(requiredFields.concat(['steps']))
+        && data.localDate is string
+        && data.localDate == localDate
+        && localDate.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        && data.timezone is string
+        && data.timezone.size() > 0
+        && data.timezone.size() <= 100
+        && data.timezone.matches('(UTC|[A-Za-z_+-]+(/[A-Za-z0-9_+-]+)+)')
+        && data.status is string
+        && data.status in [
+          'available',
+          'permission_denied',
+          'background_permission_denied',
+          'health_unavailable',
+          'timezone_mismatch',
+          'read_failed',
+        ]
+        && data.source is string
+        && data.source in ['healthkit', 'health_connect']
+        && data.deviceId is string
+        && data.deviceId.matches('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}')
+        && data.capturedAt is timestamp
+        && data.capturedAt == request.time
+        && data.expiresAt is timestamp
+        && data.expiresAt > request.time
+        && data.schemaVersion == 1
+        && (
+          (data.status == 'available' && data.steps is int && data.steps >= 0 && data.steps <= 10000000)
+          || (data.status != 'available' && !data.keys().hasAny(['steps']))
+        );
+    }
+
+    // Require the explicit step-upload preference before accepting health-derived data
+    function isDailyRecapStepSyncEnabled(userId) {
+      let settingsPath = /databases/$(database)/documents/users/$(userId)/notificationSettings/preferences;
+
+      return exists(settingsPath)
+        && get(settingsPath).data.dailySummaryEnabled == true
+        && get(settingsPath).data.dailyRecapStepsEnabled == true;
     }
 
     // Validate a short-lived FCM registration without using its FID as the document ID
@@ -280,6 +343,8 @@ service cloud.firestore {
             'weighReminderEnabled',
             'weighReminderTime',
             'dailySummaryEnabled',
+            'dailyRecapTime',
+            'dailyRecapStepsEnabled',
             'announcementsEnabled',
             'timezone',
             'locale',
@@ -299,6 +364,37 @@ service cloud.firestore {
           && request.resource.data.lastActiveAt == request.time;
         allow update: if isOwner(userId)
           && isValidNotificationDeviceUpdate(deviceId);
+      }
+
+      match /dailyActivity/{localDate} {
+        allow read, delete: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && isDailyRecapStepSyncEnabled(userId)
+          && isValidDailyActivity(request.resource.data, localDate);
+        allow update: if isOwner(userId)
+          && isDailyRecapStepSyncEnabled(userId)
+          && isValidDailyActivity(request.resource.data, localDate)
+          && (
+            resource.data.status != 'available'
+            || request.resource.data.status == 'available'
+          )
+          && (
+            resource.data.deviceId == request.resource.data.deviceId
+            || (
+              resource.data.status != 'available'
+              && request.resource.data.status == 'available'
+            )
+          );
+      }
+
+      match /dailyRecaps/{localDate} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if false;
+      }
+
+      match /notificationDispatches/{dispatchId} {
+        allow delete: if isOwner(userId);
+        allow read, create, update: if false;
       }
     }
   }

@@ -7,11 +7,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/ai_service.dart';
 import '../services/cache_service.dart';
+import '../services/daily_recap_service.dart';
 import '../services/firebase_service.dart';
 import '../services/notification_service.dart';
 import '../services/screen_service.dart';
@@ -152,6 +154,20 @@ Future<void> registerServices() async {
   }
 
   ///
+  /// DAILY RECAP SERVICE
+  ///
+  if (!getIt.isRegistered<DailyRecapService>()) {
+    getIt.registerLazySingleton(
+      () => DailyRecapService(
+        auth: FirebaseAuth.instance,
+        firestore: FirebaseFirestore.instance,
+        health: Health(),
+        storage: getIt.get<StorageService>(),
+      ),
+    );
+  }
+
+  ///
   /// NOTIFICATIONS
   ///
   if (!getIt.isRegistered<NotificationService>()) {
@@ -163,6 +179,7 @@ Future<void> registerServices() async {
           firestore: FirebaseFirestore.instance,
           storage: getIt.get<StorageService>(),
           screen: getIt.get<ScreenService>(),
+          dailyRecap: getIt.get<DailyRecapService>(),
           foregroundMessages: FirebaseMessaging.onMessage,
           openedMessages: FirebaseMessaging.onMessageOpenedApp,
           openSystemSettingsCallback: openAppSettings,

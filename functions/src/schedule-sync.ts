@@ -14,6 +14,7 @@ import {
 
 import {
   getNotificationDefinitionForSettings,
+  isNotificationDefinitionEnabled,
   NOTIFICATION_DEFINITIONS,
   NOTIFICATION_TYPES,
   NotificationDefinition,
@@ -32,6 +33,7 @@ export function buildSchedulePatch(
   after: DocumentData,
   now: Date,
   definitions: Record<NotificationType, NotificationDefinition> = NOTIFICATION_DEFINITIONS,
+  forcedTypes: NotificationType[] = [],
 ): SchedulePatch {
   const patch: SchedulePatch = {};
 
@@ -40,14 +42,20 @@ export function buildSchedulePatch(
   const beforeWeighReminderTime = getDate(before?.weighReminderTime);
   const afterWeighReminderTime = getDate(after.weighReminderTime);
   const weighReminderTimeChanged = beforeWeighReminderTime?.getTime() !== afterWeighReminderTime?.getTime();
+  const beforeDailyRecapTime = getDate(before?.dailyRecapTime);
+  const afterDailyRecapTime = getDate(after.dailyRecapTime);
+  const dailyRecapTimeChanged = beforeDailyRecapTime?.getTime() !== afterDailyRecapTime?.getTime();
+  const dailyRecapStepsChanged = before?.dailyRecapStepsEnabled !== after.dailyRecapStepsEnabled;
 
   for (const type of NOTIFICATION_TYPES) {
     const definition = getNotificationDefinitionForSettings(
       definitions[type],
       after,
     );
-    const wasEnabled = before?.[definition.enabledField] === true;
-    const isEnabled = after[definition.enabledField] === true;
+    const wasEnabled = before === undefined
+      ? false
+      : isNotificationDefinitionEnabled(before, definition);
+    const isEnabled = isNotificationDefinitionEnabled(after, definition);
     const hasNextOccurrence = after[definition.nextAtField] !== undefined;
 
     // Disabled notifications must not remain visible to indexed due queries
@@ -57,9 +65,13 @@ export function buildSchedulePatch(
     }
 
     // Preserve an existing timestamp unless activation, repair or timezone change requires a new one
-    const scheduleTimeChanged = type === "weightReminder" && weighReminderTimeChanged;
+    const scheduleTimeChanged = type === "weightReminder"
+      ? weighReminderTimeChanged
+      : type === "dailySummary" || type === "dailySummaryPrepare"
+        ? dailyRecapTimeChanged || (type === "dailySummaryPrepare" && dailyRecapStepsChanged)
+        : false;
 
-    if (isEnabled && (!wasEnabled || !hasNextOccurrence || timezoneChanged || scheduleTimeChanged)) {
+    if (isEnabled && (!wasEnabled || !hasNextOccurrence || timezoneChanged || scheduleTimeChanged || forcedTypes.includes(type))) {
       patch[definition.nextAtField] = getNextOccurrence(
         now,
         String(after.timezone ?? "UTC"),
@@ -78,9 +90,16 @@ export async function synchronizeNotificationSchedule(
   settingsReference: DocumentReference,
   now: Date,
   definitions: Record<NotificationType, NotificationDefinition> = NOTIFICATION_DEFINITIONS,
+  forcedTypes: NotificationType[] = [],
 ): Promise<void> {
   // Keep calculation separate from persistence so scheduling rules remain easy to test
-  const schedulePatch = buildSchedulePatch(before, after, now, definitions);
+  const schedulePatch = buildSchedulePatch(
+    before,
+    after,
+    now,
+    definitions,
+    forcedTypes,
+  );
   const entries = Object.entries(schedulePatch);
 
   // Avoid writing the document again when client changes do not affect scheduling

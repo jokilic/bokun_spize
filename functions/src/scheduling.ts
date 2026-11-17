@@ -10,6 +10,8 @@ import {DateTime} from "luxon";
 
 import {
   DEFAULT_TIMEZONE,
+  DAILY_SUMMARY_PREPARE_MINUTES,
+  isNotificationDefinitionEnabled,
   NotificationDefinition,
 } from "./notification-config";
 
@@ -103,7 +105,7 @@ export function isNotificationDue(
   const nextAt = getDate(settings[definition.nextAtField]);
 
   // Both conditions are checked again inside the reservation transaction
-  return settings[definition.enabledField] === true && nextAt !== null && nextAt.getTime() <= now.getTime();
+  return isNotificationDefinitionEnabled(settings, definition) && nextAt !== null && nextAt.getTime() <= now.getTime();
 }
 
 /** Creates the stable per-user key used to suppress a duplicate occurrence delivery */
@@ -113,7 +115,12 @@ export function getDispatchId(
   timezone: string,
 ): string {
   const localOccurrence = DateTime.fromJSDate(dueAt, {zone: "utc"})
-    .setZone(getValidTimezone(timezone));
+    .setZone(getValidTimezone(timezone))
+    .plus({
+      minutes: definition.type === "dailySummaryPrepare"
+        ? DAILY_SUMMARY_PREPARE_MINUTES
+        : 0,
+    });
 
   // Weight reminder times can change after an earlier reminder was sent on the same day
   const occurrenceKey = definition.type === "weightReminder"

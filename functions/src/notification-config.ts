@@ -9,7 +9,7 @@ import {Timestamp} from "firebase-admin/firestore";
 import {DateTime} from "luxon";
 
 /** Notification identifiers shared with the Flutter FCM payload parser */
-export type NotificationType = "weightReminder" | "dailySummary";
+export type NotificationType = "weightReminder" | "dailySummaryPrepare" | "dailySummary";
 
 /** Locales supported by both the Flutter app and notification copy */
 export type SupportedLocale = "en" | "hr";
@@ -29,7 +29,10 @@ export interface NotificationDefinition {
   enabledField: "weighReminderEnabled" | "dailySummaryEnabled";
 
   /** Server-managed timestamp queried by the scheduled dispatcher */
-  nextAtField: "nextWeighReminderAt" | "nextDailySummaryAt";
+  nextAtField: "nextWeighReminderAt" | "nextDailySummaryPrepareAt" | "nextDailySummaryAt";
+
+  /** Whether FCM displays an alert or only wakes the app for background work */
+  delivery: "alert" | "background";
 
   /** Local wall-clock delivery time interpreted in the user's IANA timezone */
   hour: number;
@@ -54,6 +57,26 @@ export interface NotificationDefinition {
   copy: Record<SupportedLocale, NotificationCopy>;
 }
 
+/** Lead time between the silent step sync request and the visible recap */
+export const DAILY_SUMMARY_PREPARE_MINUTES = 15;
+
+/** Subtracts minutes from a wall-clock time while wrapping across midnight */
+export function subtractTimeMinutes(
+  hour: number,
+  minute: number,
+  minutesToSubtract: number,
+): {hour: number; minute: number} {
+  const minutesPerDay = 24 * 60;
+  const totalMinutes = (
+    hour * 60 + minute - minutesToSubtract + minutesPerDay
+  ) % minutesPerDay;
+
+  return {
+    hour: Math.floor(totalMinutes / 60),
+    minute: totalMinutes % 60,
+  };
+}
+
 /**
  * Source of truth for scheduled notification behavior
  *
@@ -63,13 +86,22 @@ export interface NotificationDefinition {
 export function getNotificationDefinitions(
   weightReminderHour = 9,
   weightReminderMinute = 0,
+  dailyRecapHour = 8,
+  dailyRecapMinute = 0,
 ): Record<NotificationType, NotificationDefinition> {
+  const dailySummaryPrepareTime = subtractTimeMinutes(
+    dailyRecapHour,
+    dailyRecapMinute,
+    DAILY_SUMMARY_PREPARE_MINUTES,
+  );
+
   return {
     // Morning reminder intended to arrive before the user's first meal
     weightReminder: {
       type: "weightReminder",
       enabledField: "weighReminderEnabled",
       nextAtField: "nextWeighReminderAt",
+      delivery: "alert",
       hour: weightReminderHour,
       minute: weightReminderMinute,
       route: "weights",
@@ -88,13 +120,38 @@ export function getNotificationDefinitions(
         },
       },
     },
+    // Silent wake-up that gives the device time to upload yesterday's step total
+    dailySummaryPrepare: {
+      type: "dailySummaryPrepare",
+      enabledField: "dailySummaryEnabled",
+      nextAtField: "nextDailySummaryPrepareAt",
+      delivery: "background",
+      hour: dailySummaryPrepareTime.hour,
+      minute: dailySummaryPrepareTime.minute,
+      route: "meals",
+      androidChannelId: "daily_summaries",
+      androidColor: "#3B7D5E",
+      ttlSeconds: DAILY_SUMMARY_PREPARE_MINUTES * 60,
+      skipWhenWeightRecorded: false,
+      copy: {
+        en: {
+          title: "",
+          body: "",
+        },
+        hr: {
+          title: "",
+          body: "",
+        },
+      },
+    },
     // Morning recap of the user's previous day
     dailySummary: {
       type: "dailySummary",
       enabledField: "dailySummaryEnabled",
       nextAtField: "nextDailySummaryAt",
-      hour: 8,
-      minute: 0,
+      delivery: "alert",
+      hour: dailyRecapHour,
+      minute: dailyRecapMinute,
       route: "meals",
       androidChannelId: "daily_summaries",
       androidColor: "#3B7D5E",
@@ -146,22 +203,42 @@ export function getNotificationDefinitionForSettings(
   definition: NotificationDefinition,
   settings: Record<string, unknown>,
 ): NotificationDefinition {
-  if (definition.type !== "weightReminder") {
-    return definition;
-  }
-
   const timezone = typeof settings.timezone === "string" ? settings.timezone : DEFAULT_TIMEZONE;
-  const time = getTimestampTimeParts(settings.weighReminderTime, timezone);
+  const configuredTime = definition.type === "weightReminder"
+    ? getTimestampTimeParts(settings.weighReminderTime, timezone)
+    : definition.type === "dailySummary" || definition.type === "dailySummaryPrepare"
+      ? getTimestampTimeParts(settings.dailyRecapTime, timezone)
+      : null;
 
-  if (time === null) {
+  if (configuredTime === null) {
     return definition;
   }
+
+  const time = definition.type === "dailySummaryPrepare"
+    ? subtractTimeMinutes(
+      configuredTime.hour,
+      configuredTime.minute,
+      DAILY_SUMMARY_PREPARE_MINUTES,
+    )
+    : configuredTime;
 
   return {
     ...definition,
     hour: time.hour,
     minute: time.minute,
   };
+}
+
+/** Reports whether all preference fields required by a schedule are enabled */
+export function isNotificationDefinitionEnabled(
+  settings: Record<string, unknown>,
+  definition: NotificationDefinition,
+): boolean {
+  if (settings[definition.enabledField] !== true) {
+    return false;
+  }
+
+  return definition.type !== "dailySummaryPrepare" || settings.dailyRecapStepsEnabled === true;
 }
 
 /** Safe scheduling fallback when a stored timezone is missing or invalid */

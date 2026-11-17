@@ -25,6 +25,7 @@ class NotificationsSheet extends StatefulWidget {
   final Future<AuthorizationStatus> Function() onPermissionRequested;
   final Future<AuthorizationStatus> Function() onPermissionRefreshed;
   final Future<bool> Function() onOpenSettingsPressed;
+  final Future<bool> Function() onDailyRecapStepSyncRequested;
 
   const NotificationsSheet({
     required this.initialSettings,
@@ -33,6 +34,7 @@ class NotificationsSheet extends StatefulWidget {
     required this.onPermissionRequested,
     required this.onPermissionRefreshed,
     required this.onOpenSettingsPressed,
+    required this.onDailyRecapStepSyncRequested,
   });
 
   @override
@@ -223,6 +225,55 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
     useTodayYesterdayTomorrow: false,
     languageCode: context.locale.languageCode,
   );
+
+  /// Opens [TimeSheet] and updates the daily recap time
+  Future<void> updateDailyRecapTimeViaPicker(BuildContext context) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (context) => TimeSheet(
+      subtitle: 'notificationsDailyRecapTimeSubtitle'.tr(),
+      primaryColor: context.colors.protein,
+      dateValue: settings.dailyRecapTime,
+      onTimeChanged: (newTime) => updateSettings(
+        settings.copyWith(
+          dailyRecapTime: DateTime(
+            2020,
+            1,
+            1,
+            newTime.hour,
+            newTime.minute,
+          ),
+        ),
+      ),
+    ),
+  );
+
+  /// Returns the localized daily recap time
+  String getDailyRecapTime(BuildContext context) => getDateString(
+    date: settings.dailyRecapTime,
+    dateFormat: 'HH:mm',
+    useTodayYesterdayTomorrow: false,
+    languageCode: context.locale.languageCode,
+  );
+
+  /// Requests health access before storing the explicit step-sync consent
+  Future<void> updateDailyRecapStepsEnabled(bool enabled) async {
+    if (enabled && !(await widget.onDailyRecapStepSyncRequested())) {
+      if (mounted) {
+        showSnackbar(
+          context,
+          text: 'notificationsDailyRecapStepsPermissionFailure'.tr(),
+          icon: PhosphorIconsBold.warningOctagon,
+        );
+      }
+      return;
+    }
+
+    await updateSettings(
+      settings.copyWith(
+        dailyRecapStepsEnabled: enabled,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -562,6 +613,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   onPressed: () => handleSettingsPressed(
                     settings.copyWith(
                       dailySummaryEnabled: !settings.dailySummaryEnabled,
+                      dailyRecapStepsEnabled: !settings.dailySummaryEnabled && settings.dailyRecapStepsEnabled,
                     ),
                   ),
                   isActive: settings.dailySummaryEnabled,
@@ -569,6 +621,72 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   icon: PhosphorIconsBold.chartLine,
                   title: 'notificationsDailySummaryTitle'.tr(),
                   subtitle: 'notificationsDailySummarySubtitle'.tr(),
+                  belowTextWidget: settings.dailySummaryEnabled
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            left: 76,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  HapticFeedback.lightImpact();
+                                  updateDailyRecapTimeViaPicker(context);
+                                },
+                                icon: PhosphorIcon(
+                                  PhosphorIconsBold.clock,
+                                  color: context.colors.text,
+                                  size: 18,
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  shape: const StadiumBorder(),
+                                  textStyle: context.textStyles.smallButton,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  backgroundColor: context.colors.scaffoldBackground.withValues(alpha: 0.5),
+                                  foregroundColor: context.colors.text,
+                                ),
+                                label: Text(
+                                  getDailyRecapTime(context),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'notificationsDailyRecapStepsTitle'.tr(),
+                                style: context.textStyles.infoCardTitle,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'notificationsDailyRecapStepsDisclosure'.tr(),
+                                style: context.textStyles.infoCardDescription,
+                              ),
+                              const SizedBox(height: 6),
+                              Switch.adaptive(
+                                value: settings.dailyRecapStepsEnabled,
+                                activeThumbColor: context.colors.protein,
+                                activeTrackColor: context.colors.protein.withValues(alpha: 0.25),
+                                inactiveThumbColor: context.colors.listTileBackground,
+                                inactiveTrackColor: context.colors.scaffoldBackground,
+                                trackOutlineColor: WidgetStateColor.resolveWith(
+                                  (states) => Colors.transparent,
+                                ),
+                                onChanged: isSaving
+                                    ? null
+                                    : (enabled) {
+                                        HapticFeedback.lightImpact();
+                                        updateDailyRecapStepsEnabled(enabled);
+                                      },
+                              ),
+                            ],
+                          ),
+                        )
+                      : null,
                 ),
               ),
             ),

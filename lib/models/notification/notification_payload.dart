@@ -7,11 +7,19 @@ class NotificationPayload {
   final NotificationType type;
   final MainScreenItem route;
   final DateTime sentAt;
+  final String? localDate;
+  final String? timezone;
+  final DateTime? periodStart;
+  final DateTime? periodEnd;
 
   const NotificationPayload({
     required this.type,
     required this.route,
     required this.sentAt,
+    this.localDate,
+    this.timezone,
+    this.periodStart,
+    this.periodEnd,
   });
 
   /// Parses the stable data contract from an FCM message
@@ -34,10 +42,23 @@ class NotificationPayload {
       return null;
     }
 
+    final localDate = data['localDate'] is String ? data['localDate'] as String : null;
+    final timezone = data['timezone'] is String ? data['timezone'] as String : null;
+    final periodStart = parseSentAt(data['periodStart']);
+    final periodEnd = parseSentAt(data['periodEnd']);
+
+    if (type == NotificationType.dailySummaryPrepare && (localDate == null || timezone == null || periodStart == null || periodEnd == null || !periodStart.isBefore(periodEnd))) {
+      return null;
+    }
+
     return NotificationPayload(
       type: type,
       route: route,
       sentAt: sentAt,
+      localDate: localDate,
+      timezone: timezone,
+      periodStart: periodStart,
+      periodEnd: periodEnd,
     );
   }
 

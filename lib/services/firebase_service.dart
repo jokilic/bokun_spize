@@ -822,6 +822,15 @@ class FirebaseService {
       await deleteCollectionPaged(
         userDocument.collection('notificationDevices'),
       );
+      await deleteCollectionPaged(
+        userDocument.collection('notificationDispatches'),
+      );
+      await deleteCollectionPaged(
+        userDocument.collection('dailyActivity'),
+      );
+      await deleteCollectionPaged(
+        userDocument.collection('dailyRecaps'),
+      );
 
       /// Deletes user document
       await userDocument.delete();
