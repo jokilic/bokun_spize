@@ -31,8 +31,6 @@ class DailyRecapService {
     required this.storage,
   });
 
-  static const retentionDays = 30;
-
   /// Requests step access and Android background-read access after explicit consent
   Future<bool> requestStepSyncPermission() async {
     try {
@@ -85,20 +83,24 @@ class DailyRecapService {
     NotificationPayload payload, {
     required bool isBackground,
   }) async {
-    final localDate = payload.localDate;
+    final dayBeingSummarized = payload.dayBeingSummarized;
     final timezone = payload.timezone;
     final periodStart = payload.periodStart;
     final periodEnd = payload.periodEnd;
+    final recapAt = payload.recapAt;
+    final recapKey = payload.recapKey;
 
-    if (localDate == null || timezone == null || periodStart == null || periodEnd == null) {
+    if (dayBeingSummarized == null || timezone == null || periodStart == null || periodEnd == null || recapAt == null || recapKey == null) {
       return DailyActivitySyncStatus.skipped;
     }
 
     return synchronizePeriod(
-      localDate: localDate,
+      dayBeingSummarized: dayBeingSummarized,
       timezone: timezone,
       periodStart: periodStart,
       periodEnd: periodEnd,
+      recapAt: recapAt,
+      recapKey: recapKey,
       isBackground: isBackground,
     );
   }
@@ -115,7 +117,7 @@ class DailyRecapService {
     );
 
     return synchronizePeriod(
-      localDate: formatLocalDate(startOfYesterday),
+      dayBeingSummarized: formatLocalDate(startOfYesterday),
       timezone: timezone,
       periodStart: startOfYesterday,
       periodEnd: startOfToday,
@@ -125,11 +127,13 @@ class DailyRecapService {
 
   /// Reads one aggregate and writes only its daily total and source status
   Future<DailyActivitySyncStatus> synchronizePeriod({
-    required String localDate,
+    required String dayBeingSummarized,
     required String timezone,
     required DateTime periodStart,
     required DateTime periodEnd,
     required bool isBackground,
+    DateTime? recapAt,
+    String? recapKey,
   }) async {
     final user = auth.currentUser;
 
@@ -154,6 +158,14 @@ class DailyRecapService {
     if (settings?['dailySummaryEnabled'] != true || settings?['dailyRecapStepsEnabled'] != true) {
       return DailyActivitySyncStatus.skipped;
     }
+
+    final resolvedRecapAt =
+        recapAt ??
+        getRecapAt(
+          settings?['dailyRecapTime'],
+          periodEnd,
+        );
+    final resolvedRecapKey = recapKey ?? formatRecapKey(resolvedRecapAt);
 
     if (defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS) {
       return DailyActivitySyncStatus.skipped;
@@ -208,8 +220,9 @@ class DailyRecapService {
     try {
       await writeDailyActivity(
         userId: user.uid,
-        localDate: localDate,
-        localDateTime: periodStart,
+        dayBeingSummarized: periodStart,
+        recapAt: resolvedRecapAt,
+        recapKey: resolvedRecapKey,
         timezone: timezone,
         status: status,
         steps: steps,
@@ -229,8 +242,9 @@ class DailyRecapService {
   /// Writes an idempotent per-day aggregate without allowing unavailable devices to replace valid data
   Future<void> writeDailyActivity({
     required String userId,
-    required String localDate,
-    required DateTime localDateTime,
+    required DateTime dayBeingSummarized,
+    required DateTime recapAt,
+    required String recapKey,
     required String timezone,
     required DailyActivitySyncStatus status,
     required int? steps,
@@ -240,7 +254,7 @@ class DailyRecapService {
     }
 
     final deviceId = await storage.getNotificationDeviceId();
-    final document = firestore.collection('users').doc(userId).collection('dailyActivity').doc(localDate);
+    final document = firestore.collection('users').doc(userId).collection('dailyActivity').doc(recapKey);
     final statusName = switch (status) {
       DailyActivitySyncStatus.available => 'available',
       DailyActivitySyncStatus.permissionDenied => 'permission_denied',
@@ -250,18 +264,12 @@ class DailyRecapService {
       DailyActivitySyncStatus.skipped => 'read_failed',
     };
     final data = <String, dynamic>{
-      'localDate': Timestamp.fromDate(localDateTime),
+      'dayBeingSummarized': Timestamp.fromDate(dayBeingSummarized),
+      'recapAt': Timestamp.fromDate(recapAt),
       'timezone': timezone,
       'status': statusName,
       'source': defaultTargetPlatform == TargetPlatform.iOS ? 'healthkit' : 'health_connect',
       'deviceId': deviceId,
-      'capturedAt': FieldValue.serverTimestamp(),
-      'expiresAt': Timestamp.fromDate(
-        DateTime.now().add(
-          const Duration(days: retentionDays),
-        ),
-      ),
-      'schemaVersion': 2,
       if (status == DailyActivitySyncStatus.available && steps != null) 'steps': steps,
     };
 
@@ -285,4 +293,20 @@ class DailyRecapService {
 
   /// Formats a local calendar date for Firestore document IDs
   String formatLocalDate(DateTime value) => '${value.year.toString().padLeft(4, '0')}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
+
+  /// Resolves the visible recap occurrence from the configured wall-clock time
+  DateTime getRecapAt(Object? configuredTime, DateTime startOfRecapDay) {
+    final time = configuredTime is Timestamp ? configuredTime.toDate() : DateTime(2020, 1, 1, 8);
+
+    return DateTime(
+      startOfRecapDay.year,
+      startOfRecapDay.month,
+      startOfRecapDay.day,
+      time.hour,
+      time.minute,
+    );
+  }
+
+  /// Formats the visible recap occurrence used by daily document IDs
+  String formatRecapKey(DateTime value) => '${formatLocalDate(value)}_${value.hour.toString().padLeft(2, '0')}-${value.minute.toString().padLeft(2, '0')}';
 }

@@ -85,7 +85,7 @@ export interface ReservedDispatch {
   reservedAt: Date;
 
   /** Scheduled instant used to preserve the reminder's original expiration */
-  dueAt: Date;
+  scheduledAt: Date;
 }
 
 /** Active Firebase Installation ID together with its Firestore document */
@@ -186,7 +186,7 @@ export async function hasWeightForReservedLocalDate(
   const userReference = getUserReference(dispatch.settingsReference);
   const snapshot = await getLocalDateWeightQuery(
     userReference,
-    dispatch.dueAt,
+    dispatch.scheduledAt,
     dispatch.timezone,
   ).get();
 
@@ -214,10 +214,10 @@ export async function reserveDueNotification(
       definition,
       settings,
     );
-    const dueAt = getDate(settings[scheduledDefinition.nextAtField]);
+    const scheduledAt = getDate(settings[scheduledDefinition.nextAtField]);
 
     // Malformed timestamps are ignored rather than risking an invalid reservation
-    if (dueAt === null) {
+    if (scheduledAt === null) {
       return null;
     }
 
@@ -226,7 +226,7 @@ export async function reserveDueNotification(
     const nextAt = getNextOccurrence(now, timezone, scheduledDefinition);
 
     // One document per logical occurrence acts as the durable idempotency record
-    const idempotencyKey = getDispatchId(scheduledDefinition, dueAt, timezone);
+    const idempotencyKey = getDispatchId(scheduledDefinition, scheduledAt, timezone);
     const dispatchReference = userReference.collection("notificationDispatches").doc(idempotencyKey);
     const dispatchSnapshot = await transaction.get(dispatchReference);
 
@@ -239,9 +239,9 @@ export async function reserveDueNotification(
       return null;
     }
 
-    const isStale = now.getTime() >= dueAt.getTime() + scheduledDefinition.ttlSeconds * 1000;
+    const isStale = now.getTime() >= scheduledAt.getTime() + scheduledDefinition.ttlSeconds * 1000;
     const weightSnapshot = scheduledDefinition.skipWhenWeightRecorded && !isStale ? await transaction.get(
-      getLocalDateWeightQuery(userReference, dueAt, timezone),
+      getLocalDateWeightQuery(userReference, scheduledAt, timezone),
     ) : null;
     const skipReason: DispatchSkipReason | null = isStale
       ? "stale"
@@ -251,7 +251,6 @@ export async function reserveDueNotification(
 
     // Create fails on duplicate IDs while the transaction retries on concurrent settings changes
     transaction.create(dispatchReference, {
-      dueAt: Timestamp.fromDate(dueAt),
       status: skipReason === null ? "reserved" : `skipped_${skipReason}`,
       ...(skipReason === null ? {} : {
         skipReason,
@@ -275,7 +274,7 @@ export async function reserveDueNotification(
       idempotencyKey,
       skipReason,
       reservedAt: now,
-      dueAt,
+      scheduledAt,
     };
   });
 }
@@ -424,14 +423,14 @@ export function buildMulticastMessage(
   const copy = dispatch.copy[locale];
   const recapPeriod = definition.type === "dailySummary" || definition.type === "dailySummaryPrepare"
     ? getDailyRecapPeriod(
-      dispatch.dueAt,
+      dispatch.scheduledAt,
       dispatch.timezone,
       definition.type,
     )
     : null;
 
   // Preserve the original useful window when a scheduler run starts slightly late
-  const expiration = Math.floor(dispatch.dueAt.getTime() / 1000) + definition.ttlSeconds;
+  const expiration = Math.floor(dispatch.scheduledAt.getTime() / 1000) + definition.ttlSeconds;
   const remainingTtlSeconds = Math.max(
     1,
     expiration - Math.floor(dispatch.reservedAt.getTime() / 1000),
@@ -443,10 +442,12 @@ export function buildMulticastMessage(
     sentAt: dispatch.reservedAt.toISOString(),
     idempotencyKey: dispatch.idempotencyKey,
     ...(recapPeriod === null ? {} : {
-      localDate: recapPeriod.localDate,
+      dayBeingSummarized: recapPeriod.dayBeingSummarized,
       timezone: recapPeriod.timezone,
       periodStart: recapPeriod.start.toISOString(),
       periodEnd: recapPeriod.end.toISOString(),
+      recapAt: recapPeriod.recapAt.toISOString(),
+      recapKey: recapPeriod.recapKey,
     }),
   };
 
@@ -722,17 +723,16 @@ export async function processDueSettings(
     if (dispatch.definition.type === "dailySummary") {
       const userReference = getUserReference(dispatch.settingsReference);
       const period = getDailyRecapPeriod(
-        dispatch.dueAt,
+        dispatch.scheduledAt,
         dispatch.timezone,
         dispatch.definition.type,
       );
-      const recap = await buildAndStoreDailyRecap(
+      const copy = await buildAndStoreDailyRecap(
         userReference,
         period,
-        dispatch.dueAt,
       );
 
-      dispatch.copy = recap.copy;
+      dispatch.copy = copy;
     }
 
     const result = await sendReservedNotification(messaging, dispatch, devices);

@@ -183,22 +183,22 @@ service cloud.firestore {
     }
 
     // Validate one consented daily aggregate without accepting raw health samples
-    function isValidDailyActivity(data, localDate) {
+    function isValidDailyActivity(data, recapKey) {
       let requiredFields = [
-        'localDate',
+        'dayBeingSummarized',
+        'recapAt',
         'timezone',
         'status',
         'source',
         'deviceId',
-        'capturedAt',
-        'expiresAt',
-        'schemaVersion',
       ];
 
       return data.keys().hasAll(requiredFields)
         && data.keys().hasOnly(requiredFields.concat(['steps']))
-        && data.localDate is timestamp
-        && localDate.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        && data.dayBeingSummarized is timestamp
+        && data.recapAt is timestamp
+        && data.dayBeingSummarized < data.recapAt
+        && recapKey.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}')
         && data.timezone is string
         && data.timezone.size() > 0
         && data.timezone.size() <= 100
@@ -216,11 +216,6 @@ service cloud.firestore {
         && data.source in ['healthkit', 'health_connect']
         && data.deviceId is string
         && data.deviceId.matches('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}')
-        && data.capturedAt is timestamp
-        && data.capturedAt == request.time
-        && data.expiresAt is timestamp
-        && data.expiresAt > request.time
-        && data.schemaVersion == 2
         && (
           (data.status == 'available' && data.steps is int && data.steps >= 0 && data.steps <= 10000000)
           || (data.status != 'available' && !data.keys().hasAny(['steps']))
@@ -365,14 +360,14 @@ service cloud.firestore {
           && isValidNotificationDeviceUpdate(deviceId);
       }
 
-      match /dailyActivity/{localDate} {
+      match /dailyActivity/{recapKey} {
         allow read, delete: if isOwner(userId);
         allow create: if isOwner(userId)
           && isDailyRecapStepSyncEnabled(userId)
-          && isValidDailyActivity(request.resource.data, localDate);
+          && isValidDailyActivity(request.resource.data, recapKey);
         allow update: if isOwner(userId)
           && isDailyRecapStepSyncEnabled(userId)
-          && isValidDailyActivity(request.resource.data, localDate)
+          && isValidDailyActivity(request.resource.data, recapKey)
           && (
             resource.data.status != 'available'
             || request.resource.data.status == 'available'
@@ -386,7 +381,7 @@ service cloud.firestore {
           );
       }
 
-      match /dailyRecaps/{localDate} {
+      match /dailyRecaps/{recapKey} {
         allow read, delete: if isOwner(userId);
         allow create, update: if false;
       }

@@ -111,10 +111,10 @@ export function isNotificationDue(
 /** Creates the stable per-user key used to suppress a duplicate occurrence delivery */
 export function getDispatchId(
   definition: NotificationDefinition,
-  dueAt: Date,
+  scheduledAt: Date,
   timezone: string,
 ): string {
-  const localOccurrence = DateTime.fromJSDate(dueAt, {zone: "utc"})
+  const localOccurrence = DateTime.fromJSDate(scheduledAt, {zone: "utc"})
     .setZone(getValidTimezone(timezone))
     .plus({
       minutes: definition.type === "dailySummaryPrepare"
@@ -122,10 +122,8 @@ export function getDispatchId(
         : 0,
     });
 
-  // Weight reminder times can change after an earlier reminder was sent on the same day
-  const occurrenceKey = definition.type === "weightReminder"
-    ? localOccurrence.toFormat("yyyy-LL-dd_HH-mm")
-    : localOccurrence.toFormat("yyyy-LL-dd");
+  // Including the time allows another configured occurrence later on the same local day
+  const occurrenceKey = localOccurrence.toFormat("yyyy-LL-dd_HH-mm");
 
   // This value is also the Firestore dispatch document ID
   return `${definition.type}_${occurrenceKey}`;

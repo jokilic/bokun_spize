@@ -7,9 +7,7 @@
 - [ ] Add Meal screens - show dismissible widgets with info
 - [ ] `AccountScreen`
     - [ ] Notifications
-        - [ ] Bigger notification image in Android status bar
-        - [ ] Notifications analyzing previous day (meals, weight, walks)
-        - [ ] Announcements
+        - [ ] There are no `dailyRecapTime` in global config/notifications
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required

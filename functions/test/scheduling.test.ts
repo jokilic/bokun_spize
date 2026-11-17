@@ -91,8 +91,8 @@ describe("notification scheduling", () => {
     expect(bounds.end.toISOString()).toBe("2026-03-29T22:00:00.000Z");
   });
 
-  /** Verifies one local day always produces the same duplicate-prevention key */
-  it("creates a stable idempotency key for a local occurrence", () => {
+  /** Verifies distinct local hours remain distinct across the autumn DST change */
+  it("includes the local occurrence time in the idempotency key", () => {
     const definition = NOTIFICATION_DEFINITIONS.dailySummary;
     const first = getDispatchId(
       definition,
@@ -105,9 +105,28 @@ describe("notification scheduling", () => {
       "Europe/Zagreb",
     );
 
-    // Different UTC instants on the same Zagreb date represent one logical send
-    expect(first).toBe("dailySummary_2026-10-25");
-    expect(retry).toBe(first);
+    expect(first).toBe("dailySummary_2026-10-25_07-00");
+    expect(retry).toBe("dailySummary_2026-10-25_08-00");
+    expect(retry).not.toBe(first);
+  });
+
+  /** Verifies recap time changes can create another recap on the same local date */
+  it("creates separate daily recap keys for different same-day times", () => {
+    const definition = NOTIFICATION_DEFINITIONS.dailySummary;
+    const morning = getDispatchId(
+      definition,
+      new Date("2026-06-01T06:00:00.000Z"),
+      "Europe/Zagreb",
+    );
+    const later = getDispatchId(
+      definition,
+      new Date("2026-06-01T06:30:00.000Z"),
+      "Europe/Zagreb",
+    );
+
+    expect(morning).toBe("dailySummary_2026-06-01_08-00");
+    expect(later).toBe("dailySummary_2026-06-01_08-30");
+    expect(later).not.toBe(morning);
   });
 
   /** Verifies changing the reminder time allows another delivery on the same local day */
@@ -351,14 +370,13 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
     const firestore = getFirestore(emulatorApp);
     const userReference = firestore.collection("users").doc(randomUUID());
     const settingsReference = userReference.collection("notificationSettings").doc("preferences");
-    const dueAt = new Date("2026-06-01T09:00:00.000Z");
+    const scheduledAt = new Date("2026-06-01T09:00:00.000Z");
     const now = new Date("2026-06-01T09:05:00.000Z");
 
     // The earlier 08:00 occurrence already completed before the user selected 11:00
     await userReference.collection("notificationDispatches").doc(
       "weightReminder_2026-06-01_08-00",
     ).set({
-      dueAt: Timestamp.fromDate(new Date("2026-06-01T06:00:00.000Z")),
       status: "sent",
     });
     await settingsReference.set({
@@ -368,7 +386,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
       timezone: "Europe/Zagreb",
       locale: "en",
       weighReminderTime: Timestamp.fromDate(new Date("2020-01-01T10:00:00.000Z")),
-      nextWeighReminderAt: Timestamp.fromDate(dueAt),
+      nextWeighReminderAt: Timestamp.fromDate(scheduledAt),
     });
 
     const reservation = await reserveDueNotification(
@@ -379,7 +397,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
     );
 
     expect(reservation?.idempotencyKey).toBe("weightReminder_2026-06-01_11-00");
-    expect(reservation?.dueAt).toEqual(dueAt);
+    expect(reservation?.scheduledAt).toEqual(scheduledAt);
   });
 
   /** Verifies a same-local-day weight entry suppresses the reserved reminder */
@@ -391,7 +409,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
     const firestore = getFirestore(emulatorApp);
     const userReference = firestore.collection("users").doc(randomUUID());
     const settingsReference = userReference.collection("notificationSettings").doc("preferences");
-    const dueAt = new Date("2026-06-01T07:00:00.000Z");
+    const scheduledAt = new Date("2026-06-01T07:00:00.000Z");
     const now = new Date("2026-06-01T07:05:00.000Z");
 
     await settingsReference.set({
@@ -400,7 +418,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
       announcementsEnabled: false,
       timezone: "Europe/Zagreb",
       locale: "en",
-      nextWeighReminderAt: Timestamp.fromDate(dueAt),
+      nextWeighReminderAt: Timestamp.fromDate(scheduledAt),
     });
     await userReference.collection("weightTracks").doc(randomUUID()).set({
       dateTime: Timestamp.fromDate(new Date("2026-06-01T04:30:00.000Z")),
@@ -424,7 +442,7 @@ describe.skipIf(!emulatorAvailable)("notification reservation emulator", () => {
     expect(dispatch.data()?.status).toBe("skipped_weight_recorded");
     expect(dispatch.data()?.type).toBeUndefined();
     expect(dispatch.data()?.idempotencyKey).toBeUndefined();
-    expect(dispatch.data()?.localDate).toBeUndefined();
+    expect(dispatch.data()?.dayBeingSummarized).toBeUndefined();
     expect(dispatch.data()?.reservedAt).toBeUndefined();
   });
 });

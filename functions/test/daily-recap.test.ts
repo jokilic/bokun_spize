@@ -29,9 +29,11 @@ describe("daily recap", () => {
       "dailySummaryPrepare",
     );
 
-    expect(period.localDate).toBe("2026-11-16");
+    expect(period.dayBeingSummarized).toBe("2026-11-16");
     expect(period.start.toISOString()).toBe("2026-11-15T23:00:00.000Z");
     expect(period.end.toISOString()).toBe("2026-11-16T23:00:00.000Z");
+    expect(period.recapAt.toISOString()).toBe("2026-11-16T23:05:00.000Z");
+    expect(period.recapKey).toBe("2026-11-17_00-05");
   });
 
   /** Writes explicit unavailable copy rather than displaying zero activity */

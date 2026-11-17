@@ -17,15 +17,14 @@ import {
 } from "./notification-config";
 import {getValidTimezone} from "./scheduling";
 
-/** Number of days retained before Firestore TTL may remove recap data */
-export const DAILY_RECAP_RETENTION_DAYS = 30;
-
 /** Calendar-day interval shared by the prepare payload and recap queries */
 export interface DailyRecapPeriod {
-  localDate: string;
+  dayBeingSummarized: string;
   timezone: string;
   start: Date;
   end: Date;
+  recapAt: Date;
+  recapKey: string;
 }
 
 /** Aggregated meal values stored in one recap */
@@ -50,28 +49,27 @@ export interface DailyStepSummary {
   status: string;
   value?: number;
   source?: string;
-  capturedAt?: Timestamp;
 }
 
-/** Complete data and localized copy written for a recap day */
+/** Complete summary data written for one recap occurrence */
 export interface DailyRecap {
-  localDate: Timestamp;
+  dayBeingSummarized: Timestamp;
+  recapAt: Timestamp;
   timezone: string;
   status: "ready" | "ready_without_steps";
   meals: DailyMealSummary;
   weight: DailyWeightSummary;
   steps: DailyStepSummary;
-  copy: Record<SupportedLocale, NotificationCopy>;
 }
 
 /** Resolves yesterday's exact local-day bounds for a recap occurrence */
 export function getDailyRecapPeriod(
-  dueAt: Date,
+  scheduledAt: Date,
   timezone: string,
   type: NotificationType,
 ): DailyRecapPeriod {
   const zone = getValidTimezone(timezone);
-  const recapOccurrence = DateTime.fromJSDate(dueAt, {zone: "utc"})
+  const recapOccurrence = DateTime.fromJSDate(scheduledAt, {zone: "utc"})
     .setZone(zone)
     .plus({
       minutes: type === "dailySummaryPrepare"
@@ -81,30 +79,40 @@ export function getDailyRecapPeriod(
   const activityDay = recapOccurrence.startOf("day").minus({days: 1});
 
   return {
-    localDate: activityDay.toFormat("yyyy-LL-dd"),
+    dayBeingSummarized: activityDay.toFormat("yyyy-LL-dd"),
     timezone: zone,
     start: activityDay.toUTC().toJSDate(),
     end: activityDay.plus({days: 1}).toUTC().toJSDate(),
+    recapAt: recapOccurrence.toUTC().toJSDate(),
+    recapKey: recapOccurrence.toFormat("yyyy-LL-dd_HH-mm"),
   };
 }
 
 /** Resolves exact UTC bounds from a validated local date and timezone */
-export function getDailyRecapPeriodForLocalDate(
-  localDate: string,
+export function getDailyRecapPeriodForSummarizedDay(
+  dayBeingSummarized: string,
   timezone: string,
+  recapAt: Date,
 ): DailyRecapPeriod {
   const zone = getValidTimezone(timezone);
-  const activityDay = DateTime.fromISO(localDate, {zone}).startOf("day");
+  const activityDay = DateTime.fromISO(dayBeingSummarized, {zone}).startOf("day");
+  const recapOccurrence = DateTime.fromJSDate(recapAt, {zone: "utc"}).setZone(zone);
 
-  if (!activityDay.isValid || activityDay.toFormat("yyyy-LL-dd") !== localDate) {
-    throw new Error(`Invalid daily recap local date: ${localDate}`);
+  if (
+    !activityDay.isValid ||
+    activityDay.toFormat("yyyy-LL-dd") !== dayBeingSummarized ||
+    !recapOccurrence.isValid
+  ) {
+    throw new Error(`Invalid summarized day: ${dayBeingSummarized}`);
   }
 
   return {
-    localDate,
+    dayBeingSummarized,
     timezone: zone,
     start: activityDay.toUTC().toJSDate(),
     end: activityDay.plus({days: 1}).toUTC().toJSDate(),
+    recapAt: recapOccurrence.toUTC().toJSDate(),
+    recapKey: recapOccurrence.toFormat("yyyy-LL-dd_HH-mm"),
   };
 }
 
@@ -188,7 +196,6 @@ export function summarizeSteps(document: DocumentData | undefined): DailyStepSum
     status: "available",
     value: Math.round(value),
     ...(typeof document.source === "string" ? {source: document.source} : {}),
-    ...(document.capturedAt instanceof Timestamp ? {capturedAt: document.capturedAt} : {}),
   };
 }
 
@@ -258,8 +265,7 @@ export function buildDailyRecapCopy(
 export async function buildAndStoreDailyRecap(
   userReference: DocumentReference<DocumentData>,
   period: DailyRecapPeriod,
-  dueAt: Date,
-): Promise<DailyRecap> {
+): Promise<Record<SupportedLocale, NotificationCopy>> {
   const start = Timestamp.fromDate(period.start);
   const end = Timestamp.fromDate(period.end);
   const [mealSnapshot, weightSnapshot, activitySnapshot] = await Promise.all([
@@ -275,33 +281,23 @@ export async function buildAndStoreDailyRecap(
       .orderBy("dateTime", "desc")
       .limit(1)
       .get(),
-    userReference.collection("dailyActivity").doc(period.localDate).get(),
+    userReference.collection("dailyActivity").doc(period.recapKey).get(),
   ]);
   const meals = summarizeMeals(mealSnapshot.docs.map((document) => document.data()));
   const weight = summarizeWeight(weightSnapshot.docs[0]?.data());
   const steps = summarizeSteps(activitySnapshot.data());
   const copy = buildDailyRecapCopy(meals, weight, steps);
   const recap: DailyRecap = {
-    localDate: start,
+    dayBeingSummarized: start,
+    recapAt: Timestamp.fromDate(period.recapAt),
     timezone: period.timezone,
     status: steps.status === "available" ? "ready" : "ready_without_steps",
     meals,
     weight,
     steps,
-    copy,
   };
 
-  await userReference.collection("dailyRecaps").doc(period.localDate).set({
-    ...recap,
-    dueAt: Timestamp.fromDate(dueAt),
-    preparedAt: Timestamp.now(),
-    schemaVersion: 2,
-    expiresAt: Timestamp.fromDate(
-      DateTime.fromJSDate(dueAt, {zone: "utc"})
-        .plus({days: DAILY_RECAP_RETENTION_DAYS})
-        .toJSDate(),
-    ),
-  });
+  await userReference.collection("dailyRecaps").doc(period.recapKey).set(recap);
 
-  return recap;
+  return copy;
 }
