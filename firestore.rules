@@ -132,12 +132,13 @@ service cloud.firestore {
       let requiredClientFields = [
         'weighReminderEnabled',
         'dailySummaryEnabled',
-        'dailyRecapStepsEnabled',
         'announcementsEnabled',
         'timezone',
         'locale',
       ];
+      // Older clients and settings documents can still carry this unused preference.
       let optionalClientFields = [
+        'dailyRecapStepsEnabled',
         'weighReminderTime',
         'dailyRecapTime',
       ];
@@ -152,7 +153,7 @@ service cloud.firestore {
         && data.weighReminderEnabled is bool
         && (!('weighReminderTime' in data) || data.weighReminderTime is timestamp)
         && data.dailySummaryEnabled is bool
-        && data.dailyRecapStepsEnabled is bool
+        && (!('dailyRecapStepsEnabled' in data) || data.dailyRecapStepsEnabled is bool)
         && (!('dailyRecapTime' in data) || data.dailyRecapTime is timestamp)
         && data.announcementsEnabled is bool
         && data.timezone is string
@@ -180,55 +181,6 @@ service cloud.firestore {
       ];
 
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(clientFields);
-    }
-
-    // Validate one consented daily aggregate without accepting raw health samples
-    function isValidDailyActivity(data, recapKey) {
-      let requiredFields = [
-        'dayBeingSummarized',
-        'recapAt',
-        'timezone',
-        'status',
-        'source',
-        'deviceId',
-      ];
-
-      return data.keys().hasAll(requiredFields)
-        && data.keys().hasOnly(requiredFields.concat(['steps']))
-        && data.dayBeingSummarized is timestamp
-        && data.recapAt is timestamp
-        && data.dayBeingSummarized < data.recapAt
-        && recapKey.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}')
-        && data.timezone is string
-        && data.timezone.size() > 0
-        && data.timezone.size() <= 100
-        && data.timezone.matches('(UTC|[A-Za-z_+-]+(/[A-Za-z0-9_+-]+)+)')
-        && data.status is string
-        && data.status in [
-          'available',
-          'permission_denied',
-          'background_permission_denied',
-          'health_unavailable',
-          'timezone_mismatch',
-          'read_failed',
-        ]
-        && data.source is string
-        && data.source in ['healthkit', 'health_connect']
-        && data.deviceId is string
-        && data.deviceId.matches('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}')
-        && (
-          (data.status == 'available' && data.steps is int && data.steps >= 0 && data.steps <= 10000000)
-          || (data.status != 'available' && !data.keys().hasAny(['steps']))
-        );
-    }
-
-    // Require the explicit step-upload preference before accepting health-derived data
-    function isDailyRecapStepSyncEnabled(userId) {
-      let settingsPath = /databases/$(database)/documents/users/$(userId)/notificationSettings/preferences;
-
-      return exists(settingsPath)
-        && get(settingsPath).data.dailySummaryEnabled == true
-        && get(settingsPath).data.dailyRecapStepsEnabled == true;
     }
 
     // Validate a short-lived FCM registration without using its FID as the document ID
@@ -360,25 +312,9 @@ service cloud.firestore {
           && isValidNotificationDeviceUpdate(deviceId);
       }
 
+      // Allow account deletion to clean up previously synced step totals.
       match /dailyActivity/{recapKey} {
-        allow read, delete: if isOwner(userId);
-        allow create: if isOwner(userId)
-          && isDailyRecapStepSyncEnabled(userId)
-          && isValidDailyActivity(request.resource.data, recapKey);
-        allow update: if isOwner(userId)
-          && isDailyRecapStepSyncEnabled(userId)
-          && isValidDailyActivity(request.resource.data, recapKey)
-          && (
-            resource.data.status != 'available'
-            || request.resource.data.status == 'available'
-          )
-          && (
-            resource.data.deviceId == request.resource.data.deviceId
-            || (
-              resource.data.status != 'available'
-              && request.resource.data.status == 'available'
-            )
-          );
+        allow list, delete: if isOwner(userId);
       }
 
       match /dailyRecaps/{recapKey} {

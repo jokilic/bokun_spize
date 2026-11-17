@@ -5,7 +5,6 @@ class NotificationSettings {
   final DateTime weighReminderTime;
   final bool dailySummaryEnabled;
   final DateTime dailyRecapTime;
-  final bool dailyRecapStepsEnabled;
   final bool announcementsEnabled;
   final String timezone;
   final String locale;
@@ -15,7 +14,6 @@ class NotificationSettings {
     required this.weighReminderTime,
     required this.dailySummaryEnabled,
     required this.dailyRecapTime,
-    required this.dailyRecapStepsEnabled,
     required this.announcementsEnabled,
     required this.timezone,
     required this.locale,
@@ -29,7 +27,6 @@ class NotificationSettings {
     weighReminderTime: DateTime(2020, 1, 1, 9),
     dailySummaryEnabled: false,
     dailyRecapTime: DateTime(2020, 1, 1, 8),
-    dailyRecapStepsEnabled: false,
     announcementsEnabled: false,
     timezone: timezone,
     locale: locale,
@@ -64,7 +61,6 @@ class NotificationSettings {
         dailyRecapTime.hour,
         dailyRecapTime.minute,
       ),
-      dailyRecapStepsEnabled: map['dailyRecapStepsEnabled'] as bool? ?? false,
       announcementsEnabled: map['announcementsEnabled'] as bool? ?? false,
       timezone: map['timezone'] as String? ?? 'UTC',
       locale: map['locale'] as String? ?? 'hr',
@@ -76,7 +72,6 @@ class NotificationSettings {
     DateTime? weighReminderTime,
     bool? dailySummaryEnabled,
     DateTime? dailyRecapTime,
-    bool? dailyRecapStepsEnabled,
     bool? announcementsEnabled,
     String? timezone,
     String? locale,
@@ -85,7 +80,6 @@ class NotificationSettings {
     weighReminderTime: weighReminderTime ?? this.weighReminderTime,
     dailySummaryEnabled: dailySummaryEnabled ?? this.dailySummaryEnabled,
     dailyRecapTime: dailyRecapTime ?? this.dailyRecapTime,
-    dailyRecapStepsEnabled: dailyRecapStepsEnabled ?? this.dailyRecapStepsEnabled,
     announcementsEnabled: announcementsEnabled ?? this.announcementsEnabled,
     timezone: timezone ?? this.timezone,
     locale: locale ?? this.locale,
@@ -96,7 +90,6 @@ class NotificationSettings {
     'weighReminderTime': Timestamp.fromDate(weighReminderTime),
     'dailySummaryEnabled': dailySummaryEnabled,
     'dailyRecapTime': Timestamp.fromDate(dailyRecapTime),
-    'dailyRecapStepsEnabled': dailyRecapStepsEnabled,
     'announcementsEnabled': announcementsEnabled,
     'timezone': timezone,
     'locale': locale,

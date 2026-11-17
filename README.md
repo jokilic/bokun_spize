@@ -1,5 +1,6 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
+- [ ] Check this: https://pub.dev/packages/keyboard_controller
 - [ ] Animations
     - [ ] Animate graphs & graph changes (changing active days)
 - [ ] App name -> Bokun / Bite

@@ -6,21 +6,15 @@
  */
 
 import {initializeApp} from "firebase-admin/app";
-import {getFirestore, Timestamp} from "firebase-admin/firestore";
+import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
-import {DateTime} from "luxon";
 
 import {dispatchDueNotifications} from "./dispatcher";
 import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {NOTIFICATION_TYPES} from "./notification-config";
-import {
-  buildAndStoreDailyRecap,
-  getDailyRecapPeriodForSummarizedDay,
-} from "./daily-recap";
-
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
 
@@ -92,50 +86,9 @@ export const syncNotificationConfigSchedules = onDocumentWritten(
   },
 );
 
-/** Rebuilds the stored recap whenever a device uploads a daily step aggregate */
-export const prepareDailyRecap = onDocumentWritten(
-  {
-    document: "users/{userId}/dailyActivity/{recapKey}",
-    region: "europe-west1",
-    retry: true,
-  },
-  async (event) => {
-    const after = event.data?.after;
-
-    if (after === undefined || !after.exists) {
-      return;
-    }
-
-    const data = after.data();
-    const timezone = typeof data?.timezone === "string" ? data.timezone : "UTC";
-    const dayBeingSummarized = data?.dayBeingSummarized;
-    const recapAt = data?.recapAt;
-
-    if (!(dayBeingSummarized instanceof Timestamp) || !(recapAt instanceof Timestamp)) {
-      return;
-    }
-
-    const summarizedDayKey = DateTime.fromJSDate(dayBeingSummarized.toDate(), {zone: "utc"})
-      .setZone(timezone)
-      .toFormat("yyyy-LL-dd");
-    const period = getDailyRecapPeriodForSummarizedDay(
-      summarizedDayKey,
-      timezone,
-      recapAt.toDate(),
-    );
-    const userReference = getFirestore().collection("users").doc(event.params.userId);
-
-    await buildAndStoreDailyRecap(
-      userReference,
-      period,
-    );
-  },
-);
-
 /** Finds and sends due notifications every five minutes */
 export const dispatchScheduledNotifications = onSchedule(
   {
-    // The five-minute cadence preserves the configured fifteen-minute prepare lead
     schedule: "every 5 minutes",
 
     // User-local timing is handled per document rather than by the scheduler timezone

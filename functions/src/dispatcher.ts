@@ -421,14 +421,6 @@ export function buildMulticastMessage(
 ): FidMulticastMessage {
   const {definition} = dispatch;
   const copy = dispatch.copy[locale];
-  const recapPeriod = definition.type === "dailySummary" || definition.type === "dailySummaryPrepare"
-    ? getDailyRecapPeriod(
-      dispatch.scheduledAt,
-      dispatch.timezone,
-      definition.type,
-    )
-    : null;
-
   // Preserve the original useful window when a scheduler run starts slightly late
   const expiration = Math.floor(dispatch.scheduledAt.getTime() / 1000) + definition.ttlSeconds;
   const remainingTtlSeconds = Math.max(
@@ -441,47 +433,7 @@ export function buildMulticastMessage(
     route: definition.route,
     sentAt: dispatch.reservedAt.toISOString(),
     idempotencyKey: dispatch.idempotencyKey,
-    ...(recapPeriod === null ? {} : {
-      dayBeingSummarized: recapPeriod.dayBeingSummarized,
-      timezone: recapPeriod.timezone,
-      periodStart: recapPeriod.start.toISOString(),
-      periodEnd: recapPeriod.end.toISOString(),
-      recapAt: recapPeriod.recapAt.toISOString(),
-      recapKey: recapPeriod.recapKey,
-    }),
   };
-
-  if (definition.delivery === "background") {
-    return {
-      fids: devices.map((device) => device.fid),
-      data,
-      android: {
-        priority: "high",
-        ttl: remainingTtlSeconds * 1000,
-        collapseKey: definition.type,
-      },
-      apns: {
-        headers: {
-          "apns-push-type": "background",
-          "apns-priority": "5",
-          "apns-expiration": String(expiration),
-          "apns-collapse-id": definition.type,
-        },
-        payload: {
-          aps: {
-            contentAvailable: true,
-          },
-        },
-      },
-      webpush: {
-        headers: {
-          TTL: String(remainingTtlSeconds),
-          Urgency: "high",
-        },
-        data,
-      },
-    };
-  }
 
   return {
     // Preserves response order so FCM failures map back to device documents
@@ -709,10 +661,7 @@ export async function processDueSettings(
 
   try {
     // Delivery is intentionally performed after the transaction to avoid external calls in retries
-    const activeDevices = await getActiveDevices(dispatch);
-    const devices = dispatch.definition.type === "dailySummaryPrepare"
-      ? activeDevices.slice(0, 1)
-      : activeDevices;
+    const devices = await getActiveDevices(dispatch);
 
     // Recheck after device loading so entries committed near dispatch suppress the reminder
     if (await hasWeightForReservedLocalDate(dispatch)) {
@@ -725,7 +674,6 @@ export async function processDueSettings(
       const period = getDailyRecapPeriod(
         dispatch.scheduledAt,
         dispatch.timezone,
-        dispatch.definition.type,
       );
       const copy = await buildAndStoreDailyRecap(
         userReference,

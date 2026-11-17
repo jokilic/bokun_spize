@@ -45,7 +45,6 @@ export function buildSchedulePatch(
   const beforeDailyRecapTime = getDate(before?.dailyRecapTime);
   const afterDailyRecapTime = getDate(after.dailyRecapTime);
   const dailyRecapTimeChanged = beforeDailyRecapTime?.getTime() !== afterDailyRecapTime?.getTime();
-  const dailyRecapStepsChanged = before?.dailyRecapStepsEnabled !== after.dailyRecapStepsEnabled;
 
   for (const type of NOTIFICATION_TYPES) {
     const definition = getNotificationDefinitionForSettings(
@@ -67,9 +66,7 @@ export function buildSchedulePatch(
     // Preserve an existing timestamp unless activation, repair or timezone change requires a new one
     const scheduleTimeChanged = type === "weightReminder"
       ? weighReminderTimeChanged
-      : type === "dailySummary" || type === "dailySummaryPrepare"
-        ? dailyRecapTimeChanged || (type === "dailySummaryPrepare" && dailyRecapStepsChanged)
-        : false;
+      : dailyRecapTimeChanged;
 
     if (isEnabled && (!wasEnabled || !hasNextOccurrence || timezoneChanged || scheduleTimeChanged || forcedTypes.includes(type))) {
       patch[definition.nextAtField] = getNextOccurrence(

@@ -16,7 +16,6 @@ import {
   getNotificationDefinitionForSettings,
   getNotificationDefinitions,
   NOTIFICATION_DEFINITIONS,
-  subtractTimeMinutes,
 } from "../src/notification-config";
 import {
   getDailyRecapTimeParts,
@@ -266,37 +265,24 @@ describe("notification scheduling", () => {
     expect(getWeightReminderTimeParts(null)).toEqual({hour: 9, minute: 0});
   });
 
-  /** Verifies prepare always follows a changed recap time by fifteen minutes */
-  it("derives the prepare time from the configurable daily recap time", () => {
-    expect(subtractTimeMinutes(9, 0, 15)).toEqual({hour: 8, minute: 45});
-    expect(subtractTimeMinutes(9, 30, 15)).toEqual({hour: 9, minute: 15});
-    expect(subtractTimeMinutes(0, 5, 15)).toEqual({hour: 23, minute: 50});
-  });
-
-  /** Verifies changing the user recap time recalculates both schedules */
-  it("reschedules recap and prepare together", () => {
+  it("reschedules the recap when its local time changes", () => {
     const patch = buildSchedulePatch(
       {
         dailySummaryEnabled: true,
-        dailyRecapStepsEnabled: true,
         dailyRecapTime: Timestamp.fromDate(new Date("2020-01-01T08:00:00.000Z")),
         timezone: "Europe/Zagreb",
-        nextDailySummaryPrepareAt: Timestamp.fromDate(new Date("2026-06-02T06:45:00.000Z")),
         nextDailySummaryAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
       },
       {
         weighReminderEnabled: false,
         dailySummaryEnabled: true,
-        dailyRecapStepsEnabled: true,
         dailyRecapTime: Timestamp.fromDate(new Date("2020-01-01T08:30:00.000Z")),
         timezone: "Europe/Zagreb",
-        nextDailySummaryPrepareAt: Timestamp.fromDate(new Date("2026-06-02T06:45:00.000Z")),
         nextDailySummaryAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
       },
       new Date("2026-06-01T06:00:00.000Z"),
     );
 
-    expect(patch.nextDailySummaryPrepareAt?.toISOString()).toBe("2026-06-01T07:15:00.000Z");
     expect(patch.nextDailySummaryAt?.toISOString()).toBe("2026-06-01T07:30:00.000Z");
   });
 

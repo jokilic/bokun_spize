@@ -7,23 +7,11 @@ class NotificationPayload {
   final NotificationType type;
   final MainScreenItem route;
   final DateTime sentAt;
-  final String? dayBeingSummarized;
-  final String? timezone;
-  final DateTime? periodStart;
-  final DateTime? periodEnd;
-  final DateTime? recapAt;
-  final String? recapKey;
 
   const NotificationPayload({
     required this.type,
     required this.route,
     required this.sentAt,
-    this.dayBeingSummarized,
-    this.timezone,
-    this.periodStart,
-    this.periodEnd,
-    this.recapAt,
-    this.recapKey,
   });
 
   /// Parses the stable data contract from an FCM message
@@ -46,28 +34,10 @@ class NotificationPayload {
       return null;
     }
 
-    final dayBeingSummarized = data['dayBeingSummarized'] is String ? data['dayBeingSummarized'] as String : null;
-    final timezone = data['timezone'] is String ? data['timezone'] as String : null;
-    final periodStart = parseSentAt(data['periodStart']);
-    final periodEnd = parseSentAt(data['periodEnd']);
-    final recapAt = parseSentAt(data['recapAt']);
-    final recapKey = data['recapKey'] is String ? data['recapKey'] as String : null;
-
-    if (type == NotificationType.dailySummaryPrepare &&
-        (dayBeingSummarized == null || timezone == null || periodStart == null || periodEnd == null || recapAt == null || recapKey == null || !periodStart.isBefore(periodEnd))) {
-      return null;
-    }
-
     return NotificationPayload(
       type: type,
       route: route,
       sentAt: sentAt,
-      dayBeingSummarized: dayBeingSummarized,
-      timezone: timezone,
-      periodStart: periodStart,
-      periodEnd: periodEnd,
-      recapAt: recapAt,
-      recapKey: recapKey,
     );
   }
 

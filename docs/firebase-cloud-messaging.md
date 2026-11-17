@@ -10,7 +10,7 @@ The app uses Firebase Cloud Messaging for every user-visible system notification
 4. Upload the `.p8` file and enter its key ID and Apple team ID (`QDS42PXGRU`)
 5. Keep the APNs key outside source control and the application bundle
 
-The Xcode project enables **Push Notifications** and **Background Modes → Remote notifications**. Firebase method swizzling is explicitly enabled through `FirebaseAppDelegateProxyEnabled` in `Info.plist`. Do not disable it unless APNs token forwarding is implemented in `AppDelegate`.
+The Xcode project enables **Push Notifications**. Firebase method swizzling is explicitly enabled through `FirebaseAppDelegateProxyEnabled` in `Info.plist`. Do not disable it unless APNs token forwarding is implemented in `AppDelegate`.
 
 FID registration is explicitly enabled through `FirebaseMessagingInstallationIdEnabled` in the iOS `Info.plist` and `firebase_messaging_installation_id_enabled` in the Android application manifest.
 
@@ -34,19 +34,13 @@ The app requests alert, badge and sound authorization only after the user presse
 
 Client-managed preferences are stored at `users/{uid}/notificationSettings/preferences`. Firestore rules restrict access to the owning user, reject unexpected fields and prevent clients from writing server-managed scheduling timestamps.
 
-The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled, the user's timezone changes or the user changes a reminder time. Weigh reminders default to 09:00 local time and use `weighReminderTime`. Daily recaps default to 08:00 local time and use `dailyRecapTime`. Both are Firestore timestamps interpreted as wall-clock values in the user's saved IANA timezone; their calendar dates do not select a delivery day. Daily recaps have two linked schedules: the data-only `dailySummaryPrepare` message is always 15 minutes before the visible `dailySummary` alert, and changing `dailyRecapTime` recalculates both timestamps automatically. The mobile client does not schedule local notifications.
+The `syncNotificationSchedule` Cloud Function calculates the next delivery timestamp whenever a reminder is enabled, the user's timezone changes or the user changes a reminder time. Weigh reminders default to 09:00 local time and use `weighReminderTime`. Daily recaps default to 08:00 local time and use `dailyRecapTime`. Both are Firestore timestamps interpreted as wall-clock values in the user's saved IANA timezone; their calendar dates do not select a delivery day. The mobile client does not schedule local notifications.
 
-The `dispatchScheduledNotifications` Cloud Function runs every 5 minutes. It queries the indexed `nextWeighReminderAt`, `nextDailySummaryPrepareAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates a document in `users/{uid}/notificationDispatches` and advances the next occurrence in one Firestore transaction. Every occurrence uses `{type}_{localDay}_{HH-mm}` as its document ID. Including the local time allows a changed reminder or recap time to produce another occurrence later on the same day while retries of the same occurrence remain idempotent. Prepare messages use the visible recap occurrence time in their key, including when the fifteen-minute lead crosses midnight. Dispatch documents are server-only and owner-deletable only for account cleanup.
+The `dispatchScheduledNotifications` Cloud Function runs every 5 minutes. It queries the indexed `nextWeighReminderAt` and `nextDailySummaryAt` collection-group timestamps rather than scanning users. Before sending, it creates a document in `users/{uid}/notificationDispatches` and advances the next occurrence in one Firestore transaction. Every occurrence uses `{type}_{localDay}_{HH-mm}` as its document ID. Including the local time allows a changed reminder or recap time to produce another occurrence later on the same day while retries of the same occurrence remain idempotent. Dispatch documents are server-only and owner-deletable only for account cleanup.
 
-### Daily recap preparation and health-data consent
+### Daily meal recap
 
-Daily step syncing is separately controlled by `dailyRecapStepsEnabled`. The user must explicitly enable **Include steps** after reading the disclosure and granting Apple Health or Health Connect access. Enabling the daily recap notification alone does not authorize a health-data upload.
-
-At prepare time, the server sends a silent data-only message to the newest active installation. The payload includes the exact previous-day UTC bounds, summarized day, visible recap occurrence and IANA timezone. The client uploads one aggregate to `users/{uid}/dailyActivity/{yyyy-MM-dd_HH-mm}`. Its `dayBeingSummarized` is a Firestore timestamp at 00:00 on the summarized day, while `recapAt` is the visible recap occurrence timestamp represented by the document ID. The aggregate also contains its status, optional total steps, source platform and installation identifier. Raw HealthKit or Health Connect samples are never uploaded.
-
-An activity write triggers `prepareDailyRecap`, which combines that aggregate with meals and the latest weight recorded during the same local calendar day. If multiple weights exist, the entry with the latest `dateTime` in that day is used. At visible recap time the dispatcher rebuilds the recap so late meal and weight edits are included, stores it under `users/{uid}/dailyRecaps/{yyyy-MM-dd_HH-mm}`, and generates localized notification copy without persisting that delivery-only copy in the recap. Both collections use the same occurrence key, so changing the recap time can create multiple same-day test recaps without overwriting an earlier occurrence. A successful aggregate of zero is shown as zero. Missing, denied, locked or failed health reads remain unavailable and are never converted to zero.
-
-Silent delivery is best effort, especially on iOS. The app retries the aggregate when the visible recap is opened, but changing notification settings or merely resuming the app does not prepare a recap early. When the aggregate is still missing at recap time, meals and weight are summarized normally and steps are explicitly shown as unavailable. A late upload updates the stored recap but does not send a second notification for an already dispatched occurrence.
+At the scheduled time, the dispatcher queries meals from the previous calendar day in the user's saved timezone. It counts completed meals, totals available nutrition, and stores the summary at `users/{uid}/dailyRecaps/{yyyy-MM-dd_HH-mm}`. The localized alert shows the meal count and calories when available.
 
 For weigh reminders, the reservation checks `users/{uid}/weightTracks` within the UTC bounds of the due local calendar day. A matching entry records a `skipped_weight_recorded` dispatch and advances the next occurrence without contacting FCM. The dispatcher repeats this check immediately before sending to cover entries committed while active devices are being loaded. An entry committed after the final check can race with an FCM request that has already started; every active device then receives the same logical reminder and idempotency key. This is the only unavoidable near-dispatch race because an accepted FCM request cannot be recalled.
 
@@ -97,7 +91,7 @@ Never write a complete FID to application, function or crash logs. Use the devic
 
 Registrations expire 30 days after their latest successful client synchronization. Enable a Firestore TTL policy for the `lastActiveAt` field on the `notificationDevices` collection group with a 30-day expiration offset. Senders must also ignore documents whose `lastActiveAt` is more than 30 days old because Firestore TTL deletion is asynchronous. Active clients continuously refresh `lastActiveAt`; expired or invalid documents are safe to delete.
 
-Account deletion explicitly removes `dailyActivity`, `dailyRecaps` and notification dispatch records before deleting the Firebase Authentication account.
+Account deletion explicitly removes legacy `dailyActivity` documents, `dailyRecaps` and notification dispatch records before deleting the Firebase Authentication account.
 
 ## Data payload contract
 
@@ -105,16 +99,10 @@ Every actionable message uses these stable string fields in its FCM `data` paylo
 
 | Field | Required | Supported values |
 | --- | --- | --- |
-| `type` | Yes | `weightReminder`, `dailySummaryPrepare`, `dailySummary`, `announcement` |
+| `type` | Yes | `weightReminder`, `dailySummary`, `announcement` |
 | `route` | Yes | `meals`, `weights`, `walks`, `account` |
 | `sentAt` | Yes | An ISO-8601 timestamp |
 | `idempotencyKey` | Server notifications | A stable occurrence key: `{type}_{localDay}_{HH-mm}` |
-| `dayBeingSummarized` | Daily recap messages | Previous local calendar date in `yyyy-MM-dd` format |
-| `timezone` | Daily recap messages | IANA timezone used to define the calendar day |
-| `periodStart` | Daily recap messages | Inclusive ISO-8601 UTC boundary |
-| `periodEnd` | Daily recap messages | Exclusive ISO-8601 UTC boundary |
-| `recapAt` | Daily recap messages | Visible recap occurrence as an ISO-8601 timestamp |
-| `recapKey` | Daily recap messages | Visible recap occurrence in `yyyy-MM-dd_HH-mm` format |
 
 Unknown, missing or malformed values are ignored safely. Notification taps route to the matching primary application screen. More specific entity routing can be added without changing the base contract.
 

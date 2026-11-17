@@ -7,68 +7,20 @@ import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSet
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
-import 'package:health/health.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/notification/notification_device.dart';
 import '../models/notification/notification_payload.dart';
 import '../models/notification/notification_settings.dart';
 import '../util/app_version.dart';
 import '../util/device_info.dart';
-import '../util/firebase.dart';
 import '../util/timezone.dart';
-import 'daily_recap_service.dart';
 import 'screen_service.dart';
 import 'storage_service.dart';
 
 enum NotificationType {
   weightReminder,
-  dailySummaryPrepare,
   dailySummary,
   announcement,
-}
-
-/// Handles data-only background messages without performing UI work
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  try {
-    await initializeFirebase();
-    await initializeFirebaseAppCheck();
-
-    final payload = NotificationPayload.fromMessage(message);
-
-    if (payload == null) {
-      log(
-        'Ignoring malformed or unknown background FCM payload for message ${message.messageId}',
-      );
-      return;
-    }
-
-    if (payload.type == NotificationType.dailySummaryPrepare) {
-      final storage = StorageService(
-        sharedPreferences: SharedPreferencesAsync(),
-      );
-      await storage.init();
-
-      final dailyRecap = DailyRecapService(
-        auth: FirebaseAuth.instance,
-        firestore: FirebaseFirestore.instance,
-        health: Health(),
-        storage: storage,
-      );
-
-      await dailyRecap.synchronizePayload(
-        payload,
-        isBackground: true,
-      );
-    }
-  } catch (error, stackTrace) {
-    log(
-      'Handling a background FCM message failed',
-      error: error,
-      stackTrace: stackTrace,
-    );
-  }
 }
 
 class NotificationService extends ValueNotifier<AuthorizationStatus> with WidgetsBindingObserver implements Disposable {
@@ -80,8 +32,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   final FirebaseFirestore firestore;
   final StorageService storage;
   final ScreenService screen;
-  final DailyRecapService dailyRecap;
-  final Stream<RemoteMessage> foregroundMessages;
   final Stream<RemoteMessage> openedMessages;
   final Future<bool> Function() openSystemSettingsCallback;
 
@@ -91,8 +41,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     required this.firestore,
     required this.storage,
     required this.screen,
-    required this.dailyRecap,
-    required this.foregroundMessages,
     required this.openedMessages,
     required this.openSystemSettingsCallback,
   }) : super(AuthorizationStatus.notDetermined);
@@ -109,16 +57,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     isInitialized = true;
     WidgetsBinding.instance.addObserver(this);
-
-    try {
-      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    } catch (error, stackTrace) {
-      log(
-        'Registering the FCM background handler failed',
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
 
     await configureForegroundPresentation();
     subscribeToMessages();
@@ -137,7 +75,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   Future<void> onDispose() async {
     WidgetsBinding.instance.removeObserver(this);
 
-    await foregroundMessageSubscription?.cancel();
     await openedMessageSubscription?.cancel();
     await registrationSubscription?.cancel();
     await unregistrationSubscription?.cancel();
@@ -157,7 +94,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
   bool isInitialized = false;
 
-  StreamSubscription<RemoteMessage>? foregroundMessageSubscription;
   StreamSubscription<RemoteMessage>? openedMessageSubscription;
 
   StreamSubscription<String>? registrationSubscription;
@@ -328,23 +264,11 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   );
 
   ///
-  /// FOREGROUND MESSAGES
+  /// NOTIFICATION INTERACTIONS
   ///
 
-  /// Subscribes to foreground messages and taps that reopen the app
+  /// Subscribes to notification taps that reopen the app
   void subscribeToMessages() {
-    try {
-      foregroundMessageSubscription = foregroundMessages.listen(
-        handleForegroundMessage,
-        onError: handleMessageStreamError,
-      );
-    } catch (error) {
-      log(
-        'Subscribing to foreground FCM messages failed',
-        error: error,
-      );
-    }
-
     try {
       openedMessageSubscription = openedMessages.listen(
         handleMessageInteraction,
@@ -354,18 +278,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       log(
         'Subscribing to opened FCM messages failed',
         error: error,
-      );
-    }
-  }
-
-  /// Handles a notification received while the application is visible
-  void handleForegroundMessage(RemoteMessage message) {
-    final payload = parsePayload(message);
-
-    if (payload?.type == NotificationType.dailySummaryPrepare) {
-      dailyRecap.synchronizePayload(
-        payload!,
-        isBackground: false,
       );
     }
   }
@@ -381,15 +293,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     final payload = parsePayload(message);
 
     if (payload != null) {
-      if (payload.type == NotificationType.dailySummary) {
-        unawaited(
-          dailyRecap.synchronizePayload(
-            payload,
-            isBackground: false,
-          ),
-        );
-      }
-
       openPayload(payload);
     }
   }
@@ -432,9 +335,6 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
     return value;
   }
-
-  /// Requests consented step access used by complete daily recaps
-  Future<bool> requestDailyRecapStepSyncPermission() => dailyRecap.requestStepSyncPermission();
 
   /// Reads and publishes the latest operating-system permission state
   Future<AuthorizationStatus> refreshPermissionStatus() async {

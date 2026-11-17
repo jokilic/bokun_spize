@@ -10,7 +10,6 @@ import {DateTime} from "luxon";
 
 import {
   DEFAULT_TIMEZONE,
-  DAILY_SUMMARY_PREPARE_MINUTES,
   isNotificationDefinitionEnabled,
   NotificationDefinition,
 } from "./notification-config";
@@ -115,12 +114,7 @@ export function getDispatchId(
   timezone: string,
 ): string {
   const localOccurrence = DateTime.fromJSDate(scheduledAt, {zone: "utc"})
-    .setZone(getValidTimezone(timezone))
-    .plus({
-      minutes: definition.type === "dailySummaryPrepare"
-        ? DAILY_SUMMARY_PREPARE_MINUTES
-        : 0,
-    });
+    .setZone(getValidTimezone(timezone));
 
   // Including the time allows another configured occurrence later on the same local day
   const occurrenceKey = localOccurrence.toFormat("yyyy-LL-dd_HH-mm");
