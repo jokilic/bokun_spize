@@ -116,7 +116,7 @@ export function getNotificationDefinitions(
   };
 }
 
-/** Default definitions used when no server-side testing override exists */
+/** Default definitions used when user preferences do not provide a custom time */
 export const NOTIFICATION_DEFINITIONS = getNotificationDefinitions();
 
 /** Iterable list derived from the definitions to avoid maintaining two sources */

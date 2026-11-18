@@ -14,13 +14,8 @@ import {afterAll, describe, expect, it} from "vitest";
 import {reserveDueNotification} from "../src/dispatcher";
 import {
   getNotificationDefinitionForSettings,
-  getNotificationDefinitions,
   NOTIFICATION_DEFINITIONS,
 } from "../src/notification-config";
-import {
-  getDailySummaryTimeParts,
-  getWeightReminderTimeParts,
-} from "../src/remote-notification-config";
 import {buildSchedulePatch} from "../src/schedule-sync";
 import {
   getDispatchId,
@@ -237,34 +232,7 @@ describe("notification scheduling", () => {
     expect(patch.nextWeighReminderAt?.toISOString()).toBe("2026-06-01T16:35:00.000Z");
   });
 
-  /** Verifies a trusted global override can move the fixed time for testing */
-  it("overrides the weigh reminder time without changing user preferences", () => {
-    // Firebase stores 02:40 entered in Zagreb during standard time as 01:40 UTC
-    const configuredTime = Timestamp.fromDate(new Date("2026-11-14T01:40:45.000Z"));
-    const {hour, minute} = getWeightReminderTimeParts(configuredTime);
-    const definitions = getNotificationDefinitions(hour, minute);
-
-    expect(definitions.weightReminder.hour).toBe(2);
-    expect(definitions.weightReminder.minute).toBe(40);
-    expect(definitions.dailySummary.hour).toBe(8);
-  });
-
-  /** Verifies console input remains unchanged while Zagreb observes daylight saving time */
-  it("reads a summer weigh reminder override as Zagreb wall-clock time", () => {
-    // Firebase stores 02:40 entered in Zagreb during daylight time as 00:40 UTC
-    const configuredTime = Timestamp.fromDate(new Date("2026-06-01T00:40:00.000Z"));
-
-    expect(getWeightReminderTimeParts(configuredTime)).toEqual({
-      hour: 2,
-      minute: 40,
-    });
-  });
-
-  /** Verifies a missing or invalid timestamp retains the production default */
-  it("falls back to the default weigh reminder time", () => {
-    expect(getWeightReminderTimeParts(null)).toEqual({hour: 9, minute: 0});
-  });
-
+  /** Verifies changing the custom summary time recalculates its enabled schedule */
   it("reschedules the summary when its local time changes", () => {
     const patch = buildSchedulePatch(
       {
@@ -284,13 +252,6 @@ describe("notification scheduling", () => {
     );
 
     expect(patch.nextDailySummaryAt?.toISOString()).toBe("2026-06-01T07:30:00.000Z");
-  });
-
-  /** Verifies console summary configuration uses the same Zagreb interpretation */
-  it("reads a configured daily summary time", () => {
-    const configuredTime = Timestamp.fromDate(new Date("2026-11-14T08:30:00.000Z"));
-
-    expect(getDailySummaryTimeParts(configuredTime)).toEqual({hour: 9, minute: 30});
   });
 });
 

@@ -50,17 +50,6 @@ Each reminder expires relative to its scheduled due time, not the scheduler's ex
 
 Occurrence calculation uses the user's IANA timezone through timezone database rules, so the configured local delivery hour remains stable across daylight-saving changes. Nonexistent spring-forward wall times move to the next valid instant and ambiguous fall-back wall times resolve to one occurrence for that local date. A missing or invalid timezone falls back to UTC. Each user is isolated during processing, so one failed query or FCM request does not stop delivery for other users.
 
-### Temporary weigh reminder time override
-
-The production fallback for legacy preference documents without a user-selected time is 09:00 local time. Trusted testers can temporarily create or update `config/notifications` in Firebase Console with:
-
-```text
-weightReminderTime: <Firestore Timestamp>
-dailySummaryTime: <Firestore Timestamp>
-```
-
-The timestamps are interpreted in `Europe/Zagreb`, matching the wall-clock value entered by operators in the Firebase Console. Seconds and milliseconds are ignored, while the date supplies the correct daylight-saving offset. The extracted hour and minute are scheduled in each user's own timezone only when their preference document does not contain the corresponding user time. A user-selected time always takes precedence. Choose a time at least five minutes ahead because the dispatcher runs every five minutes. Delete a field or the whole config document to restore the 09:00 weigh reminder and 08:00 summary fallbacks. This document is server-only and is not readable or writable by the mobile client.
-
 The debug build signs with the development APNs environment. Profile and release builds sign with the production APNs environment.
 
 ## Per-device registrations

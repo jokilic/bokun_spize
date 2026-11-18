@@ -31,6 +31,7 @@ import {
   FCM_MULTICAST_LIMIT,
   getNotificationDefinitionForSettings,
   getSupportedLocale,
+  NOTIFICATION_DEFINITIONS,
   NOTIFICATION_TYPES,
   NotificationDefinition,
   NotificationCopy,
@@ -47,7 +48,6 @@ import {
   getNextOccurrence,
   isNotificationDue,
 } from "./scheduling";
-import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 
 /** Reason a reserved notification is completed without contacting FCM */
 export type DispatchSkipReason = "weight_recorded" | "stale";
@@ -748,14 +748,12 @@ export async function dispatchDueNotifications(
   messaging: Messaging,
   now: Date,
 ): Promise<void> {
-  const definitions = await getConfiguredNotificationDefinitions(firestore);
-
   // Processes notification types independently
   const outcomes = await Promise.allSettled(
     NOTIFICATION_TYPES.map((type) => dispatchNotificationType(
       firestore,
       messaging,
-      definitions[type],
+      NOTIFICATION_DEFINITIONS[type],
       now,
     )),
   );

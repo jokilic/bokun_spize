@@ -12,9 +12,7 @@ import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {dispatchDueNotifications} from "./dispatcher";
-import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
-import {NOTIFICATION_TYPES} from "./notification-config";
 import {
   cleanupExpiredAIMealImageRequests,
   deleteAIMealGenerationClaim,
@@ -100,50 +98,12 @@ export const syncNotificationSchedule = onDocumentWritten(
       return;
     }
 
-    const definitions = await getConfiguredNotificationDefinitions(getFirestore());
-
     // Passing before and after data reveals activation and timezone changes
     await synchronizeNotificationSchedule(
       event.data?.before.data(),
       after.data() ?? {},
       after.ref,
       new Date(),
-      definitions,
-    );
-  },
-);
-
-/** Reschedules fallback-based users when trusted global notification times change */
-export const syncNotificationConfigSchedules = onDocumentWritten(
-  {
-    document: "config/notifications",
-    region: "europe-west1",
-    retry: true,
-    timeoutSeconds: 540,
-  },
-  async () => {
-    const firestore = getFirestore();
-    const definitions = await getConfiguredNotificationDefinitions(firestore);
-    const snapshots = await Promise.all([
-      firestore.collectionGroup("notificationSettings").where("weighReminderEnabled", "==", true).get(),
-      firestore.collectionGroup("notificationSettings").where("dailySummaryEnabled", "==", true).get(),
-    ]);
-    const settingsDocuments = new Map(
-      snapshots.flatMap((snapshot) => snapshot.docs).map((document) => [
-        document.ref.path,
-        document,
-      ]),
-    );
-
-    await Promise.all(
-      [...settingsDocuments.values()].map((document) => synchronizeNotificationSchedule(
-        document.data(),
-        document.data(),
-        document.ref,
-        new Date(),
-        definitions,
-        NOTIFICATION_TYPES,
-      )),
     );
   },
 );
