@@ -15,7 +15,10 @@ import {dispatchDueNotifications} from "./dispatcher";
 import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {NOTIFICATION_TYPES} from "./notification-config";
-import {processPendingAIMeal} from "./meal-ai";
+import {
+  deleteAIMealGenerationClaim,
+  processPendingAIMeal,
+} from "./meal-ai";
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
 
@@ -32,9 +35,17 @@ export const generateAIMeal = onDocumentWritten(
     const document = event.data?.after;
     const data = document?.data();
 
+    if (document === undefined || !document.exists) {
+      const previousDocument = event.data?.before;
+
+      if (previousDocument !== undefined && previousDocument.exists) {
+        await deleteAIMealGenerationClaim(previousDocument.ref);
+      }
+
+      return;
+    }
+
     if (
-      document === undefined ||
-      !document.exists ||
       data?.isLoading !== true ||
       data.aiGenerationReady !== true
     ) {

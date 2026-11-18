@@ -279,6 +279,10 @@ service cloud.firestore {
           && isValidMeal(request.resource.data, userId, mealId);
       }
 
+      match /mealGenerationClaims/{mealId} {
+        allow read, write: if false;
+      }
+
       match /weightTracks/{weightTrackId} {
         allow read, delete: if isOwner(userId);
         allow create, update: if isOwner(userId)

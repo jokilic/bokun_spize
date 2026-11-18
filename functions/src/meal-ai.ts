@@ -3,12 +3,14 @@
  */
 
 import {GoogleGenAI, Part} from "@google/genai";
+import {randomUUID} from "node:crypto";
 import {getApp} from "firebase-admin/app";
 import {
   DocumentData,
   DocumentReference,
   FieldValue,
   Firestore,
+  Timestamp,
 } from "firebase-admin/firestore";
 import {getStorage} from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
@@ -66,8 +68,17 @@ export interface MealGenerationInput {
   languageCode: string;
 }
 
+/** Transaction result used to coordinate concurrent trigger deliveries */
+export interface AIMealGenerationClaim {
+  status: "claimed" | "busy" | "not-ready";
+  mealData: DocumentData | null;
+}
+
 /** Global Vertex AI location supports the broadest Gemini model selection */
 export const MEAL_AI_LOCATION = "global";
+
+/** Lease outlives the function timeout while allowing crashed jobs to recover */
+export const AI_MEAL_GENERATION_LEASE_DURATION_MS = 10 * 60 * 1000;
 
 /** Instructions preserve the established client-side meal extraction behavior */
 export const MEAL_SYSTEM_INSTRUCTION = `
@@ -641,36 +652,137 @@ export function getMealGenerationError(languageCode: string): string {
     "Generiranje obroka nije uspjelo. Izbriši ga i pokušaj ponovno";
 }
 
+/** Returns the server-only claim document paired with one meal */
+export function getAIMealGenerationClaimReference(
+  mealReference: DocumentReference<DocumentData>,
+): DocumentReference<DocumentData> {
+  const userReference = mealReference.parent.parent;
+
+  if (userReference === null) {
+    throw new Error("Meal does not belong to a user document");
+  }
+
+  return userReference.collection("mealGenerationClaims").doc(mealReference.id);
+}
+
+/** Atomically claims one ready meal or reports an active competing lease */
+export async function claimPendingAIMeal(
+  mealReference: DocumentReference<DocumentData>,
+  leaseId: string,
+  now: Date,
+): Promise<AIMealGenerationClaim> {
+  const firestore = mealReference.firestore;
+  const claimReference = getAIMealGenerationClaimReference(mealReference);
+
+  return firestore.runTransaction<AIMealGenerationClaim>(async (transaction) => {
+    const mealSnapshot = await transaction.get(mealReference);
+    const mealData = mealSnapshot.data();
+
+    if (
+      !mealSnapshot.exists ||
+      mealData?.isLoading !== true ||
+      mealData.aiGenerationReady !== true
+    ) {
+      return {
+        status: "not-ready",
+        mealData: null,
+      };
+    }
+
+    const claimSnapshot = await transaction.get(claimReference);
+    const existingExpiration = claimSnapshot.data()?.expiresAt;
+
+    if (
+      existingExpiration instanceof Timestamp &&
+      existingExpiration.toMillis() > now.getTime()
+    ) {
+      return {
+        status: "busy",
+        mealData: null,
+      };
+    }
+
+    transaction.set(claimReference, {
+      leaseId,
+      claimedAt: Timestamp.fromDate(now),
+      expiresAt: Timestamp.fromMillis(
+        now.getTime() + AI_MEAL_GENERATION_LEASE_DURATION_MS,
+      ),
+    });
+
+    return {
+      status: "claimed",
+      mealData,
+    };
+  });
+}
+
+/** Writes a terminal meal state only when the caller still owns its lease */
+export async function finalizePendingAIMeal(
+  mealReference: DocumentReference<DocumentData>,
+  leaseId: string,
+  updates: DocumentData,
+): Promise<boolean> {
+  const firestore = mealReference.firestore;
+  const claimReference = getAIMealGenerationClaimReference(mealReference);
+
+  return firestore.runTransaction<boolean>(async (transaction) => {
+    const claimSnapshot = await transaction.get(claimReference);
+
+    if (claimSnapshot.data()?.leaseId !== leaseId) {
+      return false;
+    }
+
+    const mealSnapshot = await transaction.get(mealReference);
+    const mealData = mealSnapshot.data();
+
+    if (
+      mealSnapshot.exists &&
+      mealData?.isLoading === true &&
+      mealData.aiGenerationReady === true
+    ) {
+      transaction.update(mealReference, updates);
+    }
+
+    transaction.delete(claimReference);
+    return mealSnapshot.exists;
+  });
+}
+
+/** Removes a claim when its meal is deleted during processing */
+export async function deleteAIMealGenerationClaim(
+  mealReference: DocumentReference<DocumentData>,
+): Promise<void> {
+  await getAIMealGenerationClaimReference(mealReference).delete();
+}
+
 /** Processes one ready AI meal and persists either success or error state */
 export async function processPendingAIMeal(
   mealReference: DocumentReference<DocumentData>,
   userId: string,
 ): Promise<void> {
-  const currentSnapshot = await mealReference.get();
-  const currentData = currentSnapshot.data();
+  const leaseId = randomUUID();
+  const claim = await claimPendingAIMeal(
+    mealReference,
+    leaseId,
+    new Date(),
+  );
 
-  if (
-    !currentSnapshot.exists ||
-    currentData?.isLoading !== true ||
-    currentData.aiGenerationReady !== true
-  ) {
+  if (claim.status === "not-ready") {
     return;
   }
 
-  const languageCode = getMealLanguageCode(currentData);
+  if (claim.status === "busy") {
+    throw new Error(`AI meal ${mealReference.id} already has an active generation lease`);
+  }
+
+  const mealData = claim.mealData!;
+  const languageCode = getMealLanguageCode(mealData);
+  let result: GeneratedMealResult;
 
   try {
-    const input = await buildMealGenerationInput(currentData, userId);
-    const result = await generateMeal(mealReference.firestore, input);
-
-    await mealReference.update({
-      ...result.meal,
-      methodOfCreation: result.modelName,
-      isLoading: false,
-      errors: null,
-      aiGenerationLanguage: FieldValue.delete(),
-      aiGenerationReady: FieldValue.delete(),
-    });
+    const input = await buildMealGenerationInput(mealData, userId);
+    result = await generateMeal(mealReference.firestore, input);
   } catch (error) {
     logger.error("Generating AI meal failed", {
       userId,
@@ -678,11 +790,22 @@ export async function processPendingAIMeal(
       error: error instanceof Error ? error.message.slice(0, 900) : "Unknown meal generation error",
     });
 
-    await mealReference.update({
+    await finalizePendingAIMeal(mealReference, leaseId, {
       isLoading: false,
       errors: [getMealGenerationError(languageCode)],
       aiGenerationLanguage: FieldValue.delete(),
       aiGenerationReady: FieldValue.delete(),
     });
+
+    return;
   }
+
+  await finalizePendingAIMeal(mealReference, leaseId, {
+    ...result.meal,
+    methodOfCreation: result.modelName,
+    isLoading: false,
+    errors: null,
+    aiGenerationLanguage: FieldValue.delete(),
+    aiGenerationReady: FieldValue.delete(),
+  });
 }
