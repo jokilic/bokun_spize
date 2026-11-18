@@ -239,7 +239,7 @@ class WalksGraphWidgetState extends State<WalksGraphWidget> with SingleTickerPro
       return;
     }
 
-    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays || oldWidget.stepsWithDate != widget.stepsWithDate;
+    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays;
 
     if (shouldRestartAnimation) {
       lineAnimationController.forward(from: 0);

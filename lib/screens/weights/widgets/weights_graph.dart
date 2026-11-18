@@ -221,7 +221,7 @@ class WeightsGraphWidgetState extends State<WeightsGraphWidget> with SingleTicke
       return;
     }
 
-    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays || oldWidget.weightTracks != widget.weightTracks;
+    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays;
 
     if (shouldRestartAnimation) {
       lineAnimationController.forward(from: 0);
