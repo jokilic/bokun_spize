@@ -37,6 +37,19 @@ export interface DailySummary {
   notification: DailySummaryNotification;
 }
 
+/** Keeps only completed meals without persisted processing errors */
+export function isCompletedDailySummaryMeal(data: DocumentData): boolean {
+  const errors = data.errors;
+  const hasNoErrors = errors === null ||
+    errors === undefined ||
+    (Array.isArray(errors) && errors.length === 0);
+
+  return data.isLoading !== true &&
+    hasNoErrors &&
+    typeof data.name === "string" &&
+    data.name.trim().length > 0;
+}
+
 /** Resolves yesterday's exact local-day bounds for a summary occurrence */
 export function getDailySummaryPeriod(
   scheduledAt: Date,
@@ -79,10 +92,12 @@ export async function buildAndStoreDailySummary(
     .where("createdAt", "<", end)
     .orderBy("createdAt", "asc")
     .get();
-  const mealDocuments: DailySummaryMeal[] = mealSnapshot.docs.map((document) => ({
-    documentId: document.id,
-    data: document.data(),
-  }));
+  const mealDocuments: DailySummaryMeal[] = mealSnapshot.docs
+    .filter((document) => isCompletedDailySummaryMeal(document.data()))
+    .map((document) => ({
+      documentId: document.id,
+      data: document.data(),
+    }));
   const notification = buildDailySummaryNotification(
     await generateDailySummaryBodies(
       userReference.firestore,

@@ -1213,6 +1213,7 @@ class FirebaseService {
             'errors': ['mealsErrorImageUploadFailed'.tr()],
             'aiGenerationLanguage': FieldValue.delete(),
             'aiGenerationReady': FieldValue.delete(),
+            'aiGenerationRequestedAt': FieldValue.delete(),
           });
         }
 
@@ -1322,6 +1323,7 @@ class FirebaseService {
         ...newMeal.toMap(),
         'aiGenerationLanguage': languageCode,
         'aiGenerationReady': isReady,
+        'aiGenerationRequestedAt': FieldValue.serverTimestamp(),
       });
 
       return true;

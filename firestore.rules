@@ -97,7 +97,7 @@ service cloud.firestore {
       ];
 
       return data.keys().hasAll(fields)
-        && data.keys().hasOnly(fields.concat(['methodOfCreation', 'imageBlurHash']).concat(aiGenerationFields))
+        && data.keys().hasOnly(fields.concat(['methodOfCreation', 'imageBlurHash', 'aiGenerationRequestedAt']).concat(aiGenerationFields))
         && data.id is string
         && data.id == mealId
         && isOptionalString(data.name, 500)
@@ -113,12 +113,19 @@ service cloud.firestore {
         && data.isLoading is bool
         && (data.errors == null || (data.errors is list && data.errors.size() <= 100))
         && (
-          !data.keys().hasAny(aiGenerationFields)
+          (
+            !data.keys().hasAny(aiGenerationFields)
+            && !data.keys().hasAny(['aiGenerationRequestedAt'])
+          )
           || (
             data.keys().hasAll(aiGenerationFields)
             && data.aiGenerationLanguage is string
             && data.aiGenerationLanguage in ['en', 'hr']
             && data.aiGenerationReady is bool
+            && (
+              !data.keys().hasAny(['aiGenerationRequestedAt'])
+              || data.aiGenerationRequestedAt is timestamp
+            )
             && data.isLoading == true
           )
         )

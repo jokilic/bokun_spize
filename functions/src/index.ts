@@ -16,6 +16,7 @@ import {getConfiguredNotificationDefinitions} from "./remote-notification-config
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {NOTIFICATION_TYPES} from "./notification-config";
 import {
+  cleanupExpiredAIMealImageRequests,
   deleteAIMealGenerationClaim,
   processPendingAIMeal,
 } from "./meal-ai";
@@ -55,6 +56,26 @@ export const generateAIMeal = onDocumentWritten(
     await processPendingAIMeal(
       document.ref,
       event.params.userId,
+    );
+  },
+);
+
+/** Finishes AI image requests that did not become ready within the upload window */
+export const cleanupAbandonedAIMeals = onSchedule(
+  {
+    schedule: "every 5 minutes",
+    timeZone: "Etc/UTC",
+    region: "europe-west1",
+    memory: "256MiB",
+    timeoutSeconds: 540,
+    maxInstances: 1,
+    retryCount: 3,
+    minBackoffSeconds: 30,
+  },
+  async () => {
+    await cleanupExpiredAIMealImageRequests(
+      getFirestore(),
+      new Date(),
     );
   },
 );

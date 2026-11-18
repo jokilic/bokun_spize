@@ -80,6 +80,12 @@ export const MEAL_AI_LOCATION = "global";
 /** Lease outlives the function timeout while allowing crashed jobs to recover */
 export const AI_MEAL_GENERATION_LEASE_DURATION_MS = 10 * 60 * 1000;
 
+/** Maximum time allowed for the client to attach an AI meal image */
+export const AI_MEAL_IMAGE_UPLOAD_TIMEOUT_MS = 15 * 60 * 1000;
+
+/** Maximum abandoned image requests processed by one cleanup occurrence */
+export const AI_MEAL_IMAGE_CLEANUP_LIMIT = 200;
+
 /** Instructions preserve the established client-side meal extraction behavior */
 export const MEAL_SYSTEM_INSTRUCTION = `
 You will receive text and / or image describing what the user ate.
@@ -652,6 +658,13 @@ export function getMealGenerationError(languageCode: string): string {
     "Generiranje obroka nije uspjelo. Izbriši ga i pokušaj ponovno";
 }
 
+/** Returns a short localized image upload error suitable for direct display */
+export function getMealImageUploadError(languageCode: string): string {
+  return languageCode === "en" ?
+    "Image upload failed" :
+    "Prijenos slike nije uspio";
+}
+
 /** Returns the server-only claim document paired with one meal */
 export function getAIMealGenerationClaimReference(
   mealReference: DocumentReference<DocumentData>,
@@ -756,6 +769,70 @@ export async function deleteAIMealGenerationClaim(
   await getAIMealGenerationClaimReference(mealReference).delete();
 }
 
+/** Finishes one expired image request unless it became ready after querying */
+export async function failExpiredAIMealImageRequest(
+  mealReference: DocumentReference<DocumentData>,
+  cutoff: Timestamp,
+): Promise<boolean> {
+  return mealReference.firestore.runTransaction<boolean>(async (transaction) => {
+    const mealSnapshot = await transaction.get(mealReference);
+    const mealData = mealSnapshot.data();
+    const requestedAt = mealData?.aiGenerationRequestedAt;
+
+    if (
+      !mealSnapshot.exists ||
+      mealData?.isLoading !== true ||
+      mealData.aiGenerationReady !== false ||
+      !(requestedAt instanceof Timestamp) ||
+      requestedAt.toMillis() > cutoff.toMillis()
+    ) {
+      return false;
+    }
+
+    transaction.update(mealReference, {
+      isLoading: false,
+      errors: [getMealImageUploadError(getMealLanguageCode(mealData))],
+      aiGenerationLanguage: FieldValue.delete(),
+      aiGenerationReady: FieldValue.delete(),
+      aiGenerationRequestedAt: FieldValue.delete(),
+    });
+
+    return true;
+  });
+}
+
+/** Finds and finishes image requests that never became ready */
+export async function cleanupExpiredAIMealImageRequests(
+  firestore: Firestore,
+  now: Date,
+): Promise<number> {
+  const cutoff = Timestamp.fromMillis(
+    now.getTime() - AI_MEAL_IMAGE_UPLOAD_TIMEOUT_MS,
+  );
+  const snapshot = await firestore
+    .collectionGroup("meals")
+    .where("isLoading", "==", true)
+    .where("aiGenerationReady", "==", false)
+    .where("aiGenerationRequestedAt", "<=", cutoff)
+    .limit(AI_MEAL_IMAGE_CLEANUP_LIMIT)
+    .get();
+  const results = await Promise.all(
+    snapshot.docs.map((document) => failExpiredAIMealImageRequest(
+      document.ref,
+      cutoff,
+    )),
+  );
+  const failedCount = results.filter(Boolean).length;
+
+  if (failedCount > 0) {
+    logger.info("Finished abandoned AI meal image requests", {
+      failedCount,
+    });
+  }
+
+  return failedCount;
+}
+
 /** Processes one ready AI meal and persists either success or error state */
 export async function processPendingAIMeal(
   mealReference: DocumentReference<DocumentData>,
@@ -795,6 +872,7 @@ export async function processPendingAIMeal(
       errors: [getMealGenerationError(languageCode)],
       aiGenerationLanguage: FieldValue.delete(),
       aiGenerationReady: FieldValue.delete(),
+      aiGenerationRequestedAt: FieldValue.delete(),
     });
 
     return;
@@ -807,5 +885,6 @@ export async function processPendingAIMeal(
     errors: null,
     aiGenerationLanguage: FieldValue.delete(),
     aiGenerationReady: FieldValue.delete(),
+    aiGenerationRequestedAt: FieldValue.delete(),
   });
 }

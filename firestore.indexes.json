@@ -1,6 +1,24 @@
 {
   "indexes": [
     {
+      "collectionGroup": "meals",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "isLoading",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "aiGenerationReady",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "aiGenerationRequestedAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "notificationSettings",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
