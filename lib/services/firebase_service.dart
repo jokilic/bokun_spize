@@ -113,7 +113,9 @@ class FirebaseService {
   }
 
   /// Fetches `NotificationSettings` updates the current `locale` and `timezone` if different
-  Future<NotificationSettings> getAndRefreshNotificationSettings(Locale locale) async {
+  Future<NotificationSettings> getAndRefreshNotificationSettings({
+    required Locale locale,
+  }) async {
     /// Get current `NotificationSettings` from [Firebase]
     final storedSettings = await getNotificationSettings();
 

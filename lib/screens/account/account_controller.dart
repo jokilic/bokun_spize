@@ -203,7 +203,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
       initialLanguage: initialLanguage,
       onLanguageChanged: (newLocale) async {
         await context.setLocale(newLocale);
-        await firebase.getAndRefreshNotificationSettings(newLocale);
+        await firebase.getAndRefreshNotificationSettings(
+          locale: newLocale,
+        );
         await notification.synchronizeRegistration(
           locale: newLocale.languageCode,
         );
@@ -215,7 +217,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
   Future<void> openNotificationsSheet(BuildContext context) async {
     final results = await Future.wait<Object>([
       /// Fetch latest `NotificationSettings` from [Firebase]
-      firebase.getAndRefreshNotificationSettings(context.locale),
+      firebase.getAndRefreshNotificationSettings(
+        locale: context.locale,
+      ),
 
       /// Get current notification permission status
       notification.refreshPermissionStatus(),
