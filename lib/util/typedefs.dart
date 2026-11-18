@@ -4,8 +4,6 @@ import '../models/meal/food.dart';
 import '../models/meal/nutrition.dart';
 import '../screens/account/account_controller.dart';
 
-typedef TriggerAIResult = ({String? aiResult, String? modelName, List<String>? errors});
-
 typedef AIMealResult = ({String? words, DateTime? dateTime, File? imageFile});
 
 typedef MealImageUploadResult = ({String imageStoragePath, String? imageBlurHash});

@@ -75,7 +75,7 @@ service cloud.firestore {
         && data.fat is number;
     }
 
-    // Validate meal fields while allowing creation metadata to be absent on older meals
+    // Validate meal fields and optional backend generation request metadata
     function isValidMeal(data, userId, mealId) {
       let fields = [
         'id',
@@ -91,8 +91,13 @@ service cloud.firestore {
         'imageStoragePath',
       ];
 
+      let aiGenerationFields = [
+        'aiGenerationLanguage',
+        'aiGenerationReady',
+      ];
+
       return data.keys().hasAll(fields)
-        && data.keys().hasOnly(fields.concat(['methodOfCreation', 'imageBlurHash']))
+        && data.keys().hasOnly(fields.concat(['methodOfCreation', 'imageBlurHash']).concat(aiGenerationFields))
         && data.id is string
         && data.id == mealId
         && isOptionalString(data.name, 500)
@@ -108,12 +113,28 @@ service cloud.firestore {
         && data.isLoading is bool
         && (data.errors == null || (data.errors is list && data.errors.size() <= 100))
         && (
+          !data.keys().hasAny(aiGenerationFields)
+          || (
+            data.keys().hasAll(aiGenerationFields)
+            && data.aiGenerationLanguage is string
+            && data.aiGenerationLanguage in ['en', 'hr']
+            && data.aiGenerationReady == true
+            && data.isLoading == true
+          )
+        )
+        && (
           data.imageStoragePath == null
           || (
             data.imageStoragePath is string
             && data.imageStoragePath.matches('users/' + userId + '/meal-images/[^/]+')
           )
         );
+    }
+
+    // Keeps backend generation metadata immutable after meal creation
+    function aiGenerationRequestUnchanged() {
+      return request.resource.data.get('aiGenerationLanguage', null) == resource.data.get('aiGenerationLanguage', null)
+        && request.resource.data.get('aiGenerationReady', null) == resource.data.get('aiGenerationReady', null);
     }
 
     function isValidWeightTrack(data, weightTrackId) {
@@ -249,11 +270,6 @@ service cloud.firestore {
       allow update: if false;
     }
 
-    // Allow signed-in clients to fetch AI configuration managed by administrators
-    match /config/ai {
-      allow get: if request.auth != null;
-    }
-
     match /users/{userId} {
       allow read, delete: if isOwner(userId);
       allow create: if isOwner(userId)
@@ -265,8 +281,11 @@ service cloud.firestore {
 
       match /meals/{mealId} {
         allow read, delete: if isOwner(userId);
-        allow create, update: if isOwner(userId)
+        allow create: if isOwner(userId)
           && isValidMeal(request.resource.data, userId, mealId);
+        allow update: if isOwner(userId)
+          && isValidMeal(request.resource.data, userId, mealId)
+          && aiGenerationRequestUnchanged();
       }
 
       match /weightTracks/{weightTrackId} {

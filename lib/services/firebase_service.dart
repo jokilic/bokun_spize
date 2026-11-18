@@ -10,13 +10,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
 
-import '../constants/durations.dart';
 import '../models/contact_message/contact_message.dart';
 import '../models/meal/meal.dart';
 import '../models/notification/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
-import '../util/ai_schema.dart';
 import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
 import '../util/timezone.dart';
@@ -55,9 +53,9 @@ class FirebaseService {
   /// INIT
   ///
 
-  /// Remove unfinished `meals` from `Firebase`
+  /// Removes abandoned loading meals created by the manual flow
   void init() {
-    deleteLoadingMeals();
+    deleteAbandonedManualMeals();
   }
 
   ///
@@ -283,50 +281,6 @@ class FirebaseService {
         error: error,
       );
       yield const <ContactMessage>[];
-    }
-  }
-
-  /// Reads shared model names and meal generation configuration from `config/ai`
-  Future<({List<String>? modelNames, String? mealSystemInstruction, Map<String, dynamic>? mealResponseSchema})?> getAIConfiguration() async {
-    try {
-      final snapshot = await firestore
-          .doc('config/ai')
-          .get()
-          .timeout(
-            BokunSpizeDurations.firebaseTimeout,
-          );
-
-      final data = snapshot.data();
-      final remoteModelNames = data?['modelNames'];
-      final remoteMealSystemInstruction = data?['mealSystemInstruction'];
-      final remoteMealResponseSchema = data?['mealResponseSchema'];
-
-      final modelNames = remoteModelNames is List
-          ? remoteModelNames
-                .whereType<String>()
-                .map(
-                  (name) => name.trim(),
-                )
-                .where(
-                  (name) => name.isNotEmpty,
-                )
-                .toSet()
-                .toList()
-          : null;
-
-      return (
-        modelNames: modelNames,
-        mealSystemInstruction: remoteMealSystemInstruction is String && remoteMealSystemInstruction.trim().isNotEmpty ? remoteMealSystemInstruction.trim() : null,
-        mealResponseSchema: decodeAIResponseSchema(
-          remoteMealResponseSchema,
-        ),
-      );
-    } catch (error) {
-      log(
-        'Loading remote AI configuration failed',
-        error: error,
-      );
-      return null;
     }
   }
 
@@ -1180,8 +1134,8 @@ class FirebaseService {
   /// MEALS
   ///
 
-  /// Deletes the current user's unfinished `meals` during app startup
-  Future<void> deleteLoadingMeals() async {
+  /// Deletes unfinished manual meals without touching backend AI jobs
+  Future<void> deleteAbandonedManualMeals() async {
     try {
       final user = auth.currentUser;
 
@@ -1189,26 +1143,27 @@ class FirebaseService {
         return;
       }
 
-      final query = firestore
+      final snapshot = await firestore
           .collection('users')
           .doc(user.uid)
           .collection('meals')
           .where(
             'isLoading',
             isEqualTo: true,
+          )
+          .get(
+            const GetOptions(
+              source: Source.server,
+            ),
           );
-
-      /// Capture matching meals once so later batches do not pick up new meals
-      final snapshot = await query.get(
-        const GetOptions(
-          source: Source.server,
-        ),
+      final manualDocuments = snapshot.docs.where(
+        (document) => document.data()['methodOfCreation'] == 'manual',
       );
 
-      for (var offset = 0; offset < snapshot.docs.length; offset += 300) {
+      for (var offset = 0; offset < manualDocuments.length; offset += 300) {
         final batch = firestore.batch();
 
-        for (final document in snapshot.docs.skip(offset).take(300)) {
+        for (final document in manualDocuments.skip(offset).take(300)) {
           batch.delete(document.reference);
         }
 
@@ -1216,7 +1171,7 @@ class FirebaseService {
       }
     } catch (error) {
       log(
-        'Deleting loading meals failed',
+        'Deleting abandoned manual meals failed',
         error: error,
       );
     }
@@ -1293,6 +1248,36 @@ class FirebaseService {
     } catch (error) {
       log(
         'Writing meal failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
+  /// Adds a loading meal together with the backend AI generation request
+  Future<bool> writeAIMealRequest({
+    required Meal newMeal,
+    required String languageCode,
+  }) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final document = firestore.collection('users').doc(user.uid).collection('meals').doc(newMeal.id);
+
+      await document.set({
+        ...newMeal.toMap(),
+        'aiGenerationLanguage': languageCode,
+        'aiGenerationReady': true,
+      });
+
+      return true;
+    } catch (error) {
+      log(
+        'Writing AI meal request failed',
         error: error,
       );
       return false;

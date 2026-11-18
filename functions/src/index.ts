@@ -8,15 +8,48 @@
 import {initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
-import {onDocumentWritten} from "firebase-functions/v2/firestore";
+import {
+  onDocumentCreated,
+  onDocumentWritten,
+} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {dispatchDueNotifications} from "./dispatcher";
 import {getConfiguredNotificationDefinitions} from "./remote-notification-config";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {NOTIFICATION_TYPES} from "./notification-config";
+import {processPendingAIMeal} from "./meal-ai";
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
+
+/** Generates meals after their text and optional uploaded image are ready */
+export const generateAIMeal = onDocumentCreated(
+  {
+    document: "users/{userId}/meals/{mealId}",
+    region: "europe-west1",
+    retry: true,
+    timeoutSeconds: 540,
+    memory: "1GiB",
+  },
+  async (event) => {
+    const document = event.data;
+    const data = document?.data();
+
+    if (
+      document === undefined ||
+      !document.exists ||
+      data?.isLoading !== true ||
+      data.aiGenerationReady !== true
+    ) {
+      return;
+    }
+
+    await processPendingAIMeal(
+      document.ref,
+      event.params.userId,
+    );
+  },
+);
 
 /** Keeps server-managed due timestamps aligned with client preferences */
 export const syncNotificationSchedule = onDocumentWritten(

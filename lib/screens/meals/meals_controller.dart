@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +9,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/meal/meal.dart';
-import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/null_state.dart';
@@ -28,11 +26,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   ///
 
   final FirebaseService firebase;
-  final AIService Function() aiProvider;
 
   MealsController({
     required this.firebase,
-    required this.aiProvider,
   }) : super((
          requestedDate: DateUtils.dateOnly(
            DateTime.now(),
@@ -213,7 +209,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     }
   }
 
-  /// Save a `loading meal` in [Firebase], then replaces it with the `AI outcome`
+  /// Saves a loading meal and submits its inputs for backend AI generation
   Future<bool> createAIMeal({
     required AIMealResult result,
     required String newMealId,
@@ -233,33 +229,58 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     );
 
     try {
-      /// Write `loading meal` to [Firebase]
-      final loadingMealWritten = await firebase.writeMeal(
-        newMeal: loadingMeal,
-      );
+      final imageFile = result.imageFile;
+      final imageUploadResult = imageFile == null
+          ? null
+          : await firebase.uploadMealImage(
+              imageFile: imageFile,
+            );
 
-      if (!loadingMealWritten) {
+      if (imageFile != null && imageUploadResult == null) {
+        /// Persist upload failure as this meal's terminal error state
+        final errorMealWritten = await firebase.writeMeal(
+          newMeal: loadingMeal.copyWith(
+            isLoading: false,
+            errors: ['mealsErrorImageUploadFailed'.tr()],
+          ),
+        );
+
+        if (errorMealWritten) {
+          updateDate(
+            loadingMeal.createdAt,
+          );
+        }
+
         return false;
       }
 
-      /// Show the date where the new `meal` belongs
-      updateDate(
-        loadingMeal.createdAt,
+      final requestedMeal = loadingMeal.copyWith(
+        imageStoragePath: imageUploadResult?.imageStoragePath,
+        imageBlurHash: imageUploadResult?.imageBlurHash,
       );
-
-      /// Trigger AI logic
-      final outcome = await processAIMeal(
-        loadingMeal: loadingMeal,
-        imageFile: result.imageFile,
+      final loadingMealWritten = await firebase.writeAIMealRequest(
+        newMeal: requestedMeal,
         languageCode: languageCode,
       );
 
-      /// Update `meal` in [Firebase] with new values
-      final mealUpdated = await firebase.updateMeal(
-        newMeal: outcome.meal,
+      if (!loadingMealWritten) {
+        final imageStoragePath = imageUploadResult?.imageStoragePath;
+
+        if (imageStoragePath != null) {
+          await firebase.deleteMealImage(
+            imageStoragePath: imageStoragePath,
+          );
+        }
+
+        return false;
+      }
+
+      /// Show the date where the backend will update the loading meal
+      updateDate(
+        requestedMeal.createdAt,
       );
 
-      return mealUpdated && outcome.success;
+      return true;
     } catch (error) {
       log(
         'Adding AI meal failed',
@@ -267,71 +288,6 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       );
       return false;
     }
-  }
-
-  /// Runs AI alongside image uploading and returns a finished `meal` containing parsed data or errors
-  Future<({Meal meal, bool success})> processAIMeal({
-    required Meal loadingMeal,
-    required File? imageFile,
-    required String languageCode,
-  }) async {
-    /// Start both operations and wait for them to finish before processing their results
-    final results = await Future.wait(
-      [
-        /// AI logic
-        aiProvider().triggerAI(
-          textPrompt: loadingMeal.originalText,
-          imageFile: imageFile,
-          languageCode: languageCode,
-        ),
-
-        /// Image uploading logic
-        if (imageFile != null)
-          firebase.uploadMealImage(
-            imageFile: imageFile,
-          )
-        else
-          Future<MealImageUploadResult?>.value(),
-      ],
-    );
-
-    final result = results.first! as TriggerAIResult;
-    final imageUploadResult = results.last as MealImageUploadResult?;
-
-    final imageStoragePath = imageUploadResult?.imageStoragePath;
-    final imageBlurHash = imageUploadResult?.imageBlurHash;
-
-    final aiResult = result.aiResult;
-
-    /// Parse result to proper [Meal] instance
-    final meal = aiResult == null
-        ? null
-        : parseAIResultToMeal(
-            aiResult: aiResult,
-            id: loadingMeal.id,
-            createdAt: loadingMeal.createdAt,
-            originalText: loadingMeal.originalText,
-            imageStoragePath: imageStoragePath,
-            imageBlurHash: imageBlurHash,
-          );
-
-    /// Keep errors while allowing fallback AI model to recover
-    final errors = [
-      if (aiResult == null) ...?result.errors,
-      if (aiResult != null && meal == null) 'mealsErrorMealFailedDecoding'.tr(),
-      if (imageFile != null && imageStoragePath == null) 'mealsErrorImageFailedSave'.tr(),
-    ];
-
-    return (
-      meal: (meal ?? loadingMeal).copyWith(
-        errors: errors.isEmpty ? null : errors,
-        imageStoragePath: imageStoragePath,
-        imageBlurHash: imageBlurHash,
-        methodOfCreation: result.modelName,
-        isLoading: false,
-      ),
-      success: meal != null && errors.isEmpty,
-    );
   }
 
   /// Opens [ManualAddMealScreen] to add, copy, or edit a meal

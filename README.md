@@ -1,7 +1,7 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Move meal generation logic to backend + remove AIService (handling AI in-app)
-- [ ] Generate meals in English and Croatian
+- [x] Move meal generation logic to backend + remove AIService (handling AI in-app)
+- [x] Generate meals in English and Croatian
 - [ ] Check this: https://pub.dev/packages/keyboard_controller
 - [ ] Animations
 - [ ] App name -> Bokun / Bite

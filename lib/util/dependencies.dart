@@ -1,6 +1,5 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,7 +9,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../services/ai_service.dart';
 import '../services/cache_service.dart';
 import '../services/firebase_service.dart';
 import '../services/notification_service.dart';
@@ -127,18 +125,6 @@ Future<void> registerServices() async {
   if (!getIt.isRegistered<SpeechToTextService>()) {
     getIt.registerLazySingleton(
       SpeechToTextService.new,
-    );
-  }
-
-  ///
-  /// AI
-  ///
-  if (!getIt.isRegistered<AIService>()) {
-    getIt.registerLazySingleton(
-      () => AIService(
-        ai: FirebaseAI.googleAI(),
-        firebase: getIt.get<FirebaseService>(),
-      ),
     );
   }
 

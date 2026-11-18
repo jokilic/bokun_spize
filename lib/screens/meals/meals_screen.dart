@@ -9,7 +9,6 @@ import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
-import '../../services/ai_service.dart';
 import '../../services/firebase_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
@@ -39,7 +38,6 @@ class _MealsScreenState extends State<MealsScreen> {
     registerIfNotInitialized<MealsController>(
       () => MealsController(
         firebase: getIt.get<FirebaseService>(),
-        aiProvider: () => getIt.get<AIService>(),
       ),
       afterRegister: (controller) => controller.init(),
     );
@@ -156,7 +154,7 @@ class _MealsScreenState extends State<MealsScreen> {
                       HapticFeedback.lightImpact();
                       mealsController.onAddAIMealPressed(
                         context,
-                        languageCode: 'hr',
+                        languageCode: context.locale.languageCode,
                       );
                     },
                     child: PhosphorIcon(

@@ -37,7 +37,6 @@ dependencies:
   device_info_plus: 13.3.0
   diacritic: 0.1.6
   easy_localization: 3.0.8
-  firebase_ai: 5.1.0
   firebase_app_check: 0.5.1
   firebase_auth: 7.0.1
   firebase_core: 5.1.0
