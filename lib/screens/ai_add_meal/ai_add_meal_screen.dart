@@ -796,7 +796,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                 /// Dismiss sheet
                                 Navigator.of(context).pop(
                                   (
-                                    words: words,
+                                    words: words.isEmpty ? null : words,
                                     dateTime: getMealDateTime(
                                       mealDate: mealDate,
                                       mealTime: mealTime,

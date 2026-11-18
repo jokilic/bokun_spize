@@ -220,11 +220,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       return false;
     }
 
+    final words = result.words?.trim();
+
     /// Create `loading meal`
     final loadingMeal = Meal(
       id: newMealId,
       createdAt: result.dateTime!,
-      originalText: result.words?.trim(),
+      originalText: words == null || words.isEmpty ? null : words,
       isLoading: true,
     );
 
