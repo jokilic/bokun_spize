@@ -79,46 +79,49 @@ class MealsListTile extends StatelessWidget {
           openAnimationCurve: Curves.easeIn,
           closeAnimationCurve: Curves.easeIn,
           leadingActions: [
-            SwipeAction(
-              onTap: (handler) async {
-                await handler(true);
-                await onDeletePressed();
-              },
-              color: context.colors.delete,
-              backgroundRadius: listTileRadius,
-              icon: PhosphorIcon(
-                PhosphorIconsBold.trash,
-                color: context.colors.buttonText,
-                size: 26,
+            if (!isLoading)
+              SwipeAction(
+                onTap: (handler) async {
+                  await handler(true);
+                  await onDeletePressed();
+                },
+                color: context.colors.delete,
+                backgroundRadius: listTileRadius,
+                icon: PhosphorIcon(
+                  PhosphorIconsBold.trash,
+                  color: context.colors.buttonText,
+                  size: 26,
+                ),
               ),
-            ),
           ],
           trailingActions: [
-            SwipeAction(
-              onTap: (handler) async {
-                await handler(false);
-                await onCopyPressed();
-              },
-              color: context.colors.protein,
-              icon: PhosphorIcon(
-                PhosphorIconsBold.copy,
-                color: context.colors.buttonText,
-                size: 26,
+            if (!isLoading) ...[
+              SwipeAction(
+                onTap: (handler) async {
+                  await handler(false);
+                  await onCopyPressed();
+                },
+                color: context.colors.protein,
+                icon: PhosphorIcon(
+                  PhosphorIconsBold.copy,
+                  color: context.colors.buttonText,
+                  size: 26,
+                ),
               ),
-            ),
-            SwipeAction(
-              onTap: (handler) async {
-                await handler(false);
-                await onEditPressed();
-              },
-              color: context.colors.carbs,
-              backgroundRadius: listTileIconRadius / 2,
-              icon: PhosphorIcon(
-                PhosphorIconsBold.pencilSimple,
-                color: context.colors.buttonText,
-                size: 26,
+              SwipeAction(
+                onTap: (handler) async {
+                  await handler(false);
+                  await onEditPressed();
+                },
+                color: context.colors.carbs,
+                backgroundRadius: listTileIconRadius / 2,
+                icon: PhosphorIcon(
+                  PhosphorIconsBold.pencilSimple,
+                  color: context.colors.buttonText,
+                  size: 26,
+                ),
               ),
-            ),
+            ],
           ],
           child: Material(
             color: Colors.transparent,
