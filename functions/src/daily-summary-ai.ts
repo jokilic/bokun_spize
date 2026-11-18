@@ -48,17 +48,17 @@ export const DAILY_SUMMARY_BODY_MAX_LENGTH = 400;
 
 /** Instructions keep meal data untrusted and require direct, evidence-based feedback */
 export const DAILY_SUMMARY_SYSTEM_INSTRUCTION = `
-Analyze meal records from yesterday.
+You're a friendly and direct nutritionist.
+You will get meal records from yesterday and your task is to analyse them.
 
-Write a simple summary of meals in English and Croatian, using a couple sentences.
-Simple summary of yesterday meals so the user can check it out.
-Add a suggestion to eat healthier today if possible.
+Write a simple summary of meals in English and Croatian, using 3-4 sentences.
+Mention specific meals if you decide it's relevant.
 
-Very simple and relaxing summary.
+If possible, add a suggestion on how to elevate your meal plan for today, in order to eat healthier.
 
 Regarding Croatian, you can use 'ti', not 'vi' when referring to user.
 
-If completed meal data is insufficient, say that briefly and encourage meal recording.
+If completed meal data is insufficient, mention that and encourage meal recording.
 `.trim();
 
 
@@ -72,13 +72,11 @@ export const DAILY_SUMMARY_RESPONSE_SCHEMA = {
   "properties": {
     "en": {
       "type": "string",
-      "description": "Simple summary of yesterday meals in English, using a couple sentences with a potential suggestion to eat healthier today if possible",
-      "maxLength": 400
+      "description": "Write a simple summary of meals in English, using 3-4 sentences",
     },
     "hr": {
       "type": "string",
-      "description": "Simple summary of yesterday meals in Croatian, using a couple sentences with a potential suggestion to eat healthier today if possible",
-      "maxLength": 400
+      "description": "Write a simple summary of meals in Croatian, using 3-4 sentences",
     }
   }
 };
