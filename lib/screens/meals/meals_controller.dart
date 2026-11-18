@@ -230,57 +230,63 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
 
     try {
       final imageFile = result.imageFile;
-      final imageUploadResult = imageFile == null
-          ? null
-          : await firebase.uploadMealImage(
-              imageFile: imageFile,
-            );
 
-      if (imageFile != null && imageUploadResult == null) {
-        /// Persist upload failure as this meal's terminal error state
-        final errorMealWritten = await firebase.writeMeal(
+      /// Show the selected date before the latency-compensated Firestore write
+      updateDate(
+        loadingMeal.createdAt,
+      );
+
+      /// Create the list item before waiting for an optional image upload
+      final loadingMealWritten = await firebase.writeAIMealRequest(
+        newMeal: loadingMeal,
+        languageCode: languageCode,
+        isReady: imageFile == null,
+      );
+
+      if (!loadingMealWritten) {
+        return false;
+      }
+
+      if (imageFile == null) {
+        return true;
+      }
+
+      final imageUploadResult = await firebase.uploadMealImage(
+        imageFile: imageFile,
+      );
+
+      if (imageUploadResult != null) {
+        final requestMarkedReady = await firebase.markAIMealRequestReady(
+          mealId: loadingMeal.id,
+          imageUploadResult: imageUploadResult,
+        );
+
+        if (requestMarkedReady) {
+          return true;
+        }
+
+        /// Keep the uploaded image reachable while finishing as an error
+        await firebase.updateMeal(
           newMeal: loadingMeal.copyWith(
+            imageStoragePath: imageUploadResult.imageStoragePath,
+            imageBlurHash: imageUploadResult.imageBlurHash,
             isLoading: false,
             errors: ['mealsErrorImageUploadFailed'.tr()],
           ),
         );
 
-        if (errorMealWritten) {
-          updateDate(
-            loadingMeal.createdAt,
-          );
-        }
-
         return false;
       }
 
-      final requestedMeal = loadingMeal.copyWith(
-        imageStoragePath: imageUploadResult?.imageStoragePath,
-        imageBlurHash: imageUploadResult?.imageBlurHash,
-      );
-      final loadingMealWritten = await firebase.writeAIMealRequest(
-        newMeal: requestedMeal,
-        languageCode: languageCode,
-      );
-
-      if (!loadingMealWritten) {
-        final imageStoragePath = imageUploadResult?.imageStoragePath;
-
-        if (imageStoragePath != null) {
-          await firebase.deleteMealImage(
-            imageStoragePath: imageStoragePath,
-          );
-        }
-
-        return false;
-      }
-
-      /// Show the date where the backend will update the loading meal
-      updateDate(
-        requestedMeal.createdAt,
+      /// Finish the visible loading meal if its image upload fails
+      await firebase.updateMeal(
+        newMeal: loadingMeal.copyWith(
+          isLoading: false,
+          errors: ['mealsErrorImageUploadFailed'.tr()],
+        ),
       );
 
-      return true;
+      return false;
     } catch (error) {
       log(
         'Adding AI meal failed',

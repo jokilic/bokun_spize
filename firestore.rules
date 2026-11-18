@@ -118,7 +118,7 @@ service cloud.firestore {
             data.keys().hasAll(aiGenerationFields)
             && data.aiGenerationLanguage is string
             && data.aiGenerationLanguage in ['en', 'hr']
-            && data.aiGenerationReady == true
+            && data.aiGenerationReady is bool
             && data.isLoading == true
           )
         )
@@ -129,12 +129,6 @@ service cloud.firestore {
             && data.imageStoragePath.matches('users/' + userId + '/meal-images/[^/]+')
           )
         );
-    }
-
-    // Keeps backend generation metadata immutable after meal creation
-    function aiGenerationRequestUnchanged() {
-      return request.resource.data.get('aiGenerationLanguage', null) == resource.data.get('aiGenerationLanguage', null)
-        && request.resource.data.get('aiGenerationReady', null) == resource.data.get('aiGenerationReady', null);
     }
 
     function isValidWeightTrack(data, weightTrackId) {
@@ -281,11 +275,8 @@ service cloud.firestore {
 
       match /meals/{mealId} {
         allow read, delete: if isOwner(userId);
-        allow create: if isOwner(userId)
+        allow create, update: if isOwner(userId)
           && isValidMeal(request.resource.data, userId, mealId);
-        allow update: if isOwner(userId)
-          && isValidMeal(request.resource.data, userId, mealId)
-          && aiGenerationRequestUnchanged();
       }
 
       match /weightTracks/{weightTrackId} {

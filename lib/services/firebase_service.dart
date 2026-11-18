@@ -53,9 +53,10 @@ class FirebaseService {
   /// INIT
   ///
 
-  /// Removes abandoned loading meals created by the manual flow
+  /// Resolves abandoned loading meals from manual and AI image flows
   void init() {
     deleteAbandonedManualMeals();
+    failAbandonedAIImageMeals();
   }
 
   ///
@@ -1177,6 +1178,54 @@ class FirebaseService {
     }
   }
 
+  /// Finishes AI meals interrupted before their image upload became ready
+  Future<void> failAbandonedAIImageMeals() async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return;
+      }
+
+      final snapshot = await firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('meals')
+          .where(
+            'isLoading',
+            isEqualTo: true,
+          )
+          .get(
+            const GetOptions(
+              source: Source.server,
+            ),
+          );
+      final interruptedDocuments = snapshot.docs.where(
+        (document) => document.data()['aiGenerationReady'] == false,
+      );
+
+      for (var offset = 0; offset < interruptedDocuments.length; offset += 300) {
+        final batch = firestore.batch();
+
+        for (final document in interruptedDocuments.skip(offset).take(300)) {
+          batch.update(document.reference, {
+            'isLoading': false,
+            'errors': ['mealsErrorImageUploadFailed'.tr()],
+            'aiGenerationLanguage': FieldValue.delete(),
+            'aiGenerationReady': FieldValue.delete(),
+          });
+        }
+
+        await batch.commit();
+      }
+    } catch (error) {
+      log(
+        'Finishing abandoned AI image meals failed',
+        error: error,
+      );
+    }
+  }
+
   /// Fetches `meals` from [Firebase]
   Future<List<Meal>?> getMeals() async {
     try {
@@ -1258,6 +1307,7 @@ class FirebaseService {
   Future<bool> writeAIMealRequest({
     required Meal newMeal,
     required String languageCode,
+    required bool isReady,
   }) async {
     try {
       final user = auth.currentUser;
@@ -1271,13 +1321,43 @@ class FirebaseService {
       await document.set({
         ...newMeal.toMap(),
         'aiGenerationLanguage': languageCode,
-        'aiGenerationReady': true,
+        'aiGenerationReady': isReady,
       });
 
       return true;
     } catch (error) {
       log(
         'Writing AI meal request failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
+  /// Attaches the uploaded image and releases backend AI generation
+  Future<bool> markAIMealRequestReady({
+    required String mealId,
+    required MealImageUploadResult imageUploadResult,
+  }) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final document = firestore.collection('users').doc(user.uid).collection('meals').doc(mealId);
+
+      await document.update({
+        'imageStoragePath': imageUploadResult.imageStoragePath,
+        'imageBlurHash': imageUploadResult.imageBlurHash,
+        'aiGenerationReady': true,
+      });
+
+      return true;
+    } catch (error) {
+      log(
+        'Releasing AI meal request failed',
         error: error,
       );
       return false;

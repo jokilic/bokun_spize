@@ -8,10 +8,7 @@
 import {initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
-import {
-  onDocumentCreated,
-  onDocumentWritten,
-} from "firebase-functions/v2/firestore";
+import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {dispatchDueNotifications} from "./dispatcher";
@@ -23,7 +20,7 @@ import {processPendingAIMeal} from "./meal-ai";
 initializeApp();
 
 /** Generates meals after their text and optional uploaded image are ready */
-export const generateAIMeal = onDocumentCreated(
+export const generateAIMeal = onDocumentWritten(
   {
     document: "users/{userId}/meals/{mealId}",
     region: "europe-west1",
@@ -32,7 +29,7 @@ export const generateAIMeal = onDocumentCreated(
     memory: "1GiB",
   },
   async (event) => {
-    const document = event.data;
+    const document = event.data?.after;
     const data = document?.data();
 
     if (
