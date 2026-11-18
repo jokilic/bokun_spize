@@ -9,7 +9,6 @@
 - [ ] Add Meal screens - show dismissible widgets with info
 - [ ] `AccountScreen`
     - [ ] Notifications
-        - [ ] Fix small Android status bar notification
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required
