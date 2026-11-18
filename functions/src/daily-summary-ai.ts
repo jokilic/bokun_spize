@@ -1,5 +1,5 @@
 /**
- * Generates short localized daily meal recaps with Gemini
+ * Generates short localized daily meal summaries with Gemini
  */
 
 import { GoogleGenAI } from "@google/genai";
@@ -12,22 +12,22 @@ import {
 import * as logger from "firebase-functions/logger";
 
 /** Complete Firestore meal record supplied to Gemini */
-export interface DailyRecapMeal {
+export interface DailySummaryMeal {
   documentId: string;
   data: DocumentData;
 }
 
 /** Localized bodies returned by the structured Gemini response */
-export interface GeneratedDailyRecapBodies {
+export interface GeneratedDailySummaryBodies {
   en: string;
   hr: string;
 }
 
-/** Resolved remote configuration used for daily recap generation */
-export interface DailyRecapAIConfiguration {
+/** Resolved remote configuration used for daily summary generation */
+export interface DailySummaryAIConfiguration {
   modelNames: string[];
-  dailyRecapSystemInstruction: string;
-  dailyRecapResponseSchema: Record<string, unknown>;
+  dailySummarySystemInstruction: string;
+  dailySummaryResponseSchema: Record<string, unknown>;
 }
 
 /** Shared model fallback used when config/ai/modelNames is unavailable */
@@ -41,15 +41,15 @@ export const DEFAULT_AI_MODEL_NAMES = [
 ];
 
 /** Global Vertex AI location supports the broadest Gemini model selection */
-export const DAILY_RECAP_AI_LOCATION = "global";
+export const DAILY_SUMMARY_AI_LOCATION = "global";
 
 /** Maximum length kept comfortably inside notification payload limits */
-export const DAILY_RECAP_BODY_MAX_LENGTH = 400;
+export const DAILY_SUMMARY_BODY_MAX_LENGTH = 400;
 
 /** Instructions keep meal data untrusted and require direct, evidence-based feedback */
-export const DAILY_RECAP_SYSTEM_INSTRUCTION = `
+export const DAILY_SUMMARY_SYSTEM_INSTRUCTION = `
 Analyze supplied meal records from yesterday.
-Write a direct, honest and simple recap of meals in English and Croatian, using a couple sentences.
+Write a direct, honest and simple summary of meals in English and Croatian, using a couple sentences.
 
 Regarding Croatian, you can use 'ti', not 'vi' when referring to user.
 
@@ -58,41 +58,41 @@ If completed meal data is insufficient, say that briefly and encourage meal reco
 
 
 /** Structured response prevents model prose from leaking outside the notification fields */
-export const DAILY_RECAP_RESPONSE_SCHEMA = {
+export const DAILY_SUMMARY_RESPONSE_SCHEMA = {
   "type": "object",
-  "title": "DailyRecap",
+  "title": "DailySummary",
   "propertyOrdering": ["en", "hr"],
   "required": ["en", "hr"],
   "additionalProperties": false,
   "properties": {
     "en": {
       "type": "string",
-      "description": "Couple English sentences with direct, honest and simple recap of meals and a practical suggestion for the next day",
+      "description": "Couple English sentences with direct, honest and simple summary of meals and a practical suggestion for the next day",
       "maxLength": 400
     },
     "hr": {
       "type": "string",
-      "description": "Couple Croatian sentences with direct, honest and simple recap of meals and a practical suggestion for the next day",
+      "description": "Couple Croatian sentences with direct, honest and simple summary of meals and a practical suggestion for the next day",
       "maxLength": 400
     }
   }
 };
 
 /** Converts Firestore values into JSON the model can read without losing timestamps */
-export function serializeDailyRecapValue(value: unknown): unknown {
+export function serializeDailySummaryValue(value: unknown): unknown {
   if (value instanceof Timestamp) {
     return value.toDate().toISOString();
   }
 
   if (Array.isArray(value)) {
-    return value.map(serializeDailyRecapValue);
+    return value.map(serializeDailySummaryValue);
   }
 
   if (typeof value === "object" && value !== null) {
     return Object.fromEntries(
       Object.entries(value).map(([key, childValue]) => [
         key,
-        serializeDailyRecapValue(childValue),
+        serializeDailySummaryValue(childValue),
       ]),
     );
   }
@@ -101,20 +101,20 @@ export function serializeDailyRecapValue(value: unknown): unknown {
 }
 
 /** Builds the model prompt from complete meal documents in chronological query order */
-export function buildDailyRecapPrompt(meals: DailyRecapMeal[]): string {
+export function buildDailySummaryPrompt(meals: DailySummaryMeal[]): string {
   const records = meals.map((meal) => ({
     documentId: meal.documentId,
-    ...serializeDailyRecapValue(meal.data) as Record<string, unknown>,
+    ...serializeDailySummaryValue(meal.data) as Record<string, unknown>,
   }));
 
   return [
-    "Create the localized daily recap from these complete meal records:",
+    "Create the localized daily summary from these complete meal records:",
     JSON.stringify(records),
   ].join("\n");
 }
 
 /** Parses configured model names and falls back when the field is unusable */
-export function parseDailyRecapModelNames(value: unknown): string[] {
+export function parseDailySummaryModelNames(value: unknown): string[] {
   if (!Array.isArray(value)) {
     return DEFAULT_AI_MODEL_NAMES;
   }
@@ -127,15 +127,15 @@ export function parseDailyRecapModelNames(value: unknown): string[] {
   return modelNames.length > 0 ? [...new Set(modelNames)] : DEFAULT_AI_MODEL_NAMES;
 }
 
-/** Parses the daily recap system instruction with its source-controlled fallback */
-export function parseDailyRecapSystemInstruction(value: unknown): string {
+/** Parses the daily summary system instruction with its source-controlled fallback */
+export function parseDailySummarySystemInstruction(value: unknown): string {
   return typeof value === "string" && value.trim().length > 0 ?
     value.trim() :
-    DAILY_RECAP_SYSTEM_INSTRUCTION;
+    DAILY_SUMMARY_SYSTEM_INSTRUCTION;
 }
 
-/** Decodes and validates the configurable daily recap JSON response schema */
-export function parseDailyRecapResponseSchema(
+/** Decodes and validates the configurable daily summary JSON response schema */
+export function parseDailySummaryResponseSchema(
   value: unknown,
 ): Record<string, unknown> {
   try {
@@ -146,7 +146,7 @@ export function parseDailyRecapResponseSchema(
       decoded === null ||
       Array.isArray(decoded)
     ) {
-      return DAILY_RECAP_RESPONSE_SCHEMA;
+      return DAILY_SUMMARY_RESPONSE_SCHEMA;
     }
 
     const schema = decoded as Record<string, unknown>;
@@ -162,7 +162,7 @@ export function parseDailyRecapResponseSchema(
       !required.includes("en") ||
       !required.includes("hr")
     ) {
-      return DAILY_RECAP_RESPONSE_SCHEMA;
+      return DAILY_SUMMARY_RESPONSE_SCHEMA;
     }
 
     const propertyMap = properties as Record<string, unknown>;
@@ -179,39 +179,39 @@ export function parseDailyRecapResponseSchema(
       Array.isArray(hr) ||
       (hr as Record<string, unknown>).type !== "string"
     ) {
-      return DAILY_RECAP_RESPONSE_SCHEMA;
+      return DAILY_SUMMARY_RESPONSE_SCHEMA;
     }
 
     return schema;
   } catch (error) {
-    logger.warn("Daily recap response schema is invalid", {
+    logger.warn("Daily summary response schema is invalid", {
       error: error instanceof Error ?
         error.message.slice(0, 500) :
         "Unknown schema error",
     });
-    return DAILY_RECAP_RESPONSE_SCHEMA;
+    return DAILY_SUMMARY_RESPONSE_SCHEMA;
   }
 }
 
-/** Loads daily recap AI settings from config/ai with independent field fallbacks */
-export async function getDailyRecapAIConfiguration(
+/** Loads daily summary AI settings from config/ai with independent field fallbacks */
+export async function getDailySummaryAIConfiguration(
   firestore: Firestore,
-): Promise<DailyRecapAIConfiguration> {
+): Promise<DailySummaryAIConfiguration> {
   try {
     const snapshot = await firestore.doc("config/ai").get();
     const data = snapshot.data();
 
     return {
-      modelNames: parseDailyRecapModelNames(data?.modelNames),
-      dailyRecapSystemInstruction: parseDailyRecapSystemInstruction(
-        data?.dailyRecapSystemInstruction,
+      modelNames: parseDailySummaryModelNames(data?.modelNames),
+      dailySummarySystemInstruction: parseDailySummarySystemInstruction(
+        data?.dailySummarySystemInstruction,
       ),
-      dailyRecapResponseSchema: parseDailyRecapResponseSchema(
-        data?.dailyRecapResponseSchema,
+      dailySummaryResponseSchema: parseDailySummaryResponseSchema(
+        data?.dailySummaryResponseSchema,
       ),
     };
   } catch (error) {
-    logger.warn("Loading daily recap AI configuration failed", {
+    logger.warn("Loading daily summary AI configuration failed", {
       error: error instanceof Error ?
         error.message.slice(0, 500) :
         "Unknown Firestore error",
@@ -219,16 +219,16 @@ export async function getDailyRecapAIConfiguration(
 
     return {
       modelNames: DEFAULT_AI_MODEL_NAMES,
-      dailyRecapSystemInstruction: DAILY_RECAP_SYSTEM_INSTRUCTION,
-      dailyRecapResponseSchema: DAILY_RECAP_RESPONSE_SCHEMA,
+      dailySummarySystemInstruction: DAILY_SUMMARY_SYSTEM_INSTRUCTION,
+      dailySummaryResponseSchema: DAILY_SUMMARY_RESPONSE_SCHEMA,
     };
   }
 }
 
 /** Validates and normalizes one structured Gemini response */
-export function parseDailyRecapResponse(text: string | undefined): GeneratedDailyRecapBodies {
+export function parseDailySummaryResponse(text: string | undefined): GeneratedDailySummaryBodies {
   if (text === undefined) {
-    throw new Error("Gemini returned no daily recap text");
+    throw new Error("Gemini returned no daily summary text");
   }
 
   const value: unknown = JSON.parse(text);
@@ -239,40 +239,40 @@ export function parseDailyRecapResponse(text: string | undefined): GeneratedDail
   if (
     en.length === 0 ||
     hr.length === 0 ||
-    en.length > DAILY_RECAP_BODY_MAX_LENGTH ||
-    hr.length > DAILY_RECAP_BODY_MAX_LENGTH
+    en.length > DAILY_SUMMARY_BODY_MAX_LENGTH ||
+    hr.length > DAILY_SUMMARY_BODY_MAX_LENGTH
   ) {
-    throw new Error("Gemini returned invalid daily recap bodies");
+    throw new Error("Gemini returned invalid daily summary bodies");
   }
 
   return { en, hr };
 }
 
 /** Resolves the Google Cloud project in deployed and emulator environments */
-export function getDailyRecapProjectId(): string | undefined {
+export function getDailySummaryProjectId(): string | undefined {
   return getApp().options.projectId ??
     process.env.GOOGLE_CLOUD_PROJECT ??
     process.env.GCLOUD_PROJECT;
 }
 
 /** Generates localized notification bodies, falling through configured models on errors */
-export async function generateDailyRecapBodies(
+export async function generateDailySummaryBodies(
   firestore: Firestore,
-  meals: DailyRecapMeal[],
-): Promise<GeneratedDailyRecapBodies> {
-  const project = getDailyRecapProjectId();
+  meals: DailySummaryMeal[],
+): Promise<GeneratedDailySummaryBodies> {
+  const project = getDailySummaryProjectId();
 
   if (project === undefined) {
-    throw new Error("Firebase project ID is unavailable for daily recap generation");
+    throw new Error("Firebase project ID is unavailable for daily summary generation");
   }
 
   const ai = new GoogleGenAI({
     enterprise: true,
     project,
-    location: DAILY_RECAP_AI_LOCATION,
+    location: DAILY_SUMMARY_AI_LOCATION,
   });
-  const configuration = await getDailyRecapAIConfiguration(firestore);
-  const prompt = buildDailyRecapPrompt(meals);
+  const configuration = await getDailySummaryAIConfiguration(firestore);
+  const prompt = buildDailySummaryPrompt(meals);
   const failures: string[] = [];
 
   for (const model of configuration.modelNames) {
@@ -281,24 +281,24 @@ export async function generateDailyRecapBodies(
         model,
         contents: prompt,
         config: {
-          systemInstruction: configuration.dailyRecapSystemInstruction,
+          systemInstruction: configuration.dailySummarySystemInstruction,
           responseMimeType: "application/json",
-          responseJsonSchema: configuration.dailyRecapResponseSchema,
+          responseJsonSchema: configuration.dailySummaryResponseSchema,
           temperature: 0.4,
           maxOutputTokens: 512,
         },
       });
 
-      return parseDailyRecapResponse(response.text);
+      return parseDailySummaryResponse(response.text);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown Gemini error";
       failures.push(`${model}: ${message}`);
-      logger.warn("Daily recap model failed", {
+      logger.warn("Daily summary model failed", {
         model,
         error: message.slice(0, 500),
       });
     }
   }
 
-  throw new Error(`Generating the daily recap failed: ${failures.join(" | ").slice(0, 900)}`);
+  throw new Error(`Generating the daily summary failed: ${failures.join(" | ").slice(0, 900)}`);
 }

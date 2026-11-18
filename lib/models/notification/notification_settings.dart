@@ -4,7 +4,7 @@ class NotificationSettings {
   final bool weighReminderEnabled;
   final DateTime weighReminderTime;
   final bool dailySummaryEnabled;
-  final DateTime dailyRecapTime;
+  final DateTime dailySummaryTime;
   final bool announcementsEnabled;
   final String timezone;
   final String locale;
@@ -13,7 +13,7 @@ class NotificationSettings {
     required this.weighReminderEnabled,
     required this.weighReminderTime,
     required this.dailySummaryEnabled,
-    required this.dailyRecapTime,
+    required this.dailySummaryTime,
     required this.announcementsEnabled,
     required this.timezone,
     required this.locale,
@@ -26,7 +26,7 @@ class NotificationSettings {
     weighReminderEnabled: false,
     weighReminderTime: DateTime(2020, 1, 1, 9),
     dailySummaryEnabled: false,
-    dailyRecapTime: DateTime(2020, 1, 1, 8),
+    dailySummaryTime: DateTime(2020, 1, 1, 8),
     announcementsEnabled: false,
     timezone: timezone,
     locale: locale,
@@ -38,7 +38,7 @@ class NotificationSettings {
       final DateTime value => value.toLocal(),
       _ => DateTime(2020, 1, 1, 9),
     };
-    final dailyRecapTime = switch (map['dailyRecapTime']) {
+    final dailySummaryTime = switch (map['dailySummaryTime']) {
       final Timestamp value => value.toDate(),
       final DateTime value => value.toLocal(),
       _ => DateTime(2020, 1, 1, 8),
@@ -54,12 +54,12 @@ class NotificationSettings {
         weighReminderTime.minute,
       ),
       dailySummaryEnabled: map['dailySummaryEnabled'] as bool? ?? false,
-      dailyRecapTime: DateTime(
+      dailySummaryTime: DateTime(
         2020,
         1,
         1,
-        dailyRecapTime.hour,
-        dailyRecapTime.minute,
+        dailySummaryTime.hour,
+        dailySummaryTime.minute,
       ),
       announcementsEnabled: map['announcementsEnabled'] as bool? ?? false,
       timezone: map['timezone'] as String? ?? 'UTC',
@@ -71,7 +71,7 @@ class NotificationSettings {
     bool? weighReminderEnabled,
     DateTime? weighReminderTime,
     bool? dailySummaryEnabled,
-    DateTime? dailyRecapTime,
+    DateTime? dailySummaryTime,
     bool? announcementsEnabled,
     String? timezone,
     String? locale,
@@ -79,7 +79,7 @@ class NotificationSettings {
     weighReminderEnabled: weighReminderEnabled ?? this.weighReminderEnabled,
     weighReminderTime: weighReminderTime ?? this.weighReminderTime,
     dailySummaryEnabled: dailySummaryEnabled ?? this.dailySummaryEnabled,
-    dailyRecapTime: dailyRecapTime ?? this.dailyRecapTime,
+    dailySummaryTime: dailySummaryTime ?? this.dailySummaryTime,
     announcementsEnabled: announcementsEnabled ?? this.announcementsEnabled,
     timezone: timezone ?? this.timezone,
     locale: locale ?? this.locale,
@@ -89,7 +89,7 @@ class NotificationSettings {
     'weighReminderEnabled': weighReminderEnabled,
     'weighReminderTime': Timestamp.fromDate(weighReminderTime),
     'dailySummaryEnabled': dailySummaryEnabled,
-    'dailyRecapTime': Timestamp.fromDate(dailyRecapTime),
+    'dailySummaryTime': Timestamp.fromDate(dailySummaryTime),
     'announcementsEnabled': announcementsEnabled,
     'timezone': timezone,
     'locale': locale,

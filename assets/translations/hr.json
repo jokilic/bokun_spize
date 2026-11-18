@@ -139,7 +139,7 @@
     "notificationsWeighReminderTimeSubtitle": "Vrijeme podsjetnika za vaganje",
     "notificationsDailySummaryTitle": "Pregled prošlog dana",
     "notificationsDailySummarySubtitle": "Sažetak tvojih obroka",
-    "notificationsDailyRecapTimeSubtitle": "Vrijeme dnevnog pregleda",
+    "notificationsDailySummaryTimeSubtitle": "Vrijeme dnevnog sažetka",
     "notificationsAnnouncementsTitle": "Objave",
     "notificationsAnnouncementsSubtitle": "Novosti i ažuriranja aplikacije",
     "notificationsSaveFailure": "Postavke obavijesti nisu se mogle spremiti",

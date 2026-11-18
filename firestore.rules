@@ -138,7 +138,7 @@ service cloud.firestore {
       ];
       let optionalClientFields = [
         'weighReminderTime',
-        'dailyRecapTime',
+        'dailySummaryTime',
       ];
       let serverFields = [
         'nextWeighReminderAt',
@@ -150,7 +150,7 @@ service cloud.firestore {
         && data.weighReminderEnabled is bool
         && (!('weighReminderTime' in data) || data.weighReminderTime is timestamp)
         && data.dailySummaryEnabled is bool
-        && (!('dailyRecapTime' in data) || data.dailyRecapTime is timestamp)
+        && (!('dailySummaryTime' in data) || data.dailySummaryTime is timestamp)
         && data.announcementsEnabled is bool
         && data.timezone is string
         && data.timezone.size() > 0
@@ -168,7 +168,7 @@ service cloud.firestore {
         'weighReminderEnabled',
         'weighReminderTime',
         'dailySummaryEnabled',
-        'dailyRecapTime',
+        'dailySummaryTime',
         'announcementsEnabled',
         'timezone',
         'locale',
@@ -283,7 +283,7 @@ service cloud.firestore {
             'weighReminderEnabled',
             'weighReminderTime',
             'dailySummaryEnabled',
-            'dailyRecapTime',
+            'dailySummaryTime',
             'announcementsEnabled',
             'timezone',
             'locale',
@@ -305,7 +305,7 @@ service cloud.firestore {
           && isValidNotificationDeviceUpdate(deviceId);
       }
 
-      match /dailyRecaps/{recapKey} {
+      match /dailySummaries/{summaryKey} {
         allow read, delete: if isOwner(userId);
         allow create, update: if false;
       }

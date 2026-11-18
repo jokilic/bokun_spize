@@ -30,8 +30,8 @@ export function getWeightReminderTimeParts(
   ) ?? {hour: 9, minute: 0};
 }
 
-/** Extracts the Zagreb wall-clock recap time entered through Firebase Console */
-export function getDailyRecapTimeParts(
+/** Extracts the Zagreb wall-clock summary time entered through Firebase Console */
+export function getDailySummaryTimeParts(
   value: unknown,
 ): {hour: number; minute: number} {
   return getTimestampTimeParts(
@@ -47,12 +47,12 @@ export async function getConfiguredNotificationDefinitions(
   const snapshot = await firestore.doc(NOTIFICATION_CONFIG_PATH).get();
   const data = snapshot.data();
   const weightReminderTime = getWeightReminderTimeParts(data?.weightReminderTime);
-  const dailyRecapTime = getDailyRecapTimeParts(data?.dailyRecapTime);
+  const dailySummaryTime = getDailySummaryTimeParts(data?.dailySummaryTime);
 
   return getNotificationDefinitions(
     weightReminderTime.hour,
     weightReminderTime.minute,
-    dailyRecapTime.hour,
-    dailyRecapTime.minute,
+    dailySummaryTime.hour,
+    dailySummaryTime.minute,
   );
 }

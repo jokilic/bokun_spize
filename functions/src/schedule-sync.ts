@@ -42,9 +42,9 @@ export function buildSchedulePatch(
   const beforeWeighReminderTime = getDate(before?.weighReminderTime);
   const afterWeighReminderTime = getDate(after.weighReminderTime);
   const weighReminderTimeChanged = beforeWeighReminderTime?.getTime() !== afterWeighReminderTime?.getTime();
-  const beforeDailyRecapTime = getDate(before?.dailyRecapTime);
-  const afterDailyRecapTime = getDate(after.dailyRecapTime);
-  const dailyRecapTimeChanged = beforeDailyRecapTime?.getTime() !== afterDailyRecapTime?.getTime();
+  const beforeDailySummaryTime = getDate(before?.dailySummaryTime);
+  const afterDailySummaryTime = getDate(after.dailySummaryTime);
+  const dailySummaryTimeChanged = beforeDailySummaryTime?.getTime() !== afterDailySummaryTime?.getTime();
 
   for (const type of NOTIFICATION_TYPES) {
     const definition = getNotificationDefinitionForSettings(
@@ -66,7 +66,7 @@ export function buildSchedulePatch(
     // Preserve an existing timestamp unless activation, repair or timezone change requires a new one
     const scheduleTimeChanged = type === "weightReminder"
       ? weighReminderTimeChanged
-      : dailyRecapTimeChanged;
+      : dailySummaryTimeChanged;
 
     if (isEnabled && (!wasEnabled || !hasNextOccurrence || timezoneChanged || scheduleTimeChanged || forcedTypes.includes(type))) {
       patch[definition.nextAtField] = getNextOccurrence(

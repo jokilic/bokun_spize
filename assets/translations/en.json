@@ -139,7 +139,7 @@
     "notificationsWeighReminderTimeSubtitle": "Time of weigh reminder",
     "notificationsDailySummaryTitle": "Overview of yesterday",
     "notificationsDailySummarySubtitle": "Summary of your meals",
-    "notificationsDailyRecapTimeSubtitle": "Time of daily recap",
+    "notificationsDailySummaryTimeSubtitle": "Time of daily summary",
     "notificationsAnnouncementsTitle": "Announcements",
     "notificationsAnnouncementsSubtitle": "App news and updates",
     "notificationsSaveFailure": "Notification settings could not be saved",

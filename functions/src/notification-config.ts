@@ -63,8 +63,8 @@ export interface NotificationDefinition {
 export function getNotificationDefinitions(
   weightReminderHour = 9,
   weightReminderMinute = 0,
-  dailyRecapHour = 8,
-  dailyRecapMinute = 0,
+  dailySummaryHour = 8,
+  dailySummaryMinute = 0,
 ): Record<NotificationType, NotificationDefinition> {
   return {
     // Morning reminder intended to arrive before the user's first meal
@@ -90,13 +90,13 @@ export function getNotificationDefinitions(
         },
       },
     },
-    // Morning recap of the user's previous day
+    // Morning summary of the user's previous day
     dailySummary: {
       type: "dailySummary",
       enabledField: "dailySummaryEnabled",
       nextAtField: "nextDailySummaryAt",
-      hour: dailyRecapHour,
-      minute: dailyRecapMinute,
+      hour: dailySummaryHour,
+      minute: dailySummaryMinute,
       route: "meals",
       androidChannelId: "daily_summaries",
       androidColor: "#3B7D5E",
@@ -151,7 +151,7 @@ export function getNotificationDefinitionForSettings(
   const timezone = typeof settings.timezone === "string" ? settings.timezone : DEFAULT_TIMEZONE;
   const configuredTime = definition.type === "weightReminder"
     ? getTimestampTimeParts(settings.weighReminderTime, timezone)
-    : getTimestampTimeParts(settings.dailyRecapTime, timezone);
+    : getTimestampTimeParts(settings.dailySummaryTime, timezone);
 
   if (configuredTime === null) {
     return definition;

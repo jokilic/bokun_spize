@@ -18,7 +18,7 @@ import {
   NOTIFICATION_DEFINITIONS,
 } from "../src/notification-config";
 import {
-  getDailyRecapTimeParts,
+  getDailySummaryTimeParts,
   getWeightReminderTimeParts,
 } from "../src/remote-notification-config";
 import {buildSchedulePatch} from "../src/schedule-sync";
@@ -109,8 +109,8 @@ describe("notification scheduling", () => {
     expect(retry).not.toBe(first);
   });
 
-  /** Verifies recap time changes can create another recap on the same local date */
-  it("creates separate daily recap keys for different same-day times", () => {
+  /** Verifies summary time changes can create another summary on the same local date */
+  it("creates separate daily summary keys for different same-day times", () => {
     const definition = NOTIFICATION_DEFINITIONS.dailySummary;
     const morning = getDispatchId(
       definition,
@@ -265,18 +265,18 @@ describe("notification scheduling", () => {
     expect(getWeightReminderTimeParts(null)).toEqual({hour: 9, minute: 0});
   });
 
-  it("reschedules the recap when its local time changes", () => {
+  it("reschedules the summary when its local time changes", () => {
     const patch = buildSchedulePatch(
       {
         dailySummaryEnabled: true,
-        dailyRecapTime: Timestamp.fromDate(new Date("2020-01-01T08:00:00.000Z")),
+        dailySummaryTime: Timestamp.fromDate(new Date("2020-01-01T08:00:00.000Z")),
         timezone: "Europe/Zagreb",
         nextDailySummaryAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
       },
       {
         weighReminderEnabled: false,
         dailySummaryEnabled: true,
-        dailyRecapTime: Timestamp.fromDate(new Date("2020-01-01T08:30:00.000Z")),
+        dailySummaryTime: Timestamp.fromDate(new Date("2020-01-01T08:30:00.000Z")),
         timezone: "Europe/Zagreb",
         nextDailySummaryAt: Timestamp.fromDate(new Date("2026-06-02T07:00:00.000Z")),
       },
@@ -286,11 +286,11 @@ describe("notification scheduling", () => {
     expect(patch.nextDailySummaryAt?.toISOString()).toBe("2026-06-01T07:30:00.000Z");
   });
 
-  /** Verifies console recap configuration uses the same Zagreb interpretation */
-  it("reads a configured daily recap time", () => {
+  /** Verifies console summary configuration uses the same Zagreb interpretation */
+  it("reads a configured daily summary time", () => {
     const configuredTime = Timestamp.fromDate(new Date("2026-11-14T08:30:00.000Z"));
 
-    expect(getDailyRecapTimeParts(configuredTime)).toEqual({hour: 9, minute: 30});
+    expect(getDailySummaryTimeParts(configuredTime)).toEqual({hour: 9, minute: 30});
   });
 });
 

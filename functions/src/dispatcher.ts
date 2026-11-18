@@ -37,9 +37,9 @@ import {
   SupportedLocale,
 } from "./notification-config";
 import {
-  buildAndStoreDailyRecap,
-  getDailyRecapPeriod,
-} from "./daily-recap";
+  buildAndStoreDailySummary,
+  getDailySummaryPeriod,
+} from "./daily-summary";
 import {
   getDate,
   getDispatchId,
@@ -63,7 +63,7 @@ export interface ReservedDispatch {
   /** Behavior and field mapping for this notification type */
   definition: NotificationDefinition;
 
-  /** Localized copy that may be replaced by a generated daily recap */
+  /** Localized copy that may be replaced by a generated daily summary */
   copy: Record<SupportedLocale, NotificationCopy>;
 
   /** Owning Firebase Authentication user ID used only in structured logs */
@@ -671,11 +671,11 @@ export async function processDueSettings(
 
     if (dispatch.definition.type === "dailySummary") {
       const userReference = getUserReference(dispatch.settingsReference);
-      const period = getDailyRecapPeriod(
+      const period = getDailySummaryPeriod(
         dispatch.scheduledAt,
         dispatch.timezone,
       );
-      const notification = await buildAndStoreDailyRecap(
+      const notification = await buildAndStoreDailySummary(
         userReference,
         period,
       );

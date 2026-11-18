@@ -224,16 +224,16 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
     languageCode: context.locale.languageCode,
   );
 
-  /// Opens [TimeSheet] and updates the daily recap time
-  Future<void> updateDailyRecapTimeViaPicker(BuildContext context) async => await showBlurredModalBottomSheet(
+  /// Opens [TimeSheet] and updates the daily summary time
+  Future<void> updateDailySummaryTimeViaPicker(BuildContext context) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (context) => TimeSheet(
-      subtitle: 'notificationsDailyRecapTimeSubtitle'.tr(),
+      subtitle: 'notificationsDailySummaryTimeSubtitle'.tr(),
       primaryColor: context.colors.protein,
-      dateValue: settings.dailyRecapTime,
+      dateValue: settings.dailySummaryTime,
       onTimeChanged: (newTime) => updateSettings(
         settings.copyWith(
-          dailyRecapTime: DateTime(
+          dailySummaryTime: DateTime(
             2020,
             1,
             1,
@@ -245,9 +245,9 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
     ),
   );
 
-  /// Returns the localized daily recap time
-  String getDailyRecapTime(BuildContext context) => getDateString(
-    date: settings.dailyRecapTime,
+  /// Returns the localized daily summary time
+  String getDailySummaryTime(BuildContext context) => getDateString(
+    date: settings.dailySummaryTime,
     dateFormat: 'HH:mm',
     useTodayYesterdayTomorrow: false,
     languageCode: context.locale.languageCode,
@@ -607,7 +607,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                           child: ElevatedButton.icon(
                             onPressed: () {
                               HapticFeedback.lightImpact();
-                              updateDailyRecapTimeViaPicker(context);
+                              updateDailySummaryTimeViaPicker(context);
                             },
                             icon: PhosphorIcon(
                               PhosphorIconsBold.clock,
@@ -626,7 +626,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                               foregroundColor: context.colors.text,
                             ),
                             label: Text(
-                              getDailyRecapTime(context),
+                              getDailySummaryTime(context),
                               textAlign: TextAlign.center,
                             ),
                           ),

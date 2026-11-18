@@ -2,34 +2,34 @@ import {describe, expect, it} from "vitest";
 import {Timestamp} from "firebase-admin/firestore";
 
 import {
-  buildDailyRecapNotification,
-  getDailyRecapPeriod,
-} from "../src/daily-recap";
+  buildDailySummaryNotification,
+  getDailySummaryPeriod,
+} from "../src/daily-summary";
 import {
-  buildDailyRecapPrompt,
-  DAILY_RECAP_RESPONSE_SCHEMA,
-  DAILY_RECAP_SYSTEM_INSTRUCTION,
-  parseDailyRecapModelNames,
-  parseDailyRecapResponse,
-  parseDailyRecapResponseSchema,
-  parseDailyRecapSystemInstruction,
-} from "../src/daily-recap-ai";
+  buildDailySummaryPrompt,
+  DAILY_SUMMARY_RESPONSE_SCHEMA,
+  DAILY_SUMMARY_SYSTEM_INSTRUCTION,
+  parseDailySummaryModelNames,
+  parseDailySummaryResponse,
+  parseDailySummaryResponseSchema,
+  parseDailySummarySystemInstruction,
+} from "../src/daily-summary-ai";
 
-describe("daily meal recap", () => {
+describe("daily meal summary", () => {
   it("targets the previous local day just after midnight", () => {
-    const period = getDailyRecapPeriod(
+    const period = getDailySummaryPeriod(
       new Date("2026-11-16T23:05:00.000Z"),
       "Europe/Zagreb",
     );
 
     expect(period.start.toISOString()).toBe("2026-11-15T23:00:00.000Z");
     expect(period.end.toISOString()).toBe("2026-11-16T23:00:00.000Z");
-    expect(period.recapAt.toISOString()).toBe("2026-11-16T23:05:00.000Z");
-    expect(period.recapKey).toBe("2026-11-17_00-05");
+    expect(period.summaryAt.toISOString()).toBe("2026-11-16T23:05:00.000Z");
+    expect(period.summaryKey).toBe("2026-11-17_00-05");
   });
 
   it("passes complete meal data to the AI prompt", () => {
-    const prompt = buildDailyRecapPrompt([{
+    const prompt = buildDailySummaryPrompt([{
       documentId: "meal-1",
       data: {
         name: "Fruit and yogurt",
@@ -44,11 +44,11 @@ describe("daily meal recap", () => {
   });
 
   it("stores generated localized bodies without redundant titles", () => {
-    const bodies = parseDailyRecapResponse(JSON.stringify({
+    const bodies = parseDailySummaryResponse(JSON.stringify({
       en: "You included fruit today. Add an egg next time for more protein.",
       hr: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
     }));
-    const notification = buildDailyRecapNotification(bodies);
+    const notification = buildDailySummaryNotification(bodies);
 
     expect(notification).toEqual({
       en: "You included fruit today. Add an egg next time for more protein.",
@@ -56,7 +56,7 @@ describe("daily meal recap", () => {
     });
   });
 
-  it("parses independently configurable daily recap AI fields", () => {
+  it("parses independently configurable daily summary AI fields", () => {
     const schema = {
       type: "object",
       properties: {
@@ -66,23 +66,23 @@ describe("daily meal recap", () => {
       required: ["en", "hr"],
     };
 
-    expect(parseDailyRecapModelNames([" model-a ", "model-a", "model-b"])).toEqual([
+    expect(parseDailySummaryModelNames([" model-a ", "model-a", "model-b"])).toEqual([
       "model-a",
       "model-b",
     ]);
     expect(
-      parseDailyRecapSystemInstruction(" Custom instruction "),
+      parseDailySummarySystemInstruction(" Custom instruction "),
     ).toBe("Custom instruction");
-    expect(parseDailyRecapResponseSchema(JSON.stringify(schema))).toEqual(schema);
+    expect(parseDailySummaryResponseSchema(JSON.stringify(schema))).toEqual(schema);
   });
 
-  it("falls back when daily recap AI fields are invalid", () => {
-    expect(parseDailyRecapModelNames(null).length).toBeGreaterThan(0);
+  it("falls back when daily summary AI fields are invalid", () => {
+    expect(parseDailySummaryModelNames(null).length).toBeGreaterThan(0);
     expect(
-      parseDailyRecapSystemInstruction(" "),
-    ).toBe(DAILY_RECAP_SYSTEM_INSTRUCTION);
+      parseDailySummarySystemInstruction(" "),
+    ).toBe(DAILY_SUMMARY_SYSTEM_INSTRUCTION);
     expect(
-      parseDailyRecapResponseSchema({type: "string"}),
-    ).toBe(DAILY_RECAP_RESPONSE_SCHEMA);
+      parseDailySummaryResponseSchema({type: "string"}),
+    ).toBe(DAILY_SUMMARY_RESPONSE_SCHEMA);
   });
 });
