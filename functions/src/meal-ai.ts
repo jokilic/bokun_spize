@@ -60,10 +60,10 @@ export interface GeneratedMealResult {
   modelName: string;
 }
 
-/** Input loaded from a pending meal document and optional Storage image */
+/** Input resolved from a pending meal document and optional Storage image */
 export interface MealGenerationInput {
   text: string | null;
-  image: Buffer | null;
+  imageUri: string | null;
   imageContentType: string | null;
   languageCode: string;
 }
@@ -528,11 +528,11 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
     parts.push({text: input.text});
   }
 
-  if (input.image !== null && input.imageContentType !== null) {
+  if (input.imageUri !== null && input.imageContentType !== null) {
     parts.push({
-      inlineData: {
+      fileData: {
         mimeType: input.imageContentType,
-        data: input.image.toString("base64"),
+        fileUri: input.imageUri,
       },
     });
   }
@@ -603,15 +603,15 @@ export function getMealLanguageCode(data: DocumentData): string {
   return data.aiGenerationLanguage === "en" ? "en" : "hr";
 }
 
-/** Loads and validates the optional meal image owned by the triggering user */
+/** Resolves and validates the optional meal image owned by the triggering user */
 export async function loadMealImage(
   data: DocumentData,
   userId: string,
-): Promise<{image: Buffer | null; contentType: string | null}> {
+): Promise<{imageUri: string | null; contentType: string | null}> {
   const imageStoragePath = data.imageStoragePath;
 
   if (imageStoragePath === null || imageStoragePath === undefined) {
-    return {image: null, contentType: null};
+    return {imageUri: null, contentType: null};
   }
 
   if (
@@ -621,18 +621,19 @@ export async function loadMealImage(
     throw new Error("Meal image path does not belong to the user");
   }
 
-  const file = getStorage().bucket().file(imageStoragePath);
-  const [[image], [metadata]] = await Promise.all([
-    file.download(),
-    file.getMetadata(),
-  ]);
+  const bucket = getStorage().bucket();
+  const file = bucket.file(imageStoragePath);
+  const [metadata] = await file.getMetadata();
   const contentType = metadata.contentType;
 
   if (typeof contentType !== "string" || !contentType.startsWith("image/")) {
     throw new Error("Meal image has an invalid content type");
   }
 
-  return {image, contentType};
+  return {
+    imageUri: `gs://${bucket.name}/${file.name}`,
+    contentType,
+  };
 }
 
 /** Builds the complete model input from a pending Firestore meal */
@@ -645,7 +646,7 @@ export async function buildMealGenerationInput(
 
   return {
     text: originalText.length > 0 ? originalText : null,
-    image: loadedImage.image,
+    imageUri: loadedImage.imageUri,
     imageContentType: loadedImage.contentType,
     languageCode: getMealLanguageCode(data),
   };
