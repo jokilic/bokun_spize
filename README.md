@@ -10,7 +10,6 @@
 - [ ] `AccountScreen`
     - [ ] Notifications
         - [ ] Fix small Android status bar notification
-        - [ ] There are no `dailySummaryTime` in global config/notifications
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required
