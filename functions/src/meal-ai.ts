@@ -61,7 +61,6 @@ export interface MealGenerationInput {
   text: string | null;
   imageUri: string | null;
   imageContentType: string | null;
-  languageCode: string;
 }
 
 /** Transaction result used to coordinate concurrent trigger deliveries */
@@ -93,11 +92,11 @@ If nutrition is unknown, estimate based on typical values.
 /** Mandatory localized output instructions appended to the meal prompt */
 export const MEAL_LOCALIZATION_INSTRUCTION = `
 Return one JSON object containing complete "en" and "hr" meal objects.
+The user's text may be written in any language. Understand it in its original language.
 Use English for meal names, food names, and unit names inside "en".
 Use Croatian for meal names, food names, and unit names inside "hr".
 Both objects must describe the same meal and use identical numeric nutrition values, quantities, emojis, and colors.
 Keep JSON property names unchanged and preserve standard unit symbols such as g and ml.
-The user's input language code is "{languageCode}".
 `.trim();
 
 /** Complete generated fields shared by both localized meal schema branches */
@@ -361,7 +360,7 @@ export async function generateMeal(
   const systemInstruction = [
     MEAL_SYSTEM_INSTRUCTION,
     MEAL_LOCALIZATION_INSTRUCTION,
-  ].join("\n\n").replaceAll("{languageCode}", input.languageCode);
+  ].join("\n\n");
   const failures: string[] = [];
 
   for (const model of AI_MODEL_NAMES) {
@@ -445,7 +444,6 @@ export async function buildMealGenerationInput(
     text: originalText.length > 0 ? originalText : null,
     imageUri: loadedImage.imageUri,
     imageContentType: loadedImage.contentType,
-    languageCode: getMealLanguageCode(data),
   };
 }
 
