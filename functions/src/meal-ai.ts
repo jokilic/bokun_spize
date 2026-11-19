@@ -15,10 +15,7 @@ import {
 import {getStorage} from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
 
-import {
-  DEFAULT_AI_MODEL_NAMES,
-  parseDailySummaryModelNames,
-} from "./daily-summary-ai";
+import {AI_MODEL_NAMES} from "./daily-summary-ai";
 
 /** One localized meal payload returned by Gemini */
 export interface GeneratedMealContent {
@@ -51,13 +48,6 @@ export interface GeneratedFood {
   quantity: number;
   unit: string;
   nutrition: GeneratedNutrition;
-}
-
-/** Remote configuration used for meal generation */
-export interface MealAIConfiguration {
-  modelNames: string[];
-  mealSystemInstruction: string;
-  mealResponseSchema: Record<string, unknown>;
 }
 
 /** Result of a successful model fallback attempt */
@@ -100,7 +90,7 @@ If quantity is unclear, make a reasonable estimate.
 If nutrition is unknown, estimate based on typical values.
 `.trim();
 
-/** Mandatory localized output instructions applied to default and remote configuration */
+/** Mandatory localized output instructions appended to the meal prompt */
 export const MEAL_LOCALIZATION_INSTRUCTION = `
 Return one JSON object containing complete "en" and "hr" meal objects.
 Use English for meal names, food names, and unit names inside "en".
@@ -182,7 +172,7 @@ export const MEAL_CONTENT_RESPONSE_SCHEMA: Record<string, unknown> = {
   },
 };
 
-/** Structured meal schema used when remote configuration is missing or invalid */
+/** Structured response schema for complete localized meals */
 export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
   type: "object",
   title: "Meal",
@@ -206,248 +196,6 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
   return typeof value === "object" && value !== null && !Array.isArray(value) ?
     value as Record<string, unknown> :
     null;
-}
-
-/** Replaces language placeholders throughout a JSON-compatible value */
-export function localizeMealConfigurationValue(
-  value: unknown,
-  languageCode: string,
-): unknown {
-  if (typeof value === "string") {
-    return value.replaceAll("{languageCode}", languageCode);
-  }
-
-  if (Array.isArray(value)) {
-    return value.map((child) => localizeMealConfigurationValue(child, languageCode));
-  }
-
-  const record = asRecord(value);
-
-  if (record !== null) {
-    return Object.fromEntries(
-      Object.entries(record).map(([key, child]) => [
-        key,
-        localizeMealConfigurationValue(child, languageCode),
-      ]),
-    );
-  }
-
-  return value;
-}
-
-/** Verifies that a configurable schema retains every required meal field and type */
-export function isMealSchemaCompatible(
-  candidate: unknown,
-  expected: unknown = MEAL_RESPONSE_SCHEMA,
-): boolean {
-  const candidateRecord = asRecord(candidate);
-  const expectedRecord = asRecord(expected);
-
-  if (candidateRecord === null || expectedRecord === null) {
-    return false;
-  }
-
-  const expectedType = expectedRecord.type;
-  const candidateType = candidateRecord.type;
-  const compatibleType = candidateType === expectedType ||
-    (expectedType === "number" && candidateType === "integer");
-
-  if (!compatibleType) {
-    return false;
-  }
-
-  if (expectedType === "object") {
-    const candidateProperties = asRecord(candidateRecord.properties);
-    const expectedProperties = asRecord(expectedRecord.properties);
-    const candidateRequired = candidateRecord.required;
-
-    if (
-      candidateProperties === null ||
-      expectedProperties === null ||
-      !Array.isArray(candidateRequired)
-    ) {
-      return false;
-    }
-
-    for (const [key, expectedProperty] of Object.entries(expectedProperties)) {
-      if (
-        !candidateRequired.includes(key) ||
-        !isMealSchemaCompatible(candidateProperties[key], expectedProperty)
-      ) {
-        return false;
-      }
-    }
-  }
-
-  if (expectedType === "array") {
-    return isMealSchemaCompatible(candidateRecord.items, expectedRecord.items);
-  }
-
-  return true;
-}
-
-/** Converts the former Firebase AI schema shape into Vertex JSON schema */
-export function normalizeMealSchemaNode(
-  value: unknown,
-  languageCode: string,
-): Record<string, unknown> | null {
-  const localized = asRecord(
-    localizeMealConfigurationValue(value, languageCode),
-  );
-
-  if (localized === null || typeof localized.type !== "string") {
-    return null;
-  }
-
-  const supportedKeys = new Set([
-    "type",
-    "title",
-    "description",
-    "nullable",
-    "format",
-    "enum",
-    "properties",
-    "required",
-    "optionalProperties",
-    "propertyOrdering",
-    "items",
-    "minItems",
-    "maxItems",
-    "minimum",
-    "maximum",
-    "additionalProperties",
-  ]);
-
-  if (Object.keys(localized).some((key) => !supportedKeys.has(key))) {
-    return null;
-  }
-
-  const normalized = {...localized};
-  delete normalized.optionalProperties;
-  delete normalized.format;
-
-  if (localized.type === "object") {
-    const properties = asRecord(localized.properties);
-
-    if (properties === null || Object.keys(properties).length === 0) {
-      return null;
-    }
-
-    const normalizedProperties: Record<string, unknown> = {};
-
-    for (const [key, property] of Object.entries(properties)) {
-      const normalizedProperty = normalizeMealSchemaNode(property, languageCode);
-
-      if (normalizedProperty === null) {
-        return null;
-      }
-
-      normalizedProperties[key] = normalizedProperty;
-    }
-
-    const propertyNames = Object.keys(properties);
-    const configuredRequired = localized.required;
-    const optionalProperties = localized.optionalProperties;
-    const required = Array.isArray(configuredRequired) ?
-      configuredRequired :
-      Array.isArray(optionalProperties) ?
-        propertyNames.filter((name) => !optionalProperties.includes(name)) :
-        propertyNames;
-
-    if (
-      !required.every((name): name is string => typeof name === "string") ||
-      required.some((name) => !propertyNames.includes(name))
-    ) {
-      return null;
-    }
-
-    normalized.properties = normalizedProperties;
-    normalized.required = required;
-  }
-
-  if (localized.type === "array") {
-    const items = normalizeMealSchemaNode(localized.items, languageCode);
-
-    if (items === null) {
-      return null;
-    }
-
-    normalized.items = items;
-  }
-
-  return normalized;
-}
-
-/** Decodes and validates the remotely configured meal response schema */
-export function parseMealResponseSchema(
-  value: unknown,
-  languageCode: string,
-): Record<string, unknown> {
-  try {
-    const decoded: unknown = typeof value === "string" ? JSON.parse(value) : value;
-    const normalized = normalizeMealSchemaNode(decoded, languageCode);
-
-    if (normalized === null || !isMealSchemaCompatible(normalized)) {
-      return localizeMealConfigurationValue(
-        MEAL_RESPONSE_SCHEMA,
-        languageCode,
-      ) as Record<string, unknown>;
-    }
-
-    return normalized;
-  } catch (error) {
-    logger.warn("Meal response schema is invalid", {
-      error: error instanceof Error ? error.message.slice(0, 500) : "Unknown schema error",
-    });
-
-    return localizeMealConfigurationValue(
-      MEAL_RESPONSE_SCHEMA,
-      languageCode,
-    ) as Record<string, unknown>;
-  }
-}
-
-/** Loads meal AI settings from config/ai with independent field fallbacks */
-export async function getMealAIConfiguration(
-  firestore: Firestore,
-  languageCode: string,
-): Promise<MealAIConfiguration> {
-  try {
-    const snapshot = await firestore.doc("config/ai").get();
-    const data = snapshot.data();
-    const remoteInstruction = data?.mealSystemInstruction;
-    const instruction = typeof remoteInstruction === "string" && remoteInstruction.trim().length > 0 ?
-      remoteInstruction.trim() :
-      MEAL_SYSTEM_INSTRUCTION;
-
-    return {
-      modelNames: parseDailySummaryModelNames(data?.modelNames),
-      mealSystemInstruction: [
-        instruction,
-        MEAL_LOCALIZATION_INSTRUCTION,
-      ].join("\n\n").replaceAll("{languageCode}", languageCode),
-      mealResponseSchema: parseMealResponseSchema(
-        data?.mealResponseSchema,
-        languageCode,
-      ),
-    };
-  } catch (error) {
-    logger.warn("Loading meal AI configuration failed", {
-      error: error instanceof Error ? error.message.slice(0, 500) : "Unknown Firestore error",
-    });
-
-    return {
-      modelNames: DEFAULT_AI_MODEL_NAMES,
-      mealSystemInstruction: [
-        MEAL_SYSTEM_INSTRUCTION,
-        MEAL_LOCALIZATION_INSTRUCTION,
-      ].join("\n\n").replaceAll("{languageCode}", languageCode),
-      mealResponseSchema: localizeMealConfigurationValue(
-        MEAL_RESPONSE_SCHEMA,
-        languageCode,
-      ) as Record<string, unknown>,
-    };
-  }
 }
 
 /** Parses one finite nonnegative numeric response property */
@@ -594,9 +342,8 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
   return parts;
 }
 
-/** Generates a structured meal while falling through configured models on errors */
+/** Generates a structured meal while falling through models on errors */
 export async function generateMeal(
-  firestore: Firestore,
   input: MealGenerationInput,
 ): Promise<GeneratedMealResult> {
   const project = getMealAIProjectId();
@@ -610,22 +357,22 @@ export async function generateMeal(
     project,
     location: MEAL_AI_LOCATION,
   });
-  const configuration = await getMealAIConfiguration(
-    firestore,
-    input.languageCode,
-  );
   const parts = buildMealContentParts(input);
+  const systemInstruction = [
+    MEAL_SYSTEM_INSTRUCTION,
+    MEAL_LOCALIZATION_INSTRUCTION,
+  ].join("\n\n").replaceAll("{languageCode}", input.languageCode);
   const failures: string[] = [];
 
-  for (const model of configuration.modelNames) {
+  for (const model of AI_MODEL_NAMES) {
     try {
       const response = await ai.models.generateContent({
         model,
         contents: [{role: "user", parts}],
         config: {
-          systemInstruction: configuration.mealSystemInstruction,
+          systemInstruction,
           responseMimeType: "application/json",
-          responseJsonSchema: configuration.mealResponseSchema,
+          responseJsonSchema: MEAL_RESPONSE_SCHEMA,
           temperature: 0.2,
           maxOutputTokens: 8192,
         },
@@ -910,7 +657,7 @@ export async function processPendingAIMeal(
 
   try {
     const input = await buildMealGenerationInput(mealData, userId);
-    result = await generateMeal(mealReference.firestore, input);
+    result = await generateMeal(input);
   } catch (error) {
     logger.error("Generating AI meal failed", {
       userId,

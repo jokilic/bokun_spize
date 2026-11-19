@@ -1,10 +1,6 @@
 import {describe, expect, it} from "vitest";
 
-import {
-  MEAL_RESPONSE_SCHEMA,
-  parseGeneratedMeal,
-  parseMealResponseSchema,
-} from "../src/meal-ai";
+import {parseGeneratedMeal} from "../src/meal-ai";
 
 const nutrition = {
   calories: 420,
@@ -50,19 +46,5 @@ describe("localized AI meals", () => {
     expect(meal.hr.name).toBe("Pileća salata");
     expect(meal.en.foods[0].name).toBe("Chicken");
     expect(meal.hr.foods[0].name).toBe("Piletina");
-  });
-
-  it("falls back from the former single-language schema", () => {
-    const oldSchema = {
-      type: "object",
-      required: ["name"],
-      properties: {
-        name: {type: "string"},
-      },
-    };
-
-    expect(parseMealResponseSchema(oldSchema, "en")).toEqual(
-      MEAL_RESPONSE_SCHEMA,
-    );
   });
 });

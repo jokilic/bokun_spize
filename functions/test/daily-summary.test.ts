@@ -8,12 +8,7 @@ import {
 } from "../src/daily-summary";
 import {
   buildDailySummaryPrompt,
-  DAILY_SUMMARY_RESPONSE_SCHEMA,
-  DAILY_SUMMARY_SYSTEM_INSTRUCTION,
-  parseDailySummaryModelNames,
   parseDailySummaryResponse,
-  parseDailySummaryResponseSchema,
-  parseDailySummarySystemInstruction,
 } from "../src/daily-summary-ai";
 
 describe("daily meal summary", () => {
@@ -64,35 +59,5 @@ describe("daily meal summary", () => {
       en: "You included fruit today. Add an egg next time for more protein.",
       hr: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
     });
-  });
-
-  it("parses independently configurable daily summary AI fields", () => {
-    const schema = {
-      type: "object",
-      properties: {
-        en: {type: "string"},
-        hr: {type: "string"},
-      },
-      required: ["en", "hr"],
-    };
-
-    expect(parseDailySummaryModelNames([" model-a ", "model-a", "model-b"])).toEqual([
-      "model-a",
-      "model-b",
-    ]);
-    expect(
-      parseDailySummarySystemInstruction(" Custom instruction "),
-    ).toBe("Custom instruction");
-    expect(parseDailySummaryResponseSchema(JSON.stringify(schema))).toEqual(schema);
-  });
-
-  it("falls back when daily summary AI fields are invalid", () => {
-    expect(parseDailySummaryModelNames(null).length).toBeGreaterThan(0);
-    expect(
-      parseDailySummarySystemInstruction(" "),
-    ).toBe(DAILY_SUMMARY_SYSTEM_INSTRUCTION);
-    expect(
-      parseDailySummaryResponseSchema({type: "string"}),
-    ).toBe(DAILY_SUMMARY_RESPONSE_SCHEMA);
   });
 });

@@ -115,7 +115,6 @@ export async function buildAndStoreDailySummary(
     }));
   const notification = buildDailySummaryNotification(
     await generateDailySummaryBodies(
-      userReference.firestore,
       mealDocuments,
     ),
   );
