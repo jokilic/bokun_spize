@@ -37,16 +37,13 @@ class _MealsScreenState extends State<MealsScreen> {
 
     final languageCode = context.locale.languageCode;
 
-    final controller = registerIfNotInitialized<MealsController>(
+    registerIfNotInitialized<MealsController>(
       () => MealsController(
         firebase: getIt.get<FirebaseService>(),
         languageCode: languageCode,
       ),
-      // TODO: Here we trigger `listenToMeals` in this controller.init(), but then trigger updateLanguageCode right away which inside it calls listenToMeals. Does this make sense?
       afterRegister: (controller) => controller.init(),
-    );
-
-    controller.updateLanguageCode(languageCode);
+    ).updateLanguageCode(languageCode);
   }
 
   @override
