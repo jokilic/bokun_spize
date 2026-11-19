@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_ui/material_ui.dart';
@@ -452,11 +453,38 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required ManualMealResult result,
     required Meal passedMeal,
   }) async {
-    if (result.dateTime == null) {
+    final dateTime = result.dateTime;
+
+    if (dateTime == null) {
       return false;
     }
 
     try {
+      final hasOnlyDateTimeChanges =
+          passedMeal.localizedData != null &&
+          result.name == passedMeal.name &&
+          result.nutrition == passedMeal.nutrition &&
+          listEquals(
+            result.foods ?? const [],
+            passedMeal.foods ?? const [],
+          ) &&
+          result.imageFile == null &&
+          result.imageStoragePath == passedMeal.imageStoragePath;
+
+      /// Update only the shared timestamp so localized `en` and `hr` data remains intact
+      if (hasOnlyDateTimeChanges) {
+        final mealUpdated = await firebase.updateMealDateTime(
+          mealId: passedMeal.id,
+          createdAt: dateTime,
+        );
+
+        if (mealUpdated) {
+          updateDate(dateTime);
+        }
+
+        return mealUpdated;
+      }
+
       final outcome = await processManualMeal(
         loadingMeal: passedMeal,
         result: result,

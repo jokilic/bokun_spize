@@ -1334,6 +1334,34 @@ class FirebaseService {
     }
   }
 
+  /// Updates only a meal's shared creation date while preserving localized data
+  Future<bool> updateMealDateTime({
+    required String mealId,
+    required DateTime createdAt,
+  }) async {
+    try {
+      final user = auth.currentUser;
+
+      if (user == null) {
+        return false;
+      }
+
+      final document = firestore.collection('users').doc(user.uid).collection('meals').doc(mealId);
+
+      await document.update({
+        'createdAt': Timestamp.fromDate(createdAt),
+      });
+
+      return true;
+    } catch (error) {
+      log(
+        'Updating meal date and time failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
   /// Deletes a `meal` from [Firebase]
   Future<bool> deleteMeal({required Meal meal}) async {
     try {
