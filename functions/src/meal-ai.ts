@@ -20,13 +20,19 @@ import {
   parseDailySummaryModelNames,
 } from "./daily-summary-ai";
 
-/** Meal data returned by Gemini and persisted in Firestore */
-export interface GeneratedMeal {
+/** One localized meal payload returned by Gemini */
+export interface GeneratedMealContent {
   name: string;
   emoji: string;
   color: string;
   nutrition: GeneratedNutrition;
   foods: GeneratedFood[];
+}
+
+/** Localized meal data returned by Gemini and persisted in Firestore */
+export interface GeneratedMeal {
+  en: GeneratedMealContent;
+  hr: GeneratedMealContent;
 }
 
 /** Nutrition data shared by generated meals and foods */
@@ -86,29 +92,34 @@ export const AI_MEAL_IMAGE_UPLOAD_TIMEOUT_MS = 15 * 60 * 1000;
 /** Maximum abandoned image requests processed by one cleanup occurrence */
 export const AI_MEAL_IMAGE_CLEANUP_LIMIT = 200;
 
-/** Instructions preserve the established client-side meal extraction behavior */
+/** Instructions preserve the established meal extraction behavior */
 export const MEAL_SYSTEM_INSTRUCTION = `
 You will receive text and / or image describing what the user ate.
 Estimate nutrition and extract foods.
-Use the language identified by language code "{languageCode}" for meal names, food names, and unit names.
-Keep JSON property names unchanged and preserve standard unit symbols such as g and ml.
-
-Return only one valid Meal JSON object.
 If quantity is unclear, make a reasonable estimate.
 If nutrition is unknown, estimate based on typical values.
 `.trim();
 
-/** Structured meal schema used when remote configuration is missing or invalid */
-export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
+/** Mandatory localized output instructions applied to default and remote configuration */
+export const MEAL_LOCALIZATION_INSTRUCTION = `
+Return one JSON object containing complete "en" and "hr" meal objects.
+Use English for meal names, food names, and unit names inside "en".
+Use Croatian for meal names, food names, and unit names inside "hr".
+Both objects must describe the same meal and use identical numeric nutrition values, quantities, emojis, and colors.
+Keep JSON property names unchanged and preserve standard unit symbols such as g and ml.
+The user's input language code is "{languageCode}".
+`.trim();
+
+/** Complete generated fields shared by both localized meal schema branches */
+export const MEAL_CONTENT_RESPONSE_SCHEMA: Record<string, unknown> = {
   type: "object",
-  title: "Meal",
   propertyOrdering: ["name", "emoji", "color", "nutrition", "foods"],
   required: ["name", "emoji", "color", "nutrition", "foods"],
   additionalProperties: false,
   properties: {
     name: {
       type: "string",
-      description: "Name best describing the meal in {languageCode}",
+      description: "Name best describing the meal",
     },
     emoji: {
       type: "string",
@@ -139,7 +150,7 @@ export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
         properties: {
           name: {
             type: "string",
-            description: "Food name in {languageCode}",
+            description: "Food name",
           },
           emoji: {
             type: "string",
@@ -152,7 +163,7 @@ export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
           quantity: {type: "number", description: "Quantity of food"},
           unit: {
             type: "string",
-            description: "Food unit in {languageCode}, preserving standard unit symbols",
+            description: "Food unit, preserving standard unit symbols",
           },
           nutrition: {
             type: "object",
@@ -167,6 +178,25 @@ export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
           },
         },
       },
+    },
+  },
+};
+
+/** Structured meal schema used when remote configuration is missing or invalid */
+export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  title: "Meal",
+  propertyOrdering: ["en", "hr"],
+  required: ["en", "hr"],
+  additionalProperties: false,
+  properties: {
+    en: {
+      ...MEAL_CONTENT_RESPONSE_SCHEMA,
+      description: "Complete meal data with English names and units",
+    },
+    hr: {
+      ...MEAL_CONTENT_RESPONSE_SCHEMA,
+      description: "Complete meal data with Croatian names and units",
     },
   },
 };
@@ -392,7 +422,10 @@ export async function getMealAIConfiguration(
 
     return {
       modelNames: parseDailySummaryModelNames(data?.modelNames),
-      mealSystemInstruction: instruction.replaceAll("{languageCode}", languageCode),
+      mealSystemInstruction: [
+        instruction,
+        MEAL_LOCALIZATION_INSTRUCTION,
+      ].join("\n\n").replaceAll("{languageCode}", languageCode),
       mealResponseSchema: parseMealResponseSchema(
         data?.mealResponseSchema,
         languageCode,
@@ -405,10 +438,10 @@ export async function getMealAIConfiguration(
 
     return {
       modelNames: DEFAULT_AI_MODEL_NAMES,
-      mealSystemInstruction: MEAL_SYSTEM_INSTRUCTION.replaceAll(
-        "{languageCode}",
-        languageCode,
-      ),
+      mealSystemInstruction: [
+        MEAL_SYSTEM_INSTRUCTION,
+        MEAL_LOCALIZATION_INSTRUCTION,
+      ].join("\n\n").replaceAll("{languageCode}", languageCode),
       mealResponseSchema: localizeMealConfigurationValue(
         MEAL_RESPONSE_SCHEMA,
         languageCode,
@@ -488,13 +521,12 @@ export function parseGeneratedFood(value: unknown): GeneratedFood {
   };
 }
 
-/** Parses and validates one structured Gemini meal response */
-export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
-  if (text === undefined) {
-    throw new Error("Gemini returned no meal data");
-  }
-
-  const meal = asRecord(JSON.parse(text));
+/** Parses and validates one localized Gemini meal payload */
+export function parseGeneratedMealContent(
+  value: unknown,
+  languageCode: "en" | "hr",
+): GeneratedMealContent {
+  const meal = asRecord(value);
 
   if (
     meal === null ||
@@ -505,11 +537,29 @@ export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
   }
 
   return {
-    name: parseGeneratedString(meal.name, "meal name", 500),
-    emoji: parseGeneratedString(meal.emoji, "meal emoji", 32),
-    color: parseGeneratedColor(meal.color, "meal color"),
+    name: parseGeneratedString(meal.name, `${languageCode} meal name`, 500),
+    emoji: parseGeneratedString(meal.emoji, `${languageCode} meal emoji`, 32),
+    color: parseGeneratedColor(meal.color, `${languageCode} meal color`),
     nutrition: parseGeneratedNutrition(meal.nutrition),
     foods: meal.foods.map(parseGeneratedFood),
+  };
+}
+
+/** Parses and validates one structured localized Gemini meal response */
+export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
+  if (text === undefined) {
+    throw new Error("Gemini returned no meal data");
+  }
+
+  const meal = asRecord(JSON.parse(text));
+
+  if (meal === null) {
+    throw new Error("Gemini returned invalid localized meal data");
+  }
+
+  return {
+    en: parseGeneratedMealContent(meal.en, "en"),
+    hr: parseGeneratedMealContent(meal.hr, "hr"),
   };
 }
 
@@ -577,7 +627,7 @@ export async function generateMeal(
           responseMimeType: "application/json",
           responseJsonSchema: configuration.mealResponseSchema,
           temperature: 0.2,
-          maxOutputTokens: 4096,
+          maxOutputTokens: 8192,
         },
       });
 
@@ -880,7 +930,13 @@ export async function processPendingAIMeal(
   }
 
   await finalizePendingAIMeal(mealReference, leaseId, {
-    ...result.meal,
+    en: result.meal.en,
+    hr: result.meal.hr,
+    name: FieldValue.delete(),
+    emoji: FieldValue.delete(),
+    color: FieldValue.delete(),
+    nutrition: FieldValue.delete(),
+    foods: FieldValue.delete(),
     methodOfCreation: result.modelName,
     isLoading: false,
     errors: null,

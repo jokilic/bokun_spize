@@ -40,14 +40,29 @@ export interface DailySummary {
 /** Keeps only completed meals without persisted processing errors */
 export function isCompletedDailySummaryMeal(data: DocumentData): boolean {
   const errors = data.errors;
+  const englishMeal = data.en;
+  const croatianMeal = data.hr;
+  const hasMealName = (
+    typeof data.name === "string" &&
+    data.name.trim().length > 0
+  ) || (
+    typeof englishMeal === "object" &&
+    englishMeal !== null &&
+    typeof englishMeal.name === "string" &&
+    englishMeal.name.trim().length > 0
+  ) || (
+    typeof croatianMeal === "object" &&
+    croatianMeal !== null &&
+    typeof croatianMeal.name === "string" &&
+    croatianMeal.name.trim().length > 0
+  );
   const hasNoErrors = errors === null ||
     errors === undefined ||
     (Array.isArray(errors) && errors.length === 0);
 
   return data.isLoading !== true &&
     hasNoErrors &&
-    typeof data.name === "string" &&
-    data.name.trim().length > 0;
+    hasMealName;
 }
 
 /** Resolves yesterday's exact local-day bounds for a summary occurrence */

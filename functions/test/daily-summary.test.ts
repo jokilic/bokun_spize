@@ -4,6 +4,7 @@ import {Timestamp} from "firebase-admin/firestore";
 import {
   buildDailySummaryNotification,
   getDailySummaryPeriod,
+  isCompletedDailySummaryMeal,
 } from "../src/daily-summary";
 import {
   buildDailySummaryPrompt,
@@ -41,6 +42,15 @@ describe("daily meal summary", () => {
     expect(prompt).toContain('"documentId":"meal-1"');
     expect(prompt).toContain('"foods":[{"name":"Apple","quantity":1,"unit":"piece"}]');
     expect(prompt).toContain('"createdAt":"2026-11-16T08:00:00.000Z"');
+  });
+
+  it("includes completed localized AI meals", () => {
+    expect(isCompletedDailySummaryMeal({
+      isLoading: false,
+      errors: null,
+      en: {name: "Chicken salad"},
+      hr: {name: "Pileća salata"},
+    })).toBe(true);
   });
 
   it("stores generated localized bodies without redundant titles", () => {

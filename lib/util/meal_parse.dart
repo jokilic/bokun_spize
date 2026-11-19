@@ -4,14 +4,44 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/meal/meal.dart';
 
+/// Returns localized AI meal fields merged with shared document metadata
+Map<String, dynamic> getLocalizedMealData(
+  Map<String, dynamic> data, {
+  required String languageCode,
+}) {
+  final localizedData = data[languageCode];
+  final fallbackData = data[languageCode == 'en' ? 'hr' : 'en'];
+  final selectedData = localizedData is Map
+      ? localizedData
+      : fallbackData is Map
+      ? fallbackData
+      : null;
+
+  if (selectedData == null) {
+    return data;
+  }
+
+  return {
+    ...data,
+    ...Map<String, dynamic>.from(selectedData),
+  };
+}
+
 /// Parses single `meal` document
-Meal? parseMealDocument(QueryDocumentSnapshot<Map<String, dynamic>> document) {
+Meal? parseMealDocument(
+  QueryDocumentSnapshot<Map<String, dynamic>> document, {
+  required String languageCode,
+}) {
   try {
     final data = document.data();
+    final localizedData = getLocalizedMealData(
+      data,
+      languageCode: languageCode,
+    );
     final createdAt = data['createdAt'];
 
     return Meal.fromMap(
-      data,
+      localizedData,
       id: document.id,
       createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.parse(createdAt as String),
       originalText: data['originalText'] as String?,

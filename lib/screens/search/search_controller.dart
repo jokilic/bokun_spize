@@ -20,10 +20,12 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
 
   final FirebaseService firebase;
   final SpeechToTextService speechToText;
+  final String languageCode;
 
   SearchController({
     required this.firebase,
     required this.speechToText,
+    required this.languageCode,
   }) : super((
          query: '',
          meals: const [],
@@ -152,7 +154,9 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
 
     try {
       /// Get `meals` from [Firebase]
-      mealsRequest ??= firebase.getMeals();
+      mealsRequest ??= firebase.getMeals(
+        languageCode: languageCode,
+      );
       final meals = await mealsRequest;
 
       if (isDisposed || version != searchVersion) {

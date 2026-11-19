@@ -1228,7 +1228,7 @@ class FirebaseService {
   }
 
   /// Fetches `meals` from [Firebase]
-  Future<List<Meal>?> getMeals() async {
+  Future<List<Meal>?> getMeals({required String languageCode}) async {
     try {
       final user = auth.currentUser;
 
@@ -1242,7 +1242,15 @@ class FirebaseService {
 
       final snapshot = await query.get();
 
-      return snapshot.docs.map(parseMealDocument).whereType<Meal>().toList();
+      return snapshot.docs
+          .map(
+            (document) => parseMealDocument(
+              document,
+              languageCode: languageCode,
+            ),
+          )
+          .whereType<Meal>()
+          .toList();
     } catch (error) {
       log(
         'Getting meals failed',
@@ -1253,7 +1261,10 @@ class FirebaseService {
   }
 
   /// Listens for real-time changes to `meals` created on [date] in [Firebase]
-  Stream<List<Meal>> listenToMeals({required DateTime date}) async* {
+  Stream<List<Meal>> listenToMeals({
+    required DateTime date,
+    required String languageCode,
+  }) async* {
     final user = auth.currentUser;
 
     if (user == null) {
@@ -1277,7 +1288,15 @@ class FirebaseService {
         .orderBy('createdAt', descending: true);
 
     await for (final snapshot in query.snapshots()) {
-      yield snapshot.docs.map(parseMealDocument).whereType<Meal>().toList();
+      yield snapshot.docs
+          .map(
+            (document) => parseMealDocument(
+              document,
+              languageCode: languageCode,
+            ),
+          )
+          .whereType<Meal>()
+          .toList();
     }
   }
 

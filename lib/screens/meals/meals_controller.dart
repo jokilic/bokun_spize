@@ -26,9 +26,11 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   ///
 
   final FirebaseService firebase;
+  String languageCode;
 
   MealsController({
     required this.firebase,
+    required this.languageCode,
   }) : super((
          requestedDate: DateUtils.dateOnly(
            DateTime.now(),
@@ -96,7 +98,10 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     mealsSubscription?.cancel();
 
     mealsSubscription = firebase
-        .listenToMeals(date: date)
+        .listenToMeals(
+          date: date,
+          languageCode: languageCode,
+        )
         .listen(
           (meals) {
             if (listenerVersion != mealsListenerVersion) {
@@ -134,6 +139,18 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   void retryMeals() => listenToMeals(
     date: value.requestedDate,
   );
+
+  /// Restarts meal parsing when the active app language changes
+  void updateLanguageCode(String newLanguageCode) {
+    if (languageCode == newLanguageCode) {
+      return;
+    }
+
+    languageCode = newLanguageCode;
+    listenToMeals(
+      date: value.requestedDate,
+    );
+  }
 
   /// Deletes `meal` from [Firebase]
   Future<bool> deleteMeal({

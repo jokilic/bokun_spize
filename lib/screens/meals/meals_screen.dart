@@ -32,15 +32,21 @@ class MealsScreen extends WatchingStatefulWidget {
 
 class _MealsScreenState extends State<MealsScreen> {
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    registerIfNotInitialized<MealsController>(
+    final languageCode = context.locale.languageCode;
+
+    final controller = registerIfNotInitialized<MealsController>(
       () => MealsController(
         firebase: getIt.get<FirebaseService>(),
+        languageCode: languageCode,
       ),
+      // TODO: Here we trigger `listenToMeals` in this controller.init(), but then trigger updateLanguageCode right away which inside it calls listenToMeals. Does this make sense?
       afterRegister: (controller) => controller.init(),
     );
+
+    controller.updateLanguageCode(languageCode);
   }
 
   @override
@@ -223,6 +229,7 @@ class _MealsScreenState extends State<MealsScreen> {
                     showBlurredModalBottomSheet(
                       context: context,
                       builder: (sheetContext) => SearchScreen(
+                        languageCode: context.locale.languageCode,
                         onMealPressed: ({required meal, required onDeleted}) {
                           HapticFeedback.lightImpact();
                           showBlurredModalBottomSheet(

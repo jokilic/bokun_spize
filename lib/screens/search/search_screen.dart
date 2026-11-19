@@ -22,6 +22,7 @@ import 'widgets/search_loading.dart';
 import 'widgets/search_success.dart';
 
 class SearchScreen extends WatchingStatefulWidget {
+  final String languageCode;
   final Function({
     required Meal meal,
     required Function() onDeleted,
@@ -32,6 +33,7 @@ class SearchScreen extends WatchingStatefulWidget {
   final Function(Meal meal) onCopyPressed;
 
   const SearchScreen({
+    required this.languageCode,
     required this.onMealPressed,
     required this.onDeletePressed,
     required this.onEditPressed,
@@ -51,6 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
       () => SearchController(
         firebase: getIt.get<FirebaseService>(),
         speechToText: getIt.get<SpeechToTextService>(),
+        languageCode: widget.languageCode,
       ),
       afterRegister: (controller) => controller.init(),
     );
