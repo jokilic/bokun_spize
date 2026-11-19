@@ -1,7 +1,9 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
+- [ ] Try deleting test user completely
 - [ ] Different widget indicating missed notification permissions (it's too similar to list tiles, ask Google Stitch for help)
 - [ ] Like 'Messages' where we parse all `contactMessages` and show in sheet, do the same parsing implementation for relevant users `dailySummaries` + a `NotificationHistorySheet` where it'll be shown (accessed from `AccountScreen`, like `MessagesSheet`)
+- [ ] Think about how to approach `AIMeal` and `ManualMeal` FABs in `MealsScreen`
 - [ ] Check this: https://pub.dev/packages/keyboard_controller
 - [ ] Animations
 - [ ] App name -> Bokun / Bite

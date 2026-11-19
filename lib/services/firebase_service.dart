@@ -759,36 +759,6 @@ class FirebaseService {
         return false;
       }
 
-      final userDocument = firestore.collection('users').doc(user.uid);
-
-      /// Deletes images
-      await deleteStorageFolderPaged(
-        storage.ref('users/${user.uid}/meal-images'),
-      );
-
-      /// Deletes folders
-      await deleteCollectionPaged(
-        userDocument.collection('meals'),
-      );
-      await deleteCollectionPaged(
-        userDocument.collection('weightTracks'),
-      );
-      await deleteCollectionPaged(
-        userDocument.collection('notificationSettings'),
-      );
-      await deleteCollectionPaged(
-        userDocument.collection('notificationDevices'),
-      );
-      await deleteCollectionPaged(
-        userDocument.collection('notificationDispatches'),
-      );
-      await deleteCollectionPaged(
-        userDocument.collection('dailySummaries'),
-      );
-
-      /// Deletes user document
-      await userDocument.delete();
-
       final appleAuthorizationCode = reauthenticationResult.appleAuthorizationCode;
 
       if (appleAuthorizationCode != null) {
@@ -884,55 +854,6 @@ class FirebaseService {
       success: userCredential.user != null,
       appleAuthorizationCode: appleCredential.authorizationCode,
     );
-  }
-
-  /// Deletes a [Firestore] collection in batches
-  Future<void> deleteCollectionPaged(
-    CollectionReference<Map<String, dynamic>> collection, {
-    int batchSize = 300,
-  }) async {
-    while (true) {
-      final snapshot = await collection.limit(batchSize).get();
-
-      if (snapshot.docs.isEmpty) {
-        return;
-      }
-
-      final batch = firestore.batch();
-
-      for (final document in snapshot.docs) {
-        batch.delete(document.reference);
-      }
-
-      await batch.commit();
-    }
-  }
-
-  /// Deletes all files and nested folders below a [Firebase Storage] reference
-  Future<void> deleteStorageFolderPaged(
-    Reference folder, {
-    int pageSize = 1000,
-  }) async {
-    while (true) {
-      final result = await folder.list(
-        ListOptions(maxResults: pageSize),
-      );
-
-      if (result.items.isEmpty && result.prefixes.isEmpty) {
-        return;
-      }
-
-      for (final item in result.items) {
-        await item.delete();
-      }
-
-      for (final prefix in result.prefixes) {
-        await deleteStorageFolderPaged(
-          prefix,
-          pageSize: pageSize,
-        );
-      }
-    }
   }
 
   ///

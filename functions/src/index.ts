@@ -1,13 +1,14 @@
 /**
  * Cloud Functions entry point
  *
- * One Firestore trigger maintains due timestamps and one scheduled trigger
- * queries those timestamps and sends notifications through FCM
+ * Account cleanup, meal processing, and notification scheduling
  */
 
 import {initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
+import {getStorage} from "firebase-admin/storage";
+import {region} from "firebase-functions/v1";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
@@ -20,6 +21,27 @@ import {
 } from "./meal-ai";
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
+
+/** Recursively removes private data after a Firebase Auth account is deleted */
+export const cleanupDeletedUser = region("europe-west1")
+  .runWith({
+    timeoutSeconds: 540,
+    memory: "256MB",
+    failurePolicy: true,
+  })
+  .auth.user().onDelete(async (user) => {
+    const firestore = getFirestore();
+    const userDocument = firestore.collection("users").doc(user.uid);
+    const userStoragePrefix = `users/${user.uid}/`;
+
+    // Both operations are idempotent so failed event deliveries can retry safely
+    await Promise.all([
+      firestore.recursiveDelete(userDocument),
+      getStorage().bucket().deleteFiles({
+        prefix: userStoragePrefix,
+      }),
+    ]);
+  });
 
 /** Generates meals after their text and optional uploaded image are ready */
 export const generateAIMeal = onDocumentWritten(
