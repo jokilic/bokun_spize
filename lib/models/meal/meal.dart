@@ -21,6 +21,7 @@ class Meal {
   final String? imageStoragePath;
   final String? imageBlurHash;
   final String? methodOfCreation;
+  final Map<String, dynamic>? localizedData;
 
   Meal({
     required this.id,
@@ -36,6 +37,7 @@ class Meal {
     this.imageStoragePath,
     this.imageBlurHash,
     this.methodOfCreation,
+    this.localizedData,
   });
 
   Meal copyWith({
@@ -52,6 +54,7 @@ class Meal {
     String? imageStoragePath,
     String? imageBlurHash,
     String? methodOfCreation,
+    Map<String, dynamic>? localizedData,
   }) => Meal(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -66,6 +69,7 @@ class Meal {
     imageStoragePath: imageStoragePath ?? this.imageStoragePath,
     imageBlurHash: imageBlurHash ?? this.imageBlurHash,
     methodOfCreation: methodOfCreation ?? this.methodOfCreation,
+    localizedData: localizedData ?? this.localizedData,
   );
 
   factory Meal.fromMap(
@@ -77,6 +81,7 @@ class Meal {
     required List<String>? errors,
     required String? imageStoragePath,
     required String? imageBlurHash,
+    Map<String, dynamic>? localizedData,
   }) => Meal(
     id: id,
     name: map['name'],
@@ -91,6 +96,7 @@ class Meal {
     imageStoragePath: imageStoragePath,
     imageBlurHash: imageBlurHash,
     methodOfCreation: map['methodOfCreation'] as String?,
+    localizedData: localizedData,
   );
 
   String toJson() => json.encode({
@@ -114,9 +120,23 @@ class Meal {
     'methodOfCreation': methodOfCreation,
   };
 
+  Map<String, dynamic> toLocalizedMap() {
+    final data = toMap()
+      ..remove('name')
+      ..remove('emoji')
+      ..remove('color')
+      ..remove('nutrition')
+      ..remove('foods');
+
+    return {
+      ...data,
+      ...?localizedData,
+    };
+  }
+
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, imageBlurHash: $imageBlurHash, methodOfCreation: $methodOfCreation)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, imageBlurHash: $imageBlurHash, methodOfCreation: $methodOfCreation, localizedData: $localizedData)';
 
   @override
   bool operator ==(Object other) =>
@@ -134,7 +154,8 @@ class Meal {
           errors == other.errors &&
           imageStoragePath == other.imageStoragePath &&
           imageBlurHash == other.imageBlurHash &&
-          methodOfCreation == other.methodOfCreation;
+          methodOfCreation == other.methodOfCreation &&
+          localizedData == other.localizedData;
 
   @override
   int get hashCode =>
@@ -149,5 +170,6 @@ class Meal {
       errors.hashCode ^
       imageStoragePath.hashCode ^
       imageBlurHash.hashCode ^
-      methodOfCreation.hashCode;
+      methodOfCreation.hashCode ^
+      localizedData.hashCode;
 }

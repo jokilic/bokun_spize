@@ -4,6 +4,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/meal/meal.dart';
 
+/// Returns both complete language branches when the document uses the localized meal structure
+Map<String, dynamic>? getCompleteLocalizedMealData(Map<String, dynamic> data) {
+  final englishData = data['en'];
+  final croatianData = data['hr'];
+
+  if (englishData is! Map || croatianData is! Map) {
+    return null;
+  }
+
+  return {
+    'en': Map<String, dynamic>.from(englishData),
+    'hr': Map<String, dynamic>.from(croatianData),
+  };
+}
+
 /// Returns localized AI meal fields merged with shared document metadata
 Map<String, dynamic> getLocalizedMealData(
   Map<String, dynamic> data, {
@@ -49,6 +64,7 @@ Meal? parseMealDocument(
       errors: (data['errors'] as List?)?.whereType<String>().toList(),
       imageStoragePath: data['imageStoragePath'] as String?,
       imageBlurHash: data['imageBlurHash'] as String?,
+      localizedData: getCompleteLocalizedMealData(data),
     );
   } catch (error, stackTrace) {
     log(

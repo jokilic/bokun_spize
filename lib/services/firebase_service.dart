@@ -1301,7 +1301,10 @@ class FirebaseService {
   }
 
   /// Adds a new `meal` into [Firebase]
-  Future<bool> writeMeal({required Meal newMeal}) async {
+  Future<bool> writeMeal({
+    required Meal newMeal,
+    bool preserveLocalizedData = false,
+  }) async {
     try {
       final user = auth.currentUser;
 
@@ -1311,7 +1314,9 @@ class FirebaseService {
 
       final collection = firestore.collection('users').doc(user.uid).collection('meals');
 
-      await collection.doc(newMeal.id).set(newMeal.toMap());
+      final mealData = preserveLocalizedData && newMeal.localizedData != null ? newMeal.toLocalizedMap() : newMeal.toMap();
+
+      await collection.doc(newMeal.id).set(mealData);
 
       return true;
     } catch (error) {

@@ -393,6 +393,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
             id: newMealId,
             createdAt: dateTime,
           ),
+          preserveLocalizedData: true,
         );
 
         if (mealWritten) {

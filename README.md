@@ -1,5 +1,8 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
+- [ ] Different widget indicating missed notification permissions (it's too similar to list tiles, ask Google Stitch for help)
+- [ ] Is it possible that copying full localized meal ('en' & 'hr') copies both values, instead of using legacy single-language meal
+- [ ] What is the name of the 'full meal with en and hr languages' and what is the name of the 'old meal structure'?
 - [ ] Generate meals in English and Croatian
 - [ ] Check this: https://pub.dev/packages/keyboard_controller
 - [ ] Animations
