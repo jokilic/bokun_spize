@@ -35,6 +35,7 @@ export interface DailySummary {
   summaryAt: Timestamp;
   timezone: string;
   notification: DailySummaryNotification;
+  methodOfCreation: string;
 }
 
 /** Keeps only completed meals without persisted processing errors */
@@ -113,16 +114,18 @@ export async function buildAndStoreDailySummary(
       documentId: document.id,
       data: document.data(),
     }));
+  const generatedSummary = await generateDailySummaryBodies(
+    mealDocuments,
+  );
   const notification = buildDailySummaryNotification(
-    await generateDailySummaryBodies(
-      mealDocuments,
-    ),
+    generatedSummary.bodies,
   );
   const summary: DailySummary = {
     dayBeingSummarized: start,
     summaryAt: Timestamp.fromDate(period.summaryAt),
     timezone: period.timezone,
     notification,
+    methodOfCreation: generatedSummary.modelName,
   };
 
   await userReference.collection("dailySummaries").doc(period.summaryKey).set(summary);

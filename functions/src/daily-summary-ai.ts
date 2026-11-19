@@ -22,6 +22,12 @@ export interface GeneratedDailySummaryBodies {
   hr: string;
 }
 
+/** Result of a successful daily summary model fallback attempt */
+export interface GeneratedDailySummaryResult {
+  bodies: GeneratedDailySummaryBodies;
+  modelName: string;
+}
+
 /** Shared model fallback order used by AI generation */
 export const AI_MODEL_NAMES = [
   "gemini-3.5-flash-lite",
@@ -137,10 +143,10 @@ export function getDailySummaryProjectId(): string | undefined {
     process.env.GCLOUD_PROJECT;
 }
 
-/** Generates localized notification bodies, falling through models on errors */
+/** Generates localized notification bodies and reports the successful fallback model */
 export async function generateDailySummaryBodies(
   meals: DailySummaryMeal[],
-): Promise<GeneratedDailySummaryBodies> {
+): Promise<GeneratedDailySummaryResult> {
   const project = getDailySummaryProjectId();
 
   if (project === undefined) {
@@ -169,7 +175,10 @@ export async function generateDailySummaryBodies(
         },
       });
 
-      return parseDailySummaryResponse(response.text);
+      return {
+        bodies: parseDailySummaryResponse(response.text),
+        modelName: model,
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown Gemini error";
       failures.push(`${model}: ${message}`);
