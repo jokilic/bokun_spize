@@ -50,6 +50,7 @@
     "weightAddFailure": "Težinu nije moguće zabilježiti. Provjeri internetsku vezu i pokušaj ponovno",
     "weightDeleteFailure": "Zapis težine nije moguće izbrisati. Provjeri internetsku vezu i pokušaj ponovno",
     "messageDeleteFailure": "Poruku nije moguće izbrisati. Provjeri internetsku vezu i pokušaj ponovno",
+    "dailySummaryDeleteFailure": "Dnevni sažetak nije moguće izbrisati. Provjeri internetsku vezu i pokušaj ponovno",
     "bmr": "BMR",
     "caloriesUnit": "kcal",
     "centimeter": "cm",

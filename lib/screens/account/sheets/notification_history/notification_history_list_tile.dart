@@ -9,9 +9,11 @@ import '../../../../util/date_time.dart';
 
 class NotificationHistoryListTile extends StatelessWidget {
   final DailySummary dailySummary;
+  final Function() onPressed;
 
   const NotificationHistoryListTile({
     required this.dailySummary,
+    required this.onPressed,
   });
 
   @override
@@ -34,75 +36,87 @@ class NotificationHistoryListTile extends StatelessWidget {
         horizontal: marginHorizontal,
         vertical: 8,
       ),
-      child: Container(
-        decoration: BoxDecoration(
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(listTileRadius),
+        child: InkWell(
+          onTap: onPressed,
           borderRadius: BorderRadius.circular(listTileRadius),
-          color: context.colors.listTileBackground.withValues(alpha: 0.5),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ///
-            /// ICON
-            ///
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
-                padding: const EdgeInsets.all(listTileIconRadius / 4),
-                color: context.colors.protein,
-                child: PhosphorIcon(
-                  PhosphorIconsBold.notification,
-                  color: context.colors.buttonText,
-                  size: listTileIconRadius / 2,
+          highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(listTileRadius),
+              color: context.colors.listTileBackground.withValues(alpha: 0.5),
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ///
+                /// ICON
+                ///
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Container(
+                    padding: const EdgeInsets.all(listTileIconRadius / 4),
+                    color: context.colors.protein,
+                    child: PhosphorIcon(
+                      PhosphorIconsBold.notification,
+                      color: context.colors.buttonText,
+                      size: listTileIconRadius / 2,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 20),
+                const SizedBox(width: 20),
 
-            ///
-            /// SUMMARY
-            ///
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'notificationsDailySummaryTitle'.tr(),
-                    style: context.textStyles.listTileTitle,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    dailySummary.notificationForLanguage(
-                      context.locale.languageCode,
-                    ),
-                    style: context.textStyles.listTileSubtitle,
-                  ),
-                  const SizedBox(height: 10),
-                  Text.rich(
-                    TextSpan(
-                      text: date,
-                      children: [
-                        WidgetSpan(
-                          child: PhosphorIcon(
-                            PhosphorIconsBold.dotOutline,
-                            size: 14,
-                            color: context.colors.text.withValues(alpha: 0.7),
-                          ),
+                ///
+                /// SUMMARY
+                ///
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'notificationsDailySummaryTitle'.tr(),
+                        style: context.textStyles.listTileTitle,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        dailySummary.notificationForLanguage(
+                          context.locale.languageCode,
                         ),
+                        style: context.textStyles.listTileSubtitle,
+                      ),
+                      const SizedBox(height: 10),
+                      Text.rich(
                         TextSpan(
-                          text: time,
+                          text: date,
+                          children: [
+                            WidgetSpan(
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.dotOutline,
+                                size: 14,
+                                color: context.colors.text.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            TextSpan(
+                              text: time,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    style: context.textStyles.listTileSubtitle.copyWith(
-                      color: context.colors.text.withValues(alpha: 0.7),
-                    ),
+                        style: context.textStyles.listTileSubtitle.copyWith(
+                          color: context.colors.text.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

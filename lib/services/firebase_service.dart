@@ -324,6 +324,27 @@ class FirebaseService {
     }
   }
 
+  /// Deletes a `dailySummary` belonging to the current user from [Firebase]
+  Future<bool> deleteDailySummary({required DailySummary dailySummary}) async {
+    final user = auth.currentUser;
+
+    if (user == null) {
+      return false;
+    }
+
+    try {
+      await firestore.collection('users').doc(user.uid).collection('dailySummaries').doc(dailySummary.id).delete();
+
+      return true;
+    } catch (error) {
+      log(
+        'Deleting daily summary failed',
+        error: error,
+      );
+      return false;
+    }
+  }
+
   /// Removes user-scoped resources before logging out of [Firebase]
   Future<void> logOut() async {
     await beforeSignOut?.call();

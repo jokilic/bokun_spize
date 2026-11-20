@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -9,9 +10,13 @@ import '../../../../constants/durations.dart';
 import '../../../../models/notification/daily_summary.dart';
 import '../../../../services/firebase_service.dart';
 import '../../../../theme/extensions.dart';
+import '../../../../util/dependencies.dart';
+import '../../../../util/snackbars.dart';
 import '../../../../util/spacing.dart';
+import '../../../../widgets/blurred_modal_bottom_sheet.dart';
 import 'notification_history_empty.dart';
 import 'notification_history_list_tile.dart';
+import 'view_notification_history_sheet.dart';
 
 class NotificationHistorySheet extends WatchingStatefulWidget {
   @override
@@ -19,6 +24,42 @@ class NotificationHistorySheet extends WatchingStatefulWidget {
 }
 
 class NotificationHistorySheetState extends State<NotificationHistorySheet> {
+  /// Deletes [dailySummary] from Firebase
+  Future<void> deleteDailySummary(
+    BuildContext context, {
+    required DailySummary dailySummary,
+  }) async {
+    final success = await getIt.get<FirebaseService>().deleteDailySummary(
+      dailySummary: dailySummary,
+    );
+
+    if (!success && context.mounted) {
+      showSnackbar(
+        context,
+        text: 'dailySummaryDeleteFailure'.tr(),
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
+  }
+
+  /// Opens [ViewNotificationHistorySheet]
+  Future<void> openViewNotificationHistorySheet(
+    BuildContext context, {
+    required DailySummary dailySummary,
+  }) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => ViewNotificationHistorySheet(
+      dailySummary: dailySummary,
+      onDeletePressed: () {
+        HapticFeedback.lightImpact();
+        deleteDailySummary(
+          context,
+          dailySummary: dailySummary,
+        );
+      },
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     /// Listens to any changes in the current user's `dailySummaries` from [Firebase]
@@ -176,6 +217,13 @@ class NotificationHistorySheetState extends State<NotificationHistorySheet> {
                   final dailySummary = dailySummaries[index];
                   final listTileKey = ValueKey(dailySummary.id);
                   final listTile = NotificationHistoryListTile(
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      openViewNotificationHistorySheet(
+                        context,
+                        dailySummary: dailySummary,
+                      );
+                    },
                     dailySummary: dailySummary,
                   );
 
