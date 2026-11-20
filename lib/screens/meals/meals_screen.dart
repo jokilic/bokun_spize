@@ -132,41 +132,71 @@ class _MealsScreenState extends State<MealsScreen> {
                   ),
                 ),
               )
-            : SizedBox(
-                height: 68,
-                width: 68,
-                child: GestureDetector(
-                  onLongPress: () {
-                    HapticFeedback.lightImpact();
-                    mealsController.onAddManualMealPressed(
-                      context,
-                      passedMeal: null,
-                      isCopyingMeal: false,
-                    );
-                  },
-                  child: FloatingActionButton(
-                    heroTag: const ValueKey('meals-add-meal-fab'),
-                    elevation: 0,
-                    backgroundColor: context.colors.protein,
-                    foregroundColor: context.colors.listTileBackground,
-                    splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    shape: const CircleBorder(),
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      mealsController.onAddAIMealPressed(
-                        context,
-                        languageCode: context.locale.languageCode,
-                      );
-                    },
-                    child: PhosphorIcon(
-                      PhosphorIconsBold.plus,
-                      color: context.colors.buttonText,
-                      size: 32,
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ///
+                  /// ADD MANUAL MEAL
+                  ///
+                  SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: FloatingActionButton(
+                      heroTag: const ValueKey('meals-add-meal-fab'),
+                      elevation: 0,
+                      backgroundColor: context.colors.protein,
+                      foregroundColor: context.colors.listTileBackground,
+                      splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      shape: const CircleBorder(),
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        mealsController.onAddManualMealPressed(
+                          context,
+                          passedMeal: null,
+                          isCopyingMeal: false,
+                        );
+                      },
+                      child: PhosphorIcon(
+                        PhosphorIconsBold.pencilSimple,
+                        color: context.colors.buttonText,
+                        size: 24,
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+
+                  ///
+                  /// ADD AI MEAL
+                  ///
+                  SizedBox(
+                    height: 68,
+                    width: 68,
+                    child: FloatingActionButton(
+                      heroTag: const ValueKey('meals-add-meal-fab'),
+                      elevation: 0,
+                      backgroundColor: context.colors.protein,
+                      foregroundColor: context.colors.listTileBackground,
+                      splashColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      shape: const CircleBorder(),
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        mealsController.onAddAIMealPressed(
+                          context,
+                          languageCode: context.locale.languageCode,
+                        );
+                      },
+                      child: PhosphorIcon(
+                        PhosphorIconsBold.sparkle,
+                        color: context.colors.buttonText,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                ],
               ),
         body: Animate(
           effects: const [

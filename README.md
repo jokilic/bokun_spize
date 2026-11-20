@@ -1,14 +1,13 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Different widget indicating missed notification permissions (it's too similar to list tiles, ask Google Stitch for help)
-- [ ] Think about how to approach `AIMeal` and `ManualMeal` FABs in `MealsScreen`
+- [ ] Check all spacings in the app
+- [ ] Small fade animation when pressing `NavigationBar`
 - [ ] Perhaps some loading when deleting user
 - [ ] Logout doesn't go to `EntranceScreen` right away, it takes some time. Perhaps loading or somekind of 'hack' to show Entrance and logout in the background
 - [ ] Check this: https://pub.dev/packages/keyboard_controller
 - [ ] Animations
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
-- [ ] Add Meal screens - show dismissible widgets with info
 - [ ] `AccountScreen`
     - [ ] Notifications
 - [ ] Firebase App Check
