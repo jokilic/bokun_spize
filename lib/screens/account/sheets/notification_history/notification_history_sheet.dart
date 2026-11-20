@@ -215,6 +215,7 @@ class NotificationHistorySheetState extends State<NotificationHistorySheet> {
                 },
                 itemBuilder: (context, index) {
                   final dailySummary = dailySummaries[index];
+
                   final listTileKey = ValueKey(dailySummary.id);
                   final listTile = NotificationHistoryListTile(
                     onPressed: () {

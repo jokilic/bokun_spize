@@ -100,7 +100,9 @@ class ViewNotificationHistorySheet extends StatelessWidget {
                       ///
                       Expanded(
                         child: Text(
-                          'notificationsDailySummaryTitle'.tr(),
+                          'notificationHistoryListTileTitle'.tr(
+                            args: [date],
+                          ),
                           style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,
                         ),

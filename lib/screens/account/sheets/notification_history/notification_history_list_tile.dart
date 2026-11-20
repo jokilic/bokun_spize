@@ -80,7 +80,9 @@ class NotificationHistoryListTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'notificationsDailySummaryTitle'.tr(),
+                        'notificationHistoryListTileTitle'.tr(
+                          args: [date],
+                        ),
                         style: context.textStyles.listTileTitle,
                       ),
                       const SizedBox(height: 4),

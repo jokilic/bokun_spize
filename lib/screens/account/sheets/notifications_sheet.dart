@@ -301,7 +301,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                       },
                       tooltip: 'notificationHistoryTitle'.tr(),
                       icon: const PhosphorIcon(
-                        PhosphorIconsBold.clock,
+                        PhosphorIconsBold.notification,
                         size: 22,
                       ),
                       style: IconButton.styleFrom(

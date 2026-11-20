@@ -144,6 +144,7 @@
     "notificationsDailySummaryTitle": "Pregled prošlog dana",
     "notificationsDailySummarySubtitle": "Sažetak tvojih obroka",
     "notificationsDailySummaryTimeSubtitle": "Vrijeme dnevnog sažetka",
+    "notificationHistoryListTileTitle": "Pregled od {}",
     "notificationsAnnouncementsTitle": "Objave",
     "notificationsAnnouncementsSubtitle": "Novosti i ažuriranja aplikacije",
     "notificationsSaveFailure": "Postavke obavijesti nije moguće spremiti. Provjeri internetsku vezu i pokušaj ponovno",

@@ -144,6 +144,7 @@
     "notificationsDailySummaryTitle": "Overview of yesterday",
     "notificationsDailySummarySubtitle": "Summary of your meals",
     "notificationsDailySummaryTimeSubtitle": "Time of daily summary",
+    "notificationHistoryListTileTitle": "Overview of {}",
     "notificationsAnnouncementsTitle": "Announcements",
     "notificationsAnnouncementsSubtitle": "App news and updates",
     "notificationsSaveFailure": "Couldn't save notification settings. Check your connection and try again",
