@@ -7,10 +7,10 @@ import '../../../../models/notification/daily_summary.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/date_time.dart';
 
-class DailySummaryListTile extends StatelessWidget {
+class NotificationHistoryListTile extends StatelessWidget {
   final DailySummary dailySummary;
 
-  const DailySummaryListTile({
+  const NotificationHistoryListTile({
     required this.dailySummary,
   });
 
@@ -73,7 +73,9 @@ class DailySummaryListTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    dailySummary.notificationForLanguage(languageCode),
+                    dailySummary.notificationForLanguage(
+                      context.locale.languageCode,
+                    ),
                     style: context.textStyles.listTileSubtitle,
                   ),
                   const SizedBox(height: 10),

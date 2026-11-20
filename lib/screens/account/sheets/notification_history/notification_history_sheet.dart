@@ -10,7 +10,7 @@ import '../../../../models/notification/daily_summary.dart';
 import '../../../../services/firebase_service.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
-import 'daily_summary_list_tile.dart';
+import 'notification_history_list_tile.dart';
 import 'notification_history_empty.dart';
 
 class NotificationHistorySheet extends WatchingStatefulWidget {
@@ -175,7 +175,7 @@ class NotificationHistorySheetState extends State<NotificationHistorySheet> {
                 itemBuilder: (context, index) {
                   final dailySummary = dailySummaries[index];
                   final listTileKey = ValueKey(dailySummary.id);
-                  final listTile = DailySummaryListTile(
+                  final listTile = NotificationHistoryListTile(
                     dailySummary: dailySummary,
                   );
 
