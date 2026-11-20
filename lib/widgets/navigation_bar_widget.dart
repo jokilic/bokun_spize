@@ -58,12 +58,8 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
               ],
             ),
-            selectedIcon: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: context.colors.protein,
-                shape: BoxShape.circle,
-              ),
+            selectedIcon: NavigationBarSelectedIcon(
+              color: context.colors.protein,
               child: PhosphorIcon(
                 PhosphorIconsBold.bowlFood,
                 color: context.colors.buttonText,
@@ -92,12 +88,8 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
               ],
             ),
-            selectedIcon: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: context.colors.carbs,
-                shape: BoxShape.circle,
-              ),
+            selectedIcon: NavigationBarSelectedIcon(
+              color: context.colors.carbs,
               child: PhosphorIcon(
                 PhosphorIconsBold.personSimple,
                 color: context.colors.buttonText,
@@ -126,12 +118,8 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
               ],
             ),
-            selectedIcon: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: context.colors.fat,
-                shape: BoxShape.circle,
-              ),
+            selectedIcon: NavigationBarSelectedIcon(
+              color: context.colors.fat,
               child: PhosphorIcon(
                 PhosphorIconsBold.footprints,
                 color: context.colors.buttonText,
@@ -172,12 +160,8 @@ class NavigationBarWidget extends WatchingWidget {
                 ),
               ],
             ),
-            selectedIcon: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: context.colors.account,
-                shape: BoxShape.circle,
-              ),
+            selectedIcon: NavigationBarSelectedIcon(
+              color: context.colors.account,
               child: userPhoto != null
                   ? ClipOval(
                       child: CachedNetworkImage(
@@ -209,4 +193,47 @@ class NavigationBarWidget extends WatchingWidget {
       ),
     );
   }
+}
+
+class NavigationBarSelectedIcon extends StatelessWidget {
+  final Color color;
+  final Widget child;
+
+  const NavigationBarSelectedIcon({
+    required this.color,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+    tween: Tween<double>(
+      begin: 0,
+      end: 1,
+    ),
+    duration: BokunSpizeDurations.stateTransition,
+    curve: Curves.easeOutCubic,
+    builder: (context, scale, child) => SizedBox(
+      height: 56,
+      width: 56,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Transform.scale(
+            scale: scale,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+              child: const SizedBox.square(
+                dimension: 56,
+              ),
+            ),
+          ),
+          if (child != null) child,
+        ],
+      ),
+    ),
+    child: child,
+  );
 }
