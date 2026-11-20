@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/contact_message/contact_message.dart';
 import '../models/meal/meal.dart';
+import '../models/notification/daily_summary.dart';
 import '../models/notification/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
@@ -282,6 +283,44 @@ class FirebaseService {
         error: error,
       );
       yield const <ContactMessage>[];
+    }
+  }
+
+  /// Listens for real-time changes to the current user's `dailySummaries` in [Firebase]
+  Stream<List<DailySummary>> listenToDailySummaries() async* {
+    final user = auth.currentUser;
+
+    if (user == null) {
+      yield const <DailySummary>[];
+      return;
+    }
+
+    try {
+      final query = firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('dailySummaries')
+          .orderBy(
+            'summaryAt',
+            descending: true,
+          );
+
+      await for (final snapshot in query.snapshots()) {
+        yield snapshot.docs
+            .map(
+              (document) => DailySummary.fromMap(
+                document.data(),
+                id: document.id,
+              ),
+            )
+            .toList();
+      }
+    } catch (error) {
+      log(
+        'Listening to daily summaries failed',
+        error: error,
+      );
+      yield const <DailySummary>[];
     }
   }
 

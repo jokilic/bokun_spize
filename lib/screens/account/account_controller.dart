@@ -27,6 +27,7 @@ import 'sheets/contact_sheet.dart';
 import 'sheets/language_sheet.dart';
 import 'sheets/macro_goals/macro_goals_sheet.dart';
 import 'sheets/messages/messages_sheet.dart';
+import 'sheets/notification_history/notification_history_sheet.dart';
 import 'sheets/notifications_sheet.dart';
 import 'sheets/theme_sheet.dart';
 import 'sheets/user_metrics/user_metrics_sheet.dart';
@@ -293,6 +294,12 @@ class AccountController extends ValueNotifier<SettingsValues> {
   Future<void> openMessagesSheet(BuildContext context) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (sheetContext) => MessagesSheet(),
+  );
+
+  /// Opens [NotificationHistorySheet]
+  Future<void> openNotificationHistorySheet(BuildContext context) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => NotificationHistorySheet(),
   );
 
   /// Opens [DeleteAccountSheet]
