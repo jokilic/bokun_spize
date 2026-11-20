@@ -18,6 +18,7 @@ String getDateString({
   required String dateFormat,
   required String languageCode,
   bool useTodayYesterdayTomorrow = true,
+  bool lowercaseTodayYesterdayTomorrow = false,
   bool includeYearIfNotCurrentYear = false,
 }) {
   final now = DateTime.now();
@@ -28,16 +29,18 @@ String getDateString({
   final dayDifference = providedDate.difference(today).inDays;
 
   if (useTodayYesterdayTomorrow && (!includeYearIfNotCurrentYear || date.year == now.year)) {
+    String? relativeDate;
+
     if (dayDifference == 0) {
-      return 'today'.tr();
+      relativeDate = 'today'.tr();
+    } else if (dayDifference == -1) {
+      relativeDate = 'yesterday'.tr();
+    } else if (dayDifference == 1) {
+      relativeDate = 'tomorrow'.tr();
     }
 
-    if (dayDifference == -1) {
-      return 'yesterday'.tr();
-    }
-
-    if (dayDifference == 1) {
-      return 'tomorrow'.tr();
+    if (relativeDate != null) {
+      return lowercaseTodayYesterdayTomorrow ? relativeDate.toLowerCase() : relativeDate;
     }
   }
 

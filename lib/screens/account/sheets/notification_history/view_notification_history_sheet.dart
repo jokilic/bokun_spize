@@ -22,6 +22,13 @@ class ViewNotificationHistorySheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleDate = getDateString(
+      date: dailySummary.dayBeingSummarized,
+      dateFormat: 'dd MMM',
+      languageCode: context.locale.languageCode,
+      includeYearIfNotCurrentYear: true,
+      lowercaseTodayYesterdayTomorrow: true,
+    );
     final date = getDateString(
       date: dailySummary.dayBeingSummarized,
       dateFormat: 'dd MMM',
@@ -101,7 +108,7 @@ class ViewNotificationHistorySheet extends StatelessWidget {
                       Expanded(
                         child: Text(
                           'notificationHistoryListTileTitle'.tr(
-                            args: [date],
+                            args: [titleDate],
                           ),
                           style: context.textStyles.sheetTitle,
                           textAlign: TextAlign.center,

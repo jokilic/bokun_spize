@@ -1,7 +1,6 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 - [ ] Different widget indicating missed notification permissions (it's too similar to list tiles, ask Google Stitch for help)
-- [ ] Like 'Messages' where we parse all `contactMessages` and show in sheet, do the same parsing implementation for relevant users `dailySummaries` + a `NotificationHistorySheet` where it'll be shown (accessed from `AccountScreen`, like `MessagesSheet`)
 - [ ] Think about how to approach `AIMeal` and `ManualMeal` FABs in `MealsScreen`
 - [ ] Perhaps some loading when deleting user
 - [ ] Logout doesn't go to `EntranceScreen` right away, it takes some time. Perhaps loading or somekind of 'hack' to show Entrance and logout in the background

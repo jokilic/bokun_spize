@@ -10,6 +10,7 @@ import '../../../../constants/durations.dart';
 import '../../../../models/notification/daily_summary.dart';
 import '../../../../services/firebase_service.dart';
 import '../../../../theme/extensions.dart';
+import '../../../../util/date_time.dart';
 import '../../../../util/dependencies.dart';
 import '../../../../util/snackbars.dart';
 import '../../../../util/spacing.dart';
@@ -225,7 +226,31 @@ class NotificationHistorySheetState extends State<NotificationHistorySheet> {
                         dailySummary: dailySummary,
                       );
                     },
-                    dailySummary: dailySummary,
+                    color: context.colors.protein,
+                    icon: PhosphorIconsBold.chartLine,
+                    title: dailySummary.notificationForLanguage(
+                      context.locale.languageCode,
+                    ),
+                    titleDate: getDateString(
+                      date: dailySummary.dayBeingSummarized,
+                      dateFormat: 'dd MMM',
+                      languageCode: context.locale.languageCode,
+                      includeYearIfNotCurrentYear: true,
+                      lowercaseTodayYesterdayTomorrow: true,
+                    ),
+                    date: getDateString(
+                      date: dailySummary.dayBeingSummarized,
+                      dateFormat: 'dd MMM',
+                      languageCode: context.locale.languageCode,
+                      includeYearIfNotCurrentYear: true,
+                    ),
+                    time: getDateString(
+                      date: dailySummary.summaryAt,
+                      dateFormat: 'HH:mm',
+                      useTodayYesterdayTomorrow: false,
+                      languageCode: context.locale.languageCode,
+                      lowercaseTodayYesterdayTomorrow: true,
+                    ),
                   );
 
                   if (index >= 6) {
