@@ -39,7 +39,7 @@ class NotificationHistoryEmpty extends StatelessWidget {
           children: [
             PhosphorIcon(
               PhosphorIconsBold.notification,
-              color: context.colors.fat,
+              color: context.colors.protein,
               size: 80,
             ),
             const SizedBox(height: 16),

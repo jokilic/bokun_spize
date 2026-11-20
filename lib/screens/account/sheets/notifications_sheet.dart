@@ -388,94 +388,95 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
           ///
           /// NOTIFICATION STATUS
           ///
-          if (permissionStatus != AuthorizationStatus.authorized)
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: marginHorizontal,
-                vertical: 8,
-              ),
-              sliver: SliverToBoxAdapter(
-                child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
-                  effects: const [
-                    FadeEffect(
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOut,
-                    ),
-                    MoveEffect(
-                      begin: Offset(0, 8),
-                      end: Offset.zero,
-                      duration: BokunSpizeDurations.animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ],
-                  child: Material(
-                    color: Colors.transparent,
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: marginHorizontal,
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Animate(
+                delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                effects: const [
+                  FadeEffect(
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOut,
+                  ),
+                  MoveEffect(
+                    begin: Offset(0, 8),
+                    end: Offset.zero,
+                    duration: BokunSpizeDurations.animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ],
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  child: InkWell(
+                    onTap: isUpdatingPermission ? null : handlePermissionStatusPressed,
                     borderRadius: BorderRadius.circular(listTileRadius),
-                    child: InkWell(
-                      onTap: isUpdatingPermission ? null : handlePermissionStatusPressed,
-                      borderRadius: BorderRadius.circular(listTileRadius),
-                      highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                      splashColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 14,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(listTileRadius),
-                          color: context.colors.listTileBackground.withValues(alpha: 0.5),
-                        ),
-                        child: Row(
-                          children: [
-                            ///
-                            /// ICON
-                            ///
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                width: listTileIconRadius,
-                                height: listTileIconRadius,
-                                alignment: Alignment.center,
-                                color: (permissionGranted ? context.colors.protein : context.colors.delete).withValues(alpha: 0.25),
-                                child: PhosphorIcon(
-                                  permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
-                                  color: permissionGranted ? context.colors.protein : context.colors.delete,
-                                  size: listTileIconRadius / 2,
-                                ),
+                    highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                        color: (permissionGranted ? context.colors.protein : context.colors.delete).withValues(alpha: 0.25),
+                      ),
+                      child: Row(
+                        children: [
+                          ///
+                          /// ICON
+                          ///
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Container(
+                              width: listTileIconRadius / 1.5,
+                              height: listTileIconRadius / 1.5,
+                              alignment: Alignment.center,
+                              color: (permissionGranted ? context.colors.protein : context.colors.delete).withValues(alpha: 0.25),
+                              child: PhosphorIcon(
+                                permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
+                                color: permissionGranted ? context.colors.protein : context.colors.delete,
+                                size: listTileIconRadius / 3,
                               ),
                             ),
-                            const SizedBox(width: 20),
+                          ),
+                          const SizedBox(width: 20),
 
-                            ///
-                            /// TEXT
-                            ///
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    permissionStatusText,
-                                    style: context.textStyles.infoCardTitle,
+                          ///
+                          /// TEXT
+                          ///
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  permissionStatusText,
+                                  style: context.textStyles.infoCardTitle.copyWith(
+                                    color: permissionGranted ? context.colors.protein : context.colors.delete,
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
-                                    style: context.textStyles.infoCardDescription,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
+                                  style: context.textStyles.infoCardDescription,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
             ),
+          ),
 
           ///
           /// RECORD YOUR WEIGHT
