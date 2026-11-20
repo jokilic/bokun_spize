@@ -10,8 +10,8 @@ import '../../../../models/notification/daily_summary.dart';
 import '../../../../services/firebase_service.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/spacing.dart';
-import 'notification_history_list_tile.dart';
 import 'notification_history_empty.dart';
+import 'notification_history_list_tile.dart';
 
 class NotificationHistorySheet extends WatchingStatefulWidget {
   @override

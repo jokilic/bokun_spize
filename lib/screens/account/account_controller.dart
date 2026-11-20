@@ -241,6 +241,7 @@ class AccountController extends ValueNotifier<SettingsValues> {
         onPermissionRequested: notification.requestPermission,
         onPermissionRefreshed: notification.refreshPermissionStatus,
         onOpenSettingsPressed: notification.openSystemSettings,
+        onHistoryPressed: () => openNotificationHistorySheet(sheetContext),
       ),
     );
   }

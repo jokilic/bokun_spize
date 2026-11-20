@@ -396,25 +396,10 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
 
               ///
-              /// NOTIFICATION HISTORY
-              ///
-              AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  accountController.openNotificationHistorySheet(context);
-                },
-                icon: PhosphorIconsBold.clock,
-                iconBackgroundColor: context.colors.carbs,
-                title: 'notificationHistoryTitle'.tr(),
-                subtitle: 'notificationHistoryAccountSubtitle'.tr(),
-              ),
-
-              ///
               /// CONTACT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * 7,
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 6,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openContactSheet(context);
@@ -430,7 +415,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ///
               if (userMetrics?.isAdmin ?? false)
                 AccountListTile(
-                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 8,
+                  animationDelay: BokunSpizeDurations.stateTransitionStagger * 7,
                   onPressed: () {
                     HapticFeedback.lightImpact();
                     accountController.openMessagesSheet(context);
@@ -445,7 +430,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// LOGOUT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 9 : 8),
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 8 : 7),
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   handleLogOut();
@@ -460,7 +445,7 @@ class _AccountScreenState extends State<AccountScreen> {
               /// DELETE ACCOUNT
               ///
               AccountListTile(
-                animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 10 : 9),
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 9 : 8),
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   accountController.openDeleteAccountSheet(
@@ -502,7 +487,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 12 : 11),
+                    delay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 11 : 10),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.stateTransition,

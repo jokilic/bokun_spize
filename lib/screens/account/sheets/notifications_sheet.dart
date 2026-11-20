@@ -25,6 +25,7 @@ class NotificationsSheet extends StatefulWidget {
   final Future<AuthorizationStatus> Function() onPermissionRequested;
   final Future<AuthorizationStatus> Function() onPermissionRefreshed;
   final Future<bool> Function() onOpenSettingsPressed;
+  final Future<void> Function() onHistoryPressed;
 
   const NotificationsSheet({
     required this.initialSettings,
@@ -33,6 +34,7 @@ class NotificationsSheet extends StatefulWidget {
     required this.onPermissionRequested,
     required this.onPermissionRefreshed,
     required this.onOpenSettingsPressed,
+    required this.onHistoryPressed,
   });
 
   @override
@@ -290,28 +292,27 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                 child: Row(
                   children: [
                     ///
-                    /// PLACEHOLDER BUTTON
+                    /// NOTIFICATION HISTORY BUTTON
                     ///
-                    Opacity(
-                      opacity: 0,
-                      child: IgnorePointer(
-                        child: IconButton(
-                          onPressed: null,
-                          icon: const PhosphorIcon(
-                            PhosphorIconsBold.x,
-                            size: 22,
-                          ),
-                          style: IconButton.styleFrom(
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: const EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
-                            foregroundColor: context.colors.text,
-                          ),
+                    IconButton(
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        widget.onHistoryPressed();
+                      },
+                      tooltip: 'notificationHistoryTitle'.tr(),
+                      icon: const PhosphorIcon(
+                        PhosphorIconsBold.clock,
+                        size: 22,
+                      ),
+                      style: IconButton.styleFrom(
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
                         ),
+                        backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        foregroundColor: context.colors.text,
                       ),
                     ),
 
