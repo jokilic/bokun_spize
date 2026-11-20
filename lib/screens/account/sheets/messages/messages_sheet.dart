@@ -36,7 +36,7 @@ class _MessagesSheetState extends State<MessagesSheet> {
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'deleteFailed'.tr(),
+        text: 'messageDeleteFailure'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

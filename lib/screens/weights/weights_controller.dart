@@ -340,7 +340,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'addFailed'.tr(),
+        text: 'weightAddFailure'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -378,7 +378,7 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     if (!success && context.mounted) {
       showSnackbar(
         context,
-        text: 'deleteFailed'.tr(),
+        text: 'weightDeleteFailure'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

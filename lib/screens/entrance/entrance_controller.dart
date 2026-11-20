@@ -189,7 +189,7 @@ class EntranceController
       );
       return (
         user: null,
-        error: '$error',
+        error: 'firebaseErrorLoginError'.tr(),
       );
     } finally {
       updateState(
@@ -230,7 +230,7 @@ class EntranceController
       );
       return (
         success: false,
-        error: '$error',
+        error: 'firebaseErrorPasswordResetError'.tr(),
       );
     } finally {
       updateState(
@@ -294,7 +294,7 @@ class EntranceController
       );
       return (
         user: null,
-        error: '$error',
+        error: 'firebaseErrorRegisterError'.tr(),
       );
     } finally {
       updateState(
@@ -349,7 +349,7 @@ class EntranceController
       );
       return (
         user: null,
-        error: '$error',
+        error: 'firebaseGoogleErrorLoginError'.tr(),
       );
     } finally {
       updateState(
@@ -404,7 +404,7 @@ class EntranceController
       );
       return (
         user: null,
-        error: '$error',
+        error: 'firebaseAppleErrorLoginError'.tr(),
       );
     } finally {
       updateState(

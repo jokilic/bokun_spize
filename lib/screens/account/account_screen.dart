@@ -457,7 +457,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       } else if (mounted) {
                         showSnackbar(
                           context,
-                          text: 'entranceErrorUnknown'.tr(),
+                          text: 'accountDeleteFailure'.tr(),
                           icon: PhosphorIconsBold.warningOctagon,
                         );
                       }

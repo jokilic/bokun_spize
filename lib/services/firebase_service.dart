@@ -315,7 +315,7 @@ class FirebaseService {
         'invalid-credential' => 'firebaseErrorInvalidCredential'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
-        _ => error.code,
+        _ => 'firebaseErrorLoginError'.tr(),
       };
 
       log(
@@ -333,9 +333,7 @@ class FirebaseService {
       );
       return (
         user: null,
-        error: 'firebaseErrorLoginError'.tr(
-          args: ['$error'],
-        ),
+        error: 'firebaseErrorLoginError'.tr(),
       );
     }
   }
@@ -358,7 +356,7 @@ class FirebaseService {
         'user-not-found' => 'firebaseErrorUserNotFound'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
-        _ => error.code,
+        _ => 'firebaseErrorPasswordResetError'.tr(),
       };
 
       log(
@@ -376,9 +374,7 @@ class FirebaseService {
       );
       return (
         success: false,
-        error: 'firebaseErrorPasswordResetError'.tr(
-          args: ['$error'],
-        ),
+        error: 'firebaseErrorPasswordResetError'.tr(),
       );
     }
   }
@@ -447,7 +443,7 @@ class FirebaseService {
         'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
-        _ => error.code,
+        _ => 'firebaseGoogleErrorLoginError'.tr(),
       };
 
       log(
@@ -462,9 +458,7 @@ class FirebaseService {
       );
       return (
         user: null,
-        error: 'firebaseGoogleErrorLoginError'.tr(
-          args: ['$error'],
-        ),
+        error: 'firebaseGoogleErrorLoginError'.tr(),
       );
     }
   }
@@ -541,7 +535,7 @@ class FirebaseService {
         'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
-        _ => error.code,
+        _ => 'firebaseAppleErrorLoginError'.tr(),
       };
 
       log(
@@ -559,9 +553,7 @@ class FirebaseService {
       );
       return (
         user: null,
-        error: 'firebaseAppleErrorLoginError'.tr(
-          args: ['$error'],
-        ),
+        error: 'firebaseAppleErrorLoginError'.tr(),
       );
     }
   }
@@ -579,7 +571,7 @@ class FirebaseService {
       final errorMessage = switch (error.code) {
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
-        _ => error.code,
+        _ => 'firebaseAnonymousErrorLoginError'.tr(),
       };
 
       log(
@@ -597,9 +589,7 @@ class FirebaseService {
       );
       return (
         user: null,
-        error: 'firebaseAnonymousErrorLoginError'.tr(
-          args: ['$error'],
-        ),
+        error: 'firebaseAnonymousErrorLoginError'.tr(),
       );
     }
   }
@@ -641,7 +631,7 @@ class FirebaseService {
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         'weak-password' => 'firebaseErrorWeakPassword'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
-        _ => error.code,
+        _ => 'firebaseErrorRegisterError'.tr(),
       };
 
       log(
@@ -659,9 +649,7 @@ class FirebaseService {
       );
       return (
         user: null,
-        error: 'firebaseErrorRegisterError'.tr(
-          args: ['$error'],
-        ),
+        error: 'firebaseErrorRegisterError'.tr(),
       );
     }
   }
