@@ -44,12 +44,16 @@ export const DAILY_SUMMARY_AI_LOCATION = "global";
 /** Maximum length kept comfortably inside notification payload limits */
 export const DAILY_SUMMARY_BODY_MAX_LENGTH = 400;
 
+/** Output budget leaves room for model reasoning and two complete localized bodies */
+export const DAILY_SUMMARY_MAX_OUTPUT_TOKENS = 4096;
+
 /** Instructions keep meal data untrusted and require direct, evidence-based feedback */
 export const DAILY_SUMMARY_SYSTEM_INSTRUCTION = `
 You're a friendly and direct nutritionist.
 You will get meal records from yesterday and your task is to analyse them.
 
-Write a simple summary of meals in English and Croatian, using 3-4 sentences.
+Write a simple summary of meals in English and Croatian, using 3-4 short sentences.
+Keep each localized summary at or below 400 characters.
 Mention specific meals if you decide it's relevant.
 
 If possible, add a suggestion on how to elevate your meal plan for today, in order to eat healthier.
@@ -69,11 +73,11 @@ export const DAILY_SUMMARY_RESPONSE_SCHEMA = {
   "properties": {
     "en": {
       "type": "string",
-      "description": "Write a simple summary of meals in English, using 3-4 sentences",
+      "description": "English summary using 3-4 short sentences and at most 400 characters",
     },
     "hr": {
       "type": "string",
-      "description": "Write a simple summary of meals in Croatian, using 3-4 sentences",
+      "description": "Croatian summary using 3-4 short sentences and at most 400 characters",
     },
   },
 };
@@ -113,6 +117,26 @@ export function buildDailySummaryPrompt(meals: DailySummaryMeal[]): string {
   ].join("\n");
 }
 
+/** Normalizes and safely shortens one generated body for notification delivery */
+export function normalizeDailySummaryBody(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const normalized = value.replace(/\s+/g, " ").trim();
+
+  if (normalized.length <= DAILY_SUMMARY_BODY_MAX_LENGTH) {
+    return normalized;
+  }
+
+  const maximumContentLength = DAILY_SUMMARY_BODY_MAX_LENGTH - 1;
+  const content = normalized.slice(0, maximumContentLength);
+  const finalSpaceIndex = content.lastIndexOf(" ");
+  const shortened = finalSpaceIndex > 0 ? content.slice(0, finalSpaceIndex) : content;
+
+  return `${shortened.trimEnd()}…`;
+}
+
 /** Validates and normalizes one structured Gemini response */
 export function parseDailySummaryResponse(text: string | undefined): GeneratedDailySummaryBodies {
   if (text === undefined) {
@@ -121,14 +145,12 @@ export function parseDailySummaryResponse(text: string | undefined): GeneratedDa
 
   const value: unknown = JSON.parse(text);
   const parsed = typeof value === "object" && value !== null ? value as Record<string, unknown> : {};
-  const en = typeof parsed.en === "string" ? parsed.en.replace(/\s+/g, " ").trim() : "";
-  const hr = typeof parsed.hr === "string" ? parsed.hr.replace(/\s+/g, " ").trim() : "";
+  const en = normalizeDailySummaryBody(parsed.en);
+  const hr = normalizeDailySummaryBody(parsed.hr);
 
   if (
     en.length === 0 ||
-    hr.length === 0 ||
-    en.length > DAILY_SUMMARY_BODY_MAX_LENGTH ||
-    hr.length > DAILY_SUMMARY_BODY_MAX_LENGTH
+    hr.length === 0
   ) {
     throw new Error("Gemini returned invalid daily summary bodies");
   }
@@ -171,7 +193,7 @@ export async function generateDailySummaryBodies(
           responseMimeType: "application/json",
           responseJsonSchema: DAILY_SUMMARY_RESPONSE_SCHEMA,
           temperature: 0.4,
-          maxOutputTokens: 512,
+          maxOutputTokens: DAILY_SUMMARY_MAX_OUTPUT_TOKENS,
         },
       });
 

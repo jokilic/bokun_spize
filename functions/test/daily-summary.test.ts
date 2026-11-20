@@ -7,6 +7,7 @@ import {
   isCompletedDailySummaryMeal,
 } from "../src/daily-summary";
 import {
+  DAILY_SUMMARY_BODY_MAX_LENGTH,
   buildDailySummaryPrompt,
   parseDailySummaryResponse,
 } from "../src/daily-summary-ai";
@@ -59,5 +60,17 @@ describe("daily meal summary", () => {
       en: "You included fruit today. Add an egg next time for more protein.",
       hr: "Danas si uključio voće. Sljedeći put dodaj jaje za više proteina.",
     });
+  });
+
+  it("shortens overlong localized bodies without rejecting valid JSON", () => {
+    const bodies = parseDailySummaryResponse(JSON.stringify({
+      en: `Your meals included ${"fruit and vegetables ".repeat(30)}`,
+      hr: `Tvoji obroci uključivali su ${"voće i povrće ".repeat(30)}`,
+    }));
+
+    expect(bodies.en.length).toBeLessThanOrEqual(DAILY_SUMMARY_BODY_MAX_LENGTH);
+    expect(bodies.hr.length).toBeLessThanOrEqual(DAILY_SUMMARY_BODY_MAX_LENGTH);
+    expect(bodies.en.endsWith("…")).toBe(true);
+    expect(bodies.hr.endsWith("…")).toBe(true);
   });
 });
