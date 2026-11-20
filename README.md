@@ -1,10 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Generating daily summary and I got this in notificationDispatches/dailySummary_xx/errors:
-```
-Generating the daily summary failed: gemini-3.5-flash-lite: Gemini returned invalid daily summary bodies | gemini-3.1-flash-lite: Gemini returned invalid daily summary bodies | gemini-3.8-flash: Unterminated string in JSON at position 675 (line 3 column 289) | gemini-3.7-flash: Unexpected end of JSON input | gemini-3.6-flash: Unterminated string in JSON at position 40 (line 1 column 41) | gemini-3.5-flash: Unterminated string in JSON at position 11 (line 2 column 10)
-```
-- [ ] In `WeightsScreen`, graph animates when opening screen & changing days. But when adding a new weight value or when deleting one, it doesn't animate, but it jumps
 - [ ] Different widget indicating missed notification permissions (it's too similar to list tiles, ask Google Stitch for help)
 - [ ] Like 'Messages' where we parse all `contactMessages` and show in sheet, do the same parsing implementation for relevant users `dailySummaries` + a `NotificationHistorySheet` where it'll be shown (accessed from `AccountScreen`, like `MessagesSheet`)
 - [ ] Think about how to approach `AIMeal` and `ManualMeal` FABs in `MealsScreen`

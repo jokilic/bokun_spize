@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -221,7 +222,21 @@ class WeightsGraphWidgetState extends State<WeightsGraphWidget> with SingleTicke
       return;
     }
 
-    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays;
+    final oldVisibleWeightTracks = getWeightTracksForGraph(
+      weightTracks: oldWidget.weightTracks,
+      calendarDays: oldWidget.calendarDays,
+    );
+    final visibleWeightTracks = getWeightTracksForGraph(
+      weightTracks: widget.weightTracks,
+      calendarDays: widget.calendarDays,
+    );
+
+    final haveVisibleWeightTracksChanged = !listEquals(
+      oldVisibleWeightTracks,
+      visibleWeightTracks,
+    );
+
+    final shouldRestartAnimation = oldWidget.isLoading || oldWidget.calendarDays != widget.calendarDays || haveVisibleWeightTracksChanged;
 
     if (shouldRestartAnimation) {
       lineAnimationController.forward(from: 0);
