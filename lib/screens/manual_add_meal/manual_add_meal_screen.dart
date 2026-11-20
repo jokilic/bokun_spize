@@ -27,12 +27,14 @@ class ManualAddMealScreen extends WatchingStatefulWidget {
   final Meal? passedMeal;
   final bool isCopyingMeal;
   final Function()? onDeletePressed;
+  final bool shouldShowExplanation;
 
   const ManualAddMealScreen({
     required this.mealId,
     required this.passedMeal,
     required this.isCopyingMeal,
     required this.onDeletePressed,
+    required this.shouldShowExplanation,
   });
 
   @override
@@ -266,6 +268,106 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
             const SliverToBoxAdapter(
               child: SizedBox(height: 10),
             ),
+
+            ///
+            /// EXPLANATION
+            ///
+            if (widget.shouldShowExplanation) ...[
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: marginHorizontal,
+                  vertical: 8,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Animate(
+                    delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                    effects: const [
+                      FadeEffect(
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOut,
+                      ),
+                      MoveEffect(
+                        begin: Offset(0, 8),
+                        end: Offset.zero,
+                        duration: BokunSpizeDurations.animation,
+                        curve: Curves.easeOutCubic,
+                      ),
+                    ],
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(listTileRadius),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(listTileRadius),
+                        highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                        splashColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(listTileRadius),
+                            color: context.colors.listTileBackground.withValues(alpha: 0.5),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///
+                              /// ICON
+                              ///
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: PhosphorIcon(
+                                  PhosphorIconsBold.info,
+                                  color: context.colors.protein,
+                                  size: listTileIconRadius / 2.5,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+
+                              ///
+                              /// TEXT
+                              ///
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      // TODO: Localize
+                                      'Kako zabilježiti obrok?',
+                                      style: context.textStyles.infoCardTitle.copyWith(
+                                        color: context.colors.protein,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      // TODO: Localize
+                                      'Unesi naziv obroka, izravno upiši ukupne kalorije i makronukrijente.',
+                                      style: context.textStyles.infoCardDescription,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      // TODO: Localize
+                                      'Dodaj pojedinačne namirnice za precizniji izračun.',
+                                      style: context.textStyles.infoCardDescription,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 8),
+              ),
+            ],
 
             ///
             /// TEXT FIELD & SPEECH TO TEXT

@@ -425,28 +425,23 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(listTileRadius),
-                        color: (permissionGranted ? context.colors.protein : context.colors.delete).withValues(alpha: 0.25),
+                        color: context.colors.listTileBackground.withValues(alpha: 0.5),
                       ),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ///
                           /// ICON
                           ///
                           ClipRRect(
                             borderRadius: BorderRadius.circular(100),
-                            child: Container(
-                              width: listTileIconRadius / 1.5,
-                              height: listTileIconRadius / 1.5,
-                              alignment: Alignment.center,
-                              color: (permissionGranted ? context.colors.protein : context.colors.delete).withValues(alpha: 0.25),
-                              child: PhosphorIcon(
-                                permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
-                                color: permissionGranted ? context.colors.protein : context.colors.delete,
-                                size: listTileIconRadius / 3,
-                              ),
+                            child: PhosphorIcon(
+                              permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
+                              color: permissionGranted ? context.colors.protein : context.colors.delete,
+                              size: listTileIconRadius / 2.5,
                             ),
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(width: 12),
 
                           ///
                           /// TEXT
@@ -461,7 +456,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                                     color: permissionGranted ? context.colors.protein : context.colors.delete,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: 4),
                                 Text(
                                   permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
                                   style: context.textStyles.infoCardDescription,

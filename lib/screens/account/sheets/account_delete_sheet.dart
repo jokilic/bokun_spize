@@ -233,28 +233,23 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(listTileRadius),
-                          color: context.colors.delete.withValues(alpha: 0.25),
+                          color: context.colors.listTileBackground.withValues(alpha: 0.5),
                         ),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ///
                             /// ICON
                             ///
                             ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                width: listTileIconRadius / 1.5,
-                                height: listTileIconRadius / 1.5,
-                                alignment: Alignment.center,
-                                color: context.colors.delete.withValues(alpha: 0.25),
-                                child: PhosphorIcon(
-                                  PhosphorIconsBold.warningOctagon,
-                                  color: context.colors.delete,
-                                  size: listTileIconRadius / 3,
-                                ),
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.warningOctagon,
+                                color: context.colors.delete,
+                                size: listTileIconRadius / 2.5,
                               ),
                             ),
-                            const SizedBox(width: 20),
+                            const SizedBox(width: 12),
 
                             ///
                             /// TEXT
@@ -269,7 +264,7 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
                                       color: context.colors.delete,
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
+                                  const SizedBox(height: 4),
                                   Text(
                                     'deleteAccountExplanationSubtitle'.tr(),
                                     style: context.textStyles.infoCardDescription,

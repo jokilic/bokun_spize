@@ -203,7 +203,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       builder: (context) => AIAddMealScreen(
         mealId: newMealId,
         // TODO: This should be true if the total number of meals in users database is more than 3
-        shouldShowExplanation: false,
+        shouldShowExplanation: true,
       ),
     );
 
@@ -342,6 +342,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
                 context: context,
               )
             : null,
+        shouldShowExplanation: true,
       ),
     );
 

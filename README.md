@@ -1,6 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Check all spacings in the app
 - [ ] Small fade animation when pressing `NavigationBar`
 - [ ] Perhaps some loading when deleting user
 - [ ] Logout doesn't go to `EntranceScreen` right away, it takes some time. Perhaps loading or somekind of 'hack' to show Entrance and logout in the background
@@ -8,8 +7,6 @@
 - [ ] Animations
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
-- [ ] `AccountScreen`
-    - [ ] Notifications
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required
