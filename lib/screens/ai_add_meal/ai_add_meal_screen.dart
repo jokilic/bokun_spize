@@ -296,22 +296,19 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      // TODO: Localize
-                                      'Kako zabilježiti obrok?',
+                                      'aiAddMealExplanationTitle'.tr(),
                                       style: context.textStyles.infoCardTitle.copyWith(
                                         color: context.colors.protein,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      // TODO: Localize
-                                      'Opiši obrok vlastitim riječima, diktiraj glasom ili dodaj fotografiju.',
+                                      'aiAddMealExplanationText1'.tr(),
                                       style: context.textStyles.infoCardDescription,
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      // TODO: Localize
-                                      'Aplikacija će automatski prepoznati namirnice, izračunati kalorije i makronutrijente.',
+                                      'aiAddMealExplanationText2'.tr(),
                                       style: context.textStyles.infoCardDescription,
                                     ),
                                   ],

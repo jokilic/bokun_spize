@@ -335,22 +335,19 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      // TODO: Localize
-                                      'Kako zabilježiti obrok?',
+                                      'manualAddMealExplanationTitle'.tr(),
                                       style: context.textStyles.infoCardTitle.copyWith(
                                         color: context.colors.protein,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      // TODO: Localize
-                                      'Unesi naziv obroka, izravno upiši ukupne kalorije i makronukrijente.',
+                                      'manualAddMealExplanationText1'.tr(),
                                       style: context.textStyles.infoCardDescription,
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      // TODO: Localize
-                                      'Dodaj pojedinačne namirnice za precizniji izračun.',
+                                      'manualAddMealExplanationText2'.tr(),
                                       style: context.textStyles.infoCardDescription,
                                     ),
                                   ],

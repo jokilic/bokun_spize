@@ -342,6 +342,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
                 context: context,
               )
             : null,
+        // TODO: This should be true if the total number of meals in users database is more than 3
         shouldShowExplanation: true,
       ),
     );
