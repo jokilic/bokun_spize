@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:health/health.dart';
 import 'package:material_ui/material_ui.dart';
@@ -227,6 +228,19 @@ class WalksController
       updateState(
         stepsWithDate: stepsWithDate,
       );
+    } on HealthException catch (error) {
+      log(
+        'Refreshing today steps failed',
+        error: error,
+      );
+
+      /// A denied read cannot recover through the periodic refresh
+      if (error.errorCode == HealthErrorCode.permissionDenied) {
+        updateState(
+          permissionAuthorized: false,
+          error: getHealthErrorMessage(error),
+        );
+      }
     } catch (error) {
       log(
         'Refreshing today steps failed',
@@ -272,7 +286,7 @@ class WalksController
       }
     }
 
-    /// Handle `iOS` permissions
+    /// Check the actual read permission state where the platform exposes it
     final hasPermission = await health.hasPermissions(
       types,
       permissions: permissions,
@@ -282,7 +296,27 @@ class WalksController
       return (granted: true, error: null);
     }
 
-    /// Request `HealthKit` authorization
+    /// `HealthKit` only reports whether another authorization sheet is needed
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      try {
+        final authorizationStatus = await health.getRequestStatusForAuthorization(
+          types,
+          permissions: permissions,
+        );
+
+        if (authorizationStatus == HealthAuthorizationRequestStatus.unnecessary) {
+          return (granted: true, error: null);
+        }
+      } on PlatformException catch (error) {
+        /// Fall back to the normal authorization request when HealthKit cannot determine the status
+        log(
+          'Step authorization status is unavailable',
+          error: error,
+        );
+      }
+    }
+
+    /// Request authorization when access is missing or HealthKit can show its sheet
     final granted = await health.requestAuthorization(
       types,
       permissions: permissions,
@@ -418,9 +452,25 @@ class WalksController
           historyEnd: recentHistoryStart,
         ),
       );
-    } catch (error) {
+    } on HealthException catch (error) {
+      log(
+        'Fetching steps failed',
+        error: error,
+      );
+
       updateState(
-        error: error.toString(),
+        permissionAuthorized: error.errorCode == HealthErrorCode.permissionDenied ? false : value.permissionAuthorized,
+        error: getHealthErrorMessage(error),
+        isHistoryLoading: false,
+      );
+    } catch (error) {
+      log(
+        'Fetching steps failed',
+        error: error,
+      );
+
+      updateState(
+        error: 'walksErrorHealthDataUnavailable'.tr(),
         isHistoryLoading: false,
       );
     } finally {
@@ -623,6 +673,24 @@ class WalksController
 
   /// Fetches step data again after an error
   Future<void> retrySteps() => refreshSteps();
+
+  /// Maps structured health failures to safe messages for the walks screen
+  String getHealthErrorMessage(HealthException error) {
+    if (error.errorCode == HealthErrorCode.deviceLocked) {
+      return 'walksErrorDeviceLocked'.tr();
+    }
+
+    if (error.isRetryable) {
+      return 'walksErrorHealthDataTemporarilyUnavailable'.tr();
+    }
+
+    return switch (error.errorCode) {
+      HealthErrorCode.permissionDenied => 'walksErrorStepAccessNotGranted'.tr(),
+      HealthErrorCode.notSupported => 'walksErrorStepAccessUnavailable'.tr(),
+      HealthErrorCode.invalidArgument || HealthErrorCode.dataTooLarge || HealthErrorCode.unknown => 'walksErrorHealthDataUnavailable'.tr(),
+      _ => 'walksErrorHealthDataUnavailable'.tr(),
+    };
+  }
 
   /// Updates `state`
   void updateState({
