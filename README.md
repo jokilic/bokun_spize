@@ -2,7 +2,6 @@
 
 - [ ] Perhaps some loading when deleting user
 - [ ] Logout doesn't go to `EntranceScreen` right away, it takes some time. Perhaps loading or somekind of 'hack' to show Entrance and logout in the background
-- [ ] Check this: https://pub.dev/packages/keyboard_controller
 - [ ] Check all staggered animations
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
