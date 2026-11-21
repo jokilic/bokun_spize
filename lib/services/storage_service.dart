@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../screens/account/account_controller.dart';
 import '../util/typedefs.dart';
 
-class StorageService extends ValueNotifier<({CalendarDays calendarDays, SettingsValues settingsValues})> {
+class StorageService extends ValueNotifier<({CalendarDays calendarDays, MealOpenedNumbers mealOpenedNumbers, SettingsValues settingsValues})> {
   ///
   /// CONSTRUCTOR
   ///
@@ -20,6 +20,10 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
          calendarDays: (
            weightsCalendarDays: defaultCalendarDays,
            walksCalendarDays: defaultCalendarDays,
+         ),
+         mealOpenedNumbers: (
+           aiAddMealOpenedNumber: 0,
+           manualAddMealOpenedNumber: 0,
          ),
          settingsValues: (
            theme: defaultTheme,
@@ -37,12 +41,18 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
         sharedPreferences.getInt(weightsCalendarDaysKey),
         sharedPreferences.getInt(walksCalendarDaysKey),
       ]);
+      final mealOpenedNumbers = await Future.wait([
+        sharedPreferences.getInt(aiAddMealOpenedNumberKey),
+        sharedPreferences.getInt(manualAddMealOpenedNumberKey),
+      ]);
 
       final savedTheme = await sharedPreferences.getString(themeKey);
 
       updateState(
         weightsCalendarDays: calendarDays.firstOrNull ?? defaultCalendarDays,
         walksCalendarDays: calendarDays.lastOrNull ?? defaultCalendarDays,
+        aiAddMealOpenedNumber: mealOpenedNumbers.firstOrNull ?? 0,
+        manualAddMealOpenedNumber: mealOpenedNumbers.lastOrNull ?? 0,
         theme:
             ThemeEnum.values
                 .where(
@@ -68,6 +78,8 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
 
   static const weightsCalendarDaysKey = 'weightsCalendarDays';
   static const walksCalendarDaysKey = 'walksCalendarDays';
+  static const aiAddMealOpenedNumberKey = 'aiAddMealOpenedNumber';
+  static const manualAddMealOpenedNumberKey = 'manualAddMealOpenedNumber';
 
   static const themeKey = 'theme';
   static const notificationDeviceIdKey = 'notificationDeviceId';
@@ -111,6 +123,50 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
     updateState(
       theme: theme,
     );
+  }
+
+  /// Increments and persists the AI meal screen open count up to six
+  int incrementAIAddMealOpenedNumber() {
+    final currentNumber = value.mealOpenedNumbers.aiAddMealOpenedNumber;
+
+    if (currentNumber > 5) {
+      return currentNumber;
+    }
+
+    final updatedNumber = currentNumber + 1;
+
+    sharedPreferences.setInt(
+      aiAddMealOpenedNumberKey,
+      updatedNumber,
+    );
+
+    updateState(
+      aiAddMealOpenedNumber: updatedNumber,
+    );
+
+    return updatedNumber;
+  }
+
+  /// Increments and persists the manual meal screen open count up to six
+  int incrementManualAddMealOpenedNumber() {
+    final currentNumber = value.mealOpenedNumbers.manualAddMealOpenedNumber;
+
+    if (currentNumber > 5) {
+      return currentNumber;
+    }
+
+    final updatedNumber = currentNumber + 1;
+
+    sharedPreferences.setInt(
+      manualAddMealOpenedNumberKey,
+      updatedNumber,
+    );
+
+    updateState(
+      manualAddMealOpenedNumber: updatedNumber,
+    );
+
+    return updatedNumber;
   }
 
   /// Returns the stable identifier used for this application installation
@@ -159,11 +215,17 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, Settings
   void updateState({
     int? weightsCalendarDays,
     int? walksCalendarDays,
+    int? aiAddMealOpenedNumber,
+    int? manualAddMealOpenedNumber,
     ThemeEnum? theme,
   }) => value = (
     calendarDays: (
       weightsCalendarDays: weightsCalendarDays ?? value.calendarDays.weightsCalendarDays,
       walksCalendarDays: walksCalendarDays ?? value.calendarDays.walksCalendarDays,
+    ),
+    mealOpenedNumbers: (
+      aiAddMealOpenedNumber: aiAddMealOpenedNumber ?? value.mealOpenedNumbers.aiAddMealOpenedNumber,
+      manualAddMealOpenedNumber: manualAddMealOpenedNumber ?? value.mealOpenedNumbers.manualAddMealOpenedNumber,
     ),
     settingsValues: (
       theme: theme ?? value.settingsValues.theme,

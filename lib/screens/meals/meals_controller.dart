@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
+import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/null_state.dart';
 import '../../util/parse.dart';
@@ -27,10 +28,12 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   ///
 
   final FirebaseService firebase;
+  final StorageService storage;
   String languageCode;
 
   MealsController({
     required this.firebase,
+    required this.storage,
     required this.languageCode,
   }) : super((
          requestedDate: DateUtils.dateOnly(
@@ -196,14 +199,14 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   }) async {
     /// Generate `newMealId`
     final newMealId = const Uuid().v1();
+    final aiAddMealOpenedNumber = storage.incrementAIAddMealOpenedNumber();
 
     /// Show [AIAddMealScreen] for adding `AI meal`
     final result = await showBlurredModalBottomSheet<AIMealResult>(
       context: context,
       builder: (context) => AIAddMealScreen(
         mealId: newMealId,
-        // TODO: This should be true if the total number of meals in users database is more than 3
-        shouldShowExplanation: true,
+        shouldShowExplanation: aiAddMealOpenedNumber <= 5,
       ),
     );
 
@@ -325,6 +328,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required bool isCopyingMeal,
   }) async {
     final isEditingMeal = passedMeal != null && !isCopyingMeal;
+    final manualAddMealOpenedNumber = passedMeal == null ? storage.incrementManualAddMealOpenedNumber() : storage.value.mealOpenedNumbers.manualAddMealOpenedNumber;
 
     /// Keep the existing `mealId` when editing
     final mealId = isEditingMeal ? passedMeal.id : const Uuid().v1();
@@ -342,8 +346,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
                 context: context,
               )
             : null,
-        // TODO: This should be true if the total number of meals in users database is more than 3
-        shouldShowExplanation: true,
+        shouldShowExplanation: manualAddMealOpenedNumber <= 5,
       ),
     );
 
