@@ -61,6 +61,10 @@ If possible, add a suggestion on how to elevate your meal plan for today, in ord
 Regarding Croatian, you can use 'ti', not 'vi' when referring to user.
 
 If completed meal data is insufficient, mention that and encourage meal recording.
+
+Example 1: 'Yesterday's meals were fairly light, consisting of coffee, oranges, and a chicken salad. The oranges provided vitamins and fiber, while the chicken salad offered protein and vegetables. Overall, it was a nutritious combination. Today, try adding a handful of nuts or some Greek yogurt which would make a great snack, providing extra protein, healthy fats, and energy.'
+
+Example 2: 'Yesterday's meals were mostly high in calories, sugar, and unhealthy fats, consisting of chocolate, a croissant, a burger, and French fries. While the burger provided some protein, the overall diet lacked fruits, vegetables, and fiber. Adding more nutrient-rich foods would help create a healthier balance.'
 `.trim();
 
 /** Structured response prevents model prose from leaking outside the notification fields */
