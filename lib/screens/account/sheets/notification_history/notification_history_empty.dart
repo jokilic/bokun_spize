@@ -8,6 +8,12 @@ import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 
 class NotificationHistoryEmpty extends StatelessWidget {
+  final Duration animationDelay;
+
+  const NotificationHistoryEmpty({
+    required this.animationDelay,
+  });
+
   @override
   Widget build(BuildContext context) => SliverPadding(
     padding: const EdgeInsets.symmetric(
@@ -16,6 +22,7 @@ class NotificationHistoryEmpty extends StatelessWidget {
     ),
     sliver: SliverToBoxAdapter(
       child: Animate(
+        delay: animationDelay,
         effects: const [
           FadeEffect(
             duration: BokunSpizeDurations.stateTransition,

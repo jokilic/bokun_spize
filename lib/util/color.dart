@@ -22,7 +22,7 @@ Color colorFromHex(String hex) {
   );
 }
 
-String colorToHex(Color color) => '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
+String colorToHex(Color color) => '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
 
 Color getCalorieValueColor({
   required Nutrition? nutrition,

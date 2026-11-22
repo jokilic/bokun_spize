@@ -290,7 +290,10 @@ class NotificationHistorySheetState extends State<NotificationHistorySheet> {
             ///
             /// EMPTY
             ///
-            if (dailySummaries.isEmpty) NotificationHistoryEmpty(),
+            if (dailySummaries.isEmpty)
+              NotificationHistoryEmpty(
+                animationDelay: BokunSpizeDurations.stateTransitionStagger * 3,
+              ),
 
             ///
             /// BOTTOM SPACING
