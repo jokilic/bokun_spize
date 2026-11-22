@@ -28,7 +28,7 @@ import 'sheets/language_sheet.dart';
 import 'sheets/macro_goals/macro_goals_sheet.dart';
 import 'sheets/messages/messages_sheet.dart';
 import 'sheets/notification_history/notification_history_sheet.dart';
-import 'sheets/notifications_sheet.dart';
+import 'sheets/notifications/notifications_sheet.dart';
 import 'sheets/theme_sheet.dart';
 import 'sheets/user_metrics/user_metrics_sheet.dart';
 
