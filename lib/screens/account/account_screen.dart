@@ -66,8 +66,6 @@ class _AccountScreenState extends State<AccountScreen> {
       );
     }
 
-    return;
-
     try {
       await getIt.get<FirebaseService>().logOut();
     } catch (error, stackTrace) {
@@ -103,8 +101,6 @@ class _AccountScreenState extends State<AccountScreen> {
       () => isDeletingAccount = true,
     );
 
-    return;
-
     var isDeleted = false;
 
     try {
@@ -130,7 +126,9 @@ class _AccountScreenState extends State<AccountScreen> {
     if (isDeleted) {
       await cleanUpAfterSignOut();
     } else if (mounted) {
-      setState(() => isDeletingAccount = false);
+      setState(
+        () => isDeletingAccount = false,
+      );
       showSnackbar(
         context,
         text: 'accountDeleteFailure'.tr(),

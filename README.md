@@ -1,7 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Perhaps some loading when deleting user
-- [ ] Logout doesn't go to `EntranceScreen` right away, it takes some time. Perhaps loading or somekind of 'hack' to show Entrance and logout in the background
 - [ ] Check all staggered animations
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
