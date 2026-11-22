@@ -485,7 +485,7 @@ static const Map<String,dynamic> _hr = {
   "accountLogoutTitle": "Odjava",
   "accountLogoutSubtitle": "Odjavi se iz aplikacije",
   "accountLogoutProgressTitle": "Odjava u tijeku",
-  "accountLogoutProgressSubtitle": "Vidimo se kasnije",
+  "accountLogoutProgressSubtitle": "Pričekaj trenutak",
   "accountDeleteProgressTitle": "Brisanje računa u tijeku",
   "accountDeleteProgressSubtitle": "Pričekaj trenutak",
   "accountLogoutFailure": "Odjava nije uspjela. Pokušaj ponovno",

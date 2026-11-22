@@ -60,6 +60,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     if (mounted) {
       FocusManager.instance.primaryFocus?.unfocus();
+
       setState(
         () => isLoggingOut = true,
       );
@@ -101,16 +102,30 @@ class _AccountScreenState extends State<AccountScreen> {
     setState(
       () => isDeletingAccount = true,
     );
-    await WidgetsBinding.instance.endOfFrame;
-    if (!mounted) {
-      return;
-    }
 
-    final firebase = getIt.get<FirebaseService>();
-    final isDeleted = await firebase.deleteUser(
-      email: firebase.userEmail,
-      password: password,
-    );
+    return;
+
+    var isDeleted = false;
+
+    try {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) {
+        return;
+      }
+
+      final firebase = getIt.get<FirebaseService>();
+
+      isDeleted = await firebase.deleteUser(
+        email: firebase.userEmail,
+        password: password,
+      );
+    } catch (error, stackTrace) {
+      log(
+        'Deleting account failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
 
     if (isDeleted) {
       await cleanUpAfterSignOut();
