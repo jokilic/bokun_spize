@@ -7,18 +7,35 @@ import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../models/notification/notification_settings.dart';
 import '../../../../theme/extensions.dart';
-import 'notifications_controller.dart';
 import 'notifications_sheet_list_tile.dart';
 
 class NotificationsSuccess extends StatelessWidget {
-  final NotificationsController controller;
   final NotificationSettings settings;
   final bool isUpdatingPermission;
+  final bool permissionGranted;
+  final String permissionStatusText;
+  final String weighReminderTime;
+  final String dailySummaryTime;
+  final Function() handlePermissionStatusPressed;
+  final Function(
+    BuildContext context, {
+    required NotificationSettings newSettings,
+  })
+  handleSettingsPressed;
+  final Function(BuildContext context) updateWeighReminderTimeViaPicker;
+  final Function(BuildContext context) updateDailySummaryTimeViaPicker;
 
   const NotificationsSuccess({
-    required this.controller,
     required this.settings,
     required this.isUpdatingPermission,
+    required this.permissionGranted,
+    required this.permissionStatusText,
+    required this.dailySummaryTime,
+    required this.weighReminderTime,
+    required this.handlePermissionStatusPressed,
+    required this.handleSettingsPressed,
+    required this.updateWeighReminderTimeViaPicker,
+    required this.updateDailySummaryTimeViaPicker,
   });
 
   @override
@@ -50,7 +67,7 @@ class NotificationsSuccess extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(listTileRadius),
             child: InkWell(
-              onTap: isUpdatingPermission ? null : controller.handlePermissionStatusPressed,
+              onTap: isUpdatingPermission ? null : handlePermissionStatusPressed,
               borderRadius: BorderRadius.circular(listTileRadius),
               highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
               splashColor: Colors.transparent,
@@ -74,8 +91,8 @@ class NotificationsSuccess extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: PhosphorIcon(
-                        controller.permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
-                        color: controller.permissionGranted ? context.colors.protein : context.colors.delete,
+                        permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
+                        color: permissionGranted ? context.colors.protein : context.colors.delete,
                         size: listTileIconRadius / 2.5,
                       ),
                     ),
@@ -89,16 +106,18 @@ class NotificationsSuccess extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            controller.permissionStatusText,
+                            permissionStatusText,
                             style: context.textStyles.infoCardTitle.copyWith(
-                              color: controller.permissionGranted ? context.colors.protein : context.colors.delete,
+                              color: permissionGranted ? context.colors.protein : context.colors.delete,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            controller.permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
-                            style: context.textStyles.infoCardDescription,
-                          ),
+                          if (!permissionGranted) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              'notificationsPermissionBlocked'.tr(),
+                              style: context.textStyles.infoCardDescription,
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -140,7 +159,7 @@ class NotificationsSuccess extends StatelessWidget {
             ),
           ],
           child: NotificationsSheetListTile(
-            onPressed: () => controller.handleSettingsPressed(
+            onPressed: () => handleSettingsPressed(
               context,
               newSettings: settings.copyWith(
                 weighReminderEnabled: !settings.weighReminderEnabled,
@@ -159,7 +178,7 @@ class NotificationsSuccess extends StatelessWidget {
                     ),
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton.icon(
-                      onPressed: () => controller.updateWeighReminderTimeViaPicker(context),
+                      onPressed: () => updateWeighReminderTimeViaPicker(context),
                       icon: PhosphorIcon(
                         PhosphorIconsBold.clock,
                         color: context.colors.text,
@@ -177,7 +196,7 @@ class NotificationsSuccess extends StatelessWidget {
                         foregroundColor: context.colors.text,
                       ),
                       label: Text(
-                        controller.getWeighReminderTime(context),
+                        weighReminderTime,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -217,7 +236,7 @@ class NotificationsSuccess extends StatelessWidget {
             ),
           ],
           child: NotificationsSheetListTile(
-            onPressed: () => controller.handleSettingsPressed(
+            onPressed: () => handleSettingsPressed(
               context,
               newSettings: settings.copyWith(
                 dailySummaryEnabled: !settings.dailySummaryEnabled,
@@ -235,7 +254,7 @@ class NotificationsSuccess extends StatelessWidget {
                       left: 76,
                     ),
                     child: ElevatedButton.icon(
-                      onPressed: () => controller.updateDailySummaryTimeViaPicker(context),
+                      onPressed: () => updateDailySummaryTimeViaPicker(context),
                       icon: PhosphorIcon(
                         PhosphorIconsBold.clock,
                         color: context.colors.text,
@@ -253,7 +272,7 @@ class NotificationsSuccess extends StatelessWidget {
                         foregroundColor: context.colors.text,
                       ),
                       label: Text(
-                        controller.getDailySummaryTime(context),
+                        dailySummaryTime,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -293,7 +312,7 @@ class NotificationsSuccess extends StatelessWidget {
             ),
           ],
           child: NotificationsSheetListTile(
-            onPressed: () => controller.handleSettingsPressed(
+            onPressed: () => handleSettingsPressed(
               context,
               newSettings: settings.copyWith(
                 announcementsEnabled: !settings.announcementsEnabled,

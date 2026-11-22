@@ -134,7 +134,6 @@
     "notificationsPermissionProvisional": "Notifications delivered quietly",
     "notificationsPermissionDenied": "Notifications blocked",
     "notificationsPermissionNotDetermined": "Notifications not allowed",
-    "notificationsPermissionReady": "Your phone will deliver notifications.",
     "notificationsPermissionBlocked": "Your phone will not deliver notifications.",
     "notificationsAllowAction": "Allow notifications",
     "notificationsOpenSettingsAction": "Open settings",

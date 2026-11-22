@@ -134,7 +134,6 @@
     "notificationsPermissionProvisional": "Obavijesti stižu tiho",
     "notificationsPermissionDenied": "Obavijesti su blokirane",
     "notificationsPermissionNotDetermined": "Obavijesti nisu dopuštene",
-    "notificationsPermissionReady": "Tvoj mobitel će isporučiti obavijesti.",
     "notificationsPermissionBlocked": "Tvoj mobitel neće isporučiti obavijesti.",
     "notificationsAllowAction": "Dopusti obavijesti",
     "notificationsOpenSettingsAction": "Otvori postavke",
