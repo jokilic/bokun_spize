@@ -59,6 +59,8 @@ class _AccountScreenState extends State<AccountScreen> {
       );
     }
 
+    return;
+
     try {
       await getIt.get<FirebaseService>().logOut();
     } catch (error, stackTrace) {
@@ -121,7 +123,7 @@ class _AccountScreenState extends State<AccountScreen> {
       ///
       if (isLoggingOut) ...[
         const ModalBarrier(
-          color: Colors.black38,
+          color: Colors.transparent,
           dismissible: false,
         ),
 
@@ -133,17 +135,35 @@ class _AccountScreenState extends State<AccountScreen> {
                 color: context.colors.scaffoldBackground,
                 borderRadius: BorderRadius.circular(listTileRadius),
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 64,
+                    vertical: 24,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(
-                        color: context.colors.text,
+                      // TODO: Can you constantly animate rotation of the icon here
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Container(
+                          padding: const EdgeInsets.all(listTileIconRadius / 3),
+                          color: context.colors.carbs,
+                          child: PhosphorIcon(
+                            PhosphorIconsBold.hourglass,
+                            color: context.colors.buttonText,
+                            size: listTileIconRadius / 1.5,
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 22),
                       Text(
-                        'accountLogoutProgress'.tr(),
-                        style: context.textStyles.listTileTitle,
+                        'accountLogoutProgressTitle'.tr(),
+                        style: context.textStyles.appBarTitle,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'accountLogoutProgressSubtitle'.tr(),
+                        style: context.textStyles.listTileSubtitle,
                       ),
                     ],
                   ),
