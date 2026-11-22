@@ -15,6 +15,7 @@ import '../../../../util/dependencies.dart';
 import '../../../../util/spacing.dart';
 import 'notifications_controller.dart';
 import 'notifications_sheet_list_tile.dart';
+import 'notifications_sheet_loading.dart';
 
 class NotificationsSheet extends WatchingStatefulWidget {
   final Locale locale;
@@ -30,7 +31,6 @@ class NotificationsSheet extends WatchingStatefulWidget {
 }
 
 class NotificationsSheetState extends State<NotificationsSheet> {
-  /// Registers the controller and starts loading notification values
   @override
   void initState() {
     super.initState();
@@ -46,7 +46,6 @@ class NotificationsSheetState extends State<NotificationsSheet> {
     );
   }
 
-  /// Unregisters the controller when the sheet is dismissed
   @override
   void dispose() {
     unRegisterIfNotDisposed<NotificationsController>();
@@ -131,45 +130,47 @@ class NotificationsSheetState extends State<NotificationsSheet> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 260,
-              child: Center(
-                child: isLoading
-                    ? CircularProgressIndicator(
-                        color: context.colors.account,
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            PhosphorIcon(
-                              PhosphorIconsBold.warningOctagon,
-                              color: context.colors.delete,
-                              size: 48,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              error ?? 'notificationsLoadFailure'.tr(),
-                              style: context.textStyles.infoCardDescription,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: controller.loadInitialData,
-                              icon: const PhosphorIcon(
-                                PhosphorIconsBold.arrowClockwise,
-                                size: 18,
-                              ),
-                              label: Text('tryAgain'.tr()),
-                            ),
-                          ],
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 10),
+          ),
+          if (isLoading)
+            NotificationsSheetLoading()
+          else
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 260,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        PhosphorIcon(
+                          PhosphorIconsBold.warningOctagon,
+                          color: context.colors.delete,
+                          size: 48,
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        Text(
+                          error ?? 'notificationsLoadFailure'.tr(),
+                          style: context.textStyles.infoCardDescription,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: controller.loadInitialData,
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.arrowClockwise,
+                            size: 18,
+                          ),
+                          label: Text('tryAgain'.tr()),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
           SliverToBoxAdapter(
             child: SizedBox(
               height: getBottomSpacing(context),
@@ -180,7 +181,6 @@ class NotificationsSheetState extends State<NotificationsSheet> {
     ),
   );
 
-  /// Selects the loading, error or loaded sheet from controller state
   @override
   Widget build(BuildContext context) {
     final controller = getIt.get<NotificationsController>();
@@ -207,7 +207,6 @@ class NotificationsSheetState extends State<NotificationsSheet> {
     );
   }
 
-  /// Builds notification controls after controller data is available
   Widget buildLoadedState(
     BuildContext context, {
     required NotificationsController controller,

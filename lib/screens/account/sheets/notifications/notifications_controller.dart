@@ -62,18 +62,14 @@ class NotificationsController
   /// Starts lifecycle observation and initial loading
   void init() {
     WidgetsBinding.instance.addObserver(this);
-    unawaited(
-      loadInitialData(),
-    );
+    loadInitialData();
   }
 
   /// Refreshes permission after returning from operating-system settings
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      unawaited(
-        refreshPermission(),
-      );
+      refreshPermission();
     }
   }
 
@@ -127,6 +123,8 @@ class NotificationsController
       isLoading: true,
       error: null,
     );
+
+    await Future.delayed(const Duration(seconds: 3));
 
     try {
       final results = await Future.wait<Object>([
