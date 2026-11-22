@@ -149,11 +149,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "feature/on-value-changed-dialog"
-      resolved-ref: "71327dae906c834bc695453d0d3c8f05f2eadd75"
+      ref: main
+      resolved-ref: c8cc4e1a0cafa8c8144457d90519238f1efc59dd
       url: "https://github.com/jokilic/calendar_date_picker2.git"
     source: git
-    version: "2.0.0"
+    version: "3.0.0"
   carp_serializable:
     dependency: transitive
     description:

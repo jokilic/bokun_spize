@@ -1,10 +1,6 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart' as flutter_material;
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_localizations/flutter_localizations.dart' as flutter_localizations;
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -195,15 +191,15 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   alignment: Alignment.topCenter,
                   duration: BokunSpizeDurations.animation,
                   curve: Curves.easeIn,
-                  child: flutter_material.Theme(
-                    data: flutter_material.ThemeData(
+                  child: Theme(
+                    data: ThemeData(
                       brightness: Theme.brightnessOf(context),
                     ),
                     child: Localizations.override(
                       context: context,
-                      delegates: flutter_localizations.GlobalMaterialLocalizations.delegates,
-                      child: flutter_material.Material(
-                        type: flutter_material.MaterialType.transparency,
+                      delegates: GlobalMaterialLocalizations.delegates,
+                      child: Material(
+                        type: MaterialType.transparency,
                         child: CalendarDatePicker2(
                           value: [widget.dateValue],
                           onValueChanged: (newValue) {
