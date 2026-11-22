@@ -99,6 +99,8 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
       languageCode: context.locale.languageCode,
     );
 
+    final textFieldAnimationStep = widget.shouldShowExplanation ? 4 : 3;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(listTileRadius),
       child: ColoredBox(
@@ -337,7 +339,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                  delay: BokunSpizeDurations.stateTransitionStagger * textFieldAnimationStep,
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -437,7 +439,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     key: ValueKey('meal-image-$imageFile'),
-                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                    delay: BokunSpizeDurations.stateTransitionStagger * (textFieldAnimationStep + 1),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.animation,
@@ -532,7 +534,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Animate(
                     key: const ValueKey('meal-image-empty'),
-                    delay: BokunSpizeDurations.stateTransitionStagger * 4,
+                    delay: BokunSpizeDurations.stateTransitionStagger * (textFieldAnimationStep + 1),
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.animation,
@@ -662,7 +664,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 5,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (textFieldAnimationStep + 2),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -693,7 +695,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 6,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (textFieldAnimationStep + 3),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -783,7 +785,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               ),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 7,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (textFieldAnimationStep + 4),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,
@@ -870,7 +872,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
               padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
               sliver: SliverToBoxAdapter(
                 child: Animate(
-                  delay: BokunSpizeDurations.stateTransitionStagger * 8,
+                  delay: BokunSpizeDurations.stateTransitionStagger * (textFieldAnimationStep + 5),
                   effects: const [
                     FadeEffect(
                       duration: BokunSpizeDurations.animation,

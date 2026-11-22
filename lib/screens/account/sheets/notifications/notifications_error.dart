@@ -24,6 +24,7 @@ class NotificationsError extends StatelessWidget {
     ),
     sliver: SliverToBoxAdapter(
       child: Animate(
+        delay: BokunSpizeDurations.stateTransitionStagger * 3,
         effects: const [
           FadeEffect(
             duration: BokunSpizeDurations.stateTransition,

@@ -122,7 +122,8 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     final showImage = !isCopyingMeal || imageStoragePath != null || imageFile != null;
 
     /// Keep the entrance sequence in layout order when optional sections are hidden
-    final imageAnimationStep = showText ? 4 : 3;
+    final firstContentAnimationStep = widget.shouldShowExplanation ? 4 : 3;
+    final imageAnimationStep = firstContentAnimationStep + (showText ? 1 : 0);
     final nutritionAnimationStep = imageAnimationStep + (showImage ? 1 : 0);
     final foodListAnimationStep = nutritionAnimationStep + 4;
 
@@ -377,7 +378,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Animate(
-                    delay: BokunSpizeDurations.stateTransitionStagger * 3,
+                    delay: BokunSpizeDurations.stateTransitionStagger * firstContentAnimationStep,
                     effects: const [
                       FadeEffect(
                         duration: BokunSpizeDurations.animation,

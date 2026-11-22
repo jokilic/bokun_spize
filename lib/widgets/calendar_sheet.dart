@@ -1,6 +1,10 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart' as flutter_material;
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart' as flutter_localizations;
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -191,68 +195,80 @@ class _CalendarSheetState extends State<CalendarSheet> {
                   alignment: Alignment.topCenter,
                   duration: BokunSpizeDurations.animation,
                   curve: Curves.easeIn,
-                  child: CalendarDatePicker2(
-                    value: [widget.dateValue],
-                    onValueChanged: (newValue) {
-                      final chosenDate = newValue.firstOrNull;
+                  child: flutter_material.Theme(
+                    data: flutter_material.ThemeData(
+                      brightness: Theme.brightnessOf(context),
+                    ),
+                    child: Localizations.override(
+                      context: context,
+                      delegates: flutter_localizations.GlobalMaterialLocalizations.delegates,
+                      child: flutter_material.Material(
+                        type: flutter_material.MaterialType.transparency,
+                        child: CalendarDatePicker2(
+                          value: [widget.dateValue],
+                          onValueChanged: (newValue) {
+                            final chosenDate = newValue.firstOrNull;
 
-                      if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
-                        selectedDateTime = chosenDate;
+                            if (chosenDate != null && !DateUtils.isSameDay(widget.dateValue, chosenDate)) {
+                              selectedDateTime = chosenDate;
 
-                        if (!widget.showConfirmButton) {
-                          widget.onDateChanged(selectedDateTime);
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    },
-                    config: CalendarDatePicker2Config(
-                      calendarViewScrollPhysics: const BouncingScrollPhysics(),
-                      calendarType: CalendarDatePicker2Type.single,
-                      dynamicCalendarRows: true,
-                      customModePickerIcon: const SizedBox.shrink(),
-                      weekdayLabelTextStyle: context.textStyles.calendarWeekdayLabel,
-                      controlsTextStyle: context.textStyles.calendarControl,
-                      todayTextStyle: context.textStyles.calendarToday,
-                      dayTextStyle: context.textStyles.calendarDay,
-                      selectedDayTextStyle: context.textStyles.calendarSelectedDay,
-                      monthTextStyle: context.textStyles.calendarPeriod,
-                      selectedMonthTextStyle: context.textStyles.calendarSelectedPeriod,
-                      yearTextStyle: context.textStyles.calendarPeriod,
-                      selectedYearTextStyle: context.textStyles.calendarSelectedPeriod,
-                      selectedDayHighlightColor: widget.primaryColor,
-                      daySplashColor: widget.primaryColor,
-                      dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
-                        var currentDecoration = decoration;
+                              if (!widget.showConfirmButton) {
+                                widget.onDateChanged(selectedDateTime);
+                                Navigator.of(context).pop();
+                              }
+                            }
+                          },
+                          config: CalendarDatePicker2Config(
+                            calendarViewScrollPhysics: const BouncingScrollPhysics(),
+                            calendarType: CalendarDatePicker2Type.single,
+                            dynamicCalendarRows: true,
+                            customModePickerIcon: const SizedBox.shrink(),
+                            weekdayLabelTextStyle: context.textStyles.calendarWeekdayLabel,
+                            controlsTextStyle: context.textStyles.calendarControl,
+                            todayTextStyle: context.textStyles.calendarToday,
+                            dayTextStyle: context.textStyles.calendarDay,
+                            selectedDayTextStyle: context.textStyles.calendarSelectedDay,
+                            monthTextStyle: context.textStyles.calendarPeriod,
+                            selectedMonthTextStyle: context.textStyles.calendarSelectedPeriod,
+                            yearTextStyle: context.textStyles.calendarPeriod,
+                            selectedYearTextStyle: context.textStyles.calendarSelectedPeriod,
+                            selectedDayHighlightColor: widget.primaryColor,
+                            daySplashColor: widget.primaryColor,
+                            dayBuilder: ({required date, textStyle, decoration, isSelected, isDisabled, isToday}) {
+                              var currentDecoration = decoration;
 
-                        if ((isToday ?? false) && !(isSelected ?? false)) {
-                          currentDecoration = BoxDecoration(
-                            border: Border.all(
+                              if ((isToday ?? false) && !(isSelected ?? false)) {
+                                currentDecoration = BoxDecoration(
+                                  border: Border.all(
+                                    color: context.colors.text,
+                                    width: 2,
+                                  ),
+                                  shape: BoxShape.circle,
+                                );
+                              }
+
+                              return Container(
+                                alignment: Alignment.center,
+                                decoration: currentDecoration,
+                                child: Text(
+                                  DateFormat.d().format(date),
+                                  style: textStyle,
+                                ),
+                              );
+                            },
+                            firstDayOfWeek: DateTime.monday,
+                            lastMonthIcon: PhosphorIcon(
+                              PhosphorIconsBold.caretLeft,
                               color: context.colors.text,
-                              width: 2,
+                              size: 22,
                             ),
-                            shape: BoxShape.circle,
-                          );
-                        }
-
-                        return Container(
-                          alignment: Alignment.center,
-                          decoration: currentDecoration,
-                          child: Text(
-                            DateFormat.d().format(date),
-                            style: textStyle,
+                            nextMonthIcon: PhosphorIcon(
+                              PhosphorIconsBold.caretRight,
+                              color: context.colors.text,
+                              size: 22,
+                            ),
                           ),
-                        );
-                      },
-                      firstDayOfWeek: DateTime.monday,
-                      lastMonthIcon: PhosphorIcon(
-                        PhosphorIconsBold.caretLeft,
-                        color: context.colors.text,
-                        size: 22,
-                      ),
-                      nextMonthIcon: PhosphorIcon(
-                        PhosphorIconsBold.caretRight,
-                        color: context.colors.text,
-                        size: 22,
+                        ),
                       ),
                     ),
                   ),

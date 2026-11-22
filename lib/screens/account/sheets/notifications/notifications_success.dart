@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -14,13 +13,11 @@ import 'notifications_sheet_list_tile.dart';
 class NotificationsSuccess extends StatelessWidget {
   final NotificationsController controller;
   final NotificationSettings settings;
-  final AuthorizationStatus permissionStatus;
   final bool isUpdatingPermission;
 
   const NotificationsSuccess({
     required this.controller,
     required this.settings,
-    required this.permissionStatus,
     required this.isUpdatingPermission,
   });
 
@@ -122,7 +119,7 @@ class NotificationsSuccess extends StatelessWidget {
           vertical: 8,
         ),
         child: Animate(
-          delay: BokunSpizeDurations.stateTransitionStagger * (permissionStatus == AuthorizationStatus.authorized ? 3 : 4),
+          delay: BokunSpizeDurations.stateTransitionStagger * 4,
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.animation,
@@ -199,7 +196,7 @@ class NotificationsSuccess extends StatelessWidget {
           vertical: 8,
         ),
         child: Animate(
-          delay: BokunSpizeDurations.stateTransitionStagger * (permissionStatus == AuthorizationStatus.authorized ? 4 : 5),
+          delay: BokunSpizeDurations.stateTransitionStagger * 5,
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.animation,
@@ -275,7 +272,7 @@ class NotificationsSuccess extends StatelessWidget {
           vertical: 8,
         ),
         child: Animate(
-          delay: BokunSpizeDurations.stateTransitionStagger * (permissionStatus == AuthorizationStatus.authorized ? 5 : 6),
+          delay: BokunSpizeDurations.stateTransitionStagger * 6,
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.animation,

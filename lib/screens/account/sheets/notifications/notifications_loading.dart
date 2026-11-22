@@ -24,7 +24,7 @@ class NotificationsLoading extends StatelessWidget {
         ),
         child: Animate(
           key: ValueKey(index),
-          delay: BokunSpizeDurations.stateTransitionStagger * index,
+          delay: BokunSpizeDurations.stateTransitionStagger * (3 + index),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,

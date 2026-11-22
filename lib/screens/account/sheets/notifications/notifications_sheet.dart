@@ -68,6 +68,11 @@ class NotificationsSheetState extends State<NotificationsSheet> {
       child: ColoredBox(
         color: context.colors.scaffoldBackground,
         child: Animate(
+          key: ValueKey((
+            hasLoadedData,
+            isLoading,
+            error != null,
+          )),
           effects: const [
             FadeEffect(
               duration: BokunSpizeDurations.stateTransition,
@@ -220,7 +225,6 @@ class NotificationsSheetState extends State<NotificationsSheet> {
                 NotificationsSuccess(
                   controller: controller,
                   settings: settings,
-                  permissionStatus: permissionStatus,
                   isUpdatingPermission: state.isUpdatingPermission,
                 ),
 
