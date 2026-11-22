@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/contact_message/contact_message.dart';
-import '../../models/notification/notification_settings.dart';
 import '../../models/user_metrics/user_metrics.dart';
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
@@ -215,36 +213,13 @@ class AccountController extends ValueNotifier<SettingsValues> {
   );
 
   /// Opens [NotificationsSheet]
-  Future<void> openNotificationsSheet(BuildContext context) async {
-    final results = await Future.wait<Object>([
-      /// Fetch latest `NotificationSettings` from [Firebase]
-      firebase.getAndRefreshNotificationSettings(
-        locale: context.locale,
-      ),
-
-      /// Get current notification permission status
-      notification.refreshPermissionStatus(),
-    ]);
-
-    if (!context.mounted) {
-      return;
-    }
-
-    await showBlurredModalBottomSheet(
-      context: context,
-      builder: (sheetContext) => NotificationsSheet(
-        initialSettings: results[0] as NotificationSettings,
-        initialPermissionStatus: results[1] as AuthorizationStatus,
-        onSettingsChanged: (settings) => firebase.writeNotificationSettings(
-          settings: settings,
-        ),
-        onPermissionRequested: notification.requestPermission,
-        onPermissionRefreshed: notification.refreshPermissionStatus,
-        onOpenSettingsPressed: notification.openSystemSettings,
-        onHistoryPressed: () => openNotificationHistorySheet(sheetContext),
-      ),
-    );
-  }
+  Future<void> openNotificationsSheet(BuildContext context) async => await showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => NotificationsSheet(
+      locale: sheetContext.locale,
+      onHistoryPressed: () => openNotificationHistorySheet(sheetContext),
+    ),
+  );
 
   /// Opens [ContactSheet]
   Future<void> openContactSheet(BuildContext context) async => await showBlurredModalBottomSheet(

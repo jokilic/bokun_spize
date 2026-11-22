@@ -6,34 +6,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../constants/durations.dart';
 import '../../../../models/notification/notification_settings.dart';
+import '../../../../services/firebase_service.dart';
+import '../../../../services/notification_service.dart';
 import '../../../../theme/extensions.dart';
 import '../../../../util/date_time.dart';
+import '../../../../util/dependencies.dart';
 import '../../../../util/snackbars.dart';
 import '../../../../util/spacing.dart';
 import '../../../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../../../widgets/time_sheet.dart';
+import 'notifications_controller.dart';
 import 'notifications_sheet_list_tile.dart';
 
-class NotificationsSheet extends StatefulWidget {
-  final NotificationSettings initialSettings;
-  final AuthorizationStatus initialPermissionStatus;
-  final Future<bool> Function(NotificationSettings settings) onSettingsChanged;
-  final Future<AuthorizationStatus> Function() onPermissionRequested;
-  final Future<AuthorizationStatus> Function() onPermissionRefreshed;
-  final Future<bool> Function() onOpenSettingsPressed;
+class NotificationsSheet extends WatchingStatefulWidget {
+  final Locale locale;
   final Future<void> Function() onHistoryPressed;
 
   const NotificationsSheet({
-    required this.initialSettings,
-    required this.initialPermissionStatus,
-    required this.onSettingsChanged,
-    required this.onPermissionRequested,
-    required this.onPermissionRefreshed,
-    required this.onOpenSettingsPressed,
+    required this.locale,
     required this.onHistoryPressed,
   });
 
@@ -42,89 +37,77 @@ class NotificationsSheet extends StatefulWidget {
 }
 
 class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBindingObserver {
-  late NotificationSettings settings;
-  late AuthorizationStatus permissionStatus;
-
-  bool isSaving = false;
-  bool isUpdatingPermission = false;
-
   @override
   void initState() {
     super.initState();
 
-    settings = widget.initialSettings;
-    permissionStatus = widget.initialPermissionStatus;
+    registerIfNotInitialized<NotificationsController>(
+      () => NotificationsController(
+        firebase: getIt.get<FirebaseService>(),
+        notification: getIt.get<NotificationService>(),
+        locale: widget.locale,
+      ),
+      afterRegister: (controller) => controller.init(),
+    );
 
+    /// Observes app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
   }
 
-  /// Stops observing app lifecycle changes
   @override
   void dispose() {
+    /// Stops observing app lifecycle changes
     WidgetsBinding.instance.removeObserver(this);
+    unRegisterIfNotDisposed<NotificationsController>();
     super.dispose();
   }
 
-  /// Refreshes permission after returning from operating-system settings
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Refreshes permission after returning from operating-system settings
     if (state == AppLifecycleState.resumed) {
       refreshPermission();
     }
   }
 
+  /// Returns the controller registered for the active sheet
+  NotificationsController get notificationsController => getIt.get<NotificationsController>();
+
   /// Reports whether the operating system can currently deliver notifications
-  bool get permissionGranted => switch (permissionStatus) {
-    AuthorizationStatus.authorized || AuthorizationStatus.provisional => true,
-    AuthorizationStatus.denied || AuthorizationStatus.deniedPermanently || AuthorizationStatus.notDetermined => false,
-  };
+  bool get permissionGranted => notificationsController.permissionGranted;
 
   /// Returns localized text for the current operating-system permission
-  String get permissionStatusText => switch (permissionStatus) {
+  String get permissionStatusText => switch (notificationsController.value.permissionStatus) {
     AuthorizationStatus.authorized => 'notificationsPermissionAuthorized'.tr(),
     AuthorizationStatus.provisional => 'notificationsPermissionProvisional'.tr(),
     AuthorizationStatus.denied || AuthorizationStatus.deniedPermanently => 'notificationsPermissionDenied'.tr(),
-    AuthorizationStatus.notDetermined => 'notificationsPermissionNotDetermined'.tr(),
+    AuthorizationStatus.notDetermined || null => 'notificationsPermissionNotDetermined'.tr(),
   };
 
   /// Show optimistic preference update and restore previous value if update fails
   Future<void> updateSettings(NotificationSettings newSettings) async {
-    if (isSaving) {
+    if (notificationsController.value.isSaving) {
       return;
     }
 
-    final previousSettings = settings;
-
-    setState(() {
-      settings = newSettings;
-      isSaving = true;
-    });
-
-    final success = await widget.onSettingsChanged(newSettings);
+    final success = await notificationsController.updateSettings(newSettings);
 
     if (!mounted) {
       return;
     }
 
-    /// Update failed, revert to previous value and show error snackbar
-    setState(() {
-      if (!success) {
-        settings = previousSettings;
-
-        showSnackbar(
-          context,
-          text: 'notificationsSaveFailure'.tr(),
-          icon: PhosphorIconsBold.warningOctagon,
-        );
-      }
-
-      isSaving = false;
-    });
+    if (!success) {
+      showSnackbar(
+        context,
+        text: 'notificationsSaveFailure'.tr(),
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
   }
 
   /// Request notification permission from an explicit button press
   Future<void> requestPermission() async {
-    if (isUpdatingPermission) {
+    if (notificationsController.value.isUpdatingPermission) {
       return;
     }
 
@@ -132,20 +115,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
       HapticFeedback.lightImpact(),
     );
 
-    setState(
-      () => isUpdatingPermission = true,
-    );
-
-    final status = await widget.onPermissionRequested();
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      permissionStatus = status;
-      isUpdatingPermission = false;
-    });
+    await notificationsController.requestPermission();
   }
 
   /// Open application settings and refresh the new permission state
@@ -153,26 +123,17 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
     unawaited(
       HapticFeedback.lightImpact(),
     );
-    await widget.onOpenSettingsPressed();
-    await refreshPermission();
+    await notificationsController.openSettings();
   }
 
   /// Read the latest operating-system permission state
-  Future<void> refreshPermission() async {
-    final status = await widget.onPermissionRefreshed();
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(
-      () => permissionStatus = status,
-    );
-  }
+  Future<void> refreshPermission() async => await notificationsController.refreshPermission();
 
   /// Handles notification permission status presses
   Future<void> handlePermissionStatusPressed() async {
-    if (isUpdatingPermission) {
+    final permissionStatus = notificationsController.value.permissionStatus;
+
+    if (notificationsController.value.isUpdatingPermission || permissionStatus == null) {
       return;
     }
 
@@ -198,65 +159,254 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
   }
 
   /// Opens [TimeSheet] and updates the weigh reminder time
-  Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async => await showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => TimeSheet(
-      subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
-      primaryColor: context.colors.carbs,
-      dateValue: settings.weighReminderTime,
-      onTimeChanged: (newTime) => updateSettings(
-        settings.copyWith(
-          weighReminderTime: DateTime(
-            2020,
-            1,
-            1,
-            newTime.hour,
-            newTime.minute,
+  Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async {
+    final settings = notificationsController.value.settings;
+
+    if (settings == null) {
+      return;
+    }
+
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (context) => TimeSheet(
+        subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
+        primaryColor: context.colors.carbs,
+        dateValue: settings.weighReminderTime,
+        onTimeChanged: (newTime) => updateSettings(
+          settings.copyWith(
+            weighReminderTime: DateTime(
+              2020,
+              1,
+              1,
+              newTime.hour,
+              newTime.minute,
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   /// Returns the localized weigh reminder time
-  String getWeighReminderTime(BuildContext context) => getDateString(
-    date: settings.weighReminderTime,
-    dateFormat: 'HH:mm',
-    useTodayYesterdayTomorrow: false,
-    languageCode: context.locale.languageCode,
-  );
+  String getWeighReminderTime(BuildContext context) {
+    final settings = notificationsController.value.settings;
+
+    if (settings == null) {
+      return '--';
+    }
+
+    return getDateString(
+      date: settings.weighReminderTime,
+      dateFormat: 'HH:mm',
+      useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
+    );
+  }
 
   /// Opens [TimeSheet] and updates the daily summary time
-  Future<void> updateDailySummaryTimeViaPicker(BuildContext context) async => await showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => TimeSheet(
-      subtitle: 'notificationsDailySummaryTimeSubtitle'.tr(),
-      primaryColor: context.colors.protein,
-      dateValue: settings.dailySummaryTime,
-      onTimeChanged: (newTime) => updateSettings(
-        settings.copyWith(
-          dailySummaryTime: DateTime(
-            2020,
-            1,
-            1,
-            newTime.hour,
-            newTime.minute,
+  Future<void> updateDailySummaryTimeViaPicker(BuildContext context) async {
+    final settings = notificationsController.value.settings;
+
+    if (settings == null) {
+      return;
+    }
+
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (context) => TimeSheet(
+        subtitle: 'notificationsDailySummaryTimeSubtitle'.tr(),
+        primaryColor: context.colors.protein,
+        dateValue: settings.dailySummaryTime,
+        onTimeChanged: (newTime) => updateSettings(
+          settings.copyWith(
+            dailySummaryTime: DateTime(
+              2020,
+              1,
+              1,
+              newTime.hour,
+              newTime.minute,
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Returns the localized daily summary time
+  String getDailySummaryTime(BuildContext context) {
+    final settings = notificationsController.value.settings;
+
+    if (settings == null) {
+      return '--';
+    }
+
+    return getDateString(
+      date: settings.dailySummaryTime,
+      dateFormat: 'HH:mm',
+      useTodayYesterdayTomorrow: false,
+      languageCode: context.locale.languageCode,
+    );
+  }
+
+  /// Builds the sheet shell while controller data is loading or unavailable
+  Widget buildInitialState(
+    BuildContext context, {
+    required bool isLoading,
+    required String? error,
+  }) => ClipRRect(
+    borderRadius: BorderRadius.circular(listTileRadius),
+    child: ColoredBox(
+      color: context.colors.scaffoldBackground,
+      child: CustomScrollView(
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 24),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      widget.onHistoryPressed();
+                    },
+                    tooltip: 'notificationHistoryTitle'.tr(),
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.notification,
+                      size: 22,
+                    ),
+                    style: IconButton.styleFrom(
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      foregroundColor: context.colors.text,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      'notificationsTitle'.tr(),
+                      style: context.textStyles.sheetTitle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: Navigator.of(context).pop,
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.x,
+                      size: 22,
+                    ),
+                    style: IconButton.styleFrom(
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      backgroundColor: context.colors.listTileBackground.withValues(alpha: 0.5),
+                      foregroundColor: context.colors.text,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'notificationsSheetSubtitle'.tr(),
+                style: context.textStyles.sheetSubtitle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 260,
+              child: Center(
+                child: isLoading
+                    ? CircularProgressIndicator(
+                        color: context.colors.account,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: marginHorizontal),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            PhosphorIcon(
+                              PhosphorIconsBold.warningOctagon,
+                              color: context.colors.delete,
+                              size: 48,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              error ?? 'notificationsLoadFailure'.tr(),
+                              style: context.textStyles.infoCardDescription,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: notificationsController.loadInitialData,
+                              icon: const PhosphorIcon(
+                                PhosphorIconsBold.arrowClockwise,
+                                size: 18,
+                              ),
+                              label: Text('tryAgain'.tr()),
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: getBottomSpacing(context),
+            ),
+          ),
+        ],
       ),
     ),
   );
 
-  /// Returns the localized daily summary time
-  String getDailySummaryTime(BuildContext context) => getDateString(
-    date: settings.dailySummaryTime,
-    dateFormat: 'HH:mm',
-    useTodayYesterdayTomorrow: false,
-    languageCode: context.locale.languageCode,
-  );
-
+  /// Selects the loading, error or loaded sheet from controller state
   @override
-  Widget build(BuildContext context) => ClipRRect(
+  Widget build(BuildContext context) {
+    final state = watchIt<NotificationsController>().value;
+    final settings = state.settings;
+    final permissionStatus = state.permissionStatus;
+
+    if (settings == null || permissionStatus == null) {
+      return buildInitialState(
+        context,
+        isLoading: state.isLoading,
+        error: state.error,
+      );
+    }
+
+    return buildLoadedState(
+      context,
+      settings: settings,
+      permissionStatus: permissionStatus,
+      isUpdatingPermission: state.isUpdatingPermission,
+    );
+  }
+
+  /// Builds notification controls after controller data is available
+  Widget buildLoadedState(
+    BuildContext context, {
+    required NotificationSettings settings,
+    required AuthorizationStatus permissionStatus,
+    required bool isUpdatingPermission,
+  }) => ClipRRect(
     borderRadius: BorderRadius.circular(listTileRadius),
     child: ColoredBox(
       color: context.colors.scaffoldBackground,
