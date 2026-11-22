@@ -30,7 +30,7 @@ import 'account_controller.dart';
 import 'widgets/account_app_bar.dart';
 import 'widgets/account_list_tile.dart';
 
-class AccountScreen extends WatchingStatefulWidget {
+class AccountScreen extends StatefulWidget {
   @override
   State<AccountScreen> createState() => _AccountScreenState();
 }
@@ -92,18 +92,80 @@ class _AccountScreenState extends State<AccountScreen> {
       return;
     }
 
-    /// Reset navigation after authentication has removed the signed-in screens
-    getIt.get<ScreenService>().changeNavigationBarItem(
-      MainScreenItem.meals,
-    );
+    try {
+      /// Reset the default tab for the next sign-in
+      getIt.get<ScreenService>().changeNavigationBarItem(
+        MainScreenItem.meals,
+      );
 
-    await Future.wait([
-      unRegisterIfNotDisposed<MealsController>(),
-      unRegisterIfNotDisposed<WeightsController>(),
-      unRegisterIfNotDisposed<WalksController>(),
-      unRegisterIfNotDisposed<AccountController>(),
-    ]);
+      await Future.wait([
+        unRegisterIfNotDisposed<MealsController>(),
+        unRegisterIfNotDisposed<WeightsController>(),
+        unRegisterIfNotDisposed<WalksController>(),
+        unRegisterIfNotDisposed<AccountController>(),
+      ]);
+    } catch (error, stackTrace) {
+      log(
+        'Cleaning up after sign-out failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    fit: StackFit.expand,
+    children: [
+      ExcludeFocus(
+        excluding: isLoggingOut,
+        child: AccountScaffold(
+          onLogOut: () => unawaited(handleLogOut()),
+        ),
+      ),
+      if (isLoggingOut) ...[
+        const ModalBarrier(
+          color: Colors.black38,
+          dismissible: false,
+        ),
+        BlockSemantics(
+          child: Center(
+            child: Semantics(
+              liveRegion: true,
+              child: Material(
+                color: context.colors.scaffoldBackground,
+                borderRadius: BorderRadius.circular(listTileRadius),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        color: context.colors.text,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'accountLogoutProgress'.tr(),
+                        style: context.textStyles.listTileTitle,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ],
+  );
+}
+
+class AccountScaffold extends WatchingWidget {
+  final Function() onLogOut;
+
+  const AccountScaffold({
+    required this.onLogOut,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +196,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     final hasMacroValues = userMetrics?.dailyCalories != null && userMetrics?.dailyProtein != null && userMetrics?.dailyCarbs != null && userMetrics?.dailyFat != null;
 
-    final accountScaffold = Scaffold(
+    return Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
       bottomNavigationBar: NavigationBarWidget(),
       body: Animate(
@@ -467,7 +529,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 animationDelay: BokunSpizeDurations.stateTransitionStagger * (userMetrics?.isAdmin ?? false ? 8 : 7),
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  handleLogOut();
+                  onLogOut();
                 },
                 icon: PhosphorIconsBold.signOut,
                 iconBackgroundColor: context.colors.account,
@@ -487,8 +549,8 @@ class _AccountScreenState extends State<AccountScreen> {
                     requiresPassword: firebaseService.authProvider == AuthProvider.email,
                     onHandleDelete: (isDeleted) {
                       if (isDeleted) {
-                        handleLogOut();
-                      } else if (mounted) {
+                        onLogOut();
+                      } else if (context.mounted) {
                         showSnackbar(
                           context,
                           text: 'accountDeleteFailure'.tr(),
@@ -586,49 +648,6 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
       ),
-    );
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        ExcludeFocus(
-          excluding: isLoggingOut,
-          child: accountScaffold,
-        ),
-        if (isLoggingOut) ...[
-          const ModalBarrier(
-            color: Colors.black38,
-            dismissible: false,
-          ),
-          BlockSemantics(
-            child: Center(
-              child: Semantics(
-                liveRegion: true,
-                child: Material(
-                  color: context.colors.scaffoldBackground,
-                  borderRadius: BorderRadius.circular(listTileRadius),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(
-                          color: context.colors.text,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'accountLogoutProgress'.tr(),
-                          style: context.textStyles.listTileTitle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
     );
   }
 }
