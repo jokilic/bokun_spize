@@ -6,7 +6,7 @@ import '../../../../constants/durations.dart';
 import '../../../../theme/extensions.dart';
 import 'notifications_sheet_list_tile_loading.dart';
 
-class NotificationsSheetLoading extends StatelessWidget {
+class NotificationsLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = [
