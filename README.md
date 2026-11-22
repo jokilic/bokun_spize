@@ -16,43 +16,6 @@
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
 
-### Quick test checklist
-
-1. Create AI meal in English
-    - Verify Firestore contains complete `en` and `hr` objects
-    - Verify English values appear in the app
-2. Switch app to Croatian
-    - Verify the same meal immediately displays Croatian names and units
-    - Nutrition, quantities, emojis, and colors should remain consistent
-3. Create AI meal in Croatian
-    - Verify both language objects are generated
-    - Switch languages and verify both versions
-4. Test AI inputs
-    - Text only
-    - Image only
-    - Text and image together
-5. Test existing meals
-    - Open an older root-level meal
-    - Verify it still displays correctly in both app languages
-    - Verify search can find it
-6. Create a manual meal
-    - Verify it saves at the document root without `en`/`hr`
-    - Verify it displays correctly after changing language
-7. Edit a manual meal
-    - Verify name, foods, nutrition, date, and image changes persist
-8. Edit a localized AI meal
-    - Verify the current behavior: `en`/`hr` are removed and replaced by root-level values
-    - Decide whether this flattening is acceptable
-9. Copy a localized AI meal
-    - Verify the copy becomes root-level in the active language **(now it will copy both languages)**
-    - Verify the original remains bilingual
-10. Search and daily summary
-    - Search for meal and food names in each active language
-    - Verify localized AI meals are included in the next daily summary
-11. Error handling
-    - Test failed image upload or AI generation
-    - Verify the meal stops loading and shows the appropriate error without parser failures
-
 # Bokun spize 🥗
 
 🥗 **Bokun spize** is a simple fitness app made in **Flutter**. 👨‍💻
