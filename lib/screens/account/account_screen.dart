@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +36,8 @@ class AccountScreen extends WatchingStatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  bool isLoggingOut = false;
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +59,38 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// Signs out and cancels user-specific listeners
   Future<void> handleLogOut() async {
-    await getIt.get<FirebaseService>().logOut();
+    if (isLoggingOut) {
+      return;
+    }
+
+    if (mounted) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      setState(
+        () => isLoggingOut = true,
+      );
+    }
+
+    try {
+      await getIt.get<FirebaseService>().logOut();
+    } catch (error, stackTrace) {
+      log(
+        'Signing out failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      if (mounted) {
+        setState(
+          () => isLoggingOut = false,
+        );
+        showSnackbar(
+          context,
+          text: 'accountLogoutFailure'.tr(),
+          icon: PhosphorIconsBold.warningOctagon,
+        );
+      }
+      return;
+    }
 
     /// Reset navigation after authentication has removed the signed-in screens
     getIt.get<ScreenService>().changeNavigationBarItem(
@@ -100,7 +134,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     final hasMacroValues = userMetrics?.dailyCalories != null && userMetrics?.dailyProtein != null && userMetrics?.dailyCarbs != null && userMetrics?.dailyFat != null;
 
-    return Scaffold(
+    final accountScaffold = Scaffold(
       backgroundColor: context.colors.scaffoldBackground,
       bottomNavigationBar: NavigationBarWidget(),
       body: Animate(
@@ -552,6 +586,49 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
       ),
+    );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ExcludeFocus(
+          excluding: isLoggingOut,
+          child: accountScaffold,
+        ),
+        if (isLoggingOut) ...[
+          const ModalBarrier(
+            color: Colors.black38,
+            dismissible: false,
+          ),
+          BlockSemantics(
+            child: Center(
+              child: Semantics(
+                liveRegion: true,
+                child: Material(
+                  color: context.colors.scaffoldBackground,
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          color: context.colors.text,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'accountLogoutProgress'.tr(),
+                          style: context.textStyles.listTileTitle,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
