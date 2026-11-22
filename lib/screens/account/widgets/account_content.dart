@@ -14,7 +14,6 @@ import '../../../theme/extensions.dart';
 import '../../../util/app_version.dart';
 import '../../../util/dependencies.dart';
 import '../../../util/height.dart';
-import '../../../util/snackbars.dart';
 import '../../../util/spacing.dart';
 import '../../../widgets/navigation_bar_widget.dart';
 import '../account_controller.dart';
@@ -23,9 +22,11 @@ import 'account_list_tile.dart';
 
 class AccountContent extends WatchingWidget {
   final Function() onLogOut;
+  final Future<void> Function(String? password) onDeleteAccount;
 
   const AccountContent({
     required this.onLogOut,
+    required this.onDeleteAccount,
   });
 
   @override
@@ -408,17 +409,7 @@ class AccountContent extends WatchingWidget {
                   accountController.openDeleteAccountSheet(
                     context,
                     requiresPassword: firebaseService.authProvider == AuthProvider.email,
-                    onHandleDelete: (isDeleted) {
-                      if (isDeleted) {
-                        onLogOut();
-                      } else if (context.mounted) {
-                        showSnackbar(
-                          context,
-                          text: 'accountDeleteFailure'.tr(),
-                          icon: PhosphorIconsBold.warningOctagon,
-                        );
-                      }
-                    },
+                    onDeleteConfirmed: onDeleteAccount,
                   );
                 },
                 icon: PhosphorIconsBold.trash,

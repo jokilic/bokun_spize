@@ -29,6 +29,9 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   bool isLoggingOut = false;
+  bool isDeletingAccount = false;
+
+  bool get isAccountOperationInProgress => isLoggingOut || isDeletingAccount;
 
   @override
   void initState() {
@@ -51,7 +54,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// Signs out and cancels user-specific listeners
   Future<void> handleLogOut() async {
-    if (isLoggingOut) {
+    if (isAccountOperationInProgress) {
       return;
     }
 
@@ -86,6 +89,43 @@ class _AccountScreenState extends State<AccountScreen> {
       return;
     }
 
+    await cleanUpAfterSignOut();
+  }
+
+  /// Shows account deletion progress and restores the account screen on failure
+  Future<void> handleDeleteAccount(String? password) async {
+    if (!mounted || isAccountOperationInProgress) {
+      return;
+    }
+
+    setState(
+      () => isDeletingAccount = true,
+    );
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) {
+      return;
+    }
+
+    final firebase = getIt.get<FirebaseService>();
+    final isDeleted = await firebase.deleteUser(
+      email: firebase.userEmail,
+      password: password,
+    );
+
+    if (isDeleted) {
+      await cleanUpAfterSignOut();
+    } else if (mounted) {
+      setState(() => isDeletingAccount = false);
+      showSnackbar(
+        context,
+        text: 'accountDeleteFailure'.tr(),
+        icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
+  }
+
+  /// Resets navigation and unregisters user-specific controllers after sign-out
+  Future<void> cleanUpAfterSignOut() async {
     try {
       /// Reset the default tab for the next sign-in
       getIt.get<ScreenService>().changeNavigationBarItem(
@@ -115,16 +155,17 @@ class _AccountScreenState extends State<AccountScreen> {
       /// ACCOUNT CONTENT
       ///
       ExcludeFocus(
-        excluding: isLoggingOut,
+        excluding: isAccountOperationInProgress,
         child: AccountContent(
           onLogOut: handleLogOut,
+          onDeleteAccount: handleDeleteAccount,
         ),
       ),
 
       ///
       /// ASYNC WORK OVERLAY
       ///
-      if (isLoggingOut) ...[
+      if (isAccountOperationInProgress) ...[
         ClipRect(
           child: TweenAnimationBuilder<double>(
             tween: Tween<double>(
@@ -183,13 +224,15 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                       const SizedBox(height: 22),
                       Text(
-                        'accountLogoutProgressTitle'.tr(),
+                        (isDeletingAccount ? 'accountDeleteProgressTitle' : 'accountLogoutProgressTitle').tr(),
                         style: context.textStyles.appBarTitle,
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'accountLogoutProgressSubtitle'.tr(),
+                        (isDeletingAccount ? 'accountDeleteProgressSubtitle' : 'accountLogoutProgressSubtitle').tr(),
                         style: context.textStyles.listTileSubtitle,
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),

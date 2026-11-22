@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -11,12 +14,12 @@ import '../../../widgets/text_field_widget.dart';
 
 class AccountDeleteSheet extends StatefulWidget {
   final String deleteWord;
-  final Function(String? password) onDeletePressed;
+  final Future<void> Function(String? password) onDeleteConfirmed;
   final bool requiresPassword;
 
   const AccountDeleteSheet({
     required this.deleteWord,
-    required this.onDeletePressed,
+    required this.onDeleteConfirmed,
     required this.requiresPassword,
   });
 
@@ -47,13 +50,22 @@ class _AccountDeleteSheetState extends State<AccountDeleteSheet> {
     super.dispose();
   }
 
-  void deleteAccount() {
+  /// Closes the confirmation sheet before starting account deletion
+  Future<void> deleteAccount() async {
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isCurrent) {
+      return;
+    }
+
     FocusManager.instance.primaryFocus?.unfocus();
+    unawaited(HapticFeedback.lightImpact());
 
     final password = widget.requiresPassword ? passwordController.text.trim() : null;
+    final onDeleteConfirmed = widget.onDeleteConfirmed;
 
-    widget.onDeletePressed(password);
     Navigator.of(context).pop();
+    await route.completed;
+    await onDeleteConfirmed(password);
   }
 
   @override

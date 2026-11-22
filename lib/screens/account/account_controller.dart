@@ -278,28 +278,17 @@ class AccountController extends ValueNotifier<SettingsValues> {
     builder: (sheetContext) => NotificationHistorySheet(),
   );
 
-  /// Opens [DeleteAccountSheet]
+  /// Opens [AccountDeleteSheet] and forwards confirmation after it closes
   Future<void> openDeleteAccountSheet(
     BuildContext context, {
     required bool requiresPassword,
-    required Function(bool isDeleted) onHandleDelete,
+    required Future<void> Function(String? password) onDeleteConfirmed,
   }) async => await showBlurredModalBottomSheet(
     context: context,
     builder: (sheetContext) => AccountDeleteSheet(
       deleteWord: 'accountDeleteSheetWord'.tr(),
       requiresPassword: requiresPassword,
-      onDeletePressed: (password) async {
-        unawaited(
-          HapticFeedback.lightImpact(),
-        );
-
-        final isDeleted = await firebase.deleteUser(
-          email: firebase.userEmail,
-          password: password,
-        );
-
-        onHandleDelete(isDeleted);
-      },
+      onDeleteConfirmed: onDeleteConfirmed,
     ),
   );
 
