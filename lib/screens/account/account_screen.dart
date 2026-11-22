@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -121,12 +122,29 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
 
       ///
-      /// LOGGING OUT OVERLAY
+      /// ASYNC WORK OVERLAY
       ///
       if (isLoggingOut) ...[
-        const ModalBarrier(
-          color: Colors.transparent,
-          dismissible: false,
+        ClipRect(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween<double>(
+              begin: 0,
+              end: modalBackdropBlurSigma,
+            ),
+            duration: BokunSpizeDurations.animation,
+            curve: Curves.ease,
+            builder: (context, blurSigma, child) => BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: blurSigma,
+                sigmaY: blurSigma,
+              ),
+              child: child,
+            ),
+            child: const ModalBarrier(
+              color: Colors.transparent,
+              dismissible: false,
+            ),
+          ),
         ),
         BlockSemantics(
           child: Center(

@@ -11,7 +11,7 @@ Future<T?> showBlurredModalBottomSheet<T>({
   required Widget Function(BuildContext context) builder,
   double? sheetHeight,
   double elevation = 0,
-  double blurSigma = 8,
+  double blurSigma = modalBackdropBlurSigma,
   bool isScrollControlled = true,
   Color? backgroundColor,
   Color modalBarrierColor = Colors.transparent,
