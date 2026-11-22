@@ -210,7 +210,7 @@ class NavigationBarSelectedIcon extends StatelessWidget {
       begin: 0,
       end: 1,
     ),
-    duration: BokunSpizeDurations.stateTransition,
+    duration: BokunSpizeDurations.animation,
     curve: Curves.easeOutCubic,
     builder: (context, scale, child) => SizedBox(
       height: 56,
