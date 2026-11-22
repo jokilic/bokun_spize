@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../constants/constants.dart';
+import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/screen_service.dart';
@@ -126,7 +128,6 @@ class _AccountScreenState extends State<AccountScreen> {
           color: Colors.transparent,
           dismissible: false,
         ),
-
         BlockSemantics(
           child: Center(
             child: Semantics(
@@ -142,16 +143,23 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // TODO: Can you constantly animate rotation of the icon here
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Container(
                           padding: const EdgeInsets.all(listTileIconRadius / 3),
                           color: context.colors.carbs,
-                          child: PhosphorIcon(
-                            PhosphorIconsBold.hourglass,
-                            color: context.colors.buttonText,
-                            size: listTileIconRadius / 1.5,
+                          child: Animate(
+                            onPlay: (controller) => controller.repeat(),
+                            effects: const [
+                              RotateEffect(
+                                duration: BokunSpizeDurations.accountOverlayAnimation,
+                              ),
+                            ],
+                            child: PhosphorIcon(
+                              PhosphorIconsBold.hourglass,
+                              color: context.colors.buttonText,
+                              size: listTileIconRadius / 1.5,
+                            ),
                           ),
                         ),
                       ),
