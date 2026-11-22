@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
@@ -14,12 +11,8 @@ import '../../../../models/notification/notification_settings.dart';
 import '../../../../services/firebase_service.dart';
 import '../../../../services/notification_service.dart';
 import '../../../../theme/extensions.dart';
-import '../../../../util/date_time.dart';
 import '../../../../util/dependencies.dart';
-import '../../../../util/snackbars.dart';
 import '../../../../util/spacing.dart';
-import '../../../../widgets/blurred_modal_bottom_sheet.dart';
-import '../../../../widgets/time_sheet.dart';
 import 'notifications_controller.dart';
 import 'notifications_sheet_list_tile.dart';
 
@@ -36,7 +29,8 @@ class NotificationsSheet extends WatchingStatefulWidget {
   State<NotificationsSheet> createState() => NotificationsSheetState();
 }
 
-class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBindingObserver {
+class NotificationsSheetState extends State<NotificationsSheet> {
+  /// Registers the controller and starts loading notification values
   @override
   void initState() {
     super.initState();
@@ -46,211 +40,23 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
         firebase: getIt.get<FirebaseService>(),
         notification: getIt.get<NotificationService>(),
         locale: widget.locale,
+        onHistoryPressed: widget.onHistoryPressed,
       ),
       afterRegister: (controller) => controller.init(),
     );
-
-    /// Observes app lifecycle changes
-    WidgetsBinding.instance.addObserver(this);
   }
 
+  /// Unregisters the controller when the sheet is dismissed
   @override
   void dispose() {
-    /// Stops observing app lifecycle changes
-    WidgetsBinding.instance.removeObserver(this);
     unRegisterIfNotDisposed<NotificationsController>();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /// Refreshes permission after returning from operating-system settings
-    if (state == AppLifecycleState.resumed) {
-      refreshPermission();
-    }
-  }
-
-  /// Returns the controller registered for the active sheet
-  NotificationsController get notificationsController => getIt.get<NotificationsController>();
-
-  /// Reports whether the operating system can currently deliver notifications
-  bool get permissionGranted => notificationsController.permissionGranted;
-
-  /// Returns localized text for the current operating-system permission
-  String get permissionStatusText => switch (notificationsController.value.permissionStatus) {
-    AuthorizationStatus.authorized => 'notificationsPermissionAuthorized'.tr(),
-    AuthorizationStatus.provisional => 'notificationsPermissionProvisional'.tr(),
-    AuthorizationStatus.denied || AuthorizationStatus.deniedPermanently => 'notificationsPermissionDenied'.tr(),
-    AuthorizationStatus.notDetermined || null => 'notificationsPermissionNotDetermined'.tr(),
-  };
-
-  /// Show optimistic preference update and restore previous value if update fails
-  Future<void> updateSettings(NotificationSettings newSettings) async {
-    if (notificationsController.value.isSaving) {
-      return;
-    }
-
-    final success = await notificationsController.updateSettings(newSettings);
-
-    if (!mounted) {
-      return;
-    }
-
-    if (!success) {
-      showSnackbar(
-        context,
-        text: 'notificationsSaveFailure'.tr(),
-        icon: PhosphorIconsBold.warningOctagon,
-      );
-    }
-  }
-
-  /// Request notification permission from an explicit button press
-  Future<void> requestPermission() async {
-    if (notificationsController.value.isUpdatingPermission) {
-      return;
-    }
-
-    unawaited(
-      HapticFeedback.lightImpact(),
-    );
-
-    await notificationsController.requestPermission();
-  }
-
-  /// Open application settings and refresh the new permission state
-  Future<void> openSettings() async {
-    unawaited(
-      HapticFeedback.lightImpact(),
-    );
-    await notificationsController.openSettings();
-  }
-
-  /// Read the latest operating-system permission state
-  Future<void> refreshPermission() async => await notificationsController.refreshPermission();
-
-  /// Handles notification permission status presses
-  Future<void> handlePermissionStatusPressed() async {
-    final permissionStatus = notificationsController.value.permissionStatus;
-
-    if (notificationsController.value.isUpdatingPermission || permissionStatus == null) {
-      return;
-    }
-
-    if (permissionStatus == AuthorizationStatus.notDetermined) {
-      await requestPermission();
-      return;
-    }
-
-    await openSettings();
-  }
-
-  /// Updates notification settings when notification permission is granted
-  Future<void> handleSettingsPressed(NotificationSettings newSettings) async {
-    if (!permissionGranted) {
-      await handlePermissionStatusPressed();
-
-      if (!permissionGranted) {
-        return;
-      }
-    }
-
-    await updateSettings(newSettings);
-  }
-
-  /// Opens [TimeSheet] and updates the weigh reminder time
-  Future<void> updateWeighReminderTimeViaPicker(BuildContext context) async {
-    final settings = notificationsController.value.settings;
-
-    if (settings == null) {
-      return;
-    }
-
-    await showBlurredModalBottomSheet(
-      context: context,
-      builder: (context) => TimeSheet(
-        subtitle: 'notificationsWeighReminderTimeSubtitle'.tr(),
-        primaryColor: context.colors.carbs,
-        dateValue: settings.weighReminderTime,
-        onTimeChanged: (newTime) => updateSettings(
-          settings.copyWith(
-            weighReminderTime: DateTime(
-              2020,
-              1,
-              1,
-              newTime.hour,
-              newTime.minute,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Returns the localized weigh reminder time
-  String getWeighReminderTime(BuildContext context) {
-    final settings = notificationsController.value.settings;
-
-    if (settings == null) {
-      return '--';
-    }
-
-    return getDateString(
-      date: settings.weighReminderTime,
-      dateFormat: 'HH:mm',
-      useTodayYesterdayTomorrow: false,
-      languageCode: context.locale.languageCode,
-    );
-  }
-
-  /// Opens [TimeSheet] and updates the daily summary time
-  Future<void> updateDailySummaryTimeViaPicker(BuildContext context) async {
-    final settings = notificationsController.value.settings;
-
-    if (settings == null) {
-      return;
-    }
-
-    await showBlurredModalBottomSheet(
-      context: context,
-      builder: (context) => TimeSheet(
-        subtitle: 'notificationsDailySummaryTimeSubtitle'.tr(),
-        primaryColor: context.colors.protein,
-        dateValue: settings.dailySummaryTime,
-        onTimeChanged: (newTime) => updateSettings(
-          settings.copyWith(
-            dailySummaryTime: DateTime(
-              2020,
-              1,
-              1,
-              newTime.hour,
-              newTime.minute,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Returns the localized daily summary time
-  String getDailySummaryTime(BuildContext context) {
-    final settings = notificationsController.value.settings;
-
-    if (settings == null) {
-      return '--';
-    }
-
-    return getDateString(
-      date: settings.dailySummaryTime,
-      dateFormat: 'HH:mm',
-      useTodayYesterdayTomorrow: false,
-      languageCode: context.locale.languageCode,
-    );
   }
 
   /// Builds the sheet shell while controller data is loading or unavailable
   Widget buildInitialState(
     BuildContext context, {
+    required NotificationsController controller,
     required bool isLoading,
     required String? error,
   }) => ClipRRect(
@@ -270,10 +76,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      widget.onHistoryPressed();
-                    },
+                    onPressed: controller.openHistory,
                     tooltip: 'notificationHistoryTitle'.tr(),
                     icon: const PhosphorIcon(
                       PhosphorIconsBold.notification,
@@ -354,7 +157,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton.icon(
-                              onPressed: notificationsController.loadInitialData,
+                              onPressed: controller.loadInitialData,
                               icon: const PhosphorIcon(
                                 PhosphorIconsBold.arrowClockwise,
                                 size: 18,
@@ -380,13 +183,16 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
   /// Selects the loading, error or loaded sheet from controller state
   @override
   Widget build(BuildContext context) {
+    final controller = getIt.get<NotificationsController>();
     final state = watchIt<NotificationsController>().value;
+
     final settings = state.settings;
     final permissionStatus = state.permissionStatus;
 
     if (settings == null || permissionStatus == null) {
       return buildInitialState(
         context,
+        controller: controller,
         isLoading: state.isLoading,
         error: state.error,
       );
@@ -394,6 +200,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
 
     return buildLoadedState(
       context,
+      controller: controller,
       settings: settings,
       permissionStatus: permissionStatus,
       isUpdatingPermission: state.isUpdatingPermission,
@@ -403,6 +210,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
   /// Builds notification controls after controller data is available
   Widget buildLoadedState(
     BuildContext context, {
+    required NotificationsController controller,
     required NotificationSettings settings,
     required AuthorizationStatus permissionStatus,
     required bool isUpdatingPermission,
@@ -445,10 +253,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                     /// NOTIFICATION HISTORY BUTTON
                     ///
                     IconButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onHistoryPressed();
-                      },
+                      onPressed: controller.openHistory,
                       tooltip: 'notificationHistoryTitle'.tr(),
                       icon: const PhosphorIcon(
                         PhosphorIconsBold.notification,
@@ -562,7 +367,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(listTileRadius),
                   child: InkWell(
-                    onTap: isUpdatingPermission ? null : handlePermissionStatusPressed,
+                    onTap: isUpdatingPermission ? null : controller.handlePermissionStatusPressed,
                     borderRadius: BorderRadius.circular(listTileRadius),
                     highlightColor: context.colors.listTileBackground.withValues(alpha: 0.5),
                     splashColor: Colors.transparent,
@@ -586,8 +391,8 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                           ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: PhosphorIcon(
-                              permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
-                              color: permissionGranted ? context.colors.protein : context.colors.delete,
+                              controller.permissionGranted ? PhosphorIconsBold.checkFat : PhosphorIconsBold.warningOctagon,
+                              color: controller.permissionGranted ? context.colors.protein : context.colors.delete,
                               size: listTileIconRadius / 2.5,
                             ),
                           ),
@@ -601,14 +406,14 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  permissionStatusText,
+                                  controller.permissionStatusText,
                                   style: context.textStyles.infoCardTitle.copyWith(
-                                    color: permissionGranted ? context.colors.protein : context.colors.delete,
+                                    color: controller.permissionGranted ? context.colors.protein : context.colors.delete,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
+                                  controller.permissionGranted ? 'notificationsPermissionReady'.tr() : 'notificationsPermissionBlocked'.tr(),
                                   style: context.textStyles.infoCardDescription,
                                 ),
                               ],
@@ -654,8 +459,9 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: NotificationsSheetListTile(
-                  onPressed: () => handleSettingsPressed(
-                    settings.copyWith(
+                  onPressed: () => controller.handleSettingsPressed(
+                    context,
+                    newSettings: settings.copyWith(
                       weighReminderEnabled: !settings.weighReminderEnabled,
                     ),
                   ),
@@ -672,10 +478,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                           ),
                           alignment: Alignment.centerLeft,
                           child: ElevatedButton.icon(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              updateWeighReminderTimeViaPicker(context);
-                            },
+                            onPressed: () => controller.updateWeighReminderTimeViaPicker(context),
                             icon: PhosphorIcon(
                               PhosphorIconsBold.clock,
                               color: context.colors.text,
@@ -693,7 +496,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                               foregroundColor: context.colors.text,
                             ),
                             label: Text(
-                              getWeighReminderTime(context),
+                              controller.getWeighReminderTime(context),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -735,8 +538,9 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: NotificationsSheetListTile(
-                  onPressed: () => handleSettingsPressed(
-                    settings.copyWith(
+                  onPressed: () => controller.handleSettingsPressed(
+                    context,
+                    newSettings: settings.copyWith(
                       dailySummaryEnabled: !settings.dailySummaryEnabled,
                     ),
                   ),
@@ -752,10 +556,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                             left: 76,
                           ),
                           child: ElevatedButton.icon(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              updateDailySummaryTimeViaPicker(context);
-                            },
+                            onPressed: () => controller.updateDailySummaryTimeViaPicker(context),
                             icon: PhosphorIcon(
                               PhosphorIconsBold.clock,
                               color: context.colors.text,
@@ -773,7 +574,7 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                               foregroundColor: context.colors.text,
                             ),
                             label: Text(
-                              getDailySummaryTime(context),
+                              controller.getDailySummaryTime(context),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -815,8 +616,9 @@ class NotificationsSheetState extends State<NotificationsSheet> with WidgetsBind
                   ),
                 ],
                 child: NotificationsSheetListTile(
-                  onPressed: () => handleSettingsPressed(
-                    settings.copyWith(
+                  onPressed: () => controller.handleSettingsPressed(
+                    context,
+                    newSettings: settings.copyWith(
                       announcementsEnabled: !settings.announcementsEnabled,
                     ),
                   ),
