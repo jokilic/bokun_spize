@@ -6,4 +6,3 @@ const modalBackdropBlurSigma = 8.0;
 const nutritionValuesHeight = 7.0;
 const showImageMealListTile = false;
 const minimumSearchLength = 3;
-const maxAiMealDescriptionLength = 2000;

@@ -8,7 +8,6 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../constants/constants.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
@@ -18,9 +17,7 @@ import '../../widgets/blurred_modal_bottom_sheet.dart';
 import '../../widgets/calendar_sheet.dart';
 import '../../widgets/time_sheet.dart';
 
-class AIAddMealController
-    extends ValueNotifier<({bool validation, bool descriptionTooLong, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})>
-    implements Disposable {
+class AIAddMealController extends ValueNotifier<({bool validation, String? speechToTextWords, DateTime mealDate, DateTime mealTime, File? imageFile})> implements Disposable {
   ///
   /// CONSTRUCTOR
   ///
@@ -33,7 +30,6 @@ class AIAddMealController
   }) : super(
          (
            validation: false,
-           descriptionTooLong: false,
            speechToTextWords: null,
            mealDate: DateTime.now(),
            mealTime: DateTime.now(),
@@ -105,14 +101,12 @@ class AIAddMealController
   /// METHODS
   ///
 
-  /// Requires a photo or description and checks the description length
+  /// Requires a photo or nonblank description
   void triggerValidation() {
-    final description = textEditingController.text.trim();
-    final descriptionTooLong = description.length > maxAiMealDescriptionLength;
+    final hasDescription = textEditingController.text.trim().isNotEmpty;
 
     updateState(
-      validation: !descriptionTooLong && (description.isNotEmpty || value.imageFile != null),
-      descriptionTooLong: descriptionTooLong,
+      validation: hasDescription || value.imageFile != null,
     );
   }
 
@@ -293,7 +287,6 @@ class AIAddMealController
   /// Updates `state`
   void updateState({
     bool? validation,
-    bool? descriptionTooLong,
     Object? speechToTextWords = nullStateNoChange,
     bool? dateEditMode,
     bool? timeEditMode,
@@ -302,7 +295,6 @@ class AIAddMealController
     Object? imageFile = nullStateNoChange,
   }) => value = (
     validation: validation ?? value.validation,
-    descriptionTooLong: descriptionTooLong ?? value.descriptionTooLong,
     speechToTextWords: identical(speechToTextWords, nullStateNoChange) ? value.speechToTextWords : speechToTextWords as String?,
     mealDate: mealDate ?? value.mealDate,
     mealTime: mealTime ?? value.mealTime,
