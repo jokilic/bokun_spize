@@ -24,7 +24,8 @@ import {
 initializeApp();
 
 /** Recursively removes private data after a Firebase Auth account is deleted */
-export const cleanupDeletedUser = region("europe-west8")
+// Firebase Auth deletion is first generation and requires a first-generation region
+export const cleanupDeletedUser = region("europe-west1")
   .runWith({
     timeoutSeconds: 540,
     memory: "256MB",
