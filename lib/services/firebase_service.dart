@@ -1279,7 +1279,7 @@ class FirebaseService {
     }
   }
 
-  /// Sends compressed image bytes to the callable meal generator
+  /// Sends compressed image bytes to the callable and surfaces quota rejections
   Future<bool> generateAIMeal({
     required String mealId,
     required String languageCode,
@@ -1315,6 +1315,14 @@ class FirebaseService {
 
       return data is Map && data['success'] == true;
     } catch (error) {
+      if (error is FirebaseFunctionsException && error.code == 'resource-exhausted') {
+        final details = error.details;
+
+        if (details is Map && details['retryAtMillis'] is num) {
+          rethrow;
+        }
+      }
+
       log(
         'Generating AI meal failed',
         error: error,

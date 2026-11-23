@@ -45,6 +45,7 @@
     "recentLogs": "Recent logs",
     "nutritionalValues": "Nutritional values",
     "mealAddFailure": "Couldn't add the meal. Check your connection and try again",
+    "aiMealLimitReached": "Limit reached. Try again at {}",
     "mealUpdateFailure": "Couldn't save the meal changes. Check your connection and try again",
     "mealDeleteFailure": "Couldn't delete the meal. Check your connection and try again",
     "weightAddFailure": "Couldn't log the weight. Check your connection and try again",

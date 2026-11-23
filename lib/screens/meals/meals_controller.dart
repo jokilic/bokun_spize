@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/parse.dart';
 import '../../util/snackbars.dart';
@@ -215,18 +217,38 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       return;
     }
 
-    /// Create and save the AI meal
-    final success = await createAIMeal(
-      result: result,
-      newMealId: newMealId,
-      languageCode: languageCode,
-    );
+    try {
+      final success = await createAIMeal(
+        result: result,
+        newMealId: newMealId,
+        languageCode: languageCode,
+      );
 
-    /// Add failed, show error snackbar
-    if (!success && context.mounted) {
+      if (!success && context.mounted) {
+        showSnackbar(
+          context,
+          text: 'mealAddFailure'.tr(),
+          icon: PhosphorIconsBold.warningOctagon,
+        );
+      }
+    } on FirebaseFunctionsException catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+
+      final retryAtMillis = (error.details as Map)['retryAtMillis'] as num;
+      final retryAt = getDateString(
+        date: DateTime.fromMillisecondsSinceEpoch(
+          (retryAtMillis / 1000).ceil() * 1000,
+        ),
+        dateFormat: 'dd MMM, HH:mm',
+        languageCode: context.locale.languageCode,
+        useTodayYesterdayTomorrow: false,
+      );
+
       showSnackbar(
         context,
-        text: 'mealAddFailure'.tr(),
+        text: 'aiMealLimitReached'.tr(args: [retryAt]),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }
@@ -269,13 +291,6 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       if (!loadingMealWritten) {
         return false;
       }
-
-      /// The callable uploads the image and generates the meal concurrently
-      return await firebase.generateAIMeal(
-        mealId: loadingMeal.id,
-        languageCode: languageCode,
-        imageFile: result.imageFile,
-      );
     } catch (error) {
       log(
         'Adding AI meal failed',
@@ -283,6 +298,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       );
       return false;
     }
+
+    /// The callable uploads the image and generates the meal concurrently
+    return firebase.generateAIMeal(
+      mealId: loadingMeal.id,
+      languageCode: languageCode,
+      imageFile: result.imageFile,
+    );
   }
 
   /// Opens [ManualAddMealScreen] to add, copy, or edit a meal
@@ -292,9 +314,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required bool isCopyingMeal,
   }) async {
     final isEditingMeal = passedMeal != null && !isCopyingMeal;
-    final shouldShowExplanation = passedMeal == null &&
-        !isCopyingMeal &&
-        storage.incrementManualAddMealOpenedNumber() <= 5;
+    final shouldShowExplanation = passedMeal == null && !isCopyingMeal && storage.incrementManualAddMealOpenedNumber() <= 5;
 
     /// Keep the existing `mealId` when editing
     final mealId = isEditingMeal ? passedMeal.id : const Uuid().v1();

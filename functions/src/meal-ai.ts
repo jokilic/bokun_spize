@@ -83,11 +83,12 @@ export interface AIMealCallableInput {
   image: InlineMealImage | null;
 }
 
-/** Transaction result used to coordinate duplicate callable requests */
-export interface AIMealGenerationClaim {
-  status: "claimed" | "busy" | "not-ready";
-  mealData: DocumentData | null;
-}
+/** Transaction result used to coordinate requests and enforce the user quota */
+export type AIMealGenerationClaim =
+  | { status: "claimed"; mealData: DocumentData }
+  | { status: "busy" }
+  | { status: "not-ready" }
+  | { status: "rate-limited"; retryAtMillis: number; message: string };
 
 /** Uploaded image information persisted with a generated meal */
 export interface UploadedMealImage {
@@ -114,6 +115,12 @@ export const MAX_INLINE_MEAL_IMAGE_BYTES = 5 * 1024 * 1024;
 
 /** Lease outlives the function timeout while allowing crashed jobs to recover */
 export const AI_MEAL_GENERATION_LEASE_DURATION_MS = 10 * 60 * 1000;
+
+/** Per-user AI meal generation limits */
+export const AI_MEAL_MINUTE_LIMIT = 3;
+export const AI_MEAL_DAILY_LIMIT = 25;
+export const AI_MEAL_ROLLING_WINDOW_MS = 60 * 1000;
+export const AI_MEAL_UTC_DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Maximum time before an interrupted callable request is marked failed */
 export const AI_MEAL_REQUEST_TIMEOUT_MS = 15 * 60 * 1000;
@@ -558,13 +565,40 @@ export function getAIMealGenerationClaimReference(
   return userReference.collection("mealGenerationClaims").doc(mealReference.id);
 }
 
-/** Atomically claims one loading AI meal or reports an active competing lease */
+/** Keeps the timestamps needed by both limits and finds when another meal can start */
+export function getAIMealQuota(attempts: number[], nowMillis: number): {
+  retainedAttempts: number[];
+  retryAtMillis: number | null;
+} {
+  const dayStart = nowMillis - nowMillis % AI_MEAL_UTC_DAY_MS;
+  const minuteCutoff = nowMillis - AI_MEAL_ROLLING_WINDOW_MS;
+  const retainedAttempts = attempts.filter((attempt) =>
+    attempt >= dayStart || attempt > minuteCutoff,
+  );
+  const dailyCount = retainedAttempts.filter((attempt) => attempt >= dayStart).length;
+  const recentAttempts = retainedAttempts
+    .filter((attempt) => attempt > minuteCutoff)
+    .sort((first, second) => first - second);
+
+  const dailyRetry = dailyCount >= AI_MEAL_DAILY_LIMIT ? dayStart + AI_MEAL_UTC_DAY_MS : 0;
+  const minuteLimitAttempt = recentAttempts.at(-AI_MEAL_MINUTE_LIMIT);
+  const minuteRetry = minuteLimitAttempt === undefined ?
+    0 : minuteLimitAttempt + AI_MEAL_ROLLING_WINDOW_MS;
+
+  return {
+    retainedAttempts,
+    retryAtMillis: Math.max(dailyRetry, minuteRetry) || null,
+  };
+}
+
+/** Claims one loading meal and reserves user quota before starting paid work */
 export async function claimPendingAIMeal(
   mealReference: DocumentReference<DocumentData>,
   leaseId: string,
-  now: Date,
+  languageCode: AIMealCallableInput["languageCode"],
 ): Promise<AIMealGenerationClaim> {
   const claimReference = getAIMealGenerationClaimReference(mealReference);
+  const quotaReference = claimReference.parent.parent!.collection("aiUsage").doc("mealGeneration");
 
   return mealReference.firestore.runTransaction<AIMealGenerationClaim>(async (transaction) => {
     const mealSnapshot = await transaction.get(mealReference);
@@ -577,7 +611,6 @@ export async function claimPendingAIMeal(
     ) {
       return {
         status: "not-ready",
-        mealData: null,
       };
     }
 
@@ -586,19 +619,48 @@ export async function claimPendingAIMeal(
 
     if (
       existingExpiration instanceof Timestamp &&
-      existingExpiration.toMillis() > now.getTime()
+      existingExpiration.toMillis() > claimSnapshot.readTime.toMillis()
     ) {
       return {
         status: "busy",
-        mealData: null,
       };
     }
 
+    const quotaSnapshot = await transaction.get(quotaReference);
+    const nowMillis = quotaSnapshot.readTime.toMillis();
+    const quota = getAIMealQuota(quotaSnapshot.data()?.attempts ?? [], nowMillis);
+
+    if (quota.retryAtMillis !== null) {
+      const message = languageCode === "en" ?
+        "AI meal limit reached. Try again later" :
+        "Dosegnuto je ograničenje AI obroka. Pokušaj ponovno kasnije";
+
+      transaction.update(mealReference, {
+        isLoading: false,
+        errors: [message],
+        aiGenerationLanguage: FieldValue.delete(),
+        aiGenerationRequestedAt: FieldValue.delete(),
+      });
+      if (claimSnapshot.exists) {
+        transaction.delete(claimReference);
+      }
+
+      return {
+        status: "rate-limited",
+        retryAtMillis: quota.retryAtMillis,
+        message,
+      };
+    }
+
+    transaction.set(quotaReference, {
+      attempts: [...quota.retainedAttempts, nowMillis],
+    });
+
     transaction.set(claimReference, {
       leaseId,
-      claimedAt: Timestamp.fromDate(now),
+      claimedAt: quotaSnapshot.readTime,
       expiresAt: Timestamp.fromMillis(
-        now.getTime() + AI_MEAL_GENERATION_LEASE_DURATION_MS,
+        nowMillis + AI_MEAL_GENERATION_LEASE_DURATION_MS,
       ),
     });
 
@@ -764,7 +826,7 @@ export async function processCallableAIMeal(
   const claim = await claimPendingAIMeal(
     mealReference,
     leaseId,
-    new Date(),
+    input.languageCode,
   );
 
   if (claim.status === "busy") {
@@ -775,7 +837,13 @@ export async function processCallableAIMeal(
     throw new HttpsError("failed-precondition", "AI meal is not ready for generation");
   }
 
-  const mealData = claim.mealData!;
+  if (claim.status === "rate-limited") {
+    throw new HttpsError("resource-exhausted", claim.message, {
+      retryAtMillis: claim.retryAtMillis,
+    });
+  }
+
+  const mealData = claim.mealData;
   const originalText = typeof mealData.originalText === "string" ? mealData.originalText.trim() : "";
   const generationPromise = generateMeal({
     text: originalText.length > 0 ? originalText : null,
