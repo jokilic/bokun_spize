@@ -99,10 +99,14 @@ class Meal {
     localizedData: localizedData,
   );
 
-  String toJson() => json.encode({
-    ...toMap(),
-    'createdAt': createdAt.toIso8601String(),
-  });
+  String toJson() {
+    final data = localizedData == null ? toMap() : toLocalizedMap();
+
+    return json.encode({
+      ...data,
+      'createdAt': createdAt.toIso8601String(),
+    });
+  }
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -121,6 +125,12 @@ class Meal {
   };
 
   Map<String, dynamic> toLocalizedMap() {
+    final compactLocalizedData = localizedData;
+
+    if (compactLocalizedData == null) {
+      return toMap();
+    }
+
     final data = toMap()
       ..remove('name')
       ..remove('emoji')
@@ -130,7 +140,7 @@ class Meal {
 
     return {
       ...data,
-      ...?localizedData,
+      ...compactLocalizedData,
     };
   }
 
