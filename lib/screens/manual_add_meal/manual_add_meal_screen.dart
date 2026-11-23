@@ -1371,15 +1371,19 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
                                     nutrition: Nutrition(
                                       calories: parseNumberForFood(
                                         mealController.caloriesTextEditingController.text.trim(),
+                                        originalValue: widget.passedMeal?.nutrition?.calories,
                                       ),
                                       protein: parseNumberForFood(
                                         mealController.proteinTextEditingController.text.trim(),
+                                        originalValue: widget.passedMeal?.nutrition?.protein,
                                       ),
                                       carbs: parseNumberForFood(
                                         mealController.carbsTextEditingController.text.trim(),
+                                        originalValue: widget.passedMeal?.nutrition?.carbs,
                                       ),
                                       fat: parseNumberForFood(
                                         mealController.fatsTextEditingController.text.trim(),
+                                        originalValue: widget.passedMeal?.nutrition?.fat,
                                       ),
                                     ),
                                     foods: List.from(

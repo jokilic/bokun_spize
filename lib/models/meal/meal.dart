@@ -82,6 +82,7 @@ class Meal {
     required String? imageStoragePath,
     required String? imageBlurHash,
     Map<String, dynamic>? localizedData,
+    Food? Function(Object?) parseFood = Food.tryFromMap,
   }) => Meal(
     id: id,
     name: map['name'],
@@ -89,7 +90,7 @@ class Meal {
     color: map['color'] != null ? colorFromHex(map['color']) : null,
     createdAt: createdAt,
     nutrition: map['nutrition'] != null ? Nutrition.fromMap(map['nutrition'] as Map<String, dynamic>) : null,
-    foods: (map['foods'] as List?)?.map(Food.tryFromMap).whereType<Food>().toList(),
+    foods: (map['foods'] as List?)?.map(parseFood).whereType<Food>().toList(),
     originalText: originalText,
     isLoading: isLoading,
     errors: errors,
@@ -141,6 +142,24 @@ class Meal {
     return {
       ...data,
       ...compactLocalizedData,
+    };
+  }
+
+  Map<String, dynamic>? getEditedLocalizedData({
+    required String editedName,
+    required Nutrition? editedNutrition,
+    required List<Food>? editedFoods,
+  }) {
+    final original = localizedData;
+
+    if (original == null || editedName.trim() != (name?.trim() ?? '') || (editedFoods?.any((food) => food.hasNameChanged) ?? false)) {
+      return null;
+    }
+
+    return {
+      ...original,
+      'nutrition': editedNutrition?.toMap(),
+      'foods': editedFoods?.map((food) => food.toLocalizedMap()).toList(),
     };
   }
 

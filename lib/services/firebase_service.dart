@@ -1334,7 +1334,7 @@ class FirebaseService {
 
       final collection = firestore.collection('users').doc(user.uid).collection('meals');
 
-      await collection.doc(newMeal.id).set(newMeal.toMap());
+      await collection.doc(newMeal.id).set(newMeal.toLocalizedMap());
 
       return true;
     } catch (error) {

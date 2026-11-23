@@ -584,27 +584,35 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                     child: ElevatedButton(
                       onPressed: validation
                           ? () {
+                              final original = widget.passedFood;
+
                               /// Generate instance of [Food]
                               final food = Food(
                                 name: nameTextEditingController.text.trim(),
                                 quantity: parseNumberForFood(
                                   quantityTextEditingController.text.trim(),
+                                  originalValue: original?.quantity,
                                 ),
                                 unit: unitTextEditingController.text.trim(),
-                                emoji: widget.passedFood?.emoji,
-                                color: widget.passedFood?.color,
+                                emoji: original?.emoji,
+                                color: original?.color,
+                                localizedData: original?.localizedData,
                                 nutrition: Nutrition(
                                   calories: parseNumberForFood(
                                     caloriesTextEditingController.text.trim(),
+                                    originalValue: original?.nutrition.calories,
                                   ),
                                   protein: parseNumberForFood(
                                     proteinTextEditingController.text.trim(),
+                                    originalValue: original?.nutrition.protein,
                                   ),
                                   carbs: parseNumberForFood(
                                     carbsTextEditingController.text.trim(),
+                                    originalValue: original?.nutrition.carbs,
                                   ),
                                   fat: parseNumberForFood(
                                     fatsTextEditingController.text.trim(),
+                                    originalValue: original?.nutrition.fat,
                                   ),
                                 ),
                               );

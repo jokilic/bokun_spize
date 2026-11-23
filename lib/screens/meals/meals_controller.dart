@@ -526,6 +526,11 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         name: result.name,
         nutrition: result.nutrition,
         foods: result.foods,
+        localizedData: loadingMeal.getEditedLocalizedData(
+          editedName: result.name,
+          editedNutrition: result.nutrition,
+          editedFoods: result.foods,
+        ),
         imageStoragePath: imageStoragePath,
         imageBlurHash: imageBlurHash,
         isLoading: false,
