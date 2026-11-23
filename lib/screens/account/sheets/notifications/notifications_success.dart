@@ -83,7 +83,7 @@ class NotificationsSuccess extends StatelessWidget {
                   color: context.colors.listTileBackground.withValues(alpha: 0.5),
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: permissionGranted ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                   children: [
                     ///
                     /// ICON

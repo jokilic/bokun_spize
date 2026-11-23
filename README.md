@@ -1,6 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Check all staggered animations
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
 - [ ] Firebase App Check
@@ -13,6 +12,7 @@
 - [ ] Crashlytics
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
+- [ ] Update `Readme.md`
 
 # Bokun spize 🥗
 
