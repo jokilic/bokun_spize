@@ -423,6 +423,16 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
                 ),
               ),
             ),
+            if (state.descriptionTooLong)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(marginHorizontal + 16, 8, marginHorizontal + 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'aiMealDescriptionTooLong'.tr(args: [maxAiMealDescriptionLength.toString()]),
+                    style: TextStyle(color: context.colors.delete),
+                  ),
+                ),
+              ),
             const SliverToBoxAdapter(
               child: SizedBox(height: 10),
             ),

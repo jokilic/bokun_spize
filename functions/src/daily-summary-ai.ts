@@ -28,7 +28,7 @@ export interface GeneratedDailySummaryResult {
   modelName: string;
 }
 
-/** Shared model fallback order used by AI generation */
+/** Model fallback order for daily summaries */
 export const AI_MODEL_NAMES = [
   "gemini-3.5-flash-lite",
   "gemini-3.1-flash-lite",

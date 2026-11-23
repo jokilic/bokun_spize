@@ -1,8 +1,13 @@
-import {describe, expect, it} from "vitest";
+import {ApiError, type GenerateContentResponse} from "@google/genai";
+import {describe, expect, it, vi} from "vitest";
 
 import {
   buildMealContentParts,
+  generateMeal,
   getAIMealQuota,
+  MAX_AI_MEAL_DESCRIPTION_LENGTH,
+  MEAL_AI_PRIMARY_MODEL,
+  MEAL_AI_TEXT_FALLBACK_MODEL,
   NoFoodInImageError,
   parseAIMealCallableInput,
   parseGeneratedMeal,
@@ -81,6 +86,82 @@ describe("localized AI meals", () => {
         },
       },
     ]);
+  });
+});
+
+const textMeal = {
+  text: "Chicken and rice",
+  imageBase64: null,
+  imageContentType: null,
+};
+
+const photoMeal = {
+  ...textMeal,
+  imageBase64: Buffer.from("RIFF0000WEBP").toString("base64"),
+  imageContentType: "image/webp",
+};
+
+/** Exercises provider attempts without issuing paid requests */
+describe("AI meal generation cost controls", () => {
+  /** Checks the maximum description length before sending content */
+  it("accepts the limit and rejects longer descriptions", () => {
+    const text = "a".repeat(MAX_AI_MEAL_DESCRIPTION_LENGTH);
+
+    expect(buildMealContentParts({...textMeal, text})).toEqual([{text}]);
+    expect(() => buildMealContentParts({...textMeal, text: text + "a"})).toThrow("maximum length");
+  });
+
+  /** Prevents SDK retries from multiplying the two model calls */
+  it.each([
+    {kind: "text", input: textMeal, fallback: MEAL_AI_TEXT_FALLBACK_MODEL},
+    {kind: "photo", input: photoMeal, fallback: MEAL_AI_PRIMARY_MODEL},
+  ])("makes at most two calls for a $kind meal", async ({input, fallback}) => {
+    vi.useFakeTimers();
+    try {
+      const error = new ApiError({status: 503, message: "Service unavailable"});
+      const generateContent = vi.fn().mockRejectedValue(error);
+      const result = expect(generateMeal(input, {generateContent})).rejects.toBe(error);
+
+      await vi.advanceTimersByTimeAsync(999);
+      expect(generateContent).toHaveBeenCalledTimes(1);
+
+      await vi.runAllTimersAsync();
+      await result;
+      expect(generateContent.mock.calls.map(([request]) => request.model)).toEqual([
+        MEAL_AI_PRIMARY_MODEL,
+        fallback,
+      ]);
+      for (const [request] of generateContent.mock.calls) {
+        expect(request.config).toMatchObject({
+          httpOptions: {retryOptions: {attempts: 1}},
+          mediaResolution: "MEDIA_RESOLUTION_MEDIUM",
+          thinkingConfig: {thinkingLevel: "MINIMAL"},
+          maxOutputTokens: 4096,
+        });
+      }
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  /** Ends a failed request when the provider reports a permanent error */
+  it("does not retry permanent API errors", async () => {
+    const error = new ApiError({status: 400, message: "Invalid request"});
+    const generateContent = vi.fn().mockRejectedValue(error);
+
+    await expect(generateMeal(textMeal, {generateContent})).rejects.toBe(error);
+    expect(generateContent).toHaveBeenCalledTimes(1);
+  });
+
+  /** Ends the request after a received response fails meal validation */
+  it.each([
+    {kind: "invalid JSON", text: "invalid JSON", error: SyntaxError},
+    {kind: "no food", text: '{"status":"no_food_in_image"}', error: NoFoodInImageError},
+  ])("does not retry a response classified as $kind", async ({text, error}) => {
+    const generateContent = vi.fn().mockResolvedValue({text} satisfies Pick<GenerateContentResponse, "text">);
+
+    await expect(generateMeal(photoMeal, {generateContent})).rejects.toThrow(error);
+    expect(generateContent).toHaveBeenCalledTimes(1);
   });
 });
 

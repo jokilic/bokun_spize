@@ -2,22 +2,28 @@
  * Generates compact localized meals from text and inline images with Gemini
  */
 
-import { GoogleGenAI, Part } from "@google/genai";
+import {
+  ApiError,
+  type GenerateContentResponse,
+  GoogleGenAI,
+  MediaResolution,
+  type Part,
+  ThinkingLevel,
+} from "@google/genai";
 import { randomUUID } from "node:crypto";
 import { getApp } from "firebase-admin/app";
 import {
-  DocumentData,
-  DocumentReference,
+  type DocumentData,
+  type DocumentReference,
   FieldValue,
-  Firestore,
+  type Firestore,
   getFirestore,
   Timestamp,
+  type Transaction,
 } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
-
-import { AI_MODEL_NAMES } from "./daily-summary-ai";
 
 /** Localized text generated once for each supported app language */
 export interface GeneratedLocalizedText {
@@ -85,9 +91,10 @@ export interface AIMealCallableInput {
 
 /** Transaction result used to coordinate requests and enforce the user quota */
 export type AIMealGenerationClaim =
-  | { status: "claimed"; mealData: DocumentData }
+  | { status: "claimed"; text: string | null }
   | { status: "busy" }
   | { status: "not-ready" }
+  | { status: "description-too-long" }
   | { status: "rate-limited"; retryAtMillis: number; message: string };
 
 /** Uploaded image information persisted with a generated meal */
@@ -106,6 +113,17 @@ export const APP_STORAGE_BUCKET = "bokun-spize-eu";
 
 /** Global Vertex AI location supports the broadest Gemini model selection */
 export const MEAL_AI_LOCATION = "global";
+
+/** Primary model for all meals and the alternate model for text-only requests */
+export const MEAL_AI_PRIMARY_MODEL = "gemini-3.5-flash-lite";
+export const MEAL_AI_TEXT_FALLBACK_MODEL = "gemini-3.1-flash-lite";
+
+/** Bounds input length and leaves room for a complete bilingual response */
+export const MAX_AI_MEAL_DESCRIPTION_LENGTH = 2000;
+export const AI_MEAL_MAX_OUTPUT_TOKENS = 4096;
+
+/** Transient HTTP statuses eligible for the single delayed fallback */
+export const MEAL_AI_RETRYABLE_STATUSES = [408, 429, 500, 502, 503, 504];
 
 /** Inline images are already compressed to WebP by the Flutter app */
 export const MEAL_IMAGE_CONTENT_TYPE = "image/webp";
@@ -382,6 +400,10 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
   const parts: Part[] = [];
 
   if (input.text !== null && input.text.length > 0) {
+    if (input.text.length > MAX_AI_MEAL_DESCRIPTION_LENGTH) {
+      throw new Error("AI meal description exceeds the maximum length");
+    }
+
     parts.push({ text: input.text });
   }
 
@@ -401,59 +423,95 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
   return parts;
 }
 
-/** Generates a compact structured meal while falling through models on errors */
-export async function generateMeal(
-  input: MealGenerationInput,
-): Promise<GeneratedMealResult> {
+/** Creates a client for the project's global Gemini endpoint */
+export function createMealAIClient(): GoogleGenAI {
   const project = getMealAIProjectId();
 
   if (project === undefined) {
     throw new Error("Firebase project ID is unavailable for meal generation");
   }
 
-  const ai = new GoogleGenAI({
+  return new GoogleGenAI({
     enterprise: true,
     project,
     location: MEAL_AI_LOCATION,
   });
+}
+
+/** Requests and validates one Gemini response, recording usage before discarding it */
+export async function generateMealWithModel(
+  models: Pick<GoogleGenAI["models"], "generateContent">,
+  model: typeof MEAL_AI_PRIMARY_MODEL | typeof MEAL_AI_TEXT_FALLBACK_MODEL,
+  input: MealGenerationInput,
+  attempt: 1 | 2 = 1,
+): Promise<GeneratedMealResult> {
   const parts = buildMealContentParts(input);
-  const failures: string[] = [];
+  const start = Date.now();
+  let response: GenerateContentResponse | undefined;
+  let outcome = "success";
+  let httpStatus: number | undefined;
 
-  for (const model of AI_MODEL_NAMES) {
-    try {
-      const response = await ai.models.generateContent({
-        model,
-        contents: [{ role: "user", parts }],
-        config: {
-          systemInstruction: MEAL_SYSTEM_INSTRUCTION,
-          responseMimeType: "application/json",
-          responseJsonSchema: MEAL_GENERATION_RESPONSE_SCHEMA,
-          temperature: 0.2,
-          maxOutputTokens: 4096,
-        },
-      });
+  try {
+    response = await models.generateContent({
+      model,
+      contents: [{ role: "user", parts }],
+      config: {
+        httpOptions: { retryOptions: { attempts: 1 } },
+        systemInstruction: MEAL_SYSTEM_INSTRUCTION,
+        responseMimeType: "application/json",
+        responseJsonSchema: MEAL_GENERATION_RESPONSE_SCHEMA,
+        mediaResolution: MediaResolution.MEDIA_RESOLUTION_MEDIUM,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
+        maxOutputTokens: AI_MEAL_MAX_OUTPUT_TOKENS,
+      },
+    });
 
-      const meal = parseGeneratedMeal(response.text);
-      if (input.imageBase64 !== null && meal.foods.length === 0) {
-        throw new Error("AI returned an image-based meal without any food or drink items");
-      }
+    const meal = parseGeneratedMeal(response.text);
+    if (input.imageBase64 !== null && meal.foods.length === 0) {
+      throw new Error("AI returned an image-based meal without any food or drink items");
+    }
 
-      return { meal, modelName: model };
-    } catch (error) {
-      if (input.imageBase64 !== null && error instanceof NoFoodInImageError) {
-        throw error;
-      }
+    return { meal, modelName: model };
+  } catch (error) {
+    outcome = error instanceof NoFoodInImageError ? "no-food" : "failed";
+    httpStatus = error instanceof ApiError ? error.status : undefined;
+    throw error;
+  } finally {
+    const usage = response?.usageMetadata;
+    logger.info("AI meal model attempt", {
+      model,
+      attempt,
+      outcome,
+      httpStatus,
+      latencyMillis: Date.now() - start,
+      hasImage: input.imageBase64 !== null,
+      finishReason: response?.candidates?.[0]?.finishReason,
+      promptTokenCount: usage?.promptTokenCount,
+      cachedContentTokenCount: usage?.cachedContentTokenCount,
+      candidatesTokenCount: usage?.candidatesTokenCount,
+      thoughtsTokenCount: usage?.thoughtsTokenCount,
+      totalTokenCount: usage?.totalTokenCount,
+    });
+  }
+}
 
-      const message = error instanceof Error ? error.message : "Unknown AI error";
-      failures.push(`${model}: ${message}`);
-      logger.warn("Meal generation model failed", {
-        model,
-        error: message.slice(0, 500),
-      });
+/** Makes one primary request and one delayed fallback only for a transient API error */
+export async function generateMeal(
+  input: MealGenerationInput,
+  models: Pick<GoogleGenAI["models"], "generateContent"> = createMealAIClient().models,
+): Promise<GeneratedMealResult> {
+  try {
+    return await generateMealWithModel(models, MEAL_AI_PRIMARY_MODEL, input);
+  } catch (error) {
+    if (!(error instanceof ApiError) || !MEAL_AI_RETRYABLE_STATUSES.includes(error.status)) {
+      throw error;
     }
   }
 
-  throw new Error(`Generating the meal failed: ${failures.join(" | ").slice(0, 900)}`);
+  // The alternate model can mistake a caption for food in an unrelated photo
+  const fallbackModel = input.imageBase64 === null ? MEAL_AI_TEXT_FALLBACK_MODEL : MEAL_AI_PRIMARY_MODEL;
+  await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 500));
+  return generateMealWithModel(models, fallbackModel, input, 2);
 }
 
 /** Confirms the decoded bytes contain the WebP file signature */
@@ -626,6 +684,16 @@ export async function claimPendingAIMeal(
       };
     }
 
+    const text = typeof mealData.originalText === "string" ? mealData.originalText.trim() : "";
+    if (text.length > MAX_AI_MEAL_DESCRIPTION_LENGTH) {
+      const message = languageCode === "en" ?
+        `Use at most ${MAX_AI_MEAL_DESCRIPTION_LENGTH} characters to describe your meal` :
+        `Za opis obroka upotrijebi najviše ${MAX_AI_MEAL_DESCRIPTION_LENGTH} znakova`;
+
+      rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
+      return { status: "description-too-long" };
+    }
+
     const quotaSnapshot = await transaction.get(quotaReference);
     const nowMillis = quotaSnapshot.readTime.toMillis();
     const quota = getAIMealQuota(quotaSnapshot.data()?.attempts ?? [], nowMillis);
@@ -635,15 +703,7 @@ export async function claimPendingAIMeal(
         "AI meal limit reached. Try again later" :
         "Dosegnuto je ograničenje AI obroka. Pokušaj ponovno kasnije";
 
-      transaction.update(mealReference, {
-        isLoading: false,
-        errors: [message],
-        aiGenerationLanguage: FieldValue.delete(),
-        aiGenerationRequestedAt: FieldValue.delete(),
-      });
-      if (claimSnapshot.exists) {
-        transaction.delete(claimReference);
-      }
+      rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
 
       return {
         status: "rate-limited",
@@ -666,9 +726,28 @@ export async function claimPendingAIMeal(
 
     return {
       status: "claimed",
-      mealData,
+      text: text || null,
     };
   });
+}
+
+/** Finishes a rejected meal and clears any expired claim within the same transaction */
+export function rejectPendingAIMeal(
+  transaction: Transaction,
+  mealReference: DocumentReference<DocumentData>,
+  expiredClaimReference: DocumentReference<DocumentData> | null,
+  message: string,
+): void {
+  transaction.update(mealReference, {
+    isLoading: false,
+    errors: [message],
+    aiGenerationLanguage: FieldValue.delete(),
+    aiGenerationRequestedAt: FieldValue.delete(),
+  });
+
+  if (expiredClaimReference !== null) {
+    transaction.delete(expiredClaimReference);
+  }
 }
 
 /** Writes a terminal meal state only when the caller still owns its lease */
@@ -843,10 +922,12 @@ export async function processCallableAIMeal(
     });
   }
 
-  const mealData = claim.mealData;
-  const originalText = typeof mealData.originalText === "string" ? mealData.originalText.trim() : "";
+  if (claim.status === "description-too-long") {
+    return { success: false };
+  }
+
   const generationPromise = generateMeal({
-    text: originalText.length > 0 ? originalText : null,
+    text: claim.text,
     imageBase64: input.image?.base64 ?? null,
     imageContentType: input.image?.contentType ?? null,
   });
@@ -871,9 +952,9 @@ export async function processCallableAIMeal(
       logger.error("Generating callable AI meal failed", {
         userId,
         mealId: input.mealId,
-        error: generationOutcome.reason instanceof Error ?
-          generationOutcome.reason.message.slice(0, 900) :
-          "Unknown meal generation error",
+        errorType: generationOutcome.reason instanceof Error ?
+          generationOutcome.reason.name :
+          "unknown",
       });
     }
 

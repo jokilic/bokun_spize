@@ -11,6 +11,7 @@
     "build:watch": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "benchmark:meal-ai": "node --experimental-strip-types scripts/benchmark-meal-ai.mjs",
     "test:emulator": "firebase emulators:exec --config ../firebase.json --only firestore \"npm test\"",
     "serve": "npm run build && firebase emulators:start --config ../firebase.json --only functions,firestore",
     "deploy": "firebase deploy --config ../firebase.json --only functions,firestore",

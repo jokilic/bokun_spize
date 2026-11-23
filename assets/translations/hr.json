@@ -46,6 +46,7 @@
     "nutritionalValues": "Nutritivne vrijednosti",
     "mealAddFailure": "Obrok nije moguće dodati. Provjeri internetsku vezu i pokušaj ponovno",
     "aiMealLimitReached": "Dosegnuto je ograničenje. Pokušaj ponovno u {}",
+    "aiMealDescriptionTooLong": "Za opis obroka upotrijebi najviše {} znakova",
     "mealUpdateFailure": "Promjene obroka nije moguće spremiti. Provjeri internetsku vezu i pokušaj ponovno",
     "mealDeleteFailure": "Obrok nije moguće izbrisati. Provjeri internetsku vezu i pokušaj ponovno",
     "weightAddFailure": "Težinu nije moguće zabilježiti. Provjeri internetsku vezu i pokušaj ponovno",
