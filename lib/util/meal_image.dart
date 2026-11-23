@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 
 import 'blur_hash.dart';
@@ -37,12 +38,14 @@ Future<String?> generateMealImageBlurHash(File imageFile) async {
     return await Isolate.run(
       () => encodeMealImageBlurHashFile(imagePath),
     );
-  } catch (error, stackTrace) {
-    log(
-      'Generating meal image BlurHash failed',
-      error: error,
-      stackTrace: stackTrace,
-    );
+  } catch (error) {
+    if (kDebugMode) {
+      log(
+        'Generating meal image BlurHash failed',
+        level: 500,
+        error: error,
+      );
+    }
     return null;
   }
 }

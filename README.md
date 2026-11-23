@@ -2,17 +2,17 @@
 
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
+- [ ] Analytics
+- [ ] Crashlytics
+- [ ] Perhaps anonymous sign-in
+- [ ] App purchases - Research & initial implementation
+- [ ] Update `Readme.md`
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required
     - [ ] Optionally change LICENSED to Required
     - [ ] Minimum acceptable device integrity -> Don't explicitly check
     - [ ] The legacy sideloaded APK will then stop working
-- [ ] Analytics
-- [ ] Crashlytics
-- [ ] Perhaps anonymous sign-in
-- [ ] App purchases - Research & initial implementation
-- [ ] Update `Readme.md`
 
 # Bokun spize 🥗
 

@@ -131,10 +131,13 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
     try {
       await imageCacheManager.removeFile(imageStoragePath);
     } catch (error) {
-      log(
-        'Removing meal image from the disk cache failed',
-        error: error,
-      );
+      if (kDebugMode) {
+        log(
+          'Removing meal image from the disk cache failed',
+          level: 500,
+          error: error,
+        );
+      }
     }
 
     /// Remove the decoded image
@@ -145,10 +148,13 @@ class CacheService extends ValueNotifier<({Map<String, String> mealImageDownload
         cacheManager: imageCacheManager,
       ).evict();
     } catch (error) {
-      log(
-        'Removing meal image from the memory cache failed',
-        error: error,
-      );
+      if (kDebugMode) {
+        log(
+          'Removing meal image from the memory cache failed',
+          level: 500,
+          error: error,
+        );
+      }
     }
 
     final completedMealImageDownloadUrls = Map<String, String>.from(value.mealImageDownloadUrls)..remove(imageStoragePath);

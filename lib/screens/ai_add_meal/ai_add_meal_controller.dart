@@ -1,10 +1,8 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -170,85 +168,26 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
     }
   }
 
-  /// Triggered when the user presses [Camera] button
-  Future<void> onCameraPressed() async {
-    /// Trigger `imagePicker`
-    final image = await imagePicker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 100,
-      maxHeight: 1000,
-      maxWidth: 1000,
+  /// Selects a meal image using the camera
+  Future<void> onCameraPressed() => selectMealImage(ImageSource.camera);
+
+  /// Selects a meal image from the gallery
+  Future<void> onGalleryPressed() => selectMealImage(ImageSource.gallery);
+
+  /// Updates the form once a meal image is ready
+  Future<void> selectMealImage(ImageSource source) async {
+    final imageFile = await pickMealImage(
+      imagePicker: imagePicker,
+      source: source,
     );
-
-    /// Image is taken, update `state`
-    if (image != null) {
-      /// Center the camera image to a `1:1 aspect ratio`
-      final imageBytes = await image.readAsBytes();
-      final decodedImage = img.decodeImage(imageBytes);
-
-      if (decodedImage == null) {
-        return;
-      }
-
-      final orientedImage = img.bakeOrientation(decodedImage);
-      final squareSize = min(
-        orientedImage.width,
-        orientedImage.height,
-      );
-
-      final squareImage = img.copyCrop(
-        orientedImage,
-        x: (orientedImage.width - squareSize) ~/ 2,
-        y: (orientedImage.height - squareSize) ~/ 2,
-        width: squareSize,
-        height: squareSize,
-      );
-
-      /// Encode the cropped image as WebP and save it into app storage
-      final imageFile = await persistImage(
-        imagePath: image.path,
-        webpBytes: img.encodeWebP(
-          squareImage,
-          lossless: false,
-          quality: 50,
-        ),
-      );
-
-      /// Update `state` with new image
-      updateState(
-        imageFile: imageFile,
-      );
-
-      /// Trigger validation
-      triggerValidation();
+    if (imageFile == null) {
+      return;
     }
-  }
 
-  /// Triggered when the user presses [Gallery] button
-  Future<void> onGalleryPressed() async {
-    /// Trigger `imagePicker`
-    final image = await imagePicker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 100,
-      maxHeight: 1000,
-      maxWidth: 1000,
+    updateState(
+      imageFile: imageFile,
     );
-
-    /// Image is picked, update `state`
-    if (image != null) {
-      /// Convert the selected image to `WebP` and save it into app storage
-      final imageFile = await persistImage(
-        imagePath: image.path,
-      );
-
-      /// Update `state` with new image
-      updateState(
-        imageFile: imageFile,
-      );
-
-      /// Trigger validation
-      triggerValidation();
-    }
+    triggerValidation();
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`

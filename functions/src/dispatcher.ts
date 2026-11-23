@@ -108,6 +108,28 @@ export interface DeliveryResult {
   invalidDeviceReferences: DocumentReference<DocumentData>[];
 }
 
+/** Counts delivery activity across one scheduler invocation */
+export interface NotificationDispatchActivity {
+  attemptedDeviceDeliveries: number;
+  failedDeviceDeliveries: number;
+  failedDispatches: number;
+  failedDeviceCleanups: number;
+  failedQueries: number;
+  quotaSkippedSummaries: number;
+}
+
+/** Starts an empty set of notification dispatch counts */
+export function createNotificationDispatchActivity(): NotificationDispatchActivity {
+  return {
+    attemptedDeviceDeliveries: 0,
+    failedDeviceDeliveries: 0,
+    failedDispatches: 0,
+    failedDeviceCleanups: 0,
+    failedQueries: 0,
+    quotaSkippedSummaries: 0,
+  };
+}
+
 /** Source and sanitized FCM error retained for one failed device */
 export interface DeliveryFailureDetail {
   deviceId: string;
@@ -373,25 +395,34 @@ export function getDeliveryErrorCode(error: unknown): string {
   return "unknown";
 }
 
+/** Removes known registration IDs from a diagnostic before truncating it */
+export function getSanitizedDeliveryMessage(
+  error: unknown,
+  devices: readonly DeviceRegistration[],
+  fallback: string,
+  maximumLength: number,
+): string {
+  let message = error instanceof Error ? error.message : fallback;
+  for (const {fid} of devices) {
+    if (fid.length > 0) {
+      message = message.split(fid).join("[redacted]");
+    }
+  }
+  return message.slice(0, maximumLength);
+}
+
 /** Creates bounded diagnostics without persisting the Firebase Installation ID */
 export function createDeliveryFailureDetail(
   device: DeviceRegistration,
   error: unknown,
   source: DeliveryFailureDetail["source"],
+  message = getSanitizedDeliveryMessage(error, [device], "Unknown FCM delivery error", DELIVERY_FAILURE_MESSAGE_LIMIT),
 ): DeliveryFailureDetail {
-  const rawMessage = error instanceof Error
-    ? error.message
-    : "Unknown FCM delivery error";
-  const sanitizedMessage = rawMessage
-    .split(device.fid)
-    .join("[redacted]")
-    .slice(0, DELIVERY_FAILURE_MESSAGE_LIMIT);
-
   return {
     deviceId: device.reference.id,
     source,
     code: getDeliveryErrorCode(error),
-    message: sanitizedMessage,
+    message,
   };
 }
 
@@ -401,6 +432,7 @@ export function recordDeliveryFailure(
   device: DeviceRegistration | undefined,
   error: unknown,
   source: DeliveryFailureDetail["source"],
+  message?: string,
 ): void {
   if (
     device === undefined ||
@@ -410,7 +442,7 @@ export function recordDeliveryFailure(
   }
 
   result.failureDetails.push(
-    createDeliveryFailureDetail(device, error, source),
+    createDeliveryFailureDetail(device, error, source, message),
   );
 }
 
@@ -535,20 +567,27 @@ export async function sendDeviceGroup(
       // A request-level failure counts the entire chunk but later chunks still continue
       result.failureCount += chunk.length;
 
-      // Retain the shared request error against each affected device up to the audit limit
+      const message = getSanitizedDeliveryMessage(error, chunk, "Unknown FCM delivery error", DELIVERY_FAILURE_MESSAGE_LIMIT);
+
+      // Reuse the message with every registration ID removed for the shared failure
       chunk.forEach((device) => {
         recordDeliveryFailure(
           result,
           device,
           error,
           "multicast_request",
+          message,
         );
       });
 
-      logger.error("FCM multicast request failed", {
-        error,
+      logger.write({
+        severity: "ERROR",
+        message: "FCM multicast request failed",
+        errorCode: getDeliveryErrorCode(error),
+        detail: message,
         userId: dispatch.userId,
         type: dispatch.definition.type,
+        locale,
         deviceCount: chunk.length,
       });
     }
@@ -588,21 +627,26 @@ export async function sendReservedNotification(
 /** Deletes registrations that FCM confirms are no longer valid */
 export async function deleteInvalidDevices(
   references: DocumentReference<DocumentData>[],
-): Promise<void> {
+): Promise<number> {
   // Deletes invalid devices independently so one failure does not stop cleanup
   const deletions = await Promise.allSettled(
     references.map((reference) => reference.delete()),
   );
 
   // Logs document paths without exposing Firebase Installation IDs
+  let failureCount = 0;
   deletions.forEach((deletion, index) => {
     if (deletion.status === "rejected") {
-      logger.error("Deleting an invalid notification device failed", {
-        error: deletion.reason,
+      failureCount += 1;
+      logger.write({
+        severity: "ERROR",
+        message: "Deleting an invalid notification device failed",
+        errorCode: getDeliveryErrorCode(deletion.reason),
         devicePath: references[index]?.path,
       });
     }
   });
+  return failureCount;
 }
 
 /** Records aggregate delivery results on the idempotency document */
@@ -642,35 +686,33 @@ export async function processDueSettings(
   settingsDocument: QueryDocumentSnapshot<DocumentData>,
   definition: NotificationDefinition,
   now: Date,
+  activity = createNotificationDispatchActivity(),
 ): Promise<void> {
-  // Reservation may return null when another invocation already claimed this occurrence
-  const dispatch = await reserveDueNotification(
-    firestore,
-    settingsDocument.ref,
-    definition,
-    now,
-  );
-
-  if (dispatch === null) {
-    return;
-  }
-
-  // The reservation transaction already completed stale and pre-recorded occurrences
-  if (dispatch.skipReason !== null) {
-    return;
-  }
+  let stage = "reserve";
+  let dispatch: ReservedDispatch | null = null;
+  let devices: DeviceRegistration[] = [];
 
   try {
-    // Delivery is intentionally performed after the transaction to avoid external calls in retries
-    const devices = await getActiveDevices(dispatch);
+    dispatch = await reserveDueNotification(firestore, settingsDocument.ref, definition, now);
 
+    // Another invocation may own the occurrence or the reservation may already be skipped
+    if (dispatch === null || dispatch.skipReason !== null) {
+      return;
+    }
+
+    stage = "load_devices";
+    devices = await getActiveDevices(dispatch);
+
+    stage = "check_recorded_weight";
     // Recheck after device loading so entries committed near dispatch suppress the reminder
     if (await hasWeightForReservedLocalDate(dispatch)) {
+      stage = "record_skip";
       await completeSkippedDispatch(dispatch, "weight_recorded");
       return;
     }
 
     if (dispatch.definition.type === "dailySummary") {
+      stage = "generate_summary";
       const userReference = getUserReference(dispatch.settingsReference);
       const period = getDailySummaryPeriod(
         dispatch.scheduledAt,
@@ -694,58 +736,89 @@ export async function processDueSettings(
       };
     }
 
+    stage = "send";
+    activity.attemptedDeviceDeliveries += devices.length;
     const result = await sendReservedNotification(messaging, dispatch, devices);
+    activity.failedDeviceDeliveries += result.failureCount;
 
     // Record the outcome before cleaning invalid devices so cleanup cannot hide delivery success
+    stage = "record_outcome";
     await completeDispatch(dispatch, result, devices.length);
-    await deleteInvalidDevices(result.invalidDeviceReferences);
+    stage = "clean_up_devices";
+    const failedDeviceCleanups = await deleteInvalidDevices(result.invalidDeviceReferences);
+    activity.failedDeviceCleanups += failedDeviceCleanups;
   } catch (error) {
-    if (error instanceof ProjectAIQuotaExceeded) {
-      await completeSkippedDispatch(dispatch, "ai_quota_exhausted");
-      return;
+    if (dispatch !== null && error instanceof ProjectAIQuotaExceeded) {
+      activity.quotaSkippedSummaries += 1;
+      try {
+        await completeSkippedDispatch(dispatch, "ai_quota_exhausted");
+        return;
+      } catch (writeError) {
+        activity.failedDispatches += 1;
+        logger.write({
+          severity: "ERROR",
+          message: "Recording notification quota skip failed",
+          errorCode: getDeliveryErrorCode(writeError),
+          type: definition.type,
+          settingsPath: settingsDocument.ref.path,
+        });
+        throw writeError;
+      }
     }
 
-    // Store a bounded error message without FIDs or other registration data
-    await dispatch.dispatchReference.update({
-      status: "failed",
-      completedAt: Timestamp.now(),
-      error: error instanceof Error ? error.message.slice(0, 1000) : "Unknown delivery error",
+    activity.failedDispatches += 1;
+    logger.write({
+      severity: "ERROR",
+      message: "Notification dispatch failed for one user",
+      stage,
+      errorCode: getDeliveryErrorCode(error),
+      errorType: error instanceof Error ? error.name : "unknown",
+      settingsPath: settingsDocument.ref.path,
+      type: definition.type,
     });
+
+    if (dispatch !== null) {
+      try {
+        await dispatch.dispatchReference.update({
+          status: "failed",
+          completedAt: Timestamp.now(),
+          error: getSanitizedDeliveryMessage(error, devices, "Unknown delivery error", 1000),
+        });
+      } catch (writeError) {
+        logger.write({
+          severity: "ERROR",
+          message: "Recording notification dispatch failure failed",
+          errorCode: getDeliveryErrorCode(writeError),
+          type: definition.type,
+          settingsPath: settingsDocument.ref.path,
+        });
+        throw writeError;
+      }
+    }
     throw error;
   }
 }
 
-/** Processes one indexed due query and logs failures independently */
+/** Processes one indexed due query and isolates each user's dispatch failures */
 export async function dispatchNotificationType(
   firestore: Firestore,
   messaging: Messaging,
   definition: NotificationDefinition,
   now: Date,
+  activity = createNotificationDispatchActivity(),
 ): Promise<void> {
-  // One indexed query handles one due timestamp field and its matching enabled flag
   const dueSettings = await getDueSettings(firestore, definition, now);
 
-  // Isolates each user's delivery outcome
-  const outcomes = await Promise.allSettled(
+  await Promise.allSettled(
     dueSettings.map((settingsDocument) => processDueSettings(
       firestore,
       messaging,
       settingsDocument,
       definition,
       now,
+      activity,
     )),
   );
-
-  // Reports rejected deliveries after all users have been processed
-  outcomes.forEach((outcome, index) => {
-    if (outcome.status === "rejected") {
-      logger.error("Notification delivery failed for one user", {
-        error: outcome.reason,
-        settingsPath: dueSettings[index]?.ref.path,
-        type: definition.type,
-      });
-    }
-  });
 }
 
 /** Dispatches every supported due notification type */
@@ -754,6 +827,8 @@ export async function dispatchDueNotifications(
   messaging: Messaging,
   now: Date,
 ): Promise<void> {
+  const activity = createNotificationDispatchActivity();
+
   // Processes notification types independently
   const outcomes = await Promise.allSettled(
     NOTIFICATION_TYPES.map((type) => dispatchNotificationType(
@@ -761,16 +836,31 @@ export async function dispatchDueNotifications(
       messaging,
       NOTIFICATION_DEFINITIONS[type],
       now,
+      activity,
     )),
   );
 
   // Reports query failures without masking successful notification types
   outcomes.forEach((outcome, index) => {
     if (outcome.status === "rejected") {
-      logger.error("Notification due query failed", {
-        error: outcome.reason,
+      activity.failedQueries += 1;
+      logger.write({
+        severity: "ERROR",
+        message: "Notification due query failed",
+        errorCode: getDeliveryErrorCode(outcome.reason),
+        errorType: outcome.reason instanceof Error ? outcome.reason.name : "unknown",
         type: NOTIFICATION_TYPES[index],
       });
     }
   });
+
+  if (
+    activity.failedDeviceDeliveries > 0 ||
+    activity.failedDispatches > 0 ||
+    activity.failedDeviceCleanups > 0 ||
+    activity.failedQueries > 0 ||
+    activity.quotaSkippedSummaries > 0
+  ) {
+    logger.warn("Notification dispatch run completed with failures or quota skips", {...activity});
+  }
 }

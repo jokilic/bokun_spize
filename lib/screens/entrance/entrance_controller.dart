@@ -156,29 +156,10 @@ class EntranceController
     final password = loginPasswordTextEditingController.text.trim();
 
     try {
-      final loginResult = await firebase.loginUser(
+      return await firebase.loginUser(
         email: email,
         password: password,
       );
-
-      /// Successful login
-      if (loginResult.user != null && loginResult.error == null) {
-        updateState(
-          emailIsLoading: false,
-        );
-      }
-      /// Not successful login
-      else {
-        log(
-          'Email sign in failed',
-          error: loginResult.error ?? 'User is null',
-        );
-        updateState(
-          emailIsLoading: false,
-        );
-      }
-
-      return loginResult;
     } catch (error) {
       log(
         'Email sign in failed',
@@ -260,30 +241,11 @@ class EntranceController
     final name = registerNameTextEditingController.text.trim();
 
     try {
-      final registerResult = await firebase.registerUser(
+      return await firebase.registerUser(
         email: email,
         password: password,
         name: name,
       );
-
-      /// Successful registration
-      if (registerResult.user != null && registerResult.error == null) {
-        updateState(
-          emailIsLoading: false,
-        );
-      }
-      /// Not successful registration
-      else {
-        log(
-          'Email registration failed',
-          error: registerResult.error ?? 'User is null',
-        );
-        updateState(
-          emailIsLoading: false,
-        );
-      }
-
-      return registerResult;
     } catch (error) {
       log(
         'Email registration failed',
@@ -319,26 +281,7 @@ class EntranceController
     );
 
     try {
-      final loginResult = await firebase.signInWithGoogle();
-
-      /// Successful login
-      if (loginResult.user != null && loginResult.error == null) {
-        updateState(
-          googleIsLoading: false,
-        );
-      }
-      /// Not successful login
-      else {
-        log(
-          'Google sign in failed',
-          error: loginResult.error ?? 'User is null',
-        );
-        updateState(
-          googleIsLoading: false,
-        );
-      }
-
-      return loginResult;
+      return await firebase.signInWithGoogle();
     } catch (error) {
       log(
         'Google sign in failed',
@@ -374,26 +317,7 @@ class EntranceController
     );
 
     try {
-      final loginResult = await firebase.signInWithApple();
-
-      /// Successful login
-      if (loginResult.user != null && loginResult.error == null) {
-        updateState(
-          appleIsLoading: false,
-        );
-      }
-      /// Not successful login
-      else {
-        log(
-          'Apple sign in failed',
-          error: loginResult.error ?? 'User is null',
-        );
-        updateState(
-          appleIsLoading: false,
-        );
-      }
-
-      return loginResult;
+      return await firebase.signInWithApple();
     } catch (error) {
       log(
         'Apple sign in failed',

@@ -4,6 +4,7 @@ import {describe, expect, it} from "vitest";
 import {
   deduplicateDevices,
   DeviceRegistration,
+  getSanitizedDeliveryMessage,
 } from "../src/dispatcher";
 
 /** Creates a lightweight registration for sender unit tests */
@@ -37,5 +38,17 @@ describe("notification dispatcher", () => {
       newestDevice,
       uniqueDevice,
     ]);
+  });
+
+  /** Verifies shared request errors redact every affected registration before truncation */
+  it("redacts all registration IDs in a multicast error", () => {
+    const devices = [
+      createDevice("first-device", "first-fid"),
+      createDevice("second-device", "second-fid"),
+    ];
+    const error = new Error("Failed to send to first-fid and second-fid");
+
+    expect(getSanitizedDeliveryMessage(error, devices, "Unknown error", 40))
+      .toBe("Failed to send to [redacted] and [redact");
   });
 });

@@ -163,11 +163,9 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         return;
       }
 
-      /// Error happened
       if (meals == null) {
-        throw StateError(
-          'Meals could not be loaded',
-        );
+        showMealSearchError(query);
+        return;
       }
 
       final terms = tokenizeString(query);
@@ -244,20 +242,23 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
         return;
       }
 
-      mealsRequest = null;
-
       log(
         'Searching meals failed',
         error: error,
       );
-
-      updateState(
-        query: query,
-        meals: const [],
-        isLoading: false,
-        error: 'mealsCouldNotBeLoaded'.tr(),
-      );
+      showMealSearchError(query);
     }
+  }
+
+  /// Clears the failed request so the next search can retry the fetch
+  void showMealSearchError(String query) {
+    mealsRequest = null;
+    updateState(
+      query: query,
+      meals: const [],
+      isLoading: false,
+      error: 'mealsCouldNotBeLoaded'.tr(),
+    );
   }
 
   /// Removes a deleted meal from the visible results and invalidates cached meals

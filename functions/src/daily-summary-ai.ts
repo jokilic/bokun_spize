@@ -2,7 +2,7 @@
  * Generates short localized daily meal summaries with Gemini
  */
 
-import { GoogleGenAI } from "@google/genai";
+import { ApiError, GoogleGenAI } from "@google/genai";
 import { getApp } from "firebase-admin/app";
 import {
   DocumentData,
@@ -196,6 +196,7 @@ export async function generateDailySummaryBodies(
   for (const model of AI_MODEL_NAMES) {
     await reserveProjectAICall(firestore);
 
+    let stage = "request";
     try {
       const response = await ai.models.generateContent({
         model,
@@ -210,16 +211,20 @@ export async function generateDailySummaryBodies(
         },
       });
 
+      stage = "validate_response";
       return {
         bodies: parseDailySummaryResponse(response.text),
         modelName: model,
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown AI error";
-      failures.push(`${model}: ${message}`);
+      const errorType = error instanceof Error ? error.name : "unknown";
+      const httpStatus = error instanceof ApiError ? error.status : undefined;
+      failures.push(`${model}: ${stage} (${httpStatus ?? errorType})`);
       logger.warn("Daily summary model failed", {
         model,
-        error: message.slice(0, 500),
+        stage,
+        errorType,
+        httpStatus,
       });
     }
   }

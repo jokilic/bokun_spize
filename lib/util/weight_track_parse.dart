@@ -11,11 +11,10 @@ WeightTrack? parseWeightTrackDocument(QueryDocumentSnapshot<Map<String, dynamic>
       document.data(),
       id: document.id,
     );
-  } catch (error, stackTrace) {
+  } catch (error) {
     log(
       'Parsing weight track ${document.id} failed',
       error: error,
-      stackTrace: stackTrace,
     );
     return null;
   }

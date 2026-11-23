@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bool available, bool isListening})> {
@@ -43,6 +46,13 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
           }
         },
         onError: (error) {
+          if (error.errorMsg != 'error_no_match' && error.errorMsg != 'error_speech_timeout' && error.errorMsg != 'error_request_cancelled') {
+            log(
+              'Speech recognition failed',
+              error: error.errorMsg,
+            );
+          }
+
           updateState(
             isListening: false,
           );
@@ -53,8 +63,11 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
         speechToText: speechToText,
         available: available,
       );
-    } catch (e) {
-      return;
+    } catch (error) {
+      log(
+        'Initializing speech recognition failed',
+        error: error is PlatformException ? error.code : error.runtimeType,
+      );
     }
   }
 
@@ -83,8 +96,11 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
       updateState(
         isListening: true,
       );
-    } catch (e) {
-      return;
+    } catch (error) {
+      log(
+        'Starting speech recognition failed',
+        error: error is PlatformException ? error.code : error.runtimeType,
+      );
     }
   }
 
@@ -100,8 +116,11 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
       updateState(
         isListening: false,
       );
-    } catch (e) {
-      return;
+    } catch (error) {
+      log(
+        'Stopping speech recognition failed',
+        error: error is PlatformException ? error.code : error.runtimeType,
+      );
     }
   }
 

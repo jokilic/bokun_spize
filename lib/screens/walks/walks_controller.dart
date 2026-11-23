@@ -83,6 +83,8 @@ class WalksController
   var isDisposed = false;
   var isStepsRefreshActive = false;
   var isRefreshingCurrentDaySteps = false;
+  Object? lastStepRefreshErrorCode;
+  DateTime? lastStepRefreshErrorLoggedAt;
   var isFetchingRemainingStepHistory = false;
   var hasRequestedHistoryPermission = false;
 
@@ -177,6 +179,8 @@ class WalksController
   /// Stops step refreshes and the walking subscription while [WalksScreen] is inactive
   void pauseStepsRefresh() {
     isStepsRefreshActive = false;
+    lastStepRefreshErrorCode = null;
+    lastStepRefreshErrorLoggedAt = null;
     stepsRefreshTimer?.cancel();
     stepsRefreshTimer = null;
 
@@ -225,14 +229,13 @@ class WalksController
           ),
         );
 
+      lastStepRefreshErrorCode = null;
+      lastStepRefreshErrorLoggedAt = null;
       updateState(
         stepsWithDate: stepsWithDate,
       );
     } on HealthException catch (error) {
-      log(
-        'Refreshing today steps failed',
-        error: error,
-      );
+      logStepRefreshFailure(error.errorCode);
 
       /// A denied read cannot recover through the periodic refresh
       if (error.errorCode == HealthErrorCode.permissionDenied) {
@@ -242,13 +245,30 @@ class WalksController
         );
       }
     } catch (error) {
-      log(
-        'Refreshing today steps failed',
-        error: error,
-      );
+      logStepRefreshFailure(error.runtimeType);
     } finally {
       isRefreshingCurrentDaySteps = false;
     }
+  }
+
+  /// Logs new refresh failures immediately and repeated failures at most once per minute
+  void logStepRefreshFailure(Object code) {
+    if (!isStepsRefreshActive) {
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastLoggedAt = lastStepRefreshErrorLoggedAt;
+    if (code == lastStepRefreshErrorCode && lastLoggedAt != null && now.difference(lastLoggedAt) < const Duration(minutes: 1)) {
+      return;
+    }
+
+    lastStepRefreshErrorCode = code;
+    lastStepRefreshErrorLoggedAt = now;
+    log(
+      'Refreshing today steps failed',
+      error: code,
+    );
   }
 
   /// Requests read access to step data from `Apple Health` or `Health Connect`

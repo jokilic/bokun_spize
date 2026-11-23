@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' hide NotificationSettings;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
@@ -163,7 +164,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Subscribing to FCM registrations failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
   }
@@ -194,7 +195,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   void handleRegistrationError(Object error) {
     log(
       'Listening to FCM registrations failed',
-      error: error,
+      error: notificationErrorCode(error),
     );
     scheduleRegistrationRetry();
   }
@@ -202,7 +203,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// Logs unregistration stream failures without exposing registration IDs
   void handleUnregistrationError(Object error) => log(
     'Listening to FCM unregistrations failed',
-    error: error,
+    error: notificationErrorCode(error),
   );
 
   ///
@@ -219,7 +220,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Subscribing to authentication changes failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
   }
@@ -260,7 +261,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// Logs authentication listener failures without exposing user data
   void handleAuthenticationStreamError(Object error) => log(
     'Listening to authentication changes failed',
-    error: error,
+    error: notificationErrorCode(error),
   );
 
   ///
@@ -277,7 +278,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Subscribing to opened FCM messages failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
   }
@@ -285,7 +286,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   /// Logs message stream failures without interrupting application startup
   void handleMessageStreamError(Object error) => log(
     'Listening to FCM messages failed',
-    error: error,
+    error: notificationErrorCode(error),
   );
 
   /// Handles a notification that opened the application from the background
@@ -310,7 +311,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Configuring FCM foreground presentation failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
   }
@@ -329,7 +330,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Requesting notification permission failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
 
@@ -346,7 +347,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Reading notification permission failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
 
@@ -386,7 +387,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Listening to notification settings failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
   }
@@ -407,7 +408,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   void handleNotificationSettingsError(Object error) {
     log(
       'Listening to notification preferences for registration failed',
-      error: error,
+      error: notificationErrorCode(error),
     );
     scheduleRegistrationRetry();
   }
@@ -499,11 +500,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       registrationRetryTimer?.cancel();
 
       await synchronizeAnnouncementTopics(locale);
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Synchronizing the notification registration failed',
-        error: error,
-        stackTrace: stackTrace,
+        error: notificationErrorCode(error),
       );
       scheduleRegistrationRetry();
     }
@@ -521,11 +521,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         final deviceId = await storage.getNotificationDeviceId();
 
         await firestore.collection('users').doc(userId).collection('notificationDevices').doc(deviceId).delete();
-      } catch (error, stackTrace) {
+      } catch (error) {
         log(
           'Removing the notification registration failed',
-          error: error,
-          stackTrace: stackTrace,
+          error: notificationErrorCode(error),
         );
       }
     }
@@ -537,7 +536,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       } catch (error) {
         log(
           'Unregistering from FCM failed',
-          error: error,
+          error: notificationErrorCode(error),
         );
       }
     }
@@ -570,7 +569,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         } catch (error) {
           log(
             'Unregistering from FCM after authentication changed failed',
-            error: error,
+            error: notificationErrorCode(error),
           );
         }
       }
@@ -606,11 +605,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     try {
       final token = await messaging.getAPNSToken();
       return token != null;
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Reading APNs token availability failed',
-        error: error,
-        stackTrace: stackTrace,
+        error: notificationErrorCode(error),
       );
       return false;
     }
@@ -666,11 +664,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
       activeAnnouncementTopic = desiredTopic;
       announcementTopicsReconciled = true;
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Announcement topic $operation failed for $topicName',
-        error: error,
-        stackTrace: stackTrace,
+        error: notificationErrorCode(error),
       );
       scheduleRegistrationRetry();
     }
@@ -700,11 +697,10 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     try {
       await messaging.unsubscribeFromTopic(topic);
       await storage.setNotificationAnnouncementTopic(null);
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Unsubscribing from announcement topic $topic failed',
-        error: error,
-        stackTrace: stackTrace,
+        error: notificationErrorCode(error),
       );
       return;
     }
@@ -720,7 +716,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Opening application settings failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
       return false;
     }
@@ -737,10 +733,16 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     } catch (error) {
       log(
         'Reading the initial FCM message failed',
-        error: error,
+        error: notificationErrorCode(error),
       );
     }
   }
+
+  /// Reports a stable diagnostic without including registration or message payloads
+  String notificationErrorCode(Object error) => switch (error) {
+    FirebaseException(:final code) || PlatformException(:final code) => code,
+    _ => error.runtimeType.toString(),
+  };
 
   /// Parses a message payload and logs malformed or unknown data
   NotificationPayload? parsePayload(RemoteMessage message) {

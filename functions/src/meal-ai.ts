@@ -75,6 +75,34 @@ export interface GeneratedMealResult {
 /** Signals that the supplied photo has no recognizable food or drink */
 export class NoFoodInImageError extends Error { }
 
+/** Identifies a model response validation failure without exposing generated content */
+export class MealResponseError extends Error {
+  constructor(
+    readonly reason: "missing_response" | "invalid_field" | "invalid_shape" | "missing_foods",
+    message: string,
+    readonly field?: string,
+  ) {
+    super(message);
+  }
+}
+
+/** Reports stable failure details without including user input or provider payloads */
+export function getMealGenerationFailureDetails(error: unknown) {
+  if (error instanceof MealResponseError) {
+    return {reason: error.reason, field: error.field};
+  }
+  if (error instanceof ApiError) {
+    return {reason: "provider_request_failed", httpStatus: error.status};
+  }
+  if (error instanceof SyntaxError) {
+    return {reason: "invalid_json"};
+  }
+  if (error instanceof NoFoodInImageError) {
+    return {reason: "no_food_in_image"};
+  }
+  return {reason: "unexpected_error", errorType: error instanceof Error ? error.name : "unknown"};
+}
+
 /** Optional inline image supplied by the callable client */
 export interface InlineMealImage {
   buffer: Buffer;
@@ -285,7 +313,7 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
 /** Parses one finite nonnegative numeric response property */
 export function parseGeneratedNumber(value: unknown, propertyName: string): number {
   if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
-    throw new Error(`AI returned invalid ${propertyName}`);
+    throw new MealResponseError("invalid_field", `AI returned invalid ${propertyName}`, propertyName);
   }
 
   return value;
@@ -302,7 +330,7 @@ export function parseGeneratedString(
     value.trim().length === 0 ||
     value.trim().length > maximumLength
   ) {
-    throw new Error(`AI returned invalid ${propertyName}`);
+    throw new MealResponseError("invalid_field", `AI returned invalid ${propertyName}`, propertyName);
   }
 
   return value.trim();
@@ -317,7 +345,7 @@ export function parseGeneratedLocalizedText(
   const localizedText = asRecord(value);
 
   if (localizedText === null) {
-    throw new Error(`AI returned invalid localized ${propertyName}`);
+    throw new MealResponseError("invalid_field", `AI returned invalid localized ${propertyName}`, propertyName);
   }
 
   return {
@@ -331,7 +359,7 @@ export function parseGeneratedColor(value: unknown, propertyName: string): strin
   const color = parseGeneratedString(value, propertyName, 7);
 
   if (!/^#[0-9a-fA-F]{6}$/.test(color)) {
-    throw new Error(`AI returned invalid ${propertyName}`);
+    throw new MealResponseError("invalid_field", `AI returned invalid ${propertyName}`, propertyName);
   }
 
   return color;
@@ -342,7 +370,7 @@ export function parseGeneratedNutrition(value: unknown): GeneratedNutrition {
   const nutrition = asRecord(value);
 
   if (nutrition === null) {
-    throw new Error("AI returned invalid nutrition");
+    throw new MealResponseError("invalid_shape", "AI returned invalid nutrition", "nutrition");
   }
 
   return {
@@ -358,7 +386,7 @@ export function parseGeneratedFood(value: unknown): GeneratedFood {
   const food = asRecord(value);
 
   if (food === null) {
-    throw new Error("AI returned invalid food data");
+    throw new MealResponseError("invalid_shape", "AI returned invalid food data", "food data");
   }
 
   return {
@@ -374,7 +402,7 @@ export function parseGeneratedFood(value: unknown): GeneratedFood {
 /** Parses and validates one compact Gemini meal response */
 export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
   if (text === undefined) {
-    throw new Error("AI returned no meal data");
+    throw new MealResponseError("missing_response", "AI returned no meal data");
   }
 
   const response = asRecord(JSON.parse(text));
@@ -389,7 +417,7 @@ export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
     !Array.isArray(meal.foods) ||
     meal.foods.length > 200
   ) {
-    throw new Error("AI returned invalid meal data");
+    throw new MealResponseError("invalid_shape", "AI returned invalid meal data", "meal data");
   }
 
   return {
@@ -463,7 +491,7 @@ export async function generateMealWithModel(
   const start = Date.now();
   let response: GenerateContentResponse | undefined;
   let outcome = "success";
-  let httpStatus: number | undefined;
+  let failureDetails: ReturnType<typeof getMealGenerationFailureDetails> | undefined;
 
   try {
     response = await models.generateContent({
@@ -482,13 +510,13 @@ export async function generateMealWithModel(
 
     const meal = parseGeneratedMeal(response.text);
     if (input.imageBase64 !== null && meal.foods.length === 0) {
-      throw new Error("AI returned an image-based meal without any food or drink items");
+      throw new MealResponseError("missing_foods", "AI returned an image-based meal without any food or drink items");
     }
 
     return { meal, modelName: model };
   } catch (error) {
     outcome = error instanceof NoFoodInImageError ? "no-food" : "failed";
-    httpStatus = error instanceof ApiError ? error.status : undefined;
+    failureDetails = getMealGenerationFailureDetails(error);
     throw error;
   } finally {
     const usage = response?.usageMetadata;
@@ -496,7 +524,7 @@ export async function generateMealWithModel(
       model,
       attempt,
       outcome,
-      httpStatus,
+      ...failureDetails,
       latencyMillis: Date.now() - start,
       hasImage: input.imageBase64 !== null,
       finishReason: response?.candidates?.[0]?.finishReason,
@@ -857,6 +885,15 @@ export async function uploadAIMealImage(
   };
 }
 
+/** Extracts safe diagnostic fields from Storage failures */
+export function getMealImageStorageFailureDetails(error: unknown) {
+  const code = error instanceof Error && "code" in error ? error.code : undefined;
+  return {
+    errorType: error instanceof Error ? error.name : "unknown",
+    errorCode: typeof code === "string" || typeof code === "number" ? code : undefined,
+  };
+}
+
 /** Deletes an uploaded image when generation cannot use it */
 export async function deleteAIMealImage(storagePath: string): Promise<void> {
   try {
@@ -866,9 +903,11 @@ export async function deleteAIMealImage(storagePath: string): Promise<void> {
       .delete({ ignoreNotFound: true });
   } catch (error) {
     // Cleanup must not prevent the meal from reaching its terminal state
-    logger.error("Deleting unused AI meal image failed", {
+    logger.write({
+      severity: "ERROR",
+      message: "Deleting unused AI meal image failed",
       storagePath,
-      error: error instanceof Error ? error.message.slice(0, 900) : "Unknown deletion error",
+      ...getMealImageStorageFailureDetails(error),
     });
   }
 }
@@ -1001,10 +1040,12 @@ export async function processCallableAIMeal(
     const noFoodInImage = failure instanceof NoFoodInImageError;
     const projectQuotaExceeded = failure instanceof ProjectAIQuotaExceeded;
     if (!noFoodInImage && !projectQuotaExceeded) {
-      logger.error("Generating callable AI meal failed", {
+      logger.write({
+        severity: "ERROR",
+        message: "AI meal generation failed",
         userId,
         mealId: input.mealId,
-        errorType: failure instanceof Error ? failure.name : "unknown",
+        ...getMealGenerationFailureDetails(failure),
       });
     }
 
@@ -1033,12 +1074,12 @@ export async function processCallableAIMeal(
     null;
 
   if (imageUploadFailed) {
-    logger.error("Uploading callable AI meal image failed", {
+    logger.write({
+      severity: "ERROR",
+      message: "Uploading callable AI meal image failed",
       userId,
       mealId: input.mealId,
-      error: imageUploadOutcome.reason instanceof Error ?
-        imageUploadOutcome.reason.message.slice(0, 900) :
-        "Unknown image upload error",
+      ...getMealImageStorageFailureDetails(imageUploadOutcome.reason),
     });
   }
 

@@ -68,11 +68,10 @@ class _AccountScreenState extends State<AccountScreen> {
 
     try {
       await getIt.get<FirebaseService>().logOut();
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Signing out failed',
         error: error,
-        stackTrace: stackTrace,
       );
 
       if (mounted) {
@@ -115,11 +114,10 @@ class _AccountScreenState extends State<AccountScreen> {
         email: firebase.userEmail,
         password: password,
       );
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Deleting account failed',
         error: error,
-        stackTrace: stackTrace,
       );
     }
 
@@ -151,11 +149,10 @@ class _AccountScreenState extends State<AccountScreen> {
         unRegisterIfNotDisposed<WalksController>(),
         unRegisterIfNotDisposed<AccountController>(),
       ]);
-    } catch (error, stackTrace) {
+    } catch (error) {
       log(
         'Cleaning up after sign-out failed',
         error: error,
-        stackTrace: stackTrace,
       );
     }
   }

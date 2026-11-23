@@ -87,11 +87,10 @@ Meal? parseMealDocument(
       localizedData: getCompactLocalizedMealData(data),
       parseFood: hasLocalizedName ? (food) => parseLocalizedFood(food, languageCode: languageCode) : Food.tryFromMap,
     );
-  } catch (error, stackTrace) {
+  } catch (error) {
     log(
       'Parsing meal ${document.id} failed',
       error: error,
-      stackTrace: stackTrace,
     );
     return null;
   }

@@ -7,6 +7,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -380,10 +381,7 @@ class FirebaseService {
         _ => 'firebaseErrorLoginError'.tr(),
       };
 
-      log(
-        'Email sign in failed',
-        error: error,
-      );
+      logFirebaseAuthFailure('Email sign in failed', error.code);
       return (
         user: null,
         error: errorMessage,
@@ -421,10 +419,7 @@ class FirebaseService {
         _ => 'firebaseErrorPasswordResetError'.tr(),
       };
 
-      log(
-        'Password reset email failed',
-        error: error,
-      );
+      logFirebaseAuthFailure('Password reset email failed', error.code);
       return (
         success: false,
         error: errorMessage,
@@ -458,6 +453,7 @@ class FirebaseService {
       final idToken = googleAuth.idToken;
 
       if (idToken == null || idToken.isEmpty) {
+        log('Google sign in returned no ID token');
         return (
           user: null,
           error: 'firebaseErrorInvalidCredential'.tr(),
@@ -490,10 +486,12 @@ class FirebaseService {
         GoogleSignInExceptionCode.userMismatch => 'firebaseGoogleErrorUserMismatch'.tr(),
       };
 
-      log(
-        'Google sign in failed',
-        error: error,
-      );
+      if (error.code != GoogleSignInExceptionCode.canceled) {
+        log(
+          'Google sign in failed',
+          error: error.code.name,
+        );
+      }
       return (
         user: null,
         error: errorMessage,
@@ -508,10 +506,7 @@ class FirebaseService {
         _ => 'firebaseGoogleErrorLoginError'.tr(),
       };
 
-      log(
-        'Google sign in failed',
-        error: error,
-      );
+      logFirebaseAuthFailure('Google sign in failed', error.code);
       return (user: null, error: errorMessage);
     } catch (error) {
       log(
@@ -536,6 +531,7 @@ class FirebaseService {
       );
 
       if (credential.identityToken == null || credential.identityToken!.isEmpty) {
+        log('Apple sign in returned no identity token');
         return (
           user: null,
           error: 'firebaseErrorInvalidCredential'.tr(),
@@ -585,10 +581,12 @@ class FirebaseService {
         AuthorizationErrorCode.matchedExcludedCredential => 'firebaseAppleErrorMatchedExcludedCredential'.tr(),
       };
 
-      log(
-        'Apple sign in failed',
-        error: error,
-      );
+      if (error.code != AuthorizationErrorCode.canceled) {
+        log(
+          'Apple sign in failed',
+          error: error.code.name,
+        );
+      }
       return (user: null, error: errorMessage);
     } on FirebaseAuthException catch (error) {
       final errorMessage = switch (error.code) {
@@ -600,10 +598,7 @@ class FirebaseService {
         _ => 'firebaseAppleErrorLoginError'.tr(),
       };
 
-      log(
-        'Apple sign in failed',
-        error: error,
-      );
+      logFirebaseAuthFailure('Apple sign in failed', error.code);
       return (
         user: null,
         error: errorMessage,
@@ -636,10 +631,7 @@ class FirebaseService {
         _ => 'firebaseAnonymousErrorLoginError'.tr(),
       };
 
-      log(
-        'Anonymous sign in failed',
-        error: error,
-      );
+      logFirebaseAuthFailure('Anonymous sign in failed', error.code);
       return (
         user: null,
         error: errorMessage,
@@ -671,6 +663,7 @@ class FirebaseService {
       final user = userCredential.user;
 
       if (user == null) {
+        log('Email registration returned no user');
         return (
           user: null,
           error: 'firebaseErrorUserNull'.tr(),
@@ -696,10 +689,7 @@ class FirebaseService {
         _ => 'firebaseErrorRegisterError'.tr(),
       };
 
-      log(
-        'Email registration failed',
-        error: error,
-      );
+      logFirebaseAuthFailure('Email registration failed', error.code);
       return (
         user: null,
         error: errorMessage,
@@ -712,6 +702,22 @@ class FirebaseService {
       return (
         user: null,
         error: 'firebaseErrorRegisterError'.tr(),
+      );
+    }
+  }
+
+  /// Logs provider codes and keeps ordinary credential rejections in debug builds
+  void logFirebaseAuthFailure(String message, String code) {
+    final isCredentialRejection = switch (code) {
+      'invalid-email' || 'user-not-found' || 'wrong-password' || 'invalid-credential' || 'email-already-in-use' || 'weak-password' => true,
+      _ => false,
+    };
+
+    if (!isCredentialRejection || kDebugMode) {
+      log(
+        message,
+        level: isCredentialRejection ? 500 : 900,
+        error: code,
       );
     }
   }
@@ -1286,12 +1292,12 @@ class FirebaseService {
     required String languageCode,
     required File? imageFile,
   }) async {
-    try {
-      const maximumImageBytes = 5 * 1024 * 1024;
-      String? imageBase64;
-      String? imageBlurHash;
+    String? imageBase64;
+    String? imageBlurHash;
 
-      if (imageFile != null) {
+    if (imageFile != null) {
+      try {
+        const maximumImageBytes = 5 * 1024 * 1024;
         final imageBytesFuture = imageFile.readAsBytes();
         final imageBlurHashFuture = generateMealImageBlurHash(imageFile);
         final imageBytes = await imageBytesFuture;
@@ -1299,12 +1305,24 @@ class FirebaseService {
         imageBlurHash = await imageBlurHashFuture;
 
         if (imageBytes.isEmpty || imageBytes.length > maximumImageBytes) {
+          log(
+            'AI meal image rejected before calling Firebase',
+            error: 'reason=${imageBytes.isEmpty ? 'empty_image' : 'image_too_large'}, bytes=${imageBytes.length}',
+          );
           return false;
         }
 
         imageBase64 = base64Encode(imageBytes);
+      } catch (error) {
+        log(
+          'Preparing AI meal image failed',
+          error: error.runtimeType,
+        );
+        return false;
       }
+    }
 
+    try {
       final response = await functions.httpsCallable('generateAIMeal').call({
         'mealId': mealId,
         'languageCode': languageCode,
@@ -1315,8 +1333,8 @@ class FirebaseService {
       final data = response.data;
 
       return data is Map && data['success'] == true;
-    } catch (error) {
-      if (error is FirebaseFunctionsException && error.code == 'resource-exhausted') {
+    } on FirebaseFunctionsException catch (error) {
+      if (error.code == 'resource-exhausted') {
         final quotaError = AIMealQuotaError.tryParse(error.details);
 
         if (quotaError != null) {
@@ -1325,8 +1343,14 @@ class FirebaseService {
       }
 
       log(
-        'Generating AI meal failed',
-        error: error,
+        'AI meal callable request failed',
+        error: error.code,
+      );
+      return false;
+    } catch (error) {
+      log(
+        'AI meal callable request failed',
+        error: error.runtimeType,
       );
       return false;
     }
