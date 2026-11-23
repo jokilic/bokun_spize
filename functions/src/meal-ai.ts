@@ -1,5 +1,5 @@
 /**
- * Generates structured meals from text and images with Gemini
+ * Generates compact localized meals from text and inline images with Gemini
  */
 
 import {GoogleGenAI, Part} from "@google/genai";
@@ -10,26 +10,19 @@ import {
   DocumentReference,
   FieldValue,
   Firestore,
+  getFirestore,
   Timestamp,
 } from "firebase-admin/firestore";
 import {getStorage} from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
+import {HttpsError} from "firebase-functions/v2/https";
 
 import {AI_MODEL_NAMES} from "./daily-summary-ai";
 
-/** One localized meal payload returned by Gemini */
-export interface GeneratedMealContent {
-  name: string;
-  emoji: string;
-  color: string;
-  nutrition: GeneratedNutrition;
-  foods: GeneratedFood[];
-}
-
-/** Localized meal data returned by Gemini and persisted in Firestore */
-export interface GeneratedMeal {
-  en: GeneratedMealContent;
-  hr: GeneratedMealContent;
+/** Localized text generated once for each supported app language */
+export interface GeneratedLocalizedText {
+  en: string;
+  hr: string;
 }
 
 /** Nutrition data shared by generated meals and foods */
@@ -40,14 +33,23 @@ export interface GeneratedNutrition {
   fat: number;
 }
 
-/** One food item returned as part of a generated meal */
+/** One compact food item with shared values and localized text */
 export interface GeneratedFood {
-  name: string;
+  name: GeneratedLocalizedText;
   emoji: string;
   color: string;
   quantity: number;
-  unit: string;
+  unit: GeneratedLocalizedText;
   nutrition: GeneratedNutrition;
+}
+
+/** Compact localized meal persisted directly in Firestore */
+export interface GeneratedMeal {
+  name: GeneratedLocalizedText;
+  emoji: string;
+  color: string;
+  nutrition: GeneratedNutrition;
+  foods: GeneratedFood[];
 }
 
 /** Result of a successful model fallback attempt */
@@ -56,59 +58,115 @@ export interface GeneratedMealResult {
   modelName: string;
 }
 
-/** Input resolved from a pending meal document and optional Storage image */
+/** Optional inline image supplied by the callable client */
+export interface InlineMealImage {
+  buffer: Buffer;
+  base64: string;
+  contentType: "image/webp";
+  blurHash: string | null;
+}
+
+/** Input passed directly to Gemini */
 export interface MealGenerationInput {
   text: string | null;
-  imageUri: string | null;
+  imageBase64: string | null;
   imageContentType: string | null;
 }
 
-/** Transaction result used to coordinate concurrent trigger deliveries */
+/** Validated callable request fields */
+export interface AIMealCallableInput {
+  mealId: string;
+  languageCode: "en" | "hr";
+  image: InlineMealImage | null;
+}
+
+/** Transaction result used to coordinate duplicate callable requests */
 export interface AIMealGenerationClaim {
   status: "claimed" | "busy" | "not-ready";
   mealData: DocumentData | null;
 }
 
+/** Uploaded image information persisted with a generated meal */
+export interface UploadedMealImage {
+  storagePath: string;
+  blurHash: string | null;
+}
+
+/** Result returned to the Flutter callable client */
+export interface AIMealCallableResult {
+  success: boolean;
+}
+
+/** European bucket used by every meal image flow */
+export const MEAL_IMAGE_BUCKET = "bokun-spize-meal-images-eu";
+
 /** Global Vertex AI location supports the broadest Gemini model selection */
 export const MEAL_AI_LOCATION = "global";
+
+/** Inline images are already compressed to WebP by the Flutter app */
+export const MEAL_IMAGE_CONTENT_TYPE = "image/webp";
+
+/** Raw image limit leaves room below callable limits after Base64 encoding */
+export const MAX_INLINE_MEAL_IMAGE_BYTES = 5 * 1024 * 1024;
 
 /** Lease outlives the function timeout while allowing crashed jobs to recover */
 export const AI_MEAL_GENERATION_LEASE_DURATION_MS = 10 * 60 * 1000;
 
-/** Maximum time allowed for the client to attach an AI meal image */
-export const AI_MEAL_IMAGE_UPLOAD_TIMEOUT_MS = 15 * 60 * 1000;
+/** Maximum time before an interrupted callable request is marked failed */
+export const AI_MEAL_REQUEST_TIMEOUT_MS = 15 * 60 * 1000;
 
-/** Maximum abandoned image requests processed by one cleanup occurrence */
-export const AI_MEAL_IMAGE_CLEANUP_LIMIT = 200;
+/** Maximum abandoned requests processed by one cleanup occurrence */
+export const AI_MEAL_CLEANUP_LIMIT = 200;
 
-/** Instructions preserve the established meal extraction behavior */
+/** Instructions preserve extraction while preventing duplicated shared values */
 export const MEAL_SYSTEM_INSTRUCTION = `
-You will receive text and / or image describing what the user ate.
+You will receive text and / or an image describing what the user ate.
 Estimate nutrition and extract foods.
 If quantity is unclear, make a reasonable estimate.
 If nutrition is unknown, estimate based on typical values.
-`.trim();
-
-/** Mandatory localized output instructions appended to the meal prompt */
-export const MEAL_LOCALIZATION_INSTRUCTION = `
-Return one JSON object containing complete "en" and "hr" meal objects.
 The user's text may be written in any language. Understand it in its original language.
-Use English for meal names, food names, and unit names inside "en".
-Use Croatian for meal names, food names, and unit names inside "hr".
-Both objects must describe the same meal and use identical numeric nutrition values, quantities, emojis, and colors.
+Return English and Croatian only for the localized name and unit objects.
+All quantities, nutrition values, emojis, and colors must appear only once as shared values.
 Keep JSON property names unchanged and preserve standard unit symbols such as g and ml.
 `.trim();
 
-/** Complete generated fields shared by both localized meal schema branches */
-export const MEAL_CONTENT_RESPONSE_SCHEMA: Record<string, unknown> = {
+/** Reusable schema for one English and Croatian text pair */
+export const LOCALIZED_TEXT_RESPONSE_SCHEMA: Record<string, unknown> = {
   type: "object",
+  propertyOrdering: ["en", "hr"],
+  required: ["en", "hr"],
+  additionalProperties: false,
+  properties: {
+    en: {type: "string", description: "English value"},
+    hr: {type: "string", description: "Croatian value"},
+  },
+};
+
+/** Reusable schema for nutrition values */
+export const NUTRITION_RESPONSE_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  propertyOrdering: ["calories", "protein", "carbs", "fat"],
+  required: ["calories", "protein", "carbs", "fat"],
+  additionalProperties: false,
+  properties: {
+    calories: {type: "number", description: "Calories in kcal"},
+    protein: {type: "number", description: "Protein in g"},
+    carbs: {type: "number", description: "Carbs in g"},
+    fat: {type: "number", description: "Fat in g"},
+  },
+};
+
+/** Structured response schema for one compact bilingual meal */
+export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  title: "Meal",
   propertyOrdering: ["name", "emoji", "color", "nutrition", "foods"],
   required: ["name", "emoji", "color", "nutrition", "foods"],
   additionalProperties: false,
   properties: {
     name: {
-      type: "string",
-      description: "Name best describing the meal",
+      ...LOCALIZED_TEXT_RESPONSE_SCHEMA,
+      description: "Meal name in English and Croatian",
     },
     emoji: {
       type: "string",
@@ -118,28 +176,19 @@ export const MEAL_CONTENT_RESPONSE_SCHEMA: Record<string, unknown> = {
       type: "string",
       description: "Color best describing the meal in hex format such as #FF0000",
     },
-    nutrition: {
-      type: "object",
-      required: ["calories", "protein", "carbs", "fat"],
-      additionalProperties: false,
-      properties: {
-        calories: {type: "number", description: "Calories in kcal"},
-        protein: {type: "number", description: "Protein in g"},
-        carbs: {type: "number", description: "Carbs in g"},
-        fat: {type: "number", description: "Fat in g"},
-      },
-    },
+    nutrition: NUTRITION_RESPONSE_SCHEMA,
     foods: {
       type: "array",
       description: "Foods in the meal",
       items: {
         type: "object",
+        propertyOrdering: ["name", "emoji", "color", "quantity", "unit", "nutrition"],
         required: ["name", "emoji", "color", "quantity", "unit", "nutrition"],
         additionalProperties: false,
         properties: {
           name: {
-            type: "string",
-            description: "Food name",
+            ...LOCALIZED_TEXT_RESPONSE_SCHEMA,
+            description: "Food name in English and Croatian",
           },
           emoji: {
             type: "string",
@@ -151,41 +200,12 @@ export const MEAL_CONTENT_RESPONSE_SCHEMA: Record<string, unknown> = {
           },
           quantity: {type: "number", description: "Quantity of food"},
           unit: {
-            type: "string",
-            description: "Food unit, preserving standard unit symbols",
+            ...LOCALIZED_TEXT_RESPONSE_SCHEMA,
+            description: "Food unit in English and Croatian while preserving standard symbols",
           },
-          nutrition: {
-            type: "object",
-            required: ["calories", "protein", "carbs", "fat"],
-            additionalProperties: false,
-            properties: {
-              calories: {type: "number", description: "Calories in kcal for this food"},
-              protein: {type: "number", description: "Protein in g for this food"},
-              carbs: {type: "number", description: "Carbs in g for this food"},
-              fat: {type: "number", description: "Fat in g for this food"},
-            },
-          },
+          nutrition: NUTRITION_RESPONSE_SCHEMA,
         },
       },
-    },
-  },
-};
-
-/** Structured response schema for complete localized meals */
-export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
-  type: "object",
-  title: "Meal",
-  propertyOrdering: ["en", "hr"],
-  required: ["en", "hr"],
-  additionalProperties: false,
-  properties: {
-    en: {
-      ...MEAL_CONTENT_RESPONSE_SCHEMA,
-      description: "Complete meal data with English names and units",
-    },
-    hr: {
-      ...MEAL_CONTENT_RESPONSE_SCHEMA,
-      description: "Complete meal data with Croatian names and units",
     },
   },
 };
@@ -223,6 +243,24 @@ export function parseGeneratedString(
   return value.trim();
 }
 
+/** Parses one complete English and Croatian text pair */
+export function parseGeneratedLocalizedText(
+  value: unknown,
+  propertyName: string,
+  maximumLength: number,
+): GeneratedLocalizedText {
+  const localizedText = asRecord(value);
+
+  if (localizedText === null) {
+    throw new Error(`Gemini returned invalid localized ${propertyName}`);
+  }
+
+  return {
+    en: parseGeneratedString(localizedText.en, `English ${propertyName}`, maximumLength),
+    hr: parseGeneratedString(localizedText.hr, `Croatian ${propertyName}`, maximumLength),
+  };
+}
+
 /** Parses a color that the Flutter meal parser can safely decode */
 export function parseGeneratedColor(value: unknown, propertyName: string): string {
   const color = parseGeneratedString(value, propertyName, 7);
@@ -250,7 +288,7 @@ export function parseGeneratedNutrition(value: unknown): GeneratedNutrition {
   };
 }
 
-/** Parses and validates one generated food */
+/** Parses and validates one compact generated food */
 export function parseGeneratedFood(value: unknown): GeneratedFood {
   const food = asRecord(value);
 
@@ -259,21 +297,22 @@ export function parseGeneratedFood(value: unknown): GeneratedFood {
   }
 
   return {
-    name: parseGeneratedString(food.name, "food name", 500),
+    name: parseGeneratedLocalizedText(food.name, "food name", 500),
     emoji: parseGeneratedString(food.emoji, "food emoji", 32),
     color: parseGeneratedColor(food.color, "food color"),
     quantity: parseGeneratedNumber(food.quantity, "food quantity"),
-    unit: parseGeneratedString(food.unit, "food unit", 100),
+    unit: parseGeneratedLocalizedText(food.unit, "food unit", 100),
     nutrition: parseGeneratedNutrition(food.nutrition),
   };
 }
 
-/** Parses and validates one localized Gemini meal payload */
-export function parseGeneratedMealContent(
-  value: unknown,
-  languageCode: "en" | "hr",
-): GeneratedMealContent {
-  const meal = asRecord(value);
+/** Parses and validates one compact Gemini meal response */
+export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
+  if (text === undefined) {
+    throw new Error("Gemini returned no meal data");
+  }
+
+  const meal = asRecord(JSON.parse(text));
 
   if (
     meal === null ||
@@ -284,29 +323,11 @@ export function parseGeneratedMealContent(
   }
 
   return {
-    name: parseGeneratedString(meal.name, `${languageCode} meal name`, 500),
-    emoji: parseGeneratedString(meal.emoji, `${languageCode} meal emoji`, 32),
-    color: parseGeneratedColor(meal.color, `${languageCode} meal color`),
+    name: parseGeneratedLocalizedText(meal.name, "meal name", 500),
+    emoji: parseGeneratedString(meal.emoji, "meal emoji", 32),
+    color: parseGeneratedColor(meal.color, "meal color"),
     nutrition: parseGeneratedNutrition(meal.nutrition),
     foods: meal.foods.map(parseGeneratedFood),
-  };
-}
-
-/** Parses and validates one structured localized Gemini meal response */
-export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
-  if (text === undefined) {
-    throw new Error("Gemini returned no meal data");
-  }
-
-  const meal = asRecord(JSON.parse(text));
-
-  if (meal === null) {
-    throw new Error("Gemini returned invalid localized meal data");
-  }
-
-  return {
-    en: parseGeneratedMealContent(meal.en, "en"),
-    hr: parseGeneratedMealContent(meal.hr, "hr"),
   };
 }
 
@@ -317,7 +338,7 @@ export function getMealAIProjectId(): string | undefined {
     process.env.GCLOUD_PROJECT;
 }
 
-/** Builds multimodal Gemini content from the available meal request fields */
+/** Builds multimodal Gemini content from text and optional inline WebP data */
 export function buildMealContentParts(input: MealGenerationInput): Part[] {
   const parts: Part[] = [];
 
@@ -325,11 +346,11 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
     parts.push({text: input.text});
   }
 
-  if (input.imageUri !== null && input.imageContentType !== null) {
+  if (input.imageBase64 !== null && input.imageContentType !== null) {
     parts.push({
-      fileData: {
+      inlineData: {
         mimeType: input.imageContentType,
-        fileUri: input.imageUri,
+        data: input.imageBase64,
       },
     });
   }
@@ -341,7 +362,7 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
   return parts;
 }
 
-/** Generates a structured meal while falling through models on errors */
+/** Generates a compact structured meal while falling through models on errors */
 export async function generateMeal(
   input: MealGenerationInput,
 ): Promise<GeneratedMealResult> {
@@ -357,10 +378,6 @@ export async function generateMeal(
     location: MEAL_AI_LOCATION,
   });
   const parts = buildMealContentParts(input);
-  const systemInstruction = [
-    MEAL_SYSTEM_INSTRUCTION,
-    MEAL_LOCALIZATION_INSTRUCTION,
-  ].join("\n\n");
   const failures: string[] = [];
 
   for (const model of AI_MODEL_NAMES) {
@@ -369,11 +386,11 @@ export async function generateMeal(
         model,
         contents: [{role: "user", parts}],
         config: {
-          systemInstruction,
+          systemInstruction: MEAL_SYSTEM_INSTRUCTION,
           responseMimeType: "application/json",
           responseJsonSchema: MEAL_RESPONSE_SCHEMA,
           temperature: 0.2,
-          maxOutputTokens: 8192,
+          maxOutputTokens: 4096,
         },
       });
 
@@ -394,56 +411,78 @@ export async function generateMeal(
   throw new Error(`Generating the meal failed: ${failures.join(" | ").slice(0, 900)}`);
 }
 
-/** Returns the request language supported by the app */
-export function getMealLanguageCode(data: DocumentData): string {
-  return data.aiGenerationLanguage === "en" ? "en" : "hr";
+/** Confirms the decoded bytes contain the WebP file signature */
+export function isWebPImage(buffer: Buffer): boolean {
+  return buffer.length >= 12 &&
+    buffer.subarray(0, 4).toString("ascii") === "RIFF" &&
+    buffer.subarray(8, 12).toString("ascii") === "WEBP";
 }
 
-/** Resolves and validates the optional meal image owned by the triggering user */
-export async function loadMealImage(
-  data: DocumentData,
-  userId: string,
-): Promise<{imageUri: string | null; contentType: string | null}> {
-  const imageStoragePath = data.imageStoragePath;
+/** Decodes and validates optional inline image data from the callable request */
+export function parseInlineMealImage(data: Record<string, unknown>): InlineMealImage | null {
+  const imageBase64 = data.imageBase64;
+  const imageContentType = data.imageContentType;
+  const imageBlurHash = data.imageBlurHash;
 
-  if (imageStoragePath === null || imageStoragePath === undefined) {
-    return {imageUri: null, contentType: null};
+  if (imageBase64 === null || imageBase64 === undefined) {
+    if (imageContentType !== null && imageContentType !== undefined) {
+      throw new HttpsError("invalid-argument", "Image content type requires image data");
+    }
+
+    return null;
   }
 
   if (
-    typeof imageStoragePath !== "string" ||
-    !imageStoragePath.startsWith(`users/${userId}/meal-images/`)
+    typeof imageBase64 !== "string" ||
+    imageContentType !== MEAL_IMAGE_CONTENT_TYPE ||
+    imageBase64.length > Math.ceil(MAX_INLINE_MEAL_IMAGE_BYTES / 3) * 4 + 4 ||
+    (imageBlurHash !== null && imageBlurHash !== undefined &&
+      (typeof imageBlurHash !== "string" || imageBlurHash.length > 100))
   ) {
-    throw new Error("Meal image path does not belong to the user");
+    throw new HttpsError("invalid-argument", "Invalid meal image data");
   }
 
-  const bucket = getStorage().bucket();
-  const file = bucket.file(imageStoragePath);
-  const [metadata] = await file.getMetadata();
-  const contentType = metadata.contentType;
+  const buffer = Buffer.from(imageBase64, "base64");
 
-  if (typeof contentType !== "string" || !contentType.startsWith("image/")) {
-    throw new Error("Meal image has an invalid content type");
+  if (
+    buffer.length === 0 ||
+    buffer.length > MAX_INLINE_MEAL_IMAGE_BYTES ||
+    !isWebPImage(buffer)
+  ) {
+    throw new HttpsError("invalid-argument", "Invalid meal image file");
   }
 
   return {
-    imageUri: `gs://${bucket.name}/${file.name}`,
-    contentType,
+    buffer,
+    base64: imageBase64,
+    contentType: MEAL_IMAGE_CONTENT_TYPE,
+    blurHash: typeof imageBlurHash === "string" ? imageBlurHash : null,
   };
 }
 
-/** Builds the complete model input from a pending Firestore meal */
-export async function buildMealGenerationInput(
-  data: DocumentData,
-  userId: string,
-): Promise<MealGenerationInput> {
-  const originalText = typeof data.originalText === "string" ? data.originalText.trim() : "";
-  const loadedImage = await loadMealImage(data, userId);
+/** Validates the authenticated callable payload */
+export function parseAIMealCallableInput(value: unknown): AIMealCallableInput {
+  const data = asRecord(value);
+
+  if (data === null) {
+    throw new HttpsError("invalid-argument", "AI meal request must be an object");
+  }
+
+  const mealId = data.mealId;
+  const languageCode = data.languageCode;
+
+  if (
+    typeof mealId !== "string" ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(mealId) ||
+    (languageCode !== "en" && languageCode !== "hr")
+  ) {
+    throw new HttpsError("invalid-argument", "Invalid AI meal request");
+  }
 
   return {
-    text: originalText.length > 0 ? originalText : null,
-    imageUri: loadedImage.imageUri,
-    imageContentType: loadedImage.contentType,
+    mealId,
+    languageCode,
+    image: parseInlineMealImage(data),
   };
 }
 
@@ -474,23 +513,22 @@ export function getAIMealGenerationClaimReference(
   return userReference.collection("mealGenerationClaims").doc(mealReference.id);
 }
 
-/** Atomically claims one ready meal or reports an active competing lease */
+/** Atomically claims one loading AI meal or reports an active competing lease */
 export async function claimPendingAIMeal(
   mealReference: DocumentReference<DocumentData>,
   leaseId: string,
   now: Date,
 ): Promise<AIMealGenerationClaim> {
-  const firestore = mealReference.firestore;
   const claimReference = getAIMealGenerationClaimReference(mealReference);
 
-  return firestore.runTransaction<AIMealGenerationClaim>(async (transaction) => {
+  return mealReference.firestore.runTransaction<AIMealGenerationClaim>(async (transaction) => {
     const mealSnapshot = await transaction.get(mealReference);
     const mealData = mealSnapshot.data();
 
     if (
       !mealSnapshot.exists ||
       mealData?.isLoading !== true ||
-      mealData.aiGenerationReady !== true
+      mealData.methodOfCreation !== "ai"
     ) {
       return {
         status: "not-ready",
@@ -532,10 +570,9 @@ export async function finalizePendingAIMeal(
   leaseId: string,
   updates: DocumentData,
 ): Promise<boolean> {
-  const firestore = mealReference.firestore;
   const claimReference = getAIMealGenerationClaimReference(mealReference);
 
-  return firestore.runTransaction<boolean>(async (transaction) => {
+  return mealReference.firestore.runTransaction<boolean>(async (transaction) => {
     const claimSnapshot = await transaction.get(claimReference);
 
     if (claimSnapshot.data()?.leaseId !== leaseId) {
@@ -548,7 +585,7 @@ export async function finalizePendingAIMeal(
     if (
       mealSnapshot.exists &&
       mealData?.isLoading === true &&
-      mealData.aiGenerationReady === true
+      mealData.methodOfCreation === "ai"
     ) {
       transaction.update(mealReference, updates);
     }
@@ -558,18 +595,57 @@ export async function finalizePendingAIMeal(
   });
 }
 
-/** Removes a claim when its meal is deleted during processing */
-export async function deleteAIMealGenerationClaim(
-  mealReference: DocumentReference<DocumentData>,
-): Promise<void> {
-  await getAIMealGenerationClaimReference(mealReference).delete();
+/** Uploads the image buffer without blocking Gemini generation */
+export async function uploadAIMealImage(
+  userId: string,
+  mealId: string,
+  image: InlineMealImage,
+): Promise<UploadedMealImage> {
+  const storagePath = `users/${userId}/meal-images/${mealId}.webp`;
+  const file = getStorage().bucket(MEAL_IMAGE_BUCKET).file(storagePath);
+
+  await file.save(image.buffer, {
+    resumable: false,
+    metadata: {
+      contentType: image.contentType,
+      metadata: {
+        // Preserve compatibility with Firebase Storage getDownloadURL on mobile
+        firebaseStorageDownloadTokens: randomUUID(),
+        mealId,
+        userId,
+      },
+    },
+  });
+
+  return {
+    storagePath,
+    blurHash: image.blurHash,
+  };
 }
 
-/** Finishes one expired image request unless it became ready after querying */
-export async function failExpiredAIMealImageRequest(
+/** Deletes an uploaded image when generation cannot use it */
+export async function deleteAIMealImage(storagePath: string): Promise<void> {
+  try {
+    await getStorage()
+      .bucket(MEAL_IMAGE_BUCKET)
+      .file(storagePath)
+      .delete({ignoreNotFound: true});
+  } catch (error) {
+    // Cleanup must not prevent the meal from reaching its terminal state
+    logger.error("Deleting unused AI meal image failed", {
+      storagePath,
+      error: error instanceof Error ? error.message.slice(0, 900) : "Unknown deletion error",
+    });
+  }
+}
+
+/** Finishes one expired callable request unless it already completed */
+export async function failExpiredAIMealRequest(
   mealReference: DocumentReference<DocumentData>,
   cutoff: Timestamp,
 ): Promise<boolean> {
+  const claimReference = getAIMealGenerationClaimReference(mealReference);
+
   return mealReference.firestore.runTransaction<boolean>(async (transaction) => {
     const mealSnapshot = await transaction.get(mealReference);
     const mealData = mealSnapshot.data();
@@ -578,7 +654,7 @@ export async function failExpiredAIMealImageRequest(
     if (
       !mealSnapshot.exists ||
       mealData?.isLoading !== true ||
-      mealData.aiGenerationReady !== false ||
+      mealData.methodOfCreation !== "ai" ||
       !(requestedAt instanceof Timestamp) ||
       requestedAt.toMillis() > cutoff.toMillis()
     ) {
@@ -587,33 +663,32 @@ export async function failExpiredAIMealImageRequest(
 
     transaction.update(mealReference, {
       isLoading: false,
-      errors: [getMealImageUploadError(getMealLanguageCode(mealData))],
+      errors: [getMealGenerationError(mealData.aiGenerationLanguage === "hr" ? "hr" : "en")],
       aiGenerationLanguage: FieldValue.delete(),
-      aiGenerationReady: FieldValue.delete(),
       aiGenerationRequestedAt: FieldValue.delete(),
     });
-
+    transaction.delete(claimReference);
     return true;
   });
 }
 
-/** Finds and finishes image requests that never became ready */
-export async function cleanupExpiredAIMealImageRequests(
+/** Finds and finishes callable requests that remained loading after interruption */
+export async function cleanupExpiredAIMealRequests(
   firestore: Firestore,
   now: Date,
 ): Promise<number> {
   const cutoff = Timestamp.fromMillis(
-    now.getTime() - AI_MEAL_IMAGE_UPLOAD_TIMEOUT_MS,
+    now.getTime() - AI_MEAL_REQUEST_TIMEOUT_MS,
   );
   const snapshot = await firestore
     .collectionGroup("meals")
     .where("isLoading", "==", true)
-    .where("aiGenerationReady", "==", false)
+    .where("methodOfCreation", "==", "ai")
     .where("aiGenerationRequestedAt", "<=", cutoff)
-    .limit(AI_MEAL_IMAGE_CLEANUP_LIMIT)
+    .limit(AI_MEAL_CLEANUP_LIMIT)
     .get();
   const results = await Promise.all(
-    snapshot.docs.map((document) => failExpiredAIMealImageRequest(
+    snapshot.docs.map((document) => failExpiredAIMealRequest(
       document.ref,
       cutoff,
     )),
@@ -621,7 +696,7 @@ export async function cleanupExpiredAIMealImageRequests(
   const failedCount = results.filter(Boolean).length;
 
   if (failedCount > 0) {
-    logger.info("Finished abandoned AI meal image requests", {
+    logger.info("Finished abandoned AI meal requests", {
       failedCount,
     });
   }
@@ -629,11 +704,17 @@ export async function cleanupExpiredAIMealImageRequests(
   return failedCount;
 }
 
-/** Processes one ready AI meal and persists either success or error state */
-export async function processPendingAIMeal(
-  mealReference: DocumentReference<DocumentData>,
+/** Generates, uploads, and persists one callable AI meal request */
+export async function processCallableAIMeal(
   userId: string,
-): Promise<void> {
+  value: unknown,
+): Promise<AIMealCallableResult> {
+  const input = parseAIMealCallableInput(value);
+  const mealReference = getFirestore()
+    .collection("users")
+    .doc(userId)
+    .collection("meals")
+    .doc(input.mealId);
   const leaseId = randomUUID();
   const claim = await claimPendingAIMeal(
     mealReference,
@@ -641,52 +722,85 @@ export async function processPendingAIMeal(
     new Date(),
   );
 
-  if (claim.status === "not-ready") {
-    return;
+  if (claim.status === "busy") {
+    return {success: true};
   }
 
-  if (claim.status === "busy") {
-    throw new Error(`AI meal ${mealReference.id} already has an active generation lease`);
+  if (claim.status === "not-ready") {
+    throw new HttpsError("failed-precondition", "AI meal is not ready for generation");
   }
 
   const mealData = claim.mealData!;
-  const languageCode = getMealLanguageCode(mealData);
-  let result: GeneratedMealResult;
+  const originalText = typeof mealData.originalText === "string" ? mealData.originalText.trim() : "";
+  const generationPromise = generateMeal({
+    text: originalText.length > 0 ? originalText : null,
+    imageBase64: input.image?.base64 ?? null,
+    imageContentType: input.image?.contentType ?? null,
+  });
+  const imageUploadPromise = input.image === null ?
+    Promise.resolve<UploadedMealImage | null>(null) :
+    uploadAIMealImage(userId, input.mealId, input.image);
+  const [generationOutcome, imageUploadOutcome] = await Promise.allSettled([
+    generationPromise,
+    imageUploadPromise,
+  ]);
 
-  try {
-    const input = await buildMealGenerationInput(mealData, userId);
-    result = await generateMeal(input);
-  } catch (error) {
-    logger.error("Generating AI meal failed", {
+  if (generationOutcome.status === "rejected") {
+    if (
+      imageUploadOutcome.status === "fulfilled" &&
+      imageUploadOutcome.value !== null
+    ) {
+      await deleteAIMealImage(imageUploadOutcome.value.storagePath);
+    }
+
+    logger.error("Generating callable AI meal failed", {
       userId,
-      mealId: mealReference.id,
-      error: error instanceof Error ? error.message.slice(0, 900) : "Unknown meal generation error",
+      mealId: input.mealId,
+      error: generationOutcome.reason instanceof Error ?
+        generationOutcome.reason.message.slice(0, 900) :
+        "Unknown meal generation error",
     });
 
     await finalizePendingAIMeal(mealReference, leaseId, {
       isLoading: false,
-      errors: [getMealGenerationError(languageCode)],
+      errors: [getMealGenerationError(input.languageCode)],
       aiGenerationLanguage: FieldValue.delete(),
-      aiGenerationReady: FieldValue.delete(),
       aiGenerationRequestedAt: FieldValue.delete(),
     });
-
-    return;
+    return {success: false};
   }
 
-  await finalizePendingAIMeal(mealReference, leaseId, {
-    en: result.meal.en,
-    hr: result.meal.hr,
-    name: FieldValue.delete(),
-    emoji: FieldValue.delete(),
-    color: FieldValue.delete(),
-    nutrition: FieldValue.delete(),
-    foods: FieldValue.delete(),
-    methodOfCreation: result.modelName,
+  const imageUploadFailed = imageUploadOutcome.status === "rejected";
+  const uploadedImage = imageUploadOutcome.status === "fulfilled" ?
+    imageUploadOutcome.value :
+    null;
+
+  if (imageUploadFailed) {
+    logger.error("Uploading callable AI meal image failed", {
+      userId,
+      mealId: input.mealId,
+      error: imageUploadOutcome.reason instanceof Error ?
+        imageUploadOutcome.reason.message.slice(0, 900) :
+        "Unknown image upload error",
+    });
+  }
+
+  const finalized = await finalizePendingAIMeal(mealReference, leaseId, {
+    ...generationOutcome.value.meal,
+    imageStoragePath: uploadedImage?.storagePath ?? null,
+    imageBlurHash: uploadedImage?.blurHash ?? null,
+    methodOfCreation: generationOutcome.value.modelName,
     isLoading: false,
-    errors: null,
+    errors: imageUploadFailed ? [getMealImageUploadError(input.languageCode)] : null,
     aiGenerationLanguage: FieldValue.delete(),
-    aiGenerationReady: FieldValue.delete(),
     aiGenerationRequestedAt: FieldValue.delete(),
   });
+
+  if (!finalized && uploadedImage !== null) {
+    await deleteAIMealImage(uploadedImage.storagePath);
+  }
+
+  return {
+    success: finalized && !imageUploadFailed,
+  };
 }

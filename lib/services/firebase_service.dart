@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -37,6 +39,7 @@ class FirebaseService {
 
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
+  final FirebaseFunctions functions;
   final FirebaseStorage storage;
   final GoogleSignIn googleSignIn;
   final CacheService cache;
@@ -45,6 +48,7 @@ class FirebaseService {
   FirebaseService({
     required this.auth,
     required this.firestore,
+    required this.functions,
     required this.storage,
     required this.googleSignIn,
     required this.cache,
@@ -54,11 +58,8 @@ class FirebaseService {
   /// INIT
   ///
 
-  /// Resolves abandoned loading meals from manual and AI image flows
-  void init() {
-    deleteAbandonedManualMeals();
-    failAbandonedAIImageMeals();
-  }
+  /// Resolves abandoned loading meals from the manual image flow
+  void init() => deleteAbandonedManualMeals();
 
   ///
   /// GETTERS
@@ -1147,55 +1148,6 @@ class FirebaseService {
     }
   }
 
-  /// Finishes AI meals interrupted before their image upload became ready
-  Future<void> failAbandonedAIImageMeals() async {
-    try {
-      final user = auth.currentUser;
-
-      if (user == null) {
-        return;
-      }
-
-      final snapshot = await firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('meals')
-          .where(
-            'isLoading',
-            isEqualTo: true,
-          )
-          .get(
-            const GetOptions(
-              source: Source.server,
-            ),
-          );
-      final interruptedDocuments = snapshot.docs.where(
-        (document) => document.data()['aiGenerationReady'] == false,
-      );
-
-      for (var offset = 0; offset < interruptedDocuments.length; offset += 300) {
-        final batch = firestore.batch();
-
-        for (final document in interruptedDocuments.skip(offset).take(300)) {
-          batch.update(document.reference, {
-            'isLoading': false,
-            'errors': ['mealsErrorImageUploadFailed'.tr()],
-            'aiGenerationLanguage': FieldValue.delete(),
-            'aiGenerationReady': FieldValue.delete(),
-            'aiGenerationRequestedAt': FieldValue.delete(),
-          });
-        }
-
-        await batch.commit();
-      }
-    } catch (error) {
-      log(
-        'Finishing abandoned AI image meals failed',
-        error: error,
-      );
-    }
-  }
-
   /// Fetches `meals` from [Firebase]
   Future<List<Meal>?> getMeals({required String languageCode}) async {
     try {
@@ -1297,11 +1249,10 @@ class FirebaseService {
     }
   }
 
-  /// Adds a loading meal together with the backend AI generation request
+  /// Adds a loading meal before invoking backend AI generation
   Future<bool> writeAIMealRequest({
     required Meal newMeal,
     required String languageCode,
-    required bool isReady,
   }) async {
     try {
       final user = auth.currentUser;
@@ -1315,7 +1266,6 @@ class FirebaseService {
       await document.set({
         ...newMeal.toMap(),
         'aiGenerationLanguage': languageCode,
-        'aiGenerationReady': isReady,
         'aiGenerationRequestedAt': FieldValue.serverTimestamp(),
       });
 
@@ -1329,30 +1279,44 @@ class FirebaseService {
     }
   }
 
-  /// Attaches the uploaded image and releases backend AI generation
-  Future<bool> markAIMealRequestReady({
+  /// Sends compressed image bytes to the callable meal generator
+  Future<bool> generateAIMeal({
     required String mealId,
-    required MealImageUploadResult imageUploadResult,
+    required String languageCode,
+    required File? imageFile,
   }) async {
     try {
-      final user = auth.currentUser;
+      const maximumImageBytes = 5 * 1024 * 1024;
+      String? imageBase64;
+      String? imageBlurHash;
 
-      if (user == null) {
-        return false;
+      if (imageFile != null) {
+        final imageBytesFuture = imageFile.readAsBytes();
+        final imageBlurHashFuture = generateMealImageBlurHash(imageFile);
+        final imageBytes = await imageBytesFuture;
+
+        imageBlurHash = await imageBlurHashFuture;
+
+        if (imageBytes.isEmpty || imageBytes.length > maximumImageBytes) {
+          return false;
+        }
+
+        imageBase64 = base64Encode(imageBytes);
       }
 
-      final document = firestore.collection('users').doc(user.uid).collection('meals').doc(mealId);
-
-      await document.update({
-        'imageStoragePath': imageUploadResult.imageStoragePath,
-        'imageBlurHash': imageUploadResult.imageBlurHash,
-        'aiGenerationReady': true,
+      final response = await functions.httpsCallable('generateAIMeal').call({
+        'mealId': mealId,
+        'languageCode': languageCode,
+        'imageBase64': imageBase64,
+        'imageContentType': imageFile == null ? null : 'image/webp',
+        'imageBlurHash': imageBlurHash,
       });
+      final data = response.data;
 
-      return true;
+      return data is Map && data['success'] == true;
     } catch (error) {
       log(
-        'Releasing AI meal request failed',
+        'Generating AI meal failed',
         error: error,
       );
       return false;

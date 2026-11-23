@@ -44,8 +44,10 @@ describe("daily meal summary", () => {
     expect(isCompletedDailySummaryMeal({
       isLoading: false,
       errors: null,
-      en: {name: "Chicken salad"},
-      hr: {name: "Pileća salata"},
+      name: {
+        en: "Chicken salad",
+        hr: "Pileća salata",
+      },
     })).toBe(true);
   });
 

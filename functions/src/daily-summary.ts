@@ -41,21 +41,17 @@ export interface DailySummary {
 /** Keeps only completed meals without persisted processing errors */
 export function isCompletedDailySummaryMeal(data: DocumentData): boolean {
   const errors = data.errors;
-  const englishMeal = data.en;
-  const croatianMeal = data.hr;
+  const localizedName = data.name;
   const hasMealName = (
     typeof data.name === "string" &&
     data.name.trim().length > 0
   ) || (
-    typeof englishMeal === "object" &&
-    englishMeal !== null &&
-    typeof englishMeal.name === "string" &&
-    englishMeal.name.trim().length > 0
-  ) || (
-    typeof croatianMeal === "object" &&
-    croatianMeal !== null &&
-    typeof croatianMeal.name === "string" &&
-    croatianMeal.name.trim().length > 0
+    typeof localizedName === "object" &&
+    localizedName !== null &&
+    typeof localizedName.en === "string" &&
+    localizedName.en.trim().length > 0 &&
+    typeof localizedName.hr === "string" &&
+    localizedName.hr.trim().length > 0
   );
   const hasNoErrors = errors === null ||
     errors === undefined ||

@@ -1,6 +1,10 @@
 import {describe, expect, it} from "vitest";
 
-import {parseGeneratedMeal} from "../src/meal-ai";
+import {
+  buildMealContentParts,
+  parseAIMealCallableInput,
+  parseGeneratedMeal,
+} from "../src/meal-ai";
 
 const nutrition = {
   calories: 420,
@@ -10,41 +14,61 @@ const nutrition = {
 };
 
 describe("localized AI meals", () => {
-  it("parses complete English and Croatian meal payloads", () => {
+  it("parses compact English and Croatian meal text with shared values", () => {
     const meal = parseGeneratedMeal(JSON.stringify({
-      en: {
-        name: "Chicken salad",
-        emoji: "🥗",
-        color: "#5F9E52",
-        nutrition,
-        foods: [{
-          name: "Chicken",
-          emoji: "🍗",
-          color: "#C98B62",
-          quantity: 150,
-          unit: "g",
-          nutrition,
-        }],
+      name: {
+        en: "Chicken salad",
+        hr: "Pileća salata",
       },
-      hr: {
-        name: "Pileća salata",
+      emoji: "🥗",
+      color: "#5F9E52",
+      nutrition,
+      foods: [{
+        name: {
+          en: "Chicken",
+          hr: "Piletina",
+        },
         emoji: "🥗",
-        color: "#5F9E52",
+        color: "#C98B62",
+        quantity: 150,
+        unit: {
+          en: "g",
+          hr: "g",
+        },
         nutrition,
-        foods: [{
-          name: "Piletina",
-          emoji: "🍗",
-          color: "#C98B62",
-          quantity: 150,
-          unit: "g",
-          nutrition,
-        }],
-      },
+      }],
     }));
 
-    expect(meal.en.name).toBe("Chicken salad");
-    expect(meal.hr.name).toBe("Pileća salata");
-    expect(meal.en.foods[0].name).toBe("Chicken");
-    expect(meal.hr.foods[0].name).toBe("Piletina");
+    expect(meal.name.en).toBe("Chicken salad");
+    expect(meal.name.hr).toBe("Pileća salata");
+    expect(meal.foods[0].name.en).toBe("Chicken");
+    expect(meal.foods[0].name.hr).toBe("Piletina");
+    expect(meal.foods[0].nutrition).toEqual(nutrition);
+  });
+
+  it("passes callable WebP bytes to Gemini as inline data", () => {
+    const imageBase64 = Buffer.from("RIFF0000WEBP").toString("base64");
+    const input = parseAIMealCallableInput({
+      mealId: "123e4567-e89b-12d3-a456-426614174000",
+      languageCode: "en",
+      imageBase64,
+      imageContentType: "image/webp",
+      imageBlurHash: "blur-hash",
+    });
+
+    expect(input.image?.base64).toBe(imageBase64);
+    expect(buildMealContentParts({
+      text: "Chicken salad",
+      imageBase64: input.image?.base64 ?? null,
+      imageContentType: input.image?.contentType ?? null,
+    })).toEqual([
+      {text: "Chicken salad"},
+      {
+        inlineData: {
+          mimeType: "image/webp",
+          data: imageBase64,
+        },
+      },
+    ]);
   });
 });

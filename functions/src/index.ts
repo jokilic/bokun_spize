@@ -10,20 +10,21 @@ import {getMessaging} from "firebase-admin/messaging";
 import {getStorage} from "firebase-admin/storage";
 import {region} from "firebase-functions/v1";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
+import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {dispatchDueNotifications} from "./dispatcher";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {
-  cleanupExpiredAIMealImageRequests,
-  deleteAIMealGenerationClaim,
-  processPendingAIMeal,
+  cleanupExpiredAIMealRequests,
+  MEAL_IMAGE_BUCKET,
+  processCallableAIMeal,
 } from "./meal-ai";
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
 
 /** Recursively removes private data after a Firebase Auth account is deleted */
-export const cleanupDeletedUser = region("europe-west1")
+export const cleanupDeletedUser = region("europe-west8")
   .runWith({
     timeoutSeconds: 540,
     memory: "256MB",
@@ -37,55 +38,40 @@ export const cleanupDeletedUser = region("europe-west1")
     // Both operations are idempotent so failed event deliveries can retry safely
     await Promise.all([
       firestore.recursiveDelete(userDocument),
-      getStorage().bucket().deleteFiles({
+      getStorage().bucket(MEAL_IMAGE_BUCKET).deleteFiles({
         prefix: userStoragePrefix,
       }),
     ]);
   });
 
-/** Generates meals after their text and optional uploaded image are ready */
-export const generateAIMeal = onDocumentWritten(
+/** Generates one authenticated meal while uploading its optional image concurrently */
+export const generateAIMeal = onCall(
   {
-    document: "users/{userId}/meals/{mealId}",
-    region: "europe-west1",
-    retry: true,
-    timeoutSeconds: 540,
+    region: "europe-west8",
+    enforceAppCheck: true,
+    timeoutSeconds: 120,
     memory: "1GiB",
   },
-  async (event) => {
-    const document = event.data?.after;
-    const data = document?.data();
+  async (request) => {
+    const userId = request.auth?.uid;
 
-    if (document === undefined || !document.exists) {
-      const previousDocument = event.data?.before;
-
-      if (previousDocument !== undefined && previousDocument.exists) {
-        await deleteAIMealGenerationClaim(previousDocument.ref);
-      }
-
-      return;
+    if (userId === undefined) {
+      throw new HttpsError("unauthenticated", "Authentication is required");
     }
 
-    if (
-      data?.isLoading !== true ||
-      data.aiGenerationReady !== true
-    ) {
-      return;
-    }
-
-    await processPendingAIMeal(
-      document.ref,
-      event.params.userId,
+    return processCallableAIMeal(
+      userId,
+      request.data,
     );
   },
 );
 
-/** Finishes AI image requests that did not become ready within the upload window */
+/** Finishes callable AI requests interrupted before reaching a terminal state */
 export const cleanupAbandonedAIMeals = onSchedule(
   {
     schedule: "every 5 minutes",
     timeZone: "Etc/UTC",
-    region: "europe-west1",
+    region: "europe-west8",
     memory: "256MiB",
     timeoutSeconds: 540,
     maxInstances: 1,
@@ -93,7 +79,7 @@ export const cleanupAbandonedAIMeals = onSchedule(
     minBackoffSeconds: 30,
   },
   async () => {
-    await cleanupExpiredAIMealImageRequests(
+    await cleanupExpiredAIMealRequests(
       getFirestore(),
       new Date(),
     );

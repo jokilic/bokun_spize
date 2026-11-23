@@ -39,6 +39,7 @@
     }
   },
   "storage": {
+    "target": "mealImages",
     "rules": "storage.rules"
   },
   "firestore": {

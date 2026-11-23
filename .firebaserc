@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "bokun-spize"
+  },
+  "targets": {
+    "bokun-spize": {
+      "storage": {
+        "mealImages": [
+          "bokun-spize-meal-images-eu"
+        ]
+      }
+    }
   }
 }

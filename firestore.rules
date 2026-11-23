@@ -75,87 +75,80 @@ service cloud.firestore {
         && data.fat is number;
     }
 
-    // Validate the fields inside one localized meal branch
-    function isValidLocalizedMealData(data) {
+    // Validate one compact English and Croatian text pair
+    function isValidLocalizedText(data, maxLength) {
       return data is map
-        && data.keys().hasAll(['name', 'emoji', 'color', 'nutrition', 'foods'])
-        && data.keys().hasOnly(['name', 'emoji', 'color', 'nutrition', 'foods'])
-        && isOptionalString(data.name, 500)
-        && isOptionalString(data.emoji, 32)
-        && isOptionalString(data.color, 16)
-        && (data.nutrition == null || isValidNutrition(data.nutrition))
-        // Firestore Rules cannot validate every element type in an arbitrary list
-        && (data.foods == null || (data.foods is list && data.foods.size() <= 200));
+        && data.keys().hasAll(['en', 'hr'])
+        && data.keys().hasOnly(['en', 'hr'])
+        && data.en is string
+        && data.en.size() > 0
+        && data.en.size() <= maxLength
+        && data.hr is string
+        && data.hr.size() > 0
+        && data.hr.size() <= maxLength;
     }
 
-    // Validate meal fields and optional backend generation request metadata
+    // Validate manual or compact bilingual meal fields and callable metadata
     function isValidMeal(data, userId, mealId) {
-      let sharedFields = [
+      let fields = [
         'id',
+        'name',
+        'emoji',
+        'color',
         'createdAt',
+        'nutrition',
+        'foods',
         'originalText',
         'isLoading',
         'errors',
         'imageStoragePath',
-      ];
-
-      let legacyFields = [
-        'name',
-        'emoji',
-        'color',
-        'nutrition',
-        'foods',
-      ];
-
-      let localizedFields = [
-        'en',
-        'hr',
-      ];
-
-      let aiGenerationFields = [
+        'imageBlurHash',
+        'methodOfCreation',
         'aiGenerationLanguage',
-        'aiGenerationReady',
+        'aiGenerationRequestedAt',
       ];
 
-      let hasLegacyMealData = data.keys().hasAll(legacyFields)
-        && !data.keys().hasAny(localizedFields)
-        && isOptionalString(data.name, 500)
+      let hasManualMealData = data.name == null || data.name is string;
+
+      let hasCompactLocalizedMealData = isValidLocalizedText(data.name, 500);
+
+      return data.keys().hasAll([
+          'id',
+          'name',
+          'emoji',
+          'color',
+          'createdAt',
+          'nutrition',
+          'foods',
+          'originalText',
+          'isLoading',
+          'errors',
+          'imageStoragePath',
+        ])
+        && data.keys().hasOnly(fields)
+        && data.id is string
+        && data.id == mealId
+        && data.createdAt is timestamp
+        && (hasManualMealData || hasCompactLocalizedMealData)
+        && (hasCompactLocalizedMealData || isOptionalString(data.name, 500))
         && isOptionalString(data.emoji, 32)
         && isOptionalString(data.color, 16)
         && (data.nutrition == null || isValidNutrition(data.nutrition))
         // Firestore Rules cannot validate every element type in an arbitrary list
-        && (data.foods == null || (data.foods is list && data.foods.size() <= 200));
-
-      let hasLocalizedMealData = data.keys().hasAll(localizedFields)
-        && !data.keys().hasAny(legacyFields)
-        && isValidLocalizedMealData(data.en)
-        && isValidLocalizedMealData(data.hr);
-
-      return data.keys().hasAll(sharedFields)
-        && data.keys().hasOnly(sharedFields.concat(legacyFields).concat(localizedFields).concat(['methodOfCreation', 'imageBlurHash', 'aiGenerationRequestedAt']).concat(aiGenerationFields))
-        && data.id is string
-        && data.id == mealId
-        && data.createdAt is timestamp
-        && (hasLegacyMealData || hasLocalizedMealData)
+        && (data.foods == null || (data.foods is list && data.foods.size() <= 200))
         && isOptionalString(data.originalText, 50000)
         && isOptionalString(data.get('methodOfCreation', null), 200)
         && isOptionalString(data.get('imageBlurHash', null), 100)
         && data.isLoading is bool
         && (data.errors == null || (data.errors is list && data.errors.size() <= 100))
         && (
-          (
-            !data.keys().hasAny(aiGenerationFields)
-            && !data.keys().hasAny(['aiGenerationRequestedAt'])
-          )
+          !data.keys().hasAny(['aiGenerationLanguage', 'aiGenerationRequestedAt'])
           || (
-            data.keys().hasAll(aiGenerationFields)
+            data.keys().hasAll(['aiGenerationLanguage', 'aiGenerationRequestedAt'])
             && data.aiGenerationLanguage is string
             && data.aiGenerationLanguage in ['en', 'hr']
-            && data.aiGenerationReady is bool
-            && (
-              !data.keys().hasAny(['aiGenerationRequestedAt'])
-              || data.aiGenerationRequestedAt is timestamp
-            )
+            && data.aiGenerationRequestedAt is timestamp
+            && data.methodOfCreation == 'ai'
             && data.isLoading == true
           )
         )

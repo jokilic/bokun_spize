@@ -250,68 +250,32 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       id: newMealId,
       createdAt: result.dateTime!,
       originalText: words == null || words.isEmpty ? null : words,
+      methodOfCreation: 'ai',
       isLoading: true,
     );
 
     try {
-      final imageFile = result.imageFile;
-
       /// Show the selected date before the latency-compensated Firestore write
       updateDate(
         loadingMeal.createdAt,
       );
 
-      /// Create the list item before waiting for an optional image upload
+      /// Create the list item before invoking backend generation
       final loadingMealWritten = await firebase.writeAIMealRequest(
         newMeal: loadingMeal,
         languageCode: languageCode,
-        isReady: imageFile == null,
       );
 
       if (!loadingMealWritten) {
         return false;
       }
 
-      if (imageFile == null) {
-        return true;
-      }
-
-      final imageUploadResult = await firebase.uploadMealImage(
-        imageFile: imageFile,
+      /// The callable uploads the image and generates the meal concurrently
+      return await firebase.generateAIMeal(
+        mealId: loadingMeal.id,
+        languageCode: languageCode,
+        imageFile: result.imageFile,
       );
-
-      if (imageUploadResult != null) {
-        final requestMarkedReady = await firebase.markAIMealRequestReady(
-          mealId: loadingMeal.id,
-          imageUploadResult: imageUploadResult,
-        );
-
-        if (requestMarkedReady) {
-          return true;
-        }
-
-        /// Keep the uploaded image reachable while finishing as an error
-        await firebase.updateMeal(
-          newMeal: loadingMeal.copyWith(
-            imageStoragePath: imageUploadResult.imageStoragePath,
-            imageBlurHash: imageUploadResult.imageBlurHash,
-            isLoading: false,
-            errors: ['mealsErrorImageUploadFailed'.tr()],
-          ),
-        );
-
-        return false;
-      }
-
-      /// Finish the visible loading meal if its image upload fails
-      await firebase.updateMeal(
-        newMeal: loadingMeal.copyWith(
-          isLoading: false,
-          errors: ['mealsErrorImageUploadFailed'.tr()],
-        ),
-      );
-
-      return false;
     } catch (error) {
       log(
         'Adding AI meal failed',

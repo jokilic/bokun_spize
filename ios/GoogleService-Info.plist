@@ -19,7 +19,7 @@
 	<key>PROJECT_ID</key>
 	<string>bokun-spize</string>
 	<key>STORAGE_BUCKET</key>
-	<string>bokun-spize.firebasestorage.app</string>
+	<string>bokun-spize-meal-images-eu</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>

@@ -4,45 +4,92 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/meal/meal.dart';
 
-/// Returns both complete language branches when the document uses the localized meal structure
-Map<String, dynamic>? getCompleteLocalizedMealData(Map<String, dynamic> data) {
-  final englishData = data['en'];
-  final croatianData = data['hr'];
+/// Returns the requested localized string with the other supported language as fallback
+String? getLocalizedString(
+  Object? value, {
+  required String languageCode,
+}) {
+  if (value is! Map) {
+    return value is String ? value : null;
+  }
 
-  if (englishData is! Map || croatianData is! Map) {
+  final localizedValue = value[languageCode];
+  final fallbackValue = value[languageCode == 'en' ? 'hr' : 'en'];
+
+  return localizedValue is String
+      ? localizedValue
+      : fallbackValue is String
+      ? fallbackValue
+      : null;
+}
+
+/// Localizes one compact AI food while keeping all shared fields unchanged
+Map<String, dynamic> getLocalizedFoodData(
+  Map<String, dynamic> food, {
+  required String languageCode,
+}) => {
+  ...food,
+  'name': getLocalizedString(
+    food['name'],
+    languageCode: languageCode,
+  ),
+  'unit': getLocalizedString(
+    food['unit'],
+    languageCode: languageCode,
+  ),
+};
+
+/// Returns compact AI fields so copies and date-only edits preserve both languages
+Map<String, dynamic>? getCompactLocalizedMealData(Map<String, dynamic> data) {
+  final name = data['name'];
+
+  if (name is! Map || name['en'] is! String || name['hr'] is! String) {
     return null;
   }
 
   return {
-    'en': Map<String, dynamic>.from(englishData),
-    'hr': Map<String, dynamic>.from(croatianData),
+    'name': Map<String, dynamic>.from(name),
+    'emoji': data['emoji'],
+    'color': data['color'],
+    'nutrition': data['nutrition'],
+    'foods': data['foods'],
   };
 }
 
-/// Returns localized AI meal fields merged with shared document metadata
+/// Converts compact bilingual AI fields into the active app language
 Map<String, dynamic> getLocalizedMealData(
   Map<String, dynamic> data, {
   required String languageCode,
 }) {
-  final localizedData = data[languageCode];
-  final fallbackData = data[languageCode == 'en' ? 'hr' : 'en'];
-  final selectedData = localizedData is Map
-      ? localizedData
-      : fallbackData is Map
-      ? fallbackData
-      : null;
+  final localizedName = getLocalizedString(
+    data['name'],
+    languageCode: languageCode,
+  );
 
-  if (selectedData == null) {
+  if (localizedName == null || data['name'] is String) {
     return data;
   }
 
+  final foods = data['foods'];
+
   return {
     ...data,
-    ...Map<String, dynamic>.from(selectedData),
+    'name': localizedName,
+    'foods': foods is List
+        ? foods
+              .whereType<Map>()
+              .map(
+                (food) => getLocalizedFoodData(
+                  Map<String, dynamic>.from(food),
+                  languageCode: languageCode,
+                ),
+              )
+              .toList()
+        : foods,
   };
 }
 
-/// Parses single `meal` document
+/// Parses one Firestore meal document into the active app language
 Meal? parseMealDocument(
   QueryDocumentSnapshot<Map<String, dynamic>> document, {
   required String languageCode,
@@ -64,7 +111,7 @@ Meal? parseMealDocument(
       errors: (data['errors'] as List?)?.whereType<String>().toList(),
       imageStoragePath: data['imageStoragePath'] as String?,
       imageBlurHash: data['imageBlurHash'] as String?,
-      localizedData: getCompleteLocalizedMealData(data),
+      localizedData: getCompactLocalizedMealData(data),
     );
   } catch (error, stackTrace) {
     log(
