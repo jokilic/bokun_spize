@@ -2,9 +2,9 @@
  * Generates compact localized meals from text and inline images with Gemini
  */
 
-import {GoogleGenAI, Part} from "@google/genai";
-import {randomUUID} from "node:crypto";
-import {getApp} from "firebase-admin/app";
+import { GoogleGenAI, Part } from "@google/genai";
+import { randomUUID } from "node:crypto";
+import { getApp } from "firebase-admin/app";
 import {
   DocumentData,
   DocumentReference,
@@ -13,11 +13,11 @@ import {
   getFirestore,
   Timestamp,
 } from "firebase-admin/firestore";
-import {getStorage} from "firebase-admin/storage";
+import { getStorage } from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
-import {HttpsError} from "firebase-functions/v2/https";
+import { HttpsError } from "firebase-functions/v2/https";
 
-import {AI_MODEL_NAMES} from "./daily-summary-ai";
+import { AI_MODEL_NAMES } from "./daily-summary-ai";
 
 /** Localized text generated once for each supported app language */
 export interface GeneratedLocalizedText {
@@ -57,6 +57,9 @@ export interface GeneratedMealResult {
   meal: GeneratedMeal;
   modelName: string;
 }
+
+/** Signals that the supplied photo has no recognizable food or drink */
+export class NoFoodInImageError extends Error { }
 
 /** Optional inline image supplied by the callable client */
 export interface InlineMealImage {
@@ -121,12 +124,24 @@ export const AI_MEAL_CLEANUP_LIMIT = 200;
 /** Instructions preserve extraction while preventing duplicated shared values */
 export const MEAL_SYSTEM_INSTRUCTION = `
 You will receive text and / or an image describing what the user ate.
-Estimate nutrition and extract foods.
+
+When an image is supplied, check that it shows at least one recognizable food, drink, or edible ingredient.
+
+If the image is unrelated or too unclear to identify any such item, return only {"status":"no_food_in_image"}, even if the accompanying text describes food.
+
+For a meal, return status {"status":"meal"}, put the extracted foods and estimated nutrition in the meal object.
+Include each identified drink as a food item, even if it has zero calories.
+
 If quantity is unclear, make a reasonable estimate.
 If nutrition is unknown, estimate based on typical values.
-The user's text may be written in any language. Understand it in its original language.
+
+The user's text may be written in any language.
+Understand it in its original language.
+
 Return English and Croatian only for the localized name and unit objects.
+
 All quantities, nutrition values, emojis, and colors must appear only once as shared values.
+
 Keep JSON property names unchanged and preserve standard unit symbols such as g and ml.
 `.trim();
 
@@ -137,8 +152,8 @@ export const LOCALIZED_TEXT_RESPONSE_SCHEMA: Record<string, unknown> = {
   required: ["en", "hr"],
   additionalProperties: false,
   properties: {
-    en: {type: "string", description: "English value"},
-    hr: {type: "string", description: "Croatian value"},
+    en: { type: "string", description: "English value" },
+    hr: { type: "string", description: "Croatian value" },
   },
 };
 
@@ -149,10 +164,10 @@ export const NUTRITION_RESPONSE_SCHEMA: Record<string, unknown> = {
   required: ["calories", "protein", "carbs", "fat"],
   additionalProperties: false,
   properties: {
-    calories: {type: "number", description: "Calories in kcal"},
-    protein: {type: "number", description: "Protein in g"},
-    carbs: {type: "number", description: "Carbs in g"},
-    fat: {type: "number", description: "Fat in g"},
+    calories: { type: "number", description: "Calories in kcal" },
+    protein: { type: "number", description: "Protein in g" },
+    carbs: { type: "number", description: "Carbs in g" },
+    fat: { type: "number", description: "Fat in g" },
   },
 };
 
@@ -198,7 +213,7 @@ export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
             type: "string",
             description: "Color best describing the food in hex format such as #FF0000",
           },
-          quantity: {type: "number", description: "Quantity of food"},
+          quantity: { type: "number", description: "Quantity of food" },
           unit: {
             ...LOCALIZED_TEXT_RESPONSE_SCHEMA,
             description: "Food unit in English and Croatian while preserving standard symbols",
@@ -207,6 +222,18 @@ export const MEAL_RESPONSE_SCHEMA: Record<string, unknown> = {
         },
       },
     },
+  },
+};
+
+/** Lets Gemini report an unrelated image without supplying meal data */
+export const MEAL_GENERATION_RESPONSE_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  propertyOrdering: ["status", "meal"],
+  required: ["status"],
+  additionalProperties: false,
+  properties: {
+    status: { type: "string", enum: ["meal", "no_food_in_image"] },
+    meal: MEAL_RESPONSE_SCHEMA,
   },
 };
 
@@ -220,7 +247,7 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
 /** Parses one finite nonnegative numeric response property */
 export function parseGeneratedNumber(value: unknown, propertyName: string): number {
   if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
-    throw new Error(`Gemini returned invalid ${propertyName}`);
+    throw new Error(`AI returned invalid ${propertyName}`);
   }
 
   return value;
@@ -237,7 +264,7 @@ export function parseGeneratedString(
     value.trim().length === 0 ||
     value.trim().length > maximumLength
   ) {
-    throw new Error(`Gemini returned invalid ${propertyName}`);
+    throw new Error(`AI returned invalid ${propertyName}`);
   }
 
   return value.trim();
@@ -252,7 +279,7 @@ export function parseGeneratedLocalizedText(
   const localizedText = asRecord(value);
 
   if (localizedText === null) {
-    throw new Error(`Gemini returned invalid localized ${propertyName}`);
+    throw new Error(`AI returned invalid localized ${propertyName}`);
   }
 
   return {
@@ -266,7 +293,7 @@ export function parseGeneratedColor(value: unknown, propertyName: string): strin
   const color = parseGeneratedString(value, propertyName, 7);
 
   if (!/^#[0-9a-fA-F]{6}$/.test(color)) {
-    throw new Error(`Gemini returned invalid ${propertyName}`);
+    throw new Error(`AI returned invalid ${propertyName}`);
   }
 
   return color;
@@ -277,7 +304,7 @@ export function parseGeneratedNutrition(value: unknown): GeneratedNutrition {
   const nutrition = asRecord(value);
 
   if (nutrition === null) {
-    throw new Error("Gemini returned invalid nutrition");
+    throw new Error("AI returned invalid nutrition");
   }
 
   return {
@@ -293,7 +320,7 @@ export function parseGeneratedFood(value: unknown): GeneratedFood {
   const food = asRecord(value);
 
   if (food === null) {
-    throw new Error("Gemini returned invalid food data");
+    throw new Error("AI returned invalid food data");
   }
 
   return {
@@ -309,17 +336,22 @@ export function parseGeneratedFood(value: unknown): GeneratedFood {
 /** Parses and validates one compact Gemini meal response */
 export function parseGeneratedMeal(text: string | undefined): GeneratedMeal {
   if (text === undefined) {
-    throw new Error("Gemini returned no meal data");
+    throw new Error("AI returned no meal data");
   }
 
-  const meal = asRecord(JSON.parse(text));
+  const response = asRecord(JSON.parse(text));
+  if (response?.status === "no_food_in_image") {
+    throw new NoFoodInImageError("Meal photo contains no recognizable food or drink");
+  }
+
+  const meal = response?.status === "meal" ? asRecord(response.meal) : null;
 
   if (
     meal === null ||
     !Array.isArray(meal.foods) ||
     meal.foods.length > 200
   ) {
-    throw new Error("Gemini returned invalid meal data");
+    throw new Error("AI returned invalid meal data");
   }
 
   return {
@@ -343,7 +375,7 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
   const parts: Part[] = [];
 
   if (input.text !== null && input.text.length > 0) {
-    parts.push({text: input.text});
+    parts.push({ text: input.text });
   }
 
   if (input.imageBase64 !== null && input.imageContentType !== null) {
@@ -384,22 +416,28 @@ export async function generateMeal(
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: [{role: "user", parts}],
+        contents: [{ role: "user", parts }],
         config: {
           systemInstruction: MEAL_SYSTEM_INSTRUCTION,
           responseMimeType: "application/json",
-          responseJsonSchema: MEAL_RESPONSE_SCHEMA,
+          responseJsonSchema: MEAL_GENERATION_RESPONSE_SCHEMA,
           temperature: 0.2,
           maxOutputTokens: 4096,
         },
       });
 
-      return {
-        meal: parseGeneratedMeal(response.text),
-        modelName: model,
-      };
+      const meal = parseGeneratedMeal(response.text);
+      if (input.imageBase64 !== null && meal.foods.length === 0) {
+        throw new Error("AI returned an image-based meal without any food or drink items");
+      }
+
+      return { meal, modelName: model };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown Gemini error";
+      if (input.imageBase64 !== null && error instanceof NoFoodInImageError) {
+        throw error;
+      }
+
+      const message = error instanceof Error ? error.message : "Unknown AI error";
       failures.push(`${model}: ${message}`);
       logger.warn("Meal generation model failed", {
         model,
@@ -491,6 +529,13 @@ export function getMealGenerationError(languageCode: string): string {
   return languageCode === "en" ?
     "Meal generation failed. Delete it and try again" :
     "Generiranje obroka nije uspjelo. Izbriši ga i pokušaj ponovno";
+}
+
+/** Returns a localized message when the photo contains no recognizable food or drink */
+export function getNoFoodInImageError(languageCode: string): string {
+  return languageCode === "en" ?
+    "No food or drink was recognized in this photo" :
+    "Na fotografiji nije prepoznata hrana ni piće";
 }
 
 /** Returns a short localized image upload error suitable for direct display */
@@ -629,7 +674,7 @@ export async function deleteAIMealImage(storagePath: string): Promise<void> {
     await getStorage()
       .bucket(APP_STORAGE_BUCKET)
       .file(storagePath)
-      .delete({ignoreNotFound: true});
+      .delete({ ignoreNotFound: true });
   } catch (error) {
     // Cleanup must not prevent the meal from reaching its terminal state
     logger.error("Deleting unused AI meal image failed", {
@@ -723,7 +768,7 @@ export async function processCallableAIMeal(
   );
 
   if (claim.status === "busy") {
-    return {success: true};
+    return { success: true };
   }
 
   if (claim.status === "not-ready") {
@@ -753,21 +798,26 @@ export async function processCallableAIMeal(
       await deleteAIMealImage(imageUploadOutcome.value.storagePath);
     }
 
-    logger.error("Generating callable AI meal failed", {
-      userId,
-      mealId: input.mealId,
-      error: generationOutcome.reason instanceof Error ?
-        generationOutcome.reason.message.slice(0, 900) :
-        "Unknown meal generation error",
-    });
+    const noFoodInImage = generationOutcome.reason instanceof NoFoodInImageError;
+    if (!noFoodInImage) {
+      logger.error("Generating callable AI meal failed", {
+        userId,
+        mealId: input.mealId,
+        error: generationOutcome.reason instanceof Error ?
+          generationOutcome.reason.message.slice(0, 900) :
+          "Unknown meal generation error",
+      });
+    }
 
     await finalizePendingAIMeal(mealReference, leaseId, {
       isLoading: false,
-      errors: [getMealGenerationError(input.languageCode)],
+      errors: [noFoodInImage ?
+        getNoFoodInImageError(input.languageCode) :
+        getMealGenerationError(input.languageCode)],
       aiGenerationLanguage: FieldValue.delete(),
       aiGenerationRequestedAt: FieldValue.delete(),
     });
-    return {success: false};
+    return { success: false };
   }
 
   const imageUploadFailed = imageUploadOutcome.status === "rejected";

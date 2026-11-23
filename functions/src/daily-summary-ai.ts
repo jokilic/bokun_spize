@@ -144,7 +144,7 @@ export function normalizeDailySummaryBody(value: unknown): string {
 /** Validates and normalizes one structured Gemini response */
 export function parseDailySummaryResponse(text: string | undefined): GeneratedDailySummaryBodies {
   if (text === undefined) {
-    throw new Error("Gemini returned no daily summary text");
+    throw new Error("AI returned no daily summary text");
   }
 
   const value: unknown = JSON.parse(text);
@@ -156,7 +156,7 @@ export function parseDailySummaryResponse(text: string | undefined): GeneratedDa
     en.length === 0 ||
     hr.length === 0
   ) {
-    throw new Error("Gemini returned invalid daily summary bodies");
+    throw new Error("AI returned invalid daily summary bodies");
   }
 
   return { en, hr };
@@ -206,7 +206,7 @@ export async function generateDailySummaryBodies(
         modelName: model,
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown Gemini error";
+      const message = error instanceof Error ? error.message : "Unknown AI error";
       failures.push(`${model}: ${message}`);
       logger.warn("Daily summary model failed", {
         model,
