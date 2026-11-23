@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../models/meal/ai_meal_quota_error.dart';
 import '../../models/meal/meal.dart';
+import '../../services/analytics_service.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
@@ -30,11 +31,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   ///
 
   final FirebaseService firebase;
+  final AnalyticsService analytics;
   final StorageService storage;
   String languageCode;
 
   MealsController({
     required this.firebase,
+    required this.analytics,
     required this.storage,
     required this.languageCode,
   }) : super((
@@ -203,6 +206,12 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     final newMealId = const Uuid().v1();
     final aiAddMealOpenedNumber = storage.incrementAIAddMealOpenedNumber();
 
+    unawaited(
+      analytics.logAddMealOpened(
+        MealAnalyticsMethod.ai,
+      ),
+    );
+
     /// Show [AIAddMealScreen] for adding `AI meal`
     final result = await showBlurredModalBottomSheet<AIMealResult>(
       context: context,
@@ -224,7 +233,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         languageCode: languageCode,
       );
 
-      if (!success && context.mounted) {
+      if (success) {
+        unawaited(
+          analytics.logMealSaved(
+            MealAnalyticsMethod.ai,
+          ),
+        );
+      } else if (context.mounted) {
         showSnackbar(
           context,
           text: 'mealAddFailure'.tr(),
@@ -317,10 +332,15 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required bool isCopyingMeal,
   }) async {
     final isEditingMeal = passedMeal != null && !isCopyingMeal;
-    final shouldShowExplanation = passedMeal == null && !isCopyingMeal && storage.incrementManualAddMealOpenedNumber() <= 5;
+    final isAddingMeal = passedMeal == null && !isCopyingMeal;
+    final shouldShowExplanation = isAddingMeal && storage.incrementManualAddMealOpenedNumber() <= 5;
 
     /// Keep the existing `mealId` when editing
     final mealId = isEditingMeal ? passedMeal.id : const Uuid().v1();
+
+    if (isAddingMeal) {
+      unawaited(analytics.logAddMealOpened(MealAnalyticsMethod.manual));
+    }
 
     /// Show [ManualAddMealScreen]
     final result = await showBlurredModalBottomSheet<ManualMealResult>(
@@ -356,6 +376,14 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
             passedMeal: passedMeal,
             isCopyingMeal: isCopyingMeal,
           );
+
+    if (success && isAddingMeal) {
+      unawaited(
+        analytics.logMealSaved(
+          MealAnalyticsMethod.manual,
+        ),
+      );
+    }
 
     /// Saving failed, show error snackbar
     if (!success && context.mounted) {

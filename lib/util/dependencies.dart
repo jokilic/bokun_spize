@@ -1,6 +1,7 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +11,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/analytics_service.dart';
 import '../services/cache_service.dart';
 import '../services/firebase_service.dart';
 import '../services/notification_service.dart';
@@ -75,6 +77,17 @@ Future<void> initializeBeforeAppStart() async {
 /// Registers app services and loads saved preferences before the app starts
 Future<void> registerServices() async {
   ///
+  /// ANALYTICS
+  ///
+  if (!getIt.isRegistered<AnalyticsService>()) {
+    getIt.registerLazySingleton(
+      () => AnalyticsService(
+        analytics: FirebaseAnalytics.instance,
+      ),
+    );
+  }
+
+  ///
   /// CACHE
   ///
   if (!getIt.isRegistered<CacheService>()) {
@@ -100,6 +113,7 @@ Future<void> registerServices() async {
         storage: FirebaseStorage.instance,
         googleSignIn: GoogleSignIn.instance,
         cache: getIt.get<CacheService>(),
+        analytics: getIt.get<AnalyticsService>(),
       ),
       onCreated: (service) => service.init(),
     );

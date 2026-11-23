@@ -9,6 +9,7 @@ import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
 import '../../models/user_metrics/user_metrics.dart';
+import '../../services/analytics_service.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
@@ -41,6 +42,7 @@ class _MealsScreenState extends State<MealsScreen> {
     registerIfNotInitialized<MealsController>(
       () => MealsController(
         firebase: getIt.get<FirebaseService>(),
+        analytics: getIt.get<AnalyticsService>(),
         storage: getIt.get<StorageService>(),
         languageCode: languageCode,
       ),

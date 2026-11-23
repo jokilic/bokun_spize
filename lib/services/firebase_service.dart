@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -25,6 +26,7 @@ import '../util/meal_parse.dart';
 import '../util/timezone.dart';
 import '../util/typedefs.dart';
 import '../util/weight_track_parse.dart';
+import 'analytics_service.dart';
 import 'cache_service.dart';
 
 enum AuthProvider {
@@ -46,6 +48,7 @@ class FirebaseService {
   final GoogleSignIn googleSignIn;
   final CacheService cache;
   Future<void> Function()? beforeSignOut;
+  final AnalyticsService analytics;
 
   FirebaseService({
     required this.auth,
@@ -54,6 +57,8 @@ class FirebaseService {
     required this.storage,
     required this.googleSignIn,
     required this.cache,
+    required this.analytics,
+    this.beforeSignOut,
   });
 
   ///
@@ -466,6 +471,14 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(credential);
 
+      if (userCredential.user != null && userCredential.additionalUserInfo?.isNewUser == true) {
+        unawaited(
+          analytics.logSignUp(
+            method: AuthProvider.google.name,
+          ),
+        );
+      }
+
       await saveUserMetadata(
         user: userCredential.user,
         providerName: user.displayName,
@@ -544,6 +557,14 @@ class FirebaseService {
       );
 
       final userCredential = await auth.signInWithCredential(oauthCredential);
+
+      if (userCredential.user != null && userCredential.additionalUserInfo?.isNewUser == true) {
+        unawaited(
+          analytics.logSignUp(
+            method: AuthProvider.apple.name,
+          ),
+        );
+      }
 
       final appleName =
           [
@@ -669,6 +690,12 @@ class FirebaseService {
           error: 'firebaseErrorUserNull'.tr(),
         );
       }
+
+      unawaited(
+        analytics.logSignUp(
+          method: AuthProvider.email.name,
+        ),
+      );
 
       await saveUserMetadata(
         user: user,

@@ -1,0 +1,63 @@
+import 'dart:developer';
+
+import 'package:firebase_analytics/firebase_analytics.dart';
+
+enum MealAnalyticsMethod {
+  manual,
+  ai,
+}
+
+class AnalyticsService {
+  ///
+  /// CONSTRUCTOR
+  ///
+
+  final FirebaseAnalytics analytics;
+
+  AnalyticsService({
+    required this.analytics,
+  });
+
+  ///
+  /// METHODS
+  ///
+
+  /// Keeps analytics failures from interrupting account creation or meal flows
+  Future<void> sendEvent(Future<void> Function() send) async {
+    try {
+      await send();
+    } catch (error) {
+      log(
+        'Sending analytics event failed',
+        error: error.runtimeType,
+      );
+    }
+  }
+
+  /// Records a newly created account and its sign-up method
+  Future<void> logSignUp({required String method}) => sendEvent(
+    () => analytics.logSignUp(
+      signUpMethod: method,
+    ),
+  );
+
+  /// Records when a user opens a flow for creating a meal
+  Future<void> logAddMealOpened(MealAnalyticsMethod method) => sendEvent(
+    () => analytics.logEvent(
+      name: 'add_meal_opened',
+      parameters: {
+        'method': method.name,
+      },
+    ),
+  );
+
+  /// Records when a newly created meal is saved successfully
+  Future<void> logMealSaved(MealAnalyticsMethod method) => sendEvent(
+    () => analytics.logEvent(
+      name: 'meal_saved',
+      parameters: {
+        'method': method.name,
+      },
+    ),
+  );
+}
