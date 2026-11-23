@@ -83,6 +83,9 @@ Future<void> registerServices() async {
     getIt.registerLazySingleton(
       () => AnalyticsService(
         analytics: FirebaseAnalytics.instance,
+        functions: FirebaseFunctions.instanceFor(
+          region: 'europe-west8',
+        ),
       ),
     );
   }
@@ -142,7 +145,9 @@ Future<void> registerServices() async {
   ///
   if (!getIt.isRegistered<SpeechToTextService>()) {
     getIt.registerLazySingleton(
-      SpeechToTextService.new,
+      () => SpeechToTextService(
+        analytics: getIt.get<AnalyticsService>(),
+      ),
     );
   }
 
@@ -151,7 +156,9 @@ Future<void> registerServices() async {
   ///
   if (!getIt.isRegistered<ScreenService>()) {
     getIt.registerLazySingleton(
-      ScreenService.new,
+      () => ScreenService(
+        analytics: getIt.get<AnalyticsService>(),
+      ),
     );
   }
 
@@ -167,6 +174,7 @@ Future<void> registerServices() async {
           firestore: FirebaseFirestore.instance,
           storage: getIt.get<StorageService>(),
           screen: getIt.get<ScreenService>(),
+          analytics: getIt.get<AnalyticsService>(),
           openedMessages: FirebaseMessaging.onMessageOpenedApp,
           openSystemSettingsCallback: openAppSettings,
         );

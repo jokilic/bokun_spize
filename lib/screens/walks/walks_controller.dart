@@ -12,6 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../constants/durations.dart';
 import '../../models/steps_with_date/steps_with_date.dart';
+import '../../services/analytics_service.dart';
+import '../../util/analytics.dart';
 import '../../util/null_state.dart';
 import '../../util/steps_history.dart';
 
@@ -33,10 +35,12 @@ class WalksController
   ///
 
   final Health health;
+  final AnalyticsService analytics;
   final int graphCalendarDays;
 
   WalksController({
     required this.health,
+    required this.analytics,
     required this.graphCalendarDays,
   }) : super((
          stepsWithDate: null,
@@ -273,6 +277,18 @@ class WalksController
 
   /// Requests read access to step data from `Apple Health` or `Health Connect`
   Future<({bool granted, String? error})> requestStepPermission() async {
+    try {
+      return await resolveStepPermission();
+    } catch (_) {
+      recordStepPermission(
+        StepPermissionOutcome.error,
+      );
+      rethrow;
+    }
+  }
+
+  /// Checks platform requirements and requests authorization if needed
+  Future<({bool granted, String? error})> resolveStepPermission() async {
     /// Declare `types` and `permissions`
     const types = [HealthDataType.STEPS];
     const permissions = [HealthDataAccess.READ];
@@ -282,6 +298,7 @@ class WalksController
       final activityRecognitionPermission = await Permission.activityRecognition.request();
 
       if (!activityRecognitionPermission.isGranted) {
+        recordStepPermission(StepPermissionOutcome.denied);
         updateState(
           isWalking: false,
         );
@@ -299,6 +316,10 @@ class WalksController
       final healthConnectAvailable = await health.isHealthConnectAvailable();
 
       if (!healthConnectAvailable) {
+        recordStepPermission(
+          StepPermissionOutcome.unavailable,
+        );
+
         return (
           granted: false,
           error: 'walksErrorHealthConnectNotAvailable'.tr(),
@@ -342,9 +363,26 @@ class WalksController
       permissions: permissions,
     );
 
+    /// HealthKit does not disclose whether the user granted read access
+    recordStepPermission(
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? (granted ? StepPermissionOutcome.unknown : StepPermissionOutcome.error)
+          : (granted ? StepPermissionOutcome.granted : StepPermissionOutcome.denied),
+    );
+
     return (
       granted: granted,
       error: granted ? null : 'walksErrorStepAccessNotGranted'.tr(),
+    );
+  }
+
+  /// Counts an authorization outcome without recording step or activity data
+  void recordStepPermission(StepPermissionOutcome outcome) {
+    unawaited(
+      analytics.countHealthInteraction(
+        HealthAnalyticsEvent.stepPermissionResult,
+        outcome: outcome,
+      ),
     );
   }
 
@@ -357,10 +395,31 @@ class WalksController
     hasRequestedHistoryPermission = true;
 
     try {
-      if (await health.isHealthDataHistoryAvailable() && !(await health.isHealthDataHistoryAuthorized())) {
-        await health.requestHealthDataHistoryAuthorization();
+      if (!await health.isHealthDataHistoryAvailable()) {
+        unawaited(
+          analytics.countHealthInteraction(
+            HealthAnalyticsEvent.stepHistoryPermissionResult,
+            outcome: StepPermissionOutcome.unavailable,
+          ),
+        );
+      } else if (!await health.isHealthDataHistoryAuthorized()) {
+        final granted = await health.requestHealthDataHistoryAuthorization();
+
+        unawaited(
+          analytics.countHealthInteraction(
+            HealthAnalyticsEvent.stepHistoryPermissionResult,
+            outcome: granted ? StepPermissionOutcome.granted : StepPermissionOutcome.denied,
+          ),
+        );
       }
     } catch (error) {
+      unawaited(
+        analytics.countHealthInteraction(
+          HealthAnalyticsEvent.stepHistoryPermissionResult,
+          outcome: StepPermissionOutcome.error,
+        ),
+      );
+
       log(
         'Step history permission is unavailable',
         error: error,
@@ -692,7 +751,13 @@ class WalksController
   }
 
   /// Fetches step data again after an error
-  Future<void> retrySteps() => refreshSteps();
+  Future<void> retrySteps() {
+    unawaited(
+      analytics.countHealthInteraction(HealthAnalyticsEvent.walksRetryTapped),
+    );
+
+    return refreshSteps();
+  }
 
   /// Maps structured health failures to safe messages for the walks screen
   String getHealthErrorMessage(HealthException error) {

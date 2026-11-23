@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -6,8 +7,10 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../services/analytics_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/analytics.dart';
 import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/path.dart';
@@ -21,10 +24,11 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
   ///
 
   final SpeechToTextService speechToText;
+  final AnalyticsService analytics;
 
-  /// Creates a controller for adding a new meal
   AIAddMealController({
     required this.speechToText,
+    required this.analytics,
   }) : super(
          (
            validation: false,
@@ -160,6 +164,7 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
           }
         },
         locale: locale,
+        surface: VoiceInputSurface.aiMeal,
       );
     }
     /// [SpeechToText] was enabled, stop listening
@@ -187,7 +192,18 @@ class AIAddMealController extends ValueNotifier<({bool validation, String? speec
     updateState(
       imageFile: imageFile,
     );
+
     triggerValidation();
+
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.mealPhotoAdded,
+        parameters: {
+          'source': source.name,
+          'surface': VoiceInputSurface.aiMeal.eventValue,
+        },
+      ),
+    );
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`

@@ -12,6 +12,7 @@ import '../../../../models/notification/notification_settings.dart';
 import '../../../../services/firebase_service.dart';
 import '../../../../services/notification_service.dart';
 import '../../../../theme/extensions.dart';
+import '../../../../util/analytics.dart';
 import '../../../../util/date_time.dart';
 import '../../../../util/null_state.dart';
 import '../../../../util/snackbars.dart';
@@ -174,6 +175,9 @@ class NotificationsController
     final success = await firebase.writeNotificationSettings(
       settings: newSettings,
     );
+    if (success) {
+      recordPreferenceChanges(previousSettings, newSettings);
+    }
 
     if (isDisposed) {
       return;
@@ -189,6 +193,26 @@ class NotificationsController
         context,
         text: 'notificationsSaveFailure'.tr(),
         icon: PhosphorIconsBold.warningOctagon,
+      );
+    }
+  }
+
+  /// Records saved preference changes using fixed categories without reminder times
+  void recordPreferenceChanges(NotificationSettings previous, NotificationSettings current) {
+    final changes = [
+      if (previous.weighReminderEnabled != current.weighReminderEnabled) (preference: 'weigh_reminder', change: current.weighReminderEnabled ? 'enabled' : 'disabled'),
+      if (previous.weighReminderTime != current.weighReminderTime) (preference: 'weigh_reminder', change: 'schedule'),
+      if (previous.dailySummaryEnabled != current.dailySummaryEnabled) (preference: 'daily_summary', change: current.dailySummaryEnabled ? 'enabled' : 'disabled'),
+      if (previous.dailySummaryTime != current.dailySummaryTime) (preference: 'daily_summary', change: 'schedule'),
+      if (previous.announcementsEnabled != current.announcementsEnabled) (preference: 'announcements', change: current.announcementsEnabled ? 'enabled' : 'disabled'),
+    ];
+
+    for (final (:preference, :change) in changes) {
+      unawaited(
+        firebase.analytics.record(
+          AnalyticsEvent.notificationPreferenceChanged,
+          parameters: {'preference': preference, 'change': change},
+        ),
       );
     }
   }

@@ -7,6 +7,7 @@ import 'package:watch_it/watch_it.dart';
 
 import '../../constants/constants.dart';
 import '../../constants/durations.dart';
+import '../../services/analytics_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
@@ -39,6 +40,7 @@ class _AIAddMealScreenState extends State<AIAddMealScreen> {
     registerIfNotInitialized<AIAddMealController>(
       () => AIAddMealController(
         speechToText: getIt.get<SpeechToTextService>(),
+        analytics: getIt.get<AnalyticsService>(),
       ),
       instanceName: widget.mealId,
       afterRegister: (controller) => controller.init(),

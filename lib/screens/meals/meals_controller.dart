@@ -15,6 +15,7 @@ import '../../services/analytics_service.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/analytics.dart';
 import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/parse.dart';
@@ -183,19 +184,27 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   }
 
   /// Opens [CalendarSheet] and updates the selected `date`
-  Future<void> updateDateViaPicker(BuildContext context) async => showBlurredModalBottomSheet(
-    context: context,
-    builder: (context) => CalendarSheet(
-      showConfirmButton: false,
-      subtitle: 'mealsCalendarSubtitle'.tr(),
-      primaryColor: context.colors.protein,
-      dateValue: value.requestedDate,
-      onDateChanged: (newDate) {
-        HapticFeedback.lightImpact();
-        updateDate(newDate);
-      },
-    ),
-  );
+  Future<void> updateDateViaPicker(BuildContext context) async {
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.mealCalendarUsed,
+      ),
+    );
+
+    return showBlurredModalBottomSheet(
+      context: context,
+      builder: (context) => CalendarSheet(
+        showConfirmButton: false,
+        subtitle: 'mealsCalendarSubtitle'.tr(),
+        primaryColor: context.colors.protein,
+        dateValue: value.requestedDate,
+        onDateChanged: (newDate) {
+          HapticFeedback.lightImpact();
+          updateDate(newDate);
+        },
+      ),
+    );
+  }
 
   /// Triggered when the user presses `FAB` to add `AI meal`
   Future<void> onAddAIMealPressed(
@@ -226,6 +235,15 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       return;
     }
 
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.mealSubmitted,
+        parameters: {
+          'method': MealAnalyticsMethod.ai.name,
+        },
+      ),
+    );
+
     try {
       final success = await createAIMeal(
         result: result,
@@ -233,13 +251,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         languageCode: languageCode,
       );
 
-      if (success) {
-        unawaited(
-          analytics.logMealSaved(
-            MealAnalyticsMethod.ai,
-          ),
-        );
-      } else if (context.mounted) {
+      if (!success && context.mounted) {
         showSnackbar(
           context,
           text: 'mealAddFailure'.tr(),
@@ -247,6 +259,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         );
       }
     } on AIMealQuotaError catch (error) {
+      unawaited(
+        analytics.logMealSaveFailed(
+          MealAnalyticsMethod.ai,
+          MealSaveFailure.quota,
+        ),
+      );
+
       if (!context.mounted) {
         return;
       }
@@ -280,6 +299,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   }) async {
     /// Trigger validation and return if fail
     if (!isValidAIMealResult(result)) {
+      unawaited(
+        analytics.logMealSaveFailed(
+          MealAnalyticsMethod.ai,
+          MealSaveFailure.validation,
+        ),
+      );
+
       return false;
     }
 
@@ -307,6 +333,13 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       );
 
       if (!loadingMealWritten) {
+        unawaited(
+          analytics.logMealSaveFailed(
+            MealAnalyticsMethod.ai,
+            MealSaveFailure.persistence,
+          ),
+        );
+
         return false;
       }
     } catch (error) {
@@ -314,15 +347,42 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         'Adding AI meal failed',
         error: error,
       );
+      unawaited(
+        analytics.logMealSaveFailed(
+          MealAnalyticsMethod.ai,
+          MealSaveFailure.persistence,
+        ),
+      );
+
       return false;
     }
 
     /// The callable uploads the image and generates the meal concurrently
-    return firebase.generateAIMeal(
+    final outcome = await firebase.generateAIMeal(
       mealId: loadingMeal.id,
       languageCode: languageCode,
       imageFile: result.imageFile,
     );
+
+    if (outcome.failure case final failure?) {
+      unawaited(
+        analytics.logMealSaveFailed(
+          MealAnalyticsMethod.ai,
+          failure,
+        ),
+      );
+      return false;
+    }
+
+    if (!outcome.pending) {
+      unawaited(
+        analytics.logMealSaved(
+          MealAnalyticsMethod.ai,
+        ),
+      );
+    }
+
+    return true;
   }
 
   /// Opens [ManualAddMealScreen] to add, copy, or edit a meal
@@ -364,6 +424,17 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       return;
     }
 
+    if (isAddingMeal) {
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.mealSubmitted,
+          parameters: {
+            'method': MealAnalyticsMethod.manual.name,
+          },
+        ),
+      );
+    }
+
     /// Save edits to the original `meal` or create a new entry
     final success = isEditingMeal
         ? await updateManualMeal(
@@ -381,6 +452,12 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       unawaited(
         analytics.logMealSaved(
           MealAnalyticsMethod.manual,
+        ),
+      );
+    } else if (success && isCopyingMeal) {
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.mealCopied,
         ),
       );
     }
@@ -404,8 +481,23 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
   }) async {
     final dateTime = result.dateTime;
 
+    /// Tracks failures in the manual creation funnel
+    void recordFailure(MealSaveFailure failure) {
+      if (!isCopyingMeal) {
+        unawaited(
+          analytics.logMealSaveFailed(
+            MealAnalyticsMethod.manual,
+            failure,
+          ),
+        );
+      }
+    }
+
     /// Return if the meal date is missing
     if (dateTime == null) {
+      recordFailure(
+        MealSaveFailure.validation,
+      );
       return false;
     }
 
@@ -443,6 +535,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       );
 
       if (!loadingMealWritten) {
+        recordFailure(
+          MealSaveFailure.persistence,
+        );
         return false;
       }
 
@@ -462,8 +557,20 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         newMeal: outcome.meal,
       );
 
+      if (!mealUpdated) {
+        recordFailure(
+          MealSaveFailure.persistence,
+        );
+      } else if (!outcome.success) {
+        recordFailure(
+          MealSaveFailure.imageUpload,
+        );
+      }
       return mealUpdated && outcome.success;
     } catch (error) {
+      recordFailure(
+        MealSaveFailure.persistence,
+      );
       log(
         'Adding manual meal failed',
         error: error,
@@ -503,6 +610,11 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         );
 
         if (mealUpdated) {
+          unawaited(
+            analytics.record(
+              AnalyticsEvent.mealEdited,
+            ),
+          );
           updateDate(dateTime);
         }
 
@@ -524,6 +636,11 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       );
 
       if (mealUpdated) {
+        unawaited(
+          analytics.record(
+            AnalyticsEvent.mealEdited,
+          ),
+        );
         updateDate(
           outcome.meal.createdAt,
         );

@@ -1,11 +1,9 @@
 import 'dart:developer';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-enum MealAnalyticsMethod {
-  manual,
-  ai,
-}
+import '../util/analytics.dart';
 
 class AnalyticsService {
   ///
@@ -13,9 +11,11 @@ class AnalyticsService {
   ///
 
   final FirebaseAnalytics analytics;
+  final FirebaseFunctions functions;
 
   AnalyticsService({
     required this.analytics,
+    required this.functions,
   });
 
   ///
@@ -33,6 +33,41 @@ class AnalyticsService {
       );
     }
   }
+
+  /// Records a product interaction with its fixed event parameters
+  Future<void> record(
+    AnalyticsEvent event, {
+    Map<String, Object>? parameters,
+  }) => sendEvent(
+    () => analytics.logEvent(
+      name: event.eventName,
+      parameters: parameters,
+    ),
+  );
+
+  /// Counts a health-related feature interaction in the app's own aggregate totals
+  Future<void> countHealthInteraction(HealthAnalyticsEvent event, {StepPermissionOutcome? outcome}) => sendEvent(
+    () async {
+      await functions.httpsCallable('countHealthInteraction').call<void>(
+        {
+          'event': event.eventName,
+          if (outcome != null) 'outcome': outcome.name,
+        },
+      );
+    },
+  );
+
+  /// Records a failed new meal save using a fixed failure reason
+  Future<void> logMealSaveFailed(
+    MealAnalyticsMethod method,
+    MealSaveFailure reason,
+  ) => record(
+    AnalyticsEvent.mealSaveFailed,
+    parameters: {
+      'method': method.name,
+      'reason': reason.eventValue ?? reason.name,
+    },
+  );
 
   /// Records a newly created account and its sign-up method
   Future<void> logSignUp({required String method}) => sendEvent(

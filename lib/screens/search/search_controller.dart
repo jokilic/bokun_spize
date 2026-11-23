@@ -10,6 +10,7 @@ import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
 import '../../services/speech_to_text_service.dart';
+import '../../util/analytics.dart';
 import '../../util/null_state.dart';
 import '../../util/search.dart';
 
@@ -87,6 +88,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
   Future<List<Meal>?>? mealsRequest;
 
   var searchVersion = 0;
+  var hasRecordedSearchOutcome = false;
   var isDisposed = false;
 
   ///
@@ -111,6 +113,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     /// Cancel debounce
     searchDebounce?.cancel();
     searchVersion++;
+    hasRecordedSearchOutcome = false;
 
     /// Check if search should happen
     final canSearch = query.characters.length >= minimumSearchLength;
@@ -230,6 +233,10 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
           )
           .toList();
 
+      recordSearchOutcome(
+        results.isEmpty ? 'empty' : 'results',
+      );
+
       /// Update state with `results`
       updateState(
         query: query,
@@ -250,8 +257,27 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
     }
   }
 
+  /// Records one outcome for each completed search without sending the query
+  void recordSearchOutcome(String outcome) {
+    if (hasRecordedSearchOutcome) {
+      return;
+    }
+
+    hasRecordedSearchOutcome = true;
+
+    unawaited(
+      firebase.analytics.record(
+        AnalyticsEvent.mealSearchCompleted,
+        parameters: {
+          'outcome': outcome,
+        },
+      ),
+    );
+  }
+
   /// Clears the failed request so the next search can retry the fetch
   void showMealSearchError(String query) {
+    recordSearchOutcome('error');
     mealsRequest = null;
     updateState(
       query: query,
@@ -328,6 +354,7 @@ class SearchController extends ValueNotifier<({String query, List<Meal> meals, b
           }
         },
         locale: languageCode,
+        surface: VoiceInputSurface.search,
       );
     }
     /// [SpeechToText] was enabled, stop listening

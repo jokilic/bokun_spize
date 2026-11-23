@@ -21,6 +21,7 @@ import '../models/notification/daily_summary.dart';
 import '../models/notification/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
+import '../util/analytics.dart';
 import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
 import '../util/timezone.dart';
@@ -426,6 +427,12 @@ class FirebaseService {
   }) async {
     try {
       await auth.sendPasswordResetEmail(email: email);
+
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.passwordResetRequested,
+        ),
+      );
 
       return (
         success: true,
@@ -842,10 +849,21 @@ class FirebaseService {
     String? email,
     String? password,
   }) async {
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.accountDeletionStarted,
+      ),
+    );
+
     try {
       final user = auth.currentUser;
 
       if (user == null) {
+        unawaited(
+          analytics.record(
+            AnalyticsEvent.accountDeletionFailed,
+          ),
+        );
         return false;
       }
 
@@ -879,6 +897,12 @@ class FirebaseService {
       };
 
       if (!reauthenticationResult.success) {
+        unawaited(
+          analytics.record(
+            AnalyticsEvent.accountDeletionFailed,
+          ),
+        );
+
         return false;
       }
 
@@ -901,6 +925,12 @@ class FirebaseService {
 
       return true;
     } catch (error) {
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.accountDeletionFailed,
+        ),
+      );
+
       log(
         'User deletion failed',
         error: error,
@@ -1357,7 +1387,7 @@ class FirebaseService {
   }
 
   /// Sends compressed image bytes to the callable and surfaces quota rejections
-  Future<bool> generateAIMeal({
+  Future<({bool pending, MealSaveFailure? failure})> generateAIMeal({
     required String mealId,
     required String languageCode,
     required File? imageFile,
@@ -1379,7 +1409,11 @@ class FirebaseService {
             'AI meal image rejected before calling Firebase',
             error: 'reason=${imageBytes.isEmpty ? 'empty_image' : 'image_too_large'}, bytes=${imageBytes.length}',
           );
-          return false;
+
+          return (
+            pending: false,
+            failure: MealSaveFailure.imageUpload,
+          );
         }
 
         imageBase64 = base64Encode(imageBytes);
@@ -1388,7 +1422,11 @@ class FirebaseService {
           'Preparing AI meal image failed',
           error: error.runtimeType,
         );
-        return false;
+
+        return (
+          pending: false,
+          failure: MealSaveFailure.imageUpload,
+        );
       }
     }
 
@@ -1402,7 +1440,25 @@ class FirebaseService {
       });
       final data = response.data;
 
-      return data is Map && data['success'] == true;
+      if (data is Map && data['success'] == true) {
+        return (
+          pending: data['pending'] == true,
+          failure: null,
+        );
+      }
+
+      final reason = data is Map ? data['failureReason'] : null;
+      final failure = switch (reason) {
+        'image_upload' => MealSaveFailure.imageUpload,
+        'persistence' => MealSaveFailure.persistence,
+        'validation' => MealSaveFailure.validation,
+        _ => MealSaveFailure.generation,
+      };
+
+      return (
+        pending: false,
+        failure: failure,
+      );
     } on FirebaseFunctionsException catch (error) {
       if (error.code == 'resource-exhausted') {
         final quotaError = AIMealQuotaError.tryParse(error.details);
@@ -1416,13 +1472,21 @@ class FirebaseService {
         'AI meal callable request failed',
         error: error.code,
       );
-      return false;
+
+      return (
+        pending: false,
+        failure: MealSaveFailure.request,
+      );
     } catch (error) {
       log(
         'AI meal callable request failed',
         error: error.runtimeType,
       );
-      return false;
+
+      return (
+        pending: false,
+        failure: MealSaveFailure.request,
+      );
     }
   }
 
@@ -1489,6 +1553,12 @@ class FirebaseService {
       final collection = firestore.collection('users').doc(user.uid).collection('meals');
 
       await collection.doc(meal.id).delete();
+
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.mealDeleted,
+        ),
+      );
 
       if (meal.imageStoragePath != null) {
         return await deleteMealImageIfUnused(

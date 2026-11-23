@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 
 import '../screens/account/account_screen.dart';
 import '../screens/meals/meals_screen.dart';
 import '../screens/walks/walks_screen.dart';
 import '../screens/weights/weights_screen.dart';
+import '../util/analytics.dart';
+import 'analytics_service.dart';
 
 enum MainScreenItem {
   meals,
@@ -17,17 +21,21 @@ class ScreenService extends ValueNotifier<MainScreenItem> {
   /// CONSTRUCTOR
   ///
 
-  ScreenService()
-    : super(
-        MainScreenItem.meals,
-      );
+  final AnalyticsService analytics;
+
+  ScreenService({
+    required this.analytics,
+  }) : super(MainScreenItem.meals);
 
   ///
   /// METHODS
   ///
 
   /// Triggered when the user presses navigation bar
-  void changeNavigationBarItem(MainScreenItem item) {
+  void changeNavigationBarItem(
+    MainScreenItem item, {
+    bool trackView = true,
+  }) {
     /// User pressed same item
     if (value == item) {
       return;
@@ -35,6 +43,17 @@ class ScreenService extends ValueNotifier<MainScreenItem> {
 
     /// Update `state`
     value = item;
+
+    if (trackView) {
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.primaryTabViewed,
+          parameters: {
+            'tab': item.name,
+          },
+        ),
+      );
+    }
   }
 
   /// Returns proper [Widget], depending on [MainScreenItem]

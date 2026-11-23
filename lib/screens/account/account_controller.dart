@@ -13,6 +13,7 @@ import '../../services/firebase_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/theme_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/analytics.dart';
 import '../../util/app_version.dart';
 import '../../util/device_info.dart';
 import '../../util/snackbars.dart';
@@ -67,15 +68,25 @@ class AccountController extends ValueNotifier<SettingsValues> {
     context: context,
     builder: (sheetContext) => AccountNameSheet(
       initialName: initialName,
-      onSavePressed: (newName) {
+      onSavePressed: (newName) async {
         if (newName.isEmpty || newName == initialName) {
           return;
         }
 
-        HapticFeedback.lightImpact();
-        firebase.updateUserName(
+        unawaited(
+          HapticFeedback.lightImpact(),
+        );
+        final success = await firebase.updateUserName(
           newName: newName,
         );
+
+        if (success) {
+          unawaited(
+            firebase.analytics.countHealthInteraction(
+              HealthAnalyticsEvent.profileSettingsSaved,
+            ),
+          );
+        }
       },
     ),
   );
@@ -107,6 +118,14 @@ class AccountController extends ValueNotifier<SettingsValues> {
           final success = await firebase.updateUserMetrics(
             newUserMetrics: newUserMetrics,
           );
+
+          if (success) {
+            unawaited(
+              firebase.analytics.countHealthInteraction(
+                HealthAnalyticsEvent.profileSettingsSaved,
+              ),
+            );
+          }
 
           return success ? newUserMetrics : null;
         },
@@ -146,6 +165,12 @@ class AccountController extends ValueNotifier<SettingsValues> {
     final macroGoalsExist =
         useExistingMacroGoals && userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
 
+    unawaited(
+      firebase.analytics.countHealthInteraction(
+        HealthAnalyticsEvent.nutritionGoalsOpened,
+      ),
+    );
+
     showBlurredModalBottomSheet(
       context: context,
       builder: (context) => MacroGoalsSheet(
@@ -154,14 +179,26 @@ class AccountController extends ValueNotifier<SettingsValues> {
         initialDailyMacroValues: dailyMacroValues,
         calculateDailyMacroValues: userMetrics.calculateDailyMacroValues,
         macroGoalsExist: macroGoalsExist,
-        onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
-          newUserMetrics: userMetrics.copyWith(
-            dailyCalories: dailyMacroValues.calories,
-            dailyProtein: dailyMacroValues.protein,
-            dailyCarbs: dailyMacroValues.carbs,
-            dailyFat: dailyMacroValues.fat,
-          ),
-        ),
+        onSavePressed: (dailyMacroValues) async {
+          final success = await firebase.updateUserMetrics(
+            newUserMetrics: userMetrics.copyWith(
+              dailyCalories: dailyMacroValues.calories,
+              dailyProtein: dailyMacroValues.protein,
+              dailyCarbs: dailyMacroValues.carbs,
+              dailyFat: dailyMacroValues.fat,
+            ),
+          );
+
+          if (success) {
+            unawaited(
+              firebase.analytics.countHealthInteraction(
+                HealthAnalyticsEvent.nutritionGoalsSaved,
+              ),
+            );
+          }
+
+          return success;
+        },
         onDeletePressed: () => firebase.deleteUserMetrics(
           onlyMetricsAndMacros: false,
           onlyMacros: true,
@@ -180,6 +217,8 @@ class AccountController extends ValueNotifier<SettingsValues> {
       showConfirmButton: false,
       initialTheme: initialTheme,
       onThemeChanged: (newTheme) {
+        final changed = newTheme != value.theme;
+
         theme.updateTheme(
           newThemeEnum: newTheme,
         );
@@ -187,6 +226,17 @@ class AccountController extends ValueNotifier<SettingsValues> {
         updateState(
           theme: newTheme,
         );
+
+        if (changed) {
+          unawaited(
+            firebase.analytics.record(
+              AnalyticsEvent.themeChanged,
+              parameters: {
+                'mode': newTheme.name,
+              },
+            ),
+          );
+        }
       },
     ),
   );
@@ -201,7 +251,19 @@ class AccountController extends ValueNotifier<SettingsValues> {
       showConfirmButton: false,
       initialLanguage: initialLanguage,
       onLanguageChanged: (newLocale) async {
+        final changed = newLocale != context.locale;
         await context.setLocale(newLocale);
+
+        if (changed) {
+          unawaited(
+            firebase.analytics.record(
+              AnalyticsEvent.languageChanged,
+              parameters: {
+                'language': newLocale.languageCode,
+              },
+            ),
+          );
+        }
         await firebase.getAndRefreshNotificationSettings(
           locale: newLocale,
         );
@@ -222,49 +284,58 @@ class AccountController extends ValueNotifier<SettingsValues> {
   );
 
   /// Opens [ContactSheet]
-  Future<void> openContactSheet(BuildContext context) async => await showBlurredModalBottomSheet(
-    context: context,
-    builder: (sheetContext) => ContactSheet(
-      onSendPressed: (message) async {
-        unawaited(
-          HapticFeedback.lightImpact(),
-        );
+  Future<void> openContactSheet(BuildContext context) async {
+    unawaited(firebase.analytics.record(AnalyticsEvent.contactFormOpened));
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (sheetContext) => ContactSheet(
+        onSendPressed: (message) async {
+          unawaited(
+            HapticFeedback.lightImpact(),
+          );
 
-        final userUid = firebase.userUid ?? '--';
-        final userEmail = firebase.userEmail ?? '--';
+          final userUid = firebase.userUid ?? '--';
+          final userEmail = firebase.userEmail ?? '--';
 
-        final createdAt = DateTime.now();
-        final metadata = await Future.wait<String?>([
-          getAppVersion(),
-          getDeviceInfo(),
-        ]);
+          final createdAt = DateTime.now();
+          final metadata = await Future.wait<String?>([
+            getAppVersion(),
+            getDeviceInfo(),
+          ]);
 
-        final contactMessage = ContactMessage(
-          id: const Uuid().v1(),
-          message: message,
-          userUid: userUid,
-          userEmail: userEmail,
-          appVersion: metadata[0] ?? '--',
-          platform: metadata[1] ?? '--',
-          createdAt: createdAt,
-        );
+          final contactMessage = ContactMessage(
+            id: const Uuid().v1(),
+            message: message,
+            userUid: userUid,
+            userEmail: userEmail,
+            appVersion: metadata[0] ?? '--',
+            platform: metadata[1] ?? '--',
+            createdAt: createdAt,
+          );
 
-        final success = await firebase.writeContactMessage(
-          contactMessage: contactMessage,
-        );
+          final success = await firebase.writeContactMessage(
+            contactMessage: contactMessage,
+          );
 
-        if (!context.mounted) {
-          return;
-        }
+          unawaited(
+            firebase.analytics.record(
+              success ? AnalyticsEvent.contactMessageSent : AnalyticsEvent.contactMessageFailed,
+            ),
+          );
 
-        showSnackbar(
-          context,
-          text: success ? 'accountContactSendSuccess'.tr() : 'accountContactSendFailure'.tr(),
-          icon: success ? PhosphorIconsBold.checkCircle : PhosphorIconsBold.warningOctagon,
-        );
-      },
-    ),
-  );
+          if (!context.mounted) {
+            return;
+          }
+
+          showSnackbar(
+            context,
+            text: success ? 'accountContactSendSuccess'.tr() : 'accountContactSendFailure'.tr(),
+            icon: success ? PhosphorIconsBold.checkCircle : PhosphorIconsBold.warningOctagon,
+          );
+        },
+      ),
+    );
+  }
 
   /// Opens [MessagesSheet]
   Future<void> openMessagesSheet(BuildContext context) async => await showBlurredModalBottomSheet(
@@ -273,10 +344,18 @@ class AccountController extends ValueNotifier<SettingsValues> {
   );
 
   /// Opens [NotificationHistorySheet]
-  Future<void> openNotificationHistorySheet(BuildContext context) async => await showBlurredModalBottomSheet(
-    context: context,
-    builder: (sheetContext) => NotificationHistorySheet(),
-  );
+  Future<void> openNotificationHistorySheet(BuildContext context) async {
+    unawaited(
+      firebase.analytics.record(
+        AnalyticsEvent.notificationHistoryOpened,
+      ),
+    );
+
+    await showBlurredModalBottomSheet(
+      context: context,
+      builder: (sheetContext) => NotificationHistorySheet(),
+    );
+  }
 
   /// Opens [AccountDeleteSheet] and forwards confirmation after it closes
   Future<void> openDeleteAccountSheet(

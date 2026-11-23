@@ -1,20 +1,29 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
+import '../util/analytics.dart';
+import 'analytics_service.dart';
+
 class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bool available, bool isListening})> {
   ///
   /// CONSTRUCTOR
   ///
 
-  SpeechToTextService()
-    : super((
-        speechToText: null,
-        available: false,
-        isListening: false,
-      ));
+  final AnalyticsService analytics;
+  VoiceInputSurface? activeAnalyticsSurface;
+  bool hasRecognizedSpeech = false;
+
+  SpeechToTextService({
+    required this.analytics,
+  }) : super((
+         speechToText: null,
+         available: false,
+         isListening: false,
+       ));
 
   ///
   /// METHODS
@@ -28,17 +37,20 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
       final available = await speechToText.initialize(
         debugLogging: kDebugMode,
         onStatus: (status) {
-          switch (status.toLowerCase().trim()) {
+          switch (status) {
             /// Speech recognition begins
-            case 'listening':
+            case SpeechToText.listeningStatus:
               updateState(
                 isListening: true,
               );
               break;
 
             /// Speech recognition is no longer listening
-            case 'notListening':
-            case 'done':
+            case SpeechToText.doneStatus:
+              finishVoiceInput();
+              continue stopped;
+            stopped:
+            case SpeechToText.notListeningStatus:
               updateState(
                 isListening: false,
               );
@@ -46,6 +58,13 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
           }
         },
         onError: (error) {
+          finishVoiceInput(
+            outcome: switch (error.errorMsg) {
+              'error_no_match' || 'error_speech_timeout' => 'empty',
+              'error_request_cancelled' => 'cancelled',
+              _ => 'error',
+            },
+          );
           if (error.errorMsg != 'error_no_match' && error.errorMsg != 'error_speech_timeout' && error.errorMsg != 'error_request_cancelled') {
             log(
               'Speech recognition failed',
@@ -75,16 +94,35 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
   Future<void> startListening({
     required Function(String words) onResult,
     required String locale,
+    required VoiceInputSurface surface,
   }) async {
-    if (value.speechToText == null) {
+    final speech = value.speechToText;
+
+    if (speech == null || !value.available) {
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.voiceInputFinished,
+          parameters: {
+            'surface': surface.eventValue,
+            'outcome': 'unavailable',
+          },
+        ),
+      );
       return;
     }
 
+    finishVoiceInput();
+    activeAnalyticsSurface = surface;
+    hasRecognizedSpeech = false;
+
     try {
-      await value.speechToText!.listen(
-        onResult: (result) => onResult(
-          result.recognizedWords,
-        ),
+      await speech.listen(
+        onResult: (result) {
+          hasRecognizedSpeech |= result.recognizedWords.trim().isNotEmpty;
+          onResult(
+            result.recognizedWords,
+          );
+        },
         listenOptions: SpeechListenOptions(
           listenFor: const Duration(minutes: 5),
           pauseFor: const Duration(seconds: 30),
@@ -94,14 +132,38 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
       );
 
       updateState(
-        isListening: true,
+        isListening: speech.isListening,
       );
     } catch (error) {
+      finishVoiceInput(
+        outcome: 'error',
+      );
+
       log(
         'Starting speech recognition failed',
         error: error is PlatformException ? error.code : error.runtimeType,
       );
     }
+  }
+
+  /// Records one recognition outcome without sending recognized speech
+  void finishVoiceInput({String? outcome}) {
+    final surface = activeAnalyticsSurface;
+    if (surface == null) {
+      return;
+    }
+
+    activeAnalyticsSurface = null;
+
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.voiceInputFinished,
+        parameters: {
+          'surface': surface.eventValue,
+          'outcome': outcome ?? (hasRecognizedSpeech ? 'recognized' : 'empty'),
+        },
+      ),
+    );
   }
 
   /// Manually stop the speech recognition session
@@ -117,6 +179,10 @@ class SpeechToTextService extends ValueNotifier<({SpeechToText? speechToText, bo
         isListening: false,
       );
     } catch (error) {
+      finishVoiceInput(
+        outcome: 'error',
+      );
+
       log(
         'Stopping speech recognition failed',
         error: error is PlatformException ? error.code : error.runtimeType,

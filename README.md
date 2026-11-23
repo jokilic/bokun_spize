@@ -7,6 +7,7 @@
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
 - [ ] Update `Readme.md`
+- [ ] Forgot password email
 - [ ] Firebase App Check
     - [ ] Add the Play App Signing SHA-256
     - [ ] Change PLAY_RECOGNIZED to Required

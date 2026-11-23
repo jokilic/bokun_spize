@@ -9,6 +9,7 @@ import '../../constants/constants.dart';
 import '../../constants/durations.dart';
 import '../../models/meal/meal.dart';
 import '../../models/meal/nutrition.dart';
+import '../../services/analytics_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/date_time.dart';
@@ -51,6 +52,7 @@ class _ManualAddMealScreenState extends State<ManualAddMealScreen> {
     registerIfNotInitialized<ManualAddMealController>(
       () => ManualAddMealController(
         speechToText: getIt.get<SpeechToTextService>(),
+        analytics: getIt.get<AnalyticsService>(),
         passedMeal: widget.passedMeal,
         isCopyingMeal: widget.isCopyingMeal,
       ),

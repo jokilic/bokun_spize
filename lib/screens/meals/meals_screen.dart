@@ -13,6 +13,7 @@ import '../../services/analytics_service.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/analytics.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -256,12 +257,33 @@ class _MealsScreenState extends State<MealsScreen> {
                     );
                   },
                   onSearchPressed: () {
+                    unawaited(
+                      mealsController.analytics.record(
+                        AnalyticsEvent.mealSearchOpened,
+                      ),
+                    );
+
                     HapticFeedback.lightImpact();
                     showBlurredModalBottomSheet(
                       context: context,
                       builder: (sheetContext) => SearchScreen(
                         languageCode: context.locale.languageCode,
                         onMealPressed: ({required meal, required onDeleted}) {
+                          unawaited(
+                            mealsController.analytics.record(
+                              AnalyticsEvent.mealSearchResultOpened,
+                            ),
+                          );
+
+                          unawaited(
+                            mealsController.analytics.record(
+                              AnalyticsEvent.mealDetailsOpened,
+                              parameters: {
+                                'source': 'search',
+                              },
+                            ),
+                          );
+
                           HapticFeedback.lightImpact();
                           showBlurredModalBottomSheet(
                             context: context,
@@ -350,6 +372,15 @@ class _MealsScreenState extends State<MealsScreen> {
                   MealsSuccess(
                     meals: meals,
                     onPressed: (meal) {
+                      unawaited(
+                        mealsController.analytics.record(
+                          AnalyticsEvent.mealDetailsOpened,
+                          parameters: {
+                            'source': 'history',
+                          },
+                        ),
+                      );
+
                       HapticFeedback.lightImpact();
                       showBlurredModalBottomSheet(
                         context: context,

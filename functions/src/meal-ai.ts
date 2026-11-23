@@ -143,6 +143,8 @@ export interface UploadedMealImage {
 /** Result returned to the Flutter callable client */
 export interface AIMealCallableResult {
   success: boolean;
+  pending?: true;
+  failureReason?: "validation" | "image_upload" | "persistence";
 }
 
 /** General European bucket containing meal images and future app files */
@@ -997,7 +999,7 @@ export async function processCallableAIMeal(
   );
 
   if (claim.status === "busy") {
-    return { success: true };
+    return { success: true, pending: true };
   }
 
   if (claim.status === "not-ready") {
@@ -1012,7 +1014,7 @@ export async function processCallableAIMeal(
   }
 
   if (claim.status === "invalid-input") {
-    return { success: false };
+    return { success: false, failureReason: "validation" };
   }
 
   const generationPromise = generateMeal({
@@ -1098,7 +1100,13 @@ export async function processCallableAIMeal(
     await deleteAIMealImage(uploadedImage.storagePath);
   }
 
-  return {
-    success: finalized && !imageUploadFailed,
-  };
+  if (!finalized) {
+    return { success: false, failureReason: "persistence" };
+  }
+
+  if (imageUploadFailed) {
+    return { success: false, failureReason: "image_upload" };
+  }
+
+  return { success: true };
 }

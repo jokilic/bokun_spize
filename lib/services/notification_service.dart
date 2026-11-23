@@ -12,9 +12,11 @@ import 'package:get_it/get_it.dart';
 import '../models/notification/notification_device.dart';
 import '../models/notification/notification_payload.dart';
 import '../models/notification/notification_settings.dart';
+import '../util/analytics.dart';
 import '../util/app_version.dart';
 import '../util/device_info.dart';
 import '../util/timezone.dart';
+import 'analytics_service.dart';
 import 'screen_service.dart';
 import 'storage_service.dart';
 
@@ -33,6 +35,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   final FirebaseFirestore firestore;
   final StorageService storage;
   final ScreenService screen;
+  final AnalyticsService analytics;
   final Stream<RemoteMessage> openedMessages;
   final Future<bool> Function() openSystemSettingsCallback;
 
@@ -42,6 +45,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     required this.firestore,
     required this.storage,
     required this.screen,
+    required this.analytics,
     required this.openedMessages,
     required this.openSystemSettingsCallback,
   }) : super(AuthorizationStatus.notDetermined);
@@ -326,8 +330,26 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
       final settings = await messaging.requestPermission();
       value = settings.authorizationStatus;
 
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.notificationPermissionResult,
+          parameters: {
+            'outcome': value.name,
+          },
+        ),
+      );
+
       synchronizePermissionState();
     } catch (error) {
+      unawaited(
+        analytics.record(
+          AnalyticsEvent.notificationPermissionResult,
+          parameters: {
+            'outcome': 'error',
+          },
+        ),
+      );
+
       log(
         'Requesting notification permission failed',
         error: notificationErrorCode(error),
@@ -758,7 +780,18 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   }
 
   /// Opens the supported application destination from a parsed payload
-  void openPayload(NotificationPayload payload) => screen.changeNavigationBarItem(
-    payload.route,
-  );
+  void openPayload(NotificationPayload payload) {
+    screen.changeNavigationBarItem(
+      payload.route,
+    );
+
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.notificationDestinationOpened,
+        parameters: {
+          'tab': payload.route.name,
+        },
+      ),
+    );
+  }
 }

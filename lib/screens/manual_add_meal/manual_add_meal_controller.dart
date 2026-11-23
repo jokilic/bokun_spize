@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -8,8 +9,10 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../models/meal/food.dart';
 import '../../models/meal/meal.dart';
+import '../../services/analytics_service.dart';
 import '../../services/speech_to_text_service.dart';
 import '../../theme/extensions.dart';
+import '../../util/analytics.dart';
 import '../../util/date_time.dart';
 import '../../util/format.dart';
 import '../../util/null_state.dart';
@@ -26,11 +29,13 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
   ///
 
   final SpeechToTextService speechToText;
+  final AnalyticsService analytics;
   final Meal? passedMeal;
   final bool isCopyingMeal;
 
   ManualAddMealController({
     required this.speechToText,
+    required this.analytics,
     required this.passedMeal,
     required this.isCopyingMeal,
   }) : super(
@@ -254,6 +259,7 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
           }
         },
         locale: languageCode,
+        surface: VoiceInputSurface.manualMeal,
       );
     }
     /// [SpeechToText] was enabled, stop listening
@@ -282,6 +288,15 @@ class ManualAddMealController extends ValueNotifier<({bool validation, List<Food
       imageFile: imageFile,
     );
     triggerValidation();
+    unawaited(
+      analytics.record(
+        AnalyticsEvent.mealPhotoAdded,
+        parameters: {
+          'source': source.name,
+          'surface': VoiceInputSurface.manualMeal.eventValue,
+        },
+      ),
+    );
   }
 
   /// Triggered when the user presses `Add food` button

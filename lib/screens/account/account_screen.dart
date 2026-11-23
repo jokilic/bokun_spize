@@ -141,6 +141,7 @@ class _AccountScreenState extends State<AccountScreen> {
       /// Reset the default tab for the next sign-in
       getIt.get<ScreenService>().changeNavigationBarItem(
         MainScreenItem.meals,
+        trackView: false,
       );
 
       await Future.wait([
