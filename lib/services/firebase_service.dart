@@ -355,8 +355,16 @@ class FirebaseService {
 
   /// Removes user-scoped resources before logging out of [Firebase]
   Future<void> logOut() async {
+    final wasSignedIn = auth.currentUser != null;
+
     await beforeSignOut?.call();
     await auth.signOut();
+
+    if (wasSignedIn) {
+      unawaited(
+        analytics.logLogout(),
+      );
+    }
   }
 
   /// Logs user into [Firebase]
@@ -365,13 +373,22 @@ class FirebaseService {
     required String password,
   }) async {
     try {
-      final user = await auth.signInWithEmailAndPassword(
+      final userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      final user = userCredential.user;
+
+      if (user != null) {
+        unawaited(
+          analytics.logLogin(
+            method: AuthProvider.email.name,
+          ),
+        );
+      }
 
       return (
-        user: user.user,
+        user: user,
         error: null,
       );
     } on FirebaseAuthException catch (error) {
@@ -471,13 +488,10 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(credential);
 
-      if (userCredential.user != null && userCredential.additionalUserInfo?.isNewUser == true) {
-        unawaited(
-          analytics.logSignUp(
-            method: AuthProvider.google.name,
-          ),
-        );
-      }
+      logSocialAuthentication(
+        credential: userCredential,
+        provider: AuthProvider.google,
+      );
 
       await saveUserMetadata(
         user: userCredential.user,
@@ -558,13 +572,10 @@ class FirebaseService {
 
       final userCredential = await auth.signInWithCredential(oauthCredential);
 
-      if (userCredential.user != null && userCredential.additionalUserInfo?.isNewUser == true) {
-        unawaited(
-          analytics.logSignUp(
-            method: AuthProvider.apple.name,
-          ),
-        );
-      }
+      logSocialAuthentication(
+        credential: userCredential,
+        provider: AuthProvider.apple,
+      );
 
       final appleName =
           [
@@ -640,9 +651,18 @@ class FirebaseService {
   Future<({User? user, String? error})> signInAnonymously() async {
     try {
       final userCredential = await auth.signInAnonymously();
+      final user = userCredential.user;
+
+      if (user != null) {
+        unawaited(
+          analytics.logLogin(
+            method: AuthProvider.anonymous.name,
+          ),
+        );
+      }
 
       return (
-        user: userCredential.user,
+        user: user,
         error: null,
       );
     } on FirebaseAuthException catch (error) {
@@ -731,6 +751,26 @@ class FirebaseService {
         error: 'firebaseErrorRegisterError'.tr(),
       );
     }
+  }
+
+  /// Records either account creation or sign-in after successful social authentication
+  void logSocialAuthentication({
+    required UserCredential credential,
+    required AuthProvider provider,
+  }) {
+    if (credential.user == null) {
+      return;
+    }
+
+    unawaited(
+      credential.additionalUserInfo?.isNewUser == true
+          ? analytics.logSignUp(
+              method: provider.name,
+            )
+          : analytics.logLogin(
+              method: provider.name,
+            ),
+    );
   }
 
   /// Logs provider codes and keeps ordinary credential rejections in debug builds
@@ -855,6 +895,9 @@ class FirebaseService {
       }
 
       await user.delete();
+      unawaited(
+        analytics.logDeleteAccount(),
+      );
 
       return true;
     } catch (error) {

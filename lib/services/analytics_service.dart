@@ -41,6 +41,27 @@ class AnalyticsService {
     ),
   );
 
+  /// Records a successful sign-in and its authentication method
+  Future<void> logLogin({required String method}) => sendEvent(
+    () => analytics.logLogin(
+      loginMethod: method,
+    ),
+  );
+
+  /// Records a successful sign-out
+  Future<void> logLogout() => sendEvent(
+    () => analytics.logEvent(
+      name: 'logout',
+    ),
+  );
+
+  /// Records successful deletion of a Firebase Auth account
+  Future<void> logDeleteAccount() => sendEvent(
+    () => analytics.logEvent(
+      name: 'delete_account',
+    ),
+  );
+
   /// Records when a user opens a flow for creating a meal
   Future<void> logAddMealOpened(MealAnalyticsMethod method) => sendEvent(
     () => analytics.logEvent(
