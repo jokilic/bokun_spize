@@ -292,7 +292,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required bool isCopyingMeal,
   }) async {
     final isEditingMeal = passedMeal != null && !isCopyingMeal;
-    final manualAddMealOpenedNumber = passedMeal == null ? storage.incrementManualAddMealOpenedNumber() : storage.value.mealOpenedNumbers.manualAddMealOpenedNumber;
+    final shouldShowExplanation = passedMeal == null &&
+        !isCopyingMeal &&
+        storage.incrementManualAddMealOpenedNumber() <= 5;
 
     /// Keep the existing `mealId` when editing
     final mealId = isEditingMeal ? passedMeal.id : const Uuid().v1();
@@ -310,7 +312,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
                 context: context,
               )
             : null,
-        shouldShowExplanation: manualAddMealOpenedNumber <= 5,
+        shouldShowExplanation: shouldShowExplanation,
       ),
     );
 

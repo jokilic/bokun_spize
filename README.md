@@ -1,7 +1,5 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] Meal should become legacy (single language) only when modifying it's name or name of some foods. If modifying date, time, calories or macros (main ones of food values) it should keep it's bilingual values
-- [ ] Only show explanation widget when adding new meal. When modifying or copying one, don't show it
 - [ ] App name -> Bokun / Bite
 - [ ] Think about implementing user rate limiting for AI
 - [ ] Check every error text in app & backend
