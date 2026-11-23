@@ -7,5 +7,5 @@ class BokunSpizeDurations {
   static const stepsRefreshInterval = Duration(seconds: 2);
   static const searchDelay = Duration(milliseconds: 350);
   static const firebaseTimeout = Duration(seconds: 5);
-  static const accountOverlayAnimation = Duration(milliseconds: 2500);
+  static const loadingSpinnerAnimation = Duration(seconds: 5);
 }

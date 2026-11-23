@@ -198,53 +198,74 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
         BlockSemantics(
-          child: Center(
-            child: Semantics(
-              liveRegion: true,
-              child: Material(
-                color: context.colors.scaffoldBackground,
-                borderRadius: BorderRadius.circular(listTileRadius),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 64,
-                    vertical: 24,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Container(
-                          padding: const EdgeInsets.all(listTileIconRadius / 3),
-                          color: context.colors.carbs,
-                          child: Animate(
-                            onPlay: (controller) => controller.repeat(),
-                            effects: const [
-                              RotateEffect(
-                                duration: BokunSpizeDurations.accountOverlayAnimation,
+          child: Animate(
+            effects: const [
+              FadeEffect(
+                duration: BokunSpizeDurations.animation,
+                curve: Curves.easeOut,
+              ),
+              MoveEffect(
+                begin: Offset(0, 18),
+                end: Offset.zero,
+                duration: BokunSpizeDurations.animation,
+                curve: Curves.easeOutCubic,
+              ),
+              ScaleEffect(
+                begin: Offset(0.98, 0.98),
+                end: Offset(1, 1),
+                alignment: Alignment.topCenter,
+                duration: BokunSpizeDurations.animation,
+                curve: Curves.easeOutCubic,
+              ),
+            ],
+            child: Center(
+              child: Semantics(
+                liveRegion: true,
+                child: Material(
+                  color: context.colors.scaffoldBackground,
+                  borderRadius: BorderRadius.circular(listTileRadius),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 80,
+                      vertical: 32,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Container(
+                            padding: const EdgeInsets.all(listTileIconRadius / 3),
+                            color: context.colors.carbs,
+                            child: Animate(
+                              onPlay: (controller) => controller.repeat(),
+                              effects: const [
+                                RotateEffect(
+                                  duration: BokunSpizeDurations.loadingSpinnerAnimation,
+                                ),
+                              ],
+                              child: PhosphorIcon(
+                                PhosphorIconsBold.spinner,
+                                color: context.colors.buttonText,
+                                size: listTileIconRadius / 1.5,
                               ),
-                            ],
-                            child: PhosphorIcon(
-                              PhosphorIconsBold.hourglass,
-                              color: context.colors.buttonText,
-                              size: listTileIconRadius / 1.5,
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 22),
-                      Text(
-                        (isDeletingAccount ? 'accountDeleteProgressTitle' : 'accountLogoutProgressTitle').tr(),
-                        style: context.textStyles.appBarTitle,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        (isDeletingAccount ? 'accountDeleteProgressSubtitle' : 'accountLogoutProgressSubtitle').tr(),
-                        style: context.textStyles.listTileSubtitle,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                        const SizedBox(height: 22),
+                        Text(
+                          (isDeletingAccount ? 'accountDeleteProgressTitle' : 'accountLogoutProgressTitle').tr(),
+                          style: context.textStyles.appBarTitle,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          (isDeletingAccount ? 'accountDeleteProgressSubtitle' : 'accountLogoutProgressSubtitle').tr(),
+                          style: context.textStyles.listTileSubtitle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
