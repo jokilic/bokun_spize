@@ -2,10 +2,10 @@
 
 - [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
-- [ ] Analytics
 - [ ] Crashlytics
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
+    - [ ] Analytics for purchases
 - [ ] Update `Readme.md`
 - [ ] Forgot password email
 - [ ] Firebase App Check
