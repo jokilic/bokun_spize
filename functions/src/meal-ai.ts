@@ -25,7 +25,7 @@ import { getStorage } from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 
-import {getAIIntegerSetting} from "./ai-config.ts";
+import { getAIIntegerSetting } from "./ai-config.ts";
 import {
   ProjectAIQuotaExceeded,
   reserveProjectAICall,
@@ -584,7 +584,7 @@ export function parseAIMealCallableInput(value: unknown): AIMealCallableInput {
   const data = asRecord(value);
 
   if (data === null) {
-    throw new HttpsError("invalid-argument", "AI meal request must be an object");
+    throw new HttpsError("invalid-argument", "Meal request must be an object");
   }
 
   const mealId = data.mealId;
@@ -595,7 +595,7 @@ export function parseAIMealCallableInput(value: unknown): AIMealCallableInput {
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(mealId) ||
     (languageCode !== "en" && languageCode !== "hr")
   ) {
-    throw new HttpsError("invalid-argument", "Invalid AI meal request");
+    throw new HttpsError("invalid-argument", "Invalid meal request");
   }
 
   return {
@@ -608,15 +608,15 @@ export function parseAIMealCallableInput(value: unknown): AIMealCallableInput {
 /** Returns a short localized meal error suitable for direct display */
 export function getMealGenerationError(languageCode: string): string {
   return languageCode === "en" ?
-    "Meal generation failed. Delete it and try again" :
-    "Generiranje obroka nije uspjelo. Izbriši ga i pokušaj ponovno";
+    "Meal generation failed, try again" :
+    "Generiranje obroka nije uspjelo, pokušaj ponovno";
 }
 
 /** Returns the localized error shown when the shared Gemini allowance runs out */
 export function getProjectAIUnavailableMessage(languageCode: string): string {
   return languageCode === "en" ?
-    "AI is temporarily unavailable. Try again later" :
-    "AI je privremeno nedostupan. Pokušaj ponovno kasnije";
+    "Temporarily unavailable, try later" :
+    "Privremeno nedostupno, pokušaj kasnije";
 }
 
 /** Returns a localized message when the photo contains no recognizable food or drink */
@@ -737,8 +737,8 @@ export async function claimPendingAIMeal(
 
     if (quota.retryAtMillis !== null) {
       const message = languageCode === "en" ?
-        "AI meal limit reached. Try again later" :
-        "Dosegnuto je ograničenje AI obroka. Pokušaj ponovno kasnije";
+        "Meal limit reached, try later" :
+        "Dosegnuto je ograničenje obroka, pokušaj kasnije";
 
       rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
 
@@ -962,7 +962,7 @@ export async function processCallableAIMeal(
   }
 
   if (claim.status === "not-ready") {
-    throw new HttpsError("failed-precondition", "AI meal is not ready for generation");
+    throw new HttpsError("failed-precondition", "Meal is not ready for generation");
   }
 
   if (claim.status === "rate-limited" || claim.status === "project-rate-limited") {
