@@ -25,6 +25,13 @@ import { getStorage } from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 
+import {
+  ProjectAIQuotaExceeded,
+  reserveProjectAICall,
+  reserveProjectAICallInTransaction,
+  UTC_DAY_MILLIS,
+} from "./project-ai-quota.ts";
+
 /** Localized text generated once for each supported app language */
 export interface GeneratedLocalizedText {
   en: string;
@@ -94,8 +101,9 @@ export type AIMealGenerationClaim =
   | { status: "claimed"; text: string | null }
   | { status: "busy" }
   | { status: "not-ready" }
-  | { status: "description-too-long" }
-  | { status: "rate-limited"; retryAtMillis: number; message: string };
+  | { status: "invalid-input" }
+  | { status: "rate-limited"; retryAtMillis: number; message: string }
+  | { status: "project-rate-limited"; retryAtMillis: number; message: string };
 
 /** Uploaded image information persisted with a generated meal */
 export interface UploadedMealImage {
@@ -138,7 +146,6 @@ export const AI_MEAL_GENERATION_LEASE_DURATION_MS = 10 * 60 * 1000;
 export const AI_MEAL_MINUTE_LIMIT = 3;
 export const AI_MEAL_DAILY_LIMIT = 25;
 export const AI_MEAL_ROLLING_WINDOW_MS = 60 * 1000;
-export const AI_MEAL_UTC_DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Maximum time before an interrupted callable request is marked failed */
 export const AI_MEAL_REQUEST_TIMEOUT_MS = 15 * 60 * 1000;
@@ -495,10 +502,11 @@ export async function generateMealWithModel(
   }
 }
 
-/** Makes one primary request and one delayed fallback only for a transient API error */
+/** Uses the meal claim's first slot and reserves another only for a transient fallback */
 export async function generateMeal(
   input: MealGenerationInput,
   models: Pick<GoogleGenAI["models"], "generateContent"> = createMealAIClient().models,
+  reserveFallback: () => Promise<void> = reserveProjectAICall,
 ): Promise<GeneratedMealResult> {
   try {
     return await generateMealWithModel(models, MEAL_AI_PRIMARY_MODEL, input);
@@ -511,6 +519,7 @@ export async function generateMeal(
   // The alternate model can mistake a caption for food in an unrelated photo
   const fallbackModel = input.imageBase64 === null ? MEAL_AI_TEXT_FALLBACK_MODEL : MEAL_AI_PRIMARY_MODEL;
   await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 500));
+  await reserveFallback();
   return generateMealWithModel(models, fallbackModel, input, 2);
 }
 
@@ -596,6 +605,13 @@ export function getMealGenerationError(languageCode: string): string {
     "Generiranje obroka nije uspjelo. Izbriši ga i pokušaj ponovno";
 }
 
+/** Returns the localized error shown when the shared Gemini allowance runs out */
+export function getProjectAIUnavailableMessage(languageCode: string): string {
+  return languageCode === "en" ?
+    "AI is temporarily unavailable. Try again later" :
+    "AI je privremeno nedostupan. Pokušaj ponovno kasnije";
+}
+
 /** Returns a localized message when the photo contains no recognizable food or drink */
 export function getNoFoodInImageError(languageCode: string): string {
   return languageCode === "en" ?
@@ -628,7 +644,7 @@ export function getAIMealQuota(attempts: number[], nowMillis: number): {
   retainedAttempts: number[];
   retryAtMillis: number | null;
 } {
-  const dayStart = nowMillis - nowMillis % AI_MEAL_UTC_DAY_MS;
+  const dayStart = nowMillis - nowMillis % UTC_DAY_MILLIS;
   const minuteCutoff = nowMillis - AI_MEAL_ROLLING_WINDOW_MS;
   const retainedAttempts = attempts.filter((attempt) =>
     attempt >= dayStart || attempt > minuteCutoff,
@@ -638,7 +654,7 @@ export function getAIMealQuota(attempts: number[], nowMillis: number): {
     .filter((attempt) => attempt > minuteCutoff)
     .sort((first, second) => first - second);
 
-  const dailyRetry = dailyCount >= AI_MEAL_DAILY_LIMIT ? dayStart + AI_MEAL_UTC_DAY_MS : 0;
+  const dailyRetry = dailyCount >= AI_MEAL_DAILY_LIMIT ? dayStart + UTC_DAY_MILLIS : 0;
   const minuteLimitAttempt = recentAttempts.at(-AI_MEAL_MINUTE_LIMIT);
   const minuteRetry = minuteLimitAttempt === undefined ?
     0 : minuteLimitAttempt + AI_MEAL_ROLLING_WINDOW_MS;
@@ -649,11 +665,12 @@ export function getAIMealQuota(attempts: number[], nowMillis: number): {
   };
 }
 
-/** Claims one loading meal and reserves user quota before starting paid work */
+/** Claims one meal and reserves both the user quota and the first Gemini call */
 export async function claimPendingAIMeal(
   mealReference: DocumentReference<DocumentData>,
   leaseId: string,
   languageCode: AIMealCallableInput["languageCode"],
+  hasImage: boolean,
 ): Promise<AIMealGenerationClaim> {
   const claimReference = getAIMealGenerationClaimReference(mealReference);
   const quotaReference = claimReference.parent.parent!.collection("aiUsage").doc("mealGeneration");
@@ -691,7 +708,17 @@ export async function claimPendingAIMeal(
         `Za opis obroka upotrijebi najviše ${MAX_AI_MEAL_DESCRIPTION_LENGTH} znakova`;
 
       rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
-      return { status: "description-too-long" };
+      return { status: "invalid-input" };
+    }
+
+    if (text.length === 0 && !hasImage) {
+      rejectPendingAIMeal(
+        transaction,
+        mealReference,
+        claimSnapshot.exists ? claimReference : null,
+        getMealGenerationError(languageCode),
+      );
+      return { status: "invalid-input" };
     }
 
     const quotaSnapshot = await transaction.get(quotaReference);
@@ -708,6 +735,17 @@ export async function claimPendingAIMeal(
       return {
         status: "rate-limited",
         retryAtMillis: quota.retryAtMillis,
+        message,
+      };
+    }
+
+    const projectRetryAtMillis = await reserveProjectAICallInTransaction(mealReference.firestore, transaction);
+    if (projectRetryAtMillis !== null) {
+      const message = getProjectAIUnavailableMessage(languageCode);
+      rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
+      return {
+        status: "project-rate-limited",
+        retryAtMillis: projectRetryAtMillis,
         message,
       };
     }
@@ -906,6 +944,7 @@ export async function processCallableAIMeal(
     mealReference,
     leaseId,
     input.languageCode,
+    input.image !== null,
   );
 
   if (claim.status === "busy") {
@@ -916,13 +955,14 @@ export async function processCallableAIMeal(
     throw new HttpsError("failed-precondition", "AI meal is not ready for generation");
   }
 
-  if (claim.status === "rate-limited") {
+  if (claim.status === "rate-limited" || claim.status === "project-rate-limited") {
     throw new HttpsError("resource-exhausted", claim.message, {
       retryAtMillis: claim.retryAtMillis,
+      reason: claim.status,
     });
   }
 
-  if (claim.status === "description-too-long") {
+  if (claim.status === "invalid-input") {
     return { success: false };
   }
 
@@ -947,25 +987,33 @@ export async function processCallableAIMeal(
       await deleteAIMealImage(imageUploadOutcome.value.storagePath);
     }
 
-    const noFoodInImage = generationOutcome.reason instanceof NoFoodInImageError;
-    if (!noFoodInImage) {
+    const failure = generationOutcome.reason;
+    const noFoodInImage = failure instanceof NoFoodInImageError;
+    const projectQuotaExceeded = failure instanceof ProjectAIQuotaExceeded;
+    if (!noFoodInImage && !projectQuotaExceeded) {
       logger.error("Generating callable AI meal failed", {
         userId,
         mealId: input.mealId,
-        errorType: generationOutcome.reason instanceof Error ?
-          generationOutcome.reason.name :
-          "unknown",
+        errorType: failure instanceof Error ? failure.name : "unknown",
       });
     }
 
+    const message = projectQuotaExceeded ? getProjectAIUnavailableMessage(input.languageCode) :
+      noFoodInImage ? getNoFoodInImageError(input.languageCode) :
+        getMealGenerationError(input.languageCode);
     await finalizePendingAIMeal(mealReference, leaseId, {
       isLoading: false,
-      errors: [noFoodInImage ?
-        getNoFoodInImageError(input.languageCode) :
-        getMealGenerationError(input.languageCode)],
+      errors: [message],
       aiGenerationLanguage: FieldValue.delete(),
       aiGenerationRequestedAt: FieldValue.delete(),
     });
+
+    if (projectQuotaExceeded) {
+      throw new HttpsError("resource-exhausted", message, {
+        retryAtMillis: failure.retryAtMillis,
+        reason: "project-rate-limited",
+      });
+    }
     return { success: false };
   }
 

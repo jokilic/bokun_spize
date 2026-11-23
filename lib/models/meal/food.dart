@@ -10,7 +10,12 @@ class Food {
   final Nutrition nutrition;
   final String? emoji;
   final Color? color;
-  final ({String name, String unit, Map<String, dynamic> data})? localizedData;
+  final ({
+    String name,
+    String unit,
+    Map<String, dynamic> data,
+  })?
+  localizedData;
 
   Food({
     required this.name,
@@ -46,15 +51,28 @@ class Food {
     name: map['name'],
     quantity: (map['quantity'] as num).toDouble(),
     unit: map['unit'],
-    nutrition: Nutrition.fromMap(map['nutrition'] as Map<String, dynamic>),
+    nutrition: Nutrition.fromMap(
+      map['nutrition'] as Map<String, dynamic>,
+    ),
     emoji: map['emoji'],
     color: map['color'] != null ? colorFromHex(map['color']) : null,
-    localizedData: localizedData == null ? null : (name: map['name'] as String, unit: map['unit'] as String, data: localizedData),
+    localizedData: localizedData == null
+        ? null
+        : (
+            name: map['name'] as String,
+            unit: map['unit'] as String,
+            data: localizedData,
+          ),
   );
 
   static Food? tryFromMap(Object? value, {Map<String, dynamic>? localizedData}) {
     try {
-      return value is Map ? Food.fromMap(Map<String, dynamic>.from(value), localizedData: localizedData) : null;
+      return value is Map
+          ? Food.fromMap(
+              Map<String, dynamic>.from(value),
+              localizedData: localizedData,
+            )
+          : null;
     } catch (_) {
       return null;
     }

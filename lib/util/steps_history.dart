@@ -43,7 +43,9 @@ class StepsHistory {
       final data = Map<String, dynamic>.from(row as Map);
 
       return StepsWithDate(
-        dateTime: DateTime.fromMillisecondsSinceEpoch(data['date'] as int),
+        dateTime: DateTime.fromMillisecondsSinceEpoch(
+          data['date'] as int,
+        ),
         steps: data['steps'] as int,
       );
     }).toList();

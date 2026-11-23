@@ -41,6 +41,7 @@ import {
   buildAndStoreDailySummary,
   getDailySummaryPeriod,
 } from "./daily-summary";
+import {ProjectAIQuotaExceeded} from "./project-ai-quota";
 import {
   getDate,
   getDispatchId,
@@ -50,7 +51,7 @@ import {
 } from "./scheduling";
 
 /** Reason a reserved notification is completed without contacting FCM */
-export type DispatchSkipReason = "weight_recorded" | "stale";
+export type DispatchSkipReason = "weight_recorded" | "stale" | "ai_quota_exhausted";
 
 /** Immutable context created when a due occurrence is successfully reserved */
 export interface ReservedDispatch {
@@ -699,6 +700,11 @@ export async function processDueSettings(
     await completeDispatch(dispatch, result, devices.length);
     await deleteInvalidDevices(result.invalidDeviceReferences);
   } catch (error) {
+    if (error instanceof ProjectAIQuotaExceeded) {
+      await completeSkippedDispatch(dispatch, "ai_quota_exhausted");
+      return;
+    }
+
     // Store a bounded error message without FIDs or other registration data
     await dispatch.dispatchReference.update({
       status: "failed",

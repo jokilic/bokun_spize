@@ -89,7 +89,11 @@ class Meal {
     emoji: map['emoji'],
     color: map['color'] != null ? colorFromHex(map['color']) : null,
     createdAt: createdAt,
-    nutrition: map['nutrition'] != null ? Nutrition.fromMap(map['nutrition'] as Map<String, dynamic>) : null,
+    nutrition: map['nutrition'] != null
+        ? Nutrition.fromMap(
+            map['nutrition'] as Map<String, dynamic>,
+          )
+        : null,
     foods: (map['foods'] as List?)?.map(parseFood).whereType<Food>().toList(),
     originalText: originalText,
     isLoading: isLoading,

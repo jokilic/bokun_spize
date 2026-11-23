@@ -236,7 +236,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         return;
       }
 
-      final retryAtMillis = (error.details as Map)['retryAtMillis'] as num;
+      final details = error.details as Map;
+      final retryAtMillis = details['retryAtMillis'] as num;
+      final message = details['reason'] == 'project-rate-limited' ? 'aiProjectLimitReached' : 'aiMealLimitReached';
       final retryAt = getDateString(
         date: DateTime.fromMillisecondsSinceEpoch(
           (retryAtMillis / 1000).ceil() * 1000,
@@ -248,7 +250,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
 
       showSnackbar(
         context,
-        text: 'aiMealLimitReached'.tr(args: [retryAt]),
+        text: message.tr(
+          args: [retryAt],
+        ),
         icon: PhosphorIconsBold.warningOctagon,
       );
     }

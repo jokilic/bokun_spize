@@ -12,6 +12,7 @@ import {
   parseAIMealCallableInput,
   parseGeneratedMeal,
 } from "../src/meal-ai";
+import {ProjectAIQuotaExceeded} from "../src/project-ai-quota";
 
 const nutrition = {
   calories: 420,
@@ -120,7 +121,8 @@ describe("AI meal generation cost controls", () => {
     try {
       const error = new ApiError({status: 503, message: "Service unavailable"});
       const generateContent = vi.fn().mockRejectedValue(error);
-      const result = expect(generateMeal(input, {generateContent})).rejects.toBe(error);
+      const reserveFallback = vi.fn().mockResolvedValue(undefined);
+      const result = expect(generateMeal(input, {generateContent}, reserveFallback)).rejects.toBe(error);
 
       await vi.advanceTimersByTimeAsync(999);
       expect(generateContent).toHaveBeenCalledTimes(1);
@@ -131,6 +133,7 @@ describe("AI meal generation cost controls", () => {
         MEAL_AI_PRIMARY_MODEL,
         fallback,
       ]);
+      expect(reserveFallback).toHaveBeenCalledTimes(1);
       for (const [request] of generateContent.mock.calls) {
         expect(request.config).toMatchObject({
           httpOptions: {retryOptions: {attempts: 1}},
@@ -139,6 +142,23 @@ describe("AI meal generation cost controls", () => {
           maxOutputTokens: 4096,
         });
       }
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  /** Prevents a transient retry from sending a request without a project slot */
+  it("does not call the fallback when the project allowance is exhausted", async () => {
+    vi.useFakeTimers();
+    try {
+      const generateContent = vi.fn().mockRejectedValue(new ApiError({status: 503, message: "Service unavailable"}));
+      const exhausted = new ProjectAIQuotaExceeded(Date.UTC(2026, 0, 6));
+      const reserveFallback = vi.fn().mockRejectedValue(exhausted);
+      const result = expect(generateMeal(textMeal, {generateContent}, reserveFallback)).rejects.toBe(exhausted);
+
+      await vi.runAllTimersAsync();
+      await result;
+      expect(generateContent).toHaveBeenCalledTimes(1);
     } finally {
       vi.useRealTimers();
     }
