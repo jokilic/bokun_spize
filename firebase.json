@@ -38,10 +38,12 @@
       }
     }
   },
-  "storage": {
-    "target": "appStorage",
-    "rules": "storage.rules"
-  },
+  "storage": [
+    {
+      "target": "appStorage",
+      "rules": "storage.rules"
+    }
+  ],
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
