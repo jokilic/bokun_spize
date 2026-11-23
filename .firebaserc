@@ -5,8 +5,8 @@
   "targets": {
     "bokun-spize": {
       "storage": {
-        "mealImages": [
-          "bokun-spize-meal-images-eu"
+        "appStorage": [
+          "bokun-spize-eu"
         ]
       }
     }

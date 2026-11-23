@@ -17,7 +17,7 @@ import {dispatchDueNotifications} from "./dispatcher";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {
   cleanupExpiredAIMealRequests,
-  MEAL_IMAGE_BUCKET,
+  APP_STORAGE_BUCKET,
   processCallableAIMeal,
 } from "./meal-ai";
 // Use Application Default Credentials supplied by the Cloud Functions runtime
@@ -38,7 +38,7 @@ export const cleanupDeletedUser = region("europe-west8")
     // Both operations are idempotent so failed event deliveries can retry safely
     await Promise.all([
       firestore.recursiveDelete(userDocument),
-      getStorage().bucket(MEAL_IMAGE_BUCKET).deleteFiles({
+      getStorage().bucket(APP_STORAGE_BUCKET).deleteFiles({
         prefix: userStoragePrefix,
       }),
     ]);

@@ -39,7 +39,7 @@
     }
   },
   "storage": {
-    "target": "mealImages",
+    "target": "appStorage",
     "rules": "storage.rules"
   },
   "firestore": {

@@ -97,8 +97,8 @@ export interface AIMealCallableResult {
   success: boolean;
 }
 
-/** European bucket used by every meal image flow */
-export const MEAL_IMAGE_BUCKET = "bokun-spize-meal-images-eu";
+/** General European bucket containing meal images and future app files */
+export const APP_STORAGE_BUCKET = "bokun-spize-eu";
 
 /** Global Vertex AI location supports the broadest Gemini model selection */
 export const MEAL_AI_LOCATION = "global";
@@ -602,7 +602,7 @@ export async function uploadAIMealImage(
   image: InlineMealImage,
 ): Promise<UploadedMealImage> {
   const storagePath = `users/${userId}/meal-images/${mealId}.webp`;
-  const file = getStorage().bucket(MEAL_IMAGE_BUCKET).file(storagePath);
+  const file = getStorage().bucket(APP_STORAGE_BUCKET).file(storagePath);
 
   await file.save(image.buffer, {
     resumable: false,
@@ -627,7 +627,7 @@ export async function uploadAIMealImage(
 export async function deleteAIMealImage(storagePath: string): Promise<void> {
   try {
     await getStorage()
-      .bucket(MEAL_IMAGE_BUCKET)
+      .bucket(APP_STORAGE_BUCKET)
       .file(storagePath)
       .delete({ignoreNotFound: true});
   } catch (error) {

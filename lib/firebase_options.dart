@@ -29,7 +29,7 @@ class DefaultFirebaseOptions {
     appId: '1:178689254446:android:c95263b04b1a8d27edabbf',
     messagingSenderId: '178689254446',
     projectId: 'bokun-spize',
-    storageBucket: 'bokun-spize-meal-images-eu',
+    storageBucket: 'bokun-spize-eu',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -37,7 +37,7 @@ class DefaultFirebaseOptions {
     appId: '1:178689254446:ios:4020bb666ca89b55edabbf',
     messagingSenderId: '178689254446',
     projectId: 'bokun-spize',
-    storageBucket: 'bokun-spize-meal-images-eu',
+    storageBucket: 'bokun-spize-eu',
     iosBundleId: 'com.josipkilic.bokunspize',
   );
 }
