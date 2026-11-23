@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../models/meal/ai_meal_quota_error.dart';
 import '../../models/meal/meal.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
@@ -231,18 +231,17 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
           icon: PhosphorIconsBold.warningOctagon,
         );
       }
-    } on FirebaseFunctionsException catch (error) {
+    } on AIMealQuotaError catch (error) {
       if (!context.mounted) {
         return;
       }
 
-      final details = error.details as Map;
-      final retryAtMillis = details['retryAtMillis'] as num;
-      final message = details['reason'] == 'project-rate-limited' ? 'aiProjectLimitReached' : 'aiMealLimitReached';
+      final message = switch (error.reason) {
+        AIMealQuotaReason.project => 'aiProjectLimitReached',
+        AIMealQuotaReason.personal => 'aiMealLimitReached',
+      };
       final retryAt = getDateString(
-        date: DateTime.fromMillisecondsSinceEpoch(
-          (retryAtMillis / 1000).ceil() * 1000,
-        ),
+        date: error.retryAt.toLocal(),
         dateFormat: 'dd MMM, HH:mm',
         languageCode: context.locale.languageCode,
         useTodayYesterdayTomorrow: false,

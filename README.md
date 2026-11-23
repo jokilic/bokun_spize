@@ -1,7 +1,6 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
 - [ ] App name -> Bokun / Bite
-- [ ] Think about implementing user rate limiting for AI
 - [ ] Check every error text in app & backend
 - [ ] Go through every hardcoded text and check if it makes sense
 - [ ] Firebase App Check

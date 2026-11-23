@@ -2,6 +2,8 @@
 
 import {type Firestore, getFirestore, type Transaction} from "firebase-admin/firestore";
 
+import {getAIIntegerSetting} from "./ai-config.ts";
+
 /** Project-wide allowance covering meals, summaries, and their fallbacks */
 export const DEFAULT_PROJECT_DAILY_AI_CALL_LIMIT = 1000;
 export const PROJECT_AI_USAGE_PATH = "projectAIUsage/gemini";
@@ -19,7 +21,7 @@ export class ProjectAIQuotaExceeded extends Error {
 
 /** Reads the deployed project allowance, using the default when unset */
 export function getProjectDailyAICallLimit(): number {
-  return Number(process.env.AI_PROJECT_DAILY_CALL_LIMIT ?? DEFAULT_PROJECT_DAILY_AI_CALL_LIMIT);
+  return getAIIntegerSetting("AI_PROJECT_DAILY_CALL_LIMIT", DEFAULT_PROJECT_DAILY_AI_CALL_LIMIT);
 }
 
 /** Reserves a call in the caller's transaction or returns the next reset time */

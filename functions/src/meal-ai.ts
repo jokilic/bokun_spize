@@ -25,6 +25,7 @@ import { getStorage } from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 
+import {getAIIntegerSetting} from "./ai-config.ts";
 import {
   ProjectAIQuotaExceeded,
   reserveProjectAICall,
@@ -129,6 +130,11 @@ export const MEAL_AI_TEXT_FALLBACK_MODEL = "gemini-3.1-flash-lite";
 /** Bounds input length and leaves room for a complete bilingual response */
 export const MAX_AI_MEAL_DESCRIPTION_LENGTH = 2000;
 export const AI_MEAL_MAX_OUTPUT_TOKENS = 4096;
+
+/** Returns the backend description limit shared by request validation and prompt assembly */
+export function getAIMealDescriptionLimit(): number {
+  return getAIIntegerSetting("AI_MEAL_MAX_DESCRIPTION_LENGTH", MAX_AI_MEAL_DESCRIPTION_LENGTH);
+}
 
 /** Transient HTTP statuses eligible for the single delayed fallback */
 export const MEAL_AI_RETRYABLE_STATUSES = [408, 429, 500, 502, 503, 504];
@@ -407,7 +413,7 @@ export function buildMealContentParts(input: MealGenerationInput): Part[] {
   const parts: Part[] = [];
 
   if (input.text !== null && input.text.length > 0) {
-    if (input.text.length > MAX_AI_MEAL_DESCRIPTION_LENGTH) {
+    if (input.text.length > getAIMealDescriptionLimit()) {
       throw new Error("AI meal description exceeds the maximum length");
     }
 
@@ -453,6 +459,7 @@ export async function generateMealWithModel(
   attempt: 1 | 2 = 1,
 ): Promise<GeneratedMealResult> {
   const parts = buildMealContentParts(input);
+  const maxOutputTokens = getAIIntegerSetting("AI_MEAL_MAX_OUTPUT_TOKENS", AI_MEAL_MAX_OUTPUT_TOKENS);
   const start = Date.now();
   let response: GenerateContentResponse | undefined;
   let outcome = "success";
@@ -469,7 +476,7 @@ export async function generateMealWithModel(
         responseJsonSchema: MEAL_GENERATION_RESPONSE_SCHEMA,
         mediaResolution: MediaResolution.MEDIA_RESOLUTION_MEDIUM,
         thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
-        maxOutputTokens: AI_MEAL_MAX_OUTPUT_TOKENS,
+        maxOutputTokens,
       },
     });
 
@@ -654,8 +661,10 @@ export function getAIMealQuota(attempts: number[], nowMillis: number): {
     .filter((attempt) => attempt > minuteCutoff)
     .sort((first, second) => first - second);
 
-  const dailyRetry = dailyCount >= AI_MEAL_DAILY_LIMIT ? dayStart + UTC_DAY_MILLIS : 0;
-  const minuteLimitAttempt = recentAttempts.at(-AI_MEAL_MINUTE_LIMIT);
+  const dailyLimit = getAIIntegerSetting("AI_MEAL_DAILY_LIMIT", AI_MEAL_DAILY_LIMIT);
+  const minuteLimit = getAIIntegerSetting("AI_MEAL_MINUTE_LIMIT", AI_MEAL_MINUTE_LIMIT);
+  const dailyRetry = dailyCount >= dailyLimit ? dayStart + UTC_DAY_MILLIS : 0;
+  const minuteLimitAttempt = recentAttempts.at(-minuteLimit);
   const minuteRetry = minuteLimitAttempt === undefined ?
     0 : minuteLimitAttempt + AI_MEAL_ROLLING_WINDOW_MS;
 
@@ -702,10 +711,11 @@ export async function claimPendingAIMeal(
     }
 
     const text = typeof mealData.originalText === "string" ? mealData.originalText.trim() : "";
-    if (text.length > MAX_AI_MEAL_DESCRIPTION_LENGTH) {
+    const descriptionLimit = getAIMealDescriptionLimit();
+    if (text.length > descriptionLimit) {
       const message = languageCode === "en" ?
-        `Use at most ${MAX_AI_MEAL_DESCRIPTION_LENGTH} characters to describe your meal` :
-        `Za opis obroka upotrijebi najviše ${MAX_AI_MEAL_DESCRIPTION_LENGTH} znakova`;
+        `Use at most ${descriptionLimit} characters to describe your meal` :
+        `Za opis obroka upotrijebi najviše ${descriptionLimit} znakova`;
 
       rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
       return { status: "invalid-input" };

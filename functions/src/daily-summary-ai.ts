@@ -11,6 +11,7 @@ import {
 } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 
+import {getAIIntegerSetting} from "./ai-config";
 import {reserveProjectAICall} from "./project-ai-quota";
 
 /** Complete Firestore meal record supplied to Gemini */
@@ -189,6 +190,7 @@ export async function generateDailySummaryBodies(
     location: DAILY_SUMMARY_AI_LOCATION,
   });
   const prompt = buildDailySummaryPrompt(meals);
+  const maxOutputTokens = getAIIntegerSetting("AI_DAILY_SUMMARY_MAX_OUTPUT_TOKENS", DAILY_SUMMARY_MAX_OUTPUT_TOKENS);
   const failures: string[] = [];
 
   for (const model of AI_MODEL_NAMES) {
@@ -204,7 +206,7 @@ export async function generateDailySummaryBodies(
           responseMimeType: "application/json",
           responseJsonSchema: DAILY_SUMMARY_RESPONSE_SCHEMA,
           temperature: 0.4,
-          maxOutputTokens: DAILY_SUMMARY_MAX_OUTPUT_TOKENS,
+          maxOutputTokens,
         },
       });
 

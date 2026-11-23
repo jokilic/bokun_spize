@@ -13,6 +13,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/contact_message/contact_message.dart';
+import '../models/meal/ai_meal_quota_error.dart';
 import '../models/meal/meal.dart';
 import '../models/notification/daily_summary.dart';
 import '../models/notification/notification_settings.dart';
@@ -1316,10 +1317,10 @@ class FirebaseService {
       return data is Map && data['success'] == true;
     } catch (error) {
       if (error is FirebaseFunctionsException && error.code == 'resource-exhausted') {
-        final details = error.details;
+        final quotaError = AIMealQuotaError.tryParse(error.details);
 
-        if (details is Map && details['retryAtMillis'] is num) {
-          rethrow;
+        if (quotaError != null) {
+          throw quotaError;
         }
       }
 
