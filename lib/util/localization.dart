@@ -23,7 +23,7 @@ Future<Locale?> initializeLocalization() async {
         Locale('en'),
       ],
       path: 'assets/translations',
-      fallbackLocale: const Locale('hr'),
+      fallbackLocale: const Locale('en'),
       saveLocale: true,
       useFallbackTranslations: true,
       assetLoader: const CodegenLoader(),

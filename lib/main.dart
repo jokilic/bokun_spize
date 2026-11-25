@@ -42,7 +42,7 @@ class BokunSpizeInit extends StatelessWidget {
       Locale('en'),
       Locale('hr'),
     ],
-    fallbackLocale: const Locale('hr'),
+    fallbackLocale: const Locale('en'),
     path: 'assets/translations',
     assetLoader: const CodegenLoader(),
     child: BokunSpizeApp(),

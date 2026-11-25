@@ -15,7 +15,7 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> _en = {
-  "appName": "Bokun spize",
+  "appName": "Bite",
   "theme": "Theme",
   "language": "Language",
   "message": "Message",
@@ -209,7 +209,7 @@ class CodegenLoader extends AssetLoader{
   "entranceOrConnectWith": "Or connect with",
   "entranceGoogle": "Google",
   "entranceApple": "Apple",
-  "entranceNewToBokunSpize": "New to Bokun spize?",
+  "entranceNewToBokunSpize": "New to Bite?",
   "entranceYouHaveAnAccount": "Already have an account?",
   "entranceCreateAnAccount": "Create an account",
   "entranceLoginForgot": "Forgot?",
@@ -327,7 +327,7 @@ class CodegenLoader extends AssetLoader{
   "foodExample10": "Potato"
 };
 static const Map<String,dynamic> _hr = {
-  "appName": "Bokun spize",
+  "appName": "Bokun",
   "theme": "Tema",
   "language": "Jezik",
   "message": "Poruka",
@@ -521,7 +521,7 @@ static const Map<String,dynamic> _hr = {
   "entranceOrConnectWith": "Ili se poveži putem",
   "entranceGoogle": "Google",
   "entranceApple": "Apple",
-  "entranceNewToBokunSpize": "Novi u Bokun spize?",
+  "entranceNewToBokunSpize": "Prvi put koristiš Bokun?",
   "entranceYouHaveAnAccount": "Već imaš račun?",
   "entranceCreateAnAccount": "Izradi račun",
   "entranceLoginForgot": "Zaboravio si?",

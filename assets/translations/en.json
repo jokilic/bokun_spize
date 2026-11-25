@@ -1,5 +1,5 @@
 {
-    "appName": "Bokun spize",
+    "appName": "Bite",
     "theme": "Theme",
     "language": "Language",
     "message": "Message",
@@ -193,7 +193,7 @@
     "entranceOrConnectWith": "Or connect with",
     "entranceGoogle": "Google",
     "entranceApple": "Apple",
-    "entranceNewToBokunSpize": "New to Bokun spize?",
+    "entranceNewToBokunSpize": "New to Bite?",
     "entranceYouHaveAnAccount": "Already have an account?",
     "entranceCreateAnAccount": "Create an account",
     "entranceLoginForgot": "Forgot?",

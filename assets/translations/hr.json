@@ -1,5 +1,5 @@
 {
-    "appName": "Bokun spize",
+    "appName": "Bokun",
     "theme": "Tema",
     "language": "Jezik",
     "message": "Poruka",
@@ -193,7 +193,7 @@
     "entranceOrConnectWith": "Ili se poveži putem",
     "entranceGoogle": "Google",
     "entranceApple": "Apple",
-    "entranceNewToBokunSpize": "Novi u Bokun spize?",
+    "entranceNewToBokunSpize": "Prvi put koristiš Bokun?",
     "entranceYouHaveAnAccount": "Već imaš račun?",
     "entranceCreateAnAccount": "Izradi račun",
     "entranceLoginForgot": "Zaboravio si?",

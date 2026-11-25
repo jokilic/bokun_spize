@@ -1,8 +1,6 @@
 ![Header](https://raw.githubusercontent.com/jokilic/bokun_spize/main/screenshots/header-wide.png)
 
-- [ ] App name -> Bokun / Bite
 - [ ] Go through every hardcoded text and check if it makes sense
-- [ ] Crashlytics
 - [ ] Perhaps anonymous sign-in
 - [ ] App purchases - Research & initial implementation
     - [ ] Analytics for purchases
