@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -13,12 +17,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/analytics_service.dart';
 import '../services/cache_service.dart';
+import '../services/crashlytics_service.dart';
 import '../services/firebase_service.dart';
 import '../services/notification_service.dart';
 import '../services/screen_service.dart';
 import '../services/speech_to_text_service.dart';
 import '../services/storage_service.dart';
 import '../services/theme_service.dart';
+import 'display_mode.dart';
 import 'firebase.dart';
 import 'localization.dart';
 
@@ -58,6 +64,22 @@ Future<void> unRegisterIfNotDisposed<T extends Object>({
 
 /// Initializes app dependencies
 Future<void> initializeBeforeAppStart() async {
+  await initializeFirebase();
+
+  /// Register crash reporting before initializing the remaining dependencies
+  if (!getIt.isRegistered<CrashlyticsService>()) {
+    getIt.registerSingleton(
+      CrashlyticsService(
+        crashlytics: FirebaseCrashlytics.instance,
+      )..registerErrorHandlers(),
+    );
+  }
+
+  /// Enable high refresh rate
+  unawaited(
+    setDisplayMode(),
+  );
+
   await Future.wait(
     [
       SystemChrome.setPreferredOrientations(
@@ -71,6 +93,26 @@ Future<void> initializeBeforeAppStart() async {
   );
 
   await initializeFirebaseAppCheck();
+}
+
+/// Logs startup failures and reports them when Crashlytics is available
+Future<void> reportAppStartupFailure({
+  required Object error,
+  required StackTrace stackTrace,
+}) async {
+  log(
+    'Bokun spize startup failed',
+    error: error,
+    stackTrace: stackTrace,
+  );
+
+  if (getIt.isRegistered<CrashlyticsService>()) {
+    await getIt.get<CrashlyticsService>().recordFatalError(
+      error,
+      stackTrace,
+      reason: 'App startup failed',
+    );
+  }
 }
 
 /// Registers app services and loads saved preferences before the app starts
