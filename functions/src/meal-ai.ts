@@ -677,24 +677,26 @@ export function getAIMealGenerationClaimReference(
 }
 
 /** Keeps the timestamps needed by both limits and finds when another meal can start */
-export function getAIMealQuota(attempts: number[], nowMillis: number): {
-  retainedAttempts: number[];
+export function getAIMealQuota(attempts: Timestamp[], nowMillis: number): {
+  retainedAttempts: Timestamp[];
   retryAtMillis: number | null;
 } {
   const dayStart = nowMillis - nowMillis % UTC_DAY_MILLIS;
   const minuteCutoff = nowMillis - AI_MEAL_ROLLING_WINDOW_MS;
-  const retainedAttempts = attempts.filter((attempt) =>
-    attempt >= dayStart || attempt > minuteCutoff,
-  );
-  const dailyCount = retainedAttempts.filter((attempt) => attempt >= dayStart).length;
-  const recentAttempts = retainedAttempts
+  const retainedAttempts = attempts.filter((attempt) => {
+    const attemptMillis = attempt.toMillis();
+    return attemptMillis >= dayStart || attemptMillis > minuteCutoff;
+  });
+  const dailyCount = retainedAttempts.filter((attempt) => attempt.toMillis() >= dayStart).length;
+  const recentAttemptMillis = retainedAttempts
+    .map((attempt) => attempt.toMillis())
     .filter((attempt) => attempt > minuteCutoff)
     .sort((first, second) => first - second);
 
   const dailyLimit = getAIIntegerSetting("AI_MEAL_DAILY_LIMIT", AI_MEAL_DAILY_LIMIT);
   const minuteLimit = getAIIntegerSetting("AI_MEAL_MINUTE_LIMIT", AI_MEAL_MINUTE_LIMIT);
   const dailyRetry = dailyCount >= dailyLimit ? dayStart + UTC_DAY_MILLIS : 0;
-  const minuteLimitAttempt = recentAttempts.at(-minuteLimit);
+  const minuteLimitAttempt = recentAttemptMillis.at(-minuteLimit);
   const minuteRetry = minuteLimitAttempt === undefined ?
     0 : minuteLimitAttempt + AI_MEAL_ROLLING_WINDOW_MS;
 
@@ -791,7 +793,7 @@ export async function claimPendingAIMeal(
     }
 
     transaction.set(quotaReference, {
-      attempts: [...quota.retainedAttempts, nowMillis],
+      attempts: [...quota.retainedAttempts, quotaSnapshot.readTime],
     });
 
     transaction.set(claimReference, {

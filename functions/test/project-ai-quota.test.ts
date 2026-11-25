@@ -33,7 +33,7 @@ describe.skipIf(process.env.FIRESTORE_EMULATOR_HOST === undefined)("project AI q
 
       if (claim.status === "claimed") {
         expect(standalone).toBeInstanceOf(ProjectAIQuotaExceeded);
-        expect((await quota.get()).data()?.attempts).toHaveLength(1);
+        expect((await quota.get()).data()?.attempts).toEqual([expect.any(Timestamp)]);
       } else {
         expect(claim.status).toBe("project-rate-limited");
         expect(standalone).toBe("reserved");

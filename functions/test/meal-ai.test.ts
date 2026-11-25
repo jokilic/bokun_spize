@@ -1,4 +1,5 @@
 import {ApiError, type GenerateContentResponse} from "@google/genai";
+import {Timestamp} from "firebase-admin/firestore";
 import {describe, expect, it, vi} from "vitest";
 
 import {
@@ -190,7 +191,7 @@ describe("AI meal quota", () => {
   /** Allows a fourth request exactly one minute after the oldest recent attempt */
   it("enforces a rolling minute without rounding to a clock minute", () => {
     const first = Date.UTC(2026, 0, 5, 14, 0, 30);
-    const attempts = [first, first + 10_000, first + 20_000];
+    const attempts = [first, first + 10_000, first + 20_000].map((time) => Timestamp.fromMillis(time));
 
     expect(getAIMealQuota(attempts.slice(0, 2), first + 20_000).retryAtMillis).toBeNull();
     expect(getAIMealQuota(attempts, first + 59_999).retryAtMillis).toBe(first + 60_000);
@@ -200,7 +201,10 @@ describe("AI meal quota", () => {
   /** Allows the 25th request and resets the daily count at UTC midnight */
   it("enforces the UTC daily limit", () => {
     const midnight = Date.UTC(2026, 0, 6);
-    const attempts = Array.from({length: 25}, (_, index) => midnight - (index + 2) * 60_000);
+    const attempts = Array.from(
+      {length: 25},
+      (_, index) => Timestamp.fromMillis(midnight - (index + 2) * 60_000),
+    );
 
     expect(getAIMealQuota(attempts.slice(1), midnight - 1).retryAtMillis).toBeNull();
     expect(getAIMealQuota(attempts, midnight - 1).retryAtMillis).toBe(midnight);
@@ -213,8 +217,12 @@ describe("AI meal quota", () => {
   /** Uses the later expiry when both limits apply across midnight */
   it("carries recent attempts across the daily reset", () => {
     const midnight = Date.UTC(2026, 0, 6);
-    const recentAttempts = [midnight - 30_000, midnight - 20_000, midnight - 10_000];
-    const earlierAttempts = Array.from({length: 22}, (_, index) => midnight - (index + 2) * 60_000);
+    const recentAttempts = [midnight - 30_000, midnight - 20_000, midnight - 10_000]
+      .map((time) => Timestamp.fromMillis(time));
+    const earlierAttempts = Array.from(
+      {length: 22},
+      (_, index) => Timestamp.fromMillis(midnight - (index + 2) * 60_000),
+    );
     const attempts = [...earlierAttempts, ...recentAttempts];
 
     expect(getAIMealQuota(attempts, midnight - 1).retryAtMillis).toBe(midnight + 30_000);
