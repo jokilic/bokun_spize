@@ -1,6 +1,6 @@
 /** Enforces one shared Gemini call allowance per UTC day */
 
-import {type Firestore, getFirestore, type Transaction} from "firebase-admin/firestore";
+import {type Firestore, getFirestore, Timestamp, type Transaction} from "firebase-admin/firestore";
 
 import {getAIIntegerSetting} from "./ai-config.ts";
 
@@ -37,30 +37,34 @@ export async function reserveProjectAICallInTransaction(
   const reference = firestore.doc(PROJECT_AI_USAGE_PATH);
   const snapshot = await transaction.get(reference);
   const now = snapshot.readTime.toMillis();
-  const dayStartMillis = now - now % UTC_DAY_MILLIS;
+  const utcMidnightMillis = now - now % UTC_DAY_MILLIS;
+  const dayStart = Timestamp.fromMillis(utcMidnightMillis);
   const usage = snapshot.data();
   let calls = 0;
 
   if (usage !== undefined) {
     if (
-      !Number.isSafeInteger(usage.dayStartMillis) ||
-      usage.dayStartMillis > dayStartMillis ||
+      !(usage.dayStart instanceof Timestamp) ||
+      usage.dayStart.toMillis() > utcMidnightMillis ||
       !Number.isSafeInteger(usage.calls) ||
       usage.calls < 0
     ) {
       throw new Error("Invalid project AI usage counter");
     }
 
-    if (usage.dayStartMillis === dayStartMillis) {
+    if (usage.dayStart.isEqual(dayStart)) {
       calls = usage.calls;
     }
   }
 
   if (calls >= limit) {
-    return dayStartMillis + UTC_DAY_MILLIS;
+    return utcMidnightMillis + UTC_DAY_MILLIS;
   }
 
-  transaction.set(reference, {dayStartMillis, calls: calls + 1});
+  transaction.set(reference, {
+    dayStart,
+    calls: calls + 1,
+  });
   return null;
 }
 

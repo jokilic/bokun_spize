@@ -67,14 +67,20 @@ describe.skipIf(process.env.FIRESTORE_EMULATOR_HOST === undefined)("project AI q
     try {
       const {readTime} = await counter.get();
       const now = readTime.toMillis();
-      const dayStartMillis = now - now % UTC_DAY_MILLIS;
-      await counter.set({dayStartMillis: dayStartMillis - UTC_DAY_MILLIS, calls: 1000});
+      const utcMidnightMillis = now - now % UTC_DAY_MILLIS;
+      await counter.set({
+        dayStart: Timestamp.fromMillis(utcMidnightMillis - UTC_DAY_MILLIS),
+        calls: 1000,
+      });
 
       await reserveProjectAICall(firestore, 1);
       await expect(reserveProjectAICall(firestore, 1)).rejects.toMatchObject({
-        retryAtMillis: dayStartMillis + UTC_DAY_MILLIS,
+        retryAtMillis: utcMidnightMillis + UTC_DAY_MILLIS,
       });
-      expect((await counter.get()).data()).toEqual({dayStartMillis, calls: 1});
+      expect((await counter.get()).data()).toEqual({
+        dayStart: Timestamp.fromMillis(utcMidnightMillis),
+        calls: 1,
+      });
     } finally {
       await deleteApp(app);
     }
