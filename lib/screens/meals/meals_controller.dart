@@ -297,6 +297,8 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
     required String newMealId,
     required String languageCode,
   }) async {
+    final saveTimer = Stopwatch()..start();
+
     /// Trigger validation and return if fail
     if (!isValidAIMealResult(result)) {
       unawaited(
@@ -363,6 +365,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       languageCode: languageCode,
       imageFile: result.imageFile,
     );
+    saveTimer.stop();
 
     if (outcome.failure case final failure?) {
       unawaited(
@@ -378,6 +381,9 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       unawaited(
         analytics.logMealSaved(
           MealAnalyticsMethod.ai,
+          duration: saveTimer.elapsed,
+          hasPhoto: result.imageFile != null,
+          generation: outcome.metrics,
         ),
       );
     }
@@ -435,6 +441,8 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       );
     }
 
+    final saveTimer = Stopwatch()..start();
+
     /// Save edits to the original `meal` or create a new entry
     final success = isEditingMeal
         ? await updateManualMeal(
@@ -447,11 +455,14 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
             passedMeal: passedMeal,
             isCopyingMeal: isCopyingMeal,
           );
+    saveTimer.stop();
 
     if (success && isAddingMeal) {
       unawaited(
         analytics.logMealSaved(
           MealAnalyticsMethod.manual,
+          duration: saveTimer.elapsed,
+          hasPhoto: result.imageFile != null || result.imageStoragePath != null,
         ),
       );
     } else if (success && isCopyingMeal) {

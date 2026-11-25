@@ -92,13 +92,25 @@ class AnalyticsService {
     ),
   );
 
-  /// Records when a newly created meal is saved successfully
-  Future<void> logMealSaved(MealAnalyticsMethod method) => sendEvent(
-    () => analytics.logEvent(
-      name: 'meal_saved',
-      parameters: {
-        'method': method.name,
+  /// Records a successful new meal save with timing and any available generation metrics
+  Future<void> logMealSaved(
+    MealAnalyticsMethod method, {
+    required Duration duration,
+    required bool hasPhoto,
+    AIMealGenerationMetrics? generation,
+  }) => record(
+    AnalyticsEvent.mealSaved,
+    parameters: {
+      'method': method.name,
+      'duration_ms': duration.inMilliseconds,
+      'has_photo': hasPhoto ? 1 : 0,
+      if (generation != null) ...{
+        'ai_attempt': generation.attempt,
+        'ai_model': generation.model,
+        'ai_generation_ms': generation.durationMs,
+        'ai_backend_ms': generation.backendDurationMs,
+        'food_count': generation.foodCount,
       },
-    ),
+    },
   );
 }

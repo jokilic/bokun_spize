@@ -11,6 +11,7 @@ import {
   ThinkingLevel,
 } from "@google/genai";
 import { randomUUID } from "node:crypto";
+import { performance } from "node:perf_hooks";
 import { getApp } from "firebase-admin/app";
 import {
   type DocumentData,
@@ -66,10 +67,11 @@ export interface GeneratedMeal {
   foods: GeneratedFood[];
 }
 
-/** Result of a successful model fallback attempt */
+/** Result of a successful model attempt */
 export interface GeneratedMealResult {
   meal: GeneratedMeal;
-  modelName: string;
+  modelName: typeof MEAL_AI_PRIMARY_MODEL | typeof MEAL_AI_TEXT_FALLBACK_MODEL;
+  attempt: 1 | 2;
 }
 
 /** Signals that the supplied photo has no recognizable food or drink */
@@ -141,11 +143,19 @@ export interface UploadedMealImage {
 }
 
 /** Result returned to the Flutter callable client */
-export interface AIMealCallableResult {
-  success: boolean;
-  pending?: true;
-  failureReason?: "validation" | "image_upload" | "persistence";
-}
+export type AIMealCallableResult =
+  | { success: true; pending: true }
+  | {
+    success: true;
+    metrics: {
+      attempt: GeneratedMealResult["attempt"];
+      model: GeneratedMealResult["modelName"];
+      durationMs: number;
+      backendDurationMs: number;
+      foodCount: number;
+    };
+  }
+  | { success: false; failureReason?: "validation" | "image_upload" | "persistence" };
 
 /** General European bucket containing meal images and future app files */
 export const APP_STORAGE_BUCKET = "bokun-spize-eu";
@@ -515,7 +525,7 @@ export async function generateMealWithModel(
       throw new MealResponseError("missing_foods", "AI returned an image-based meal without any food or drink items");
     }
 
-    return { meal, modelName: model };
+    return { meal, modelName: model, attempt };
   } catch (error) {
     outcome = error instanceof NoFoodInImageError ? "no-food" : "failed";
     failureDetails = getMealGenerationFailureDetails(error);
@@ -986,6 +996,7 @@ export async function processCallableAIMeal(
   userId: string,
   value: unknown,
 ): Promise<AIMealCallableResult> {
+  const backendStartedAt = performance.now();
   const input = parseAIMealCallableInput(value);
   const mealReference = getFirestore()
     .collection("users")
@@ -1019,11 +1030,15 @@ export async function processCallableAIMeal(
     return { success: false, failureReason: "validation" };
   }
 
+  const generationStartedAt = performance.now();
   const generationPromise = generateMeal({
     text: claim.text,
     imageBase64: input.image?.base64 ?? null,
     imageContentType: input.image?.contentType ?? null,
-  });
+  }).then((result) => ({
+    ...result,
+    durationMs: Math.round(performance.now() - generationStartedAt),
+  }));
   const imageUploadPromise = input.image === null ?
     Promise.resolve<UploadedMealImage | null>(null) :
     uploadAIMealImage(userId, input.mealId, input.image);
@@ -1110,5 +1125,14 @@ export async function processCallableAIMeal(
     return { success: false, failureReason: "image_upload" };
   }
 
-  return { success: true };
+  return {
+    success: true,
+    metrics: {
+      attempt: generationOutcome.value.attempt,
+      model: generationOutcome.value.modelName,
+      durationMs: generationOutcome.value.durationMs,
+      backendDurationMs: Math.round(performance.now() - backendStartedAt),
+      foodCount: generationOutcome.value.meal.foods.length,
+    },
+  };
 }

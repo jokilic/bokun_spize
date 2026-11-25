@@ -1,5 +1,6 @@
 enum AnalyticsEvent {
   mealSubmitted('meal_submitted'),
+  mealSaved('meal_saved'),
   mealSaveFailed('meal_save_failed'),
   mealDetailsOpened('meal_details_opened'),
   mealEdited('meal_edited'),
@@ -57,3 +58,12 @@ enum MealAnalyticsMethod {
   manual,
   ai,
 }
+
+/// Metadata returned by the callable after a successful AI meal save
+typedef AIMealGenerationMetrics = ({
+  int attempt,
+  String model,
+  int durationMs,
+  int backendDurationMs,
+  int foodCount,
+});

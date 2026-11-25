@@ -1386,8 +1386,8 @@ class FirebaseService {
     }
   }
 
-  /// Sends compressed image bytes to the callable and surfaces quota rejections
-  Future<({bool pending, MealSaveFailure? failure})> generateAIMeal({
+  /// Sends the meal to the callable and reads metrics from a successful response
+  Future<({bool pending, MealSaveFailure? failure, AIMealGenerationMetrics? metrics})> generateAIMeal({
     required String mealId,
     required String languageCode,
     required File? imageFile,
@@ -1413,6 +1413,7 @@ class FirebaseService {
           return (
             pending: false,
             failure: MealSaveFailure.imageUpload,
+            metrics: null,
           );
         }
 
@@ -1426,6 +1427,7 @@ class FirebaseService {
         return (
           pending: false,
           failure: MealSaveFailure.imageUpload,
+          metrics: null,
         );
       }
     }
@@ -1441,9 +1443,28 @@ class FirebaseService {
       final data = response.data;
 
       if (data is Map && data['success'] == true) {
+        final metrics = switch (data['metrics']) {
+          {
+            'attempt': final int attempt,
+            'model': final String model,
+            'durationMs': final int durationMs,
+            'backendDurationMs': final int backendDurationMs,
+            'foodCount': final int foodCount,
+          } =>
+            (
+              attempt: attempt,
+              model: model,
+              durationMs: durationMs,
+              backendDurationMs: backendDurationMs,
+              foodCount: foodCount,
+            ),
+          _ => null,
+        };
+
         return (
           pending: data['pending'] == true,
           failure: null,
+          metrics: metrics,
         );
       }
 
@@ -1458,6 +1479,7 @@ class FirebaseService {
       return (
         pending: false,
         failure: failure,
+        metrics: null,
       );
     } on FirebaseFunctionsException catch (error) {
       if (error.code == 'resource-exhausted') {
@@ -1476,6 +1498,7 @@ class FirebaseService {
       return (
         pending: false,
         failure: MealSaveFailure.request,
+        metrics: null,
       );
     } catch (error) {
       log(
@@ -1486,6 +1509,7 @@ class FirebaseService {
       return (
         pending: false,
         failure: MealSaveFailure.request,
+        metrics: null,
       );
     }
   }

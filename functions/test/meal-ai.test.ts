@@ -113,6 +113,38 @@ describe("AI meal generation cost controls", () => {
     expect(() => buildMealContentParts({...textMeal, text: text + "a"})).toThrow("maximum length");
   });
 
+  /** Keeps the attempt and model available for analytics after a successful generation */
+  it.each([
+    {attempt: 1, modelName: MEAL_AI_PRIMARY_MODEL},
+    {attempt: 2, modelName: MEAL_AI_TEXT_FALLBACK_MODEL},
+  ])("reports the successful model on attempt $attempt", async ({attempt, modelName}) => {
+    const text = JSON.stringify({
+      status: "meal",
+      meal: {
+        name: {en: "Chicken and rice", hr: "Piletina i riža"},
+        emoji: "🍗",
+        color: "#C98B62",
+        nutrition,
+        foods: [],
+      },
+    });
+    const generateContent = vi.fn().mockResolvedValue({text} satisfies Pick<GenerateContentResponse, "text">);
+    if (attempt === 2) {
+      generateContent.mockRejectedValueOnce(new ApiError({status: 503, message: "Service unavailable"}));
+    }
+
+    vi.useFakeTimers();
+    try {
+      const result = expect(generateMeal(textMeal, {generateContent}, async () => {}))
+        .resolves.toMatchObject({attempt, modelName});
+
+      await vi.runAllTimersAsync();
+      await result;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   /** Prevents SDK retries from multiplying the two model calls */
   it.each([
     {kind: "text", input: textMeal, fallback: MEAL_AI_TEXT_FALLBACK_MODEL},
