@@ -83,9 +83,6 @@ Future<void> registerServices() async {
     getIt.registerLazySingleton(
       () => AnalyticsService(
         analytics: FirebaseAnalytics.instance,
-        functions: FirebaseFunctions.instanceFor(
-          region: 'europe-west8',
-        ),
       ),
     );
   }

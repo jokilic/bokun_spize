@@ -12,7 +12,6 @@ import '../../constants/durations.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
-import '../../util/analytics.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -222,14 +221,6 @@ class _WeightsScreenState extends State<WeightsScreen> {
                     onSelectedDays: (newWeightsCalendarDays) {
                       HapticFeedback.lightImpact();
                       storageService.setWeightsCalendarDays(newWeightsCalendarDays);
-
-                      if (newWeightsCalendarDays != graphCalendarDays) {
-                        unawaited(
-                          weightsController.firebase.analytics.countHealthInteraction(
-                            HealthAnalyticsEvent.weightChartRangeChanged,
-                          ),
-                        );
-                      }
                     },
                     dayEntries: weightsController.graphCalendarDayOptions,
                     weightTracks: weightTracks,

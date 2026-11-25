@@ -30,32 +30,6 @@ enum AnalyticsEvent {
   final String eventName;
 }
 
-enum HealthAnalyticsEvent {
-  weightEntryOpened('weight_entry_opened'),
-  weightEntrySaved('weight_entry_saved'),
-  weightEntryDeleted('weight_entry_deleted'),
-  weightChartRangeChanged('weight_chart_range_changed'),
-  stepPermissionResult('step_permission_result'),
-  stepHistoryPermissionResult('step_history_permission_result'),
-  walksChartRangeChanged('walks_chart_range_changed'),
-  walksRetryTapped('walks_retry_tapped'),
-  profileSettingsSaved('profile_settings_saved'),
-  nutritionGoalsOpened('nutrition_goals_opened'),
-  nutritionGoalsSaved('nutrition_goals_saved');
-
-  const HealthAnalyticsEvent(this.eventName);
-
-  final String eventName;
-}
-
-enum StepPermissionOutcome {
-  granted,
-  denied,
-  unavailable,
-  unknown,
-  error,
-}
-
 enum MealSaveFailure {
   validation,
   imageUpload('image_upload'),

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,10 +7,8 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../constants/durations.dart';
-import '../../services/analytics_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
-import '../../util/analytics.dart';
 import '../../util/date_time.dart';
 import '../../util/dependencies.dart';
 import '../../util/spacing.dart';
@@ -41,7 +37,6 @@ class _WalksScreenState extends State<WalksScreen> {
     registerIfNotInitialized<WalksController>(
       () => WalksController(
         health: Health(),
-        analytics: getIt.get<AnalyticsService>(),
         graphCalendarDays: graphCalendarDays,
       ),
       afterRegister: (controller) => controller.init(),
@@ -128,7 +123,7 @@ class _WalksScreenState extends State<WalksScreen> {
                   shape: const CircleBorder(),
                   onPressed: () {
                     HapticFeedback.lightImpact();
-                    walksController.retrySteps();
+                    walksController.refreshSteps();
                   },
                   child: PhosphorIcon(
                     PhosphorIconsBold.arrowClockwise,
@@ -193,14 +188,6 @@ class _WalksScreenState extends State<WalksScreen> {
                     onSelectedDays: (newWalksCalendarDays) {
                       HapticFeedback.lightImpact();
                       storageService.setWalksCalendarDays(newWalksCalendarDays);
-
-                      if (newWalksCalendarDays != graphCalendarDays) {
-                        unawaited(
-                          walksController.analytics.countHealthInteraction(
-                            HealthAnalyticsEvent.walksChartRangeChanged,
-                          ),
-                        );
-                      }
                     },
                     dayEntries: walksController.graphCalendarDayOptions,
                     stepsWithDate: completedStepsWithDate,

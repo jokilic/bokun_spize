@@ -76,17 +76,9 @@ class AccountController extends ValueNotifier<SettingsValues> {
         unawaited(
           HapticFeedback.lightImpact(),
         );
-        final success = await firebase.updateUserName(
+        await firebase.updateUserName(
           newName: newName,
         );
-
-        if (success) {
-          unawaited(
-            firebase.analytics.countHealthInteraction(
-              HealthAnalyticsEvent.profileSettingsSaved,
-            ),
-          );
-        }
       },
     ),
   );
@@ -118,14 +110,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
           final success = await firebase.updateUserMetrics(
             newUserMetrics: newUserMetrics,
           );
-
-          if (success) {
-            unawaited(
-              firebase.analytics.countHealthInteraction(
-                HealthAnalyticsEvent.profileSettingsSaved,
-              ),
-            );
-          }
 
           return success ? newUserMetrics : null;
         },
@@ -165,12 +149,6 @@ class AccountController extends ValueNotifier<SettingsValues> {
     final macroGoalsExist =
         useExistingMacroGoals && userMetrics.dailyCalories != null && userMetrics.dailyProtein != null && userMetrics.dailyCarbs != null && userMetrics.dailyFat != null;
 
-    unawaited(
-      firebase.analytics.countHealthInteraction(
-        HealthAnalyticsEvent.nutritionGoalsOpened,
-      ),
-    );
-
     showBlurredModalBottomSheet(
       context: context,
       builder: (context) => MacroGoalsSheet(
@@ -179,26 +157,14 @@ class AccountController extends ValueNotifier<SettingsValues> {
         initialDailyMacroValues: dailyMacroValues,
         calculateDailyMacroValues: userMetrics.calculateDailyMacroValues,
         macroGoalsExist: macroGoalsExist,
-        onSavePressed: (dailyMacroValues) async {
-          final success = await firebase.updateUserMetrics(
-            newUserMetrics: userMetrics.copyWith(
-              dailyCalories: dailyMacroValues.calories,
-              dailyProtein: dailyMacroValues.protein,
-              dailyCarbs: dailyMacroValues.carbs,
-              dailyFat: dailyMacroValues.fat,
-            ),
-          );
-
-          if (success) {
-            unawaited(
-              firebase.analytics.countHealthInteraction(
-                HealthAnalyticsEvent.nutritionGoalsSaved,
-              ),
-            );
-          }
-
-          return success;
-        },
+        onSavePressed: (dailyMacroValues) => firebase.updateUserMetrics(
+          newUserMetrics: userMetrics.copyWith(
+            dailyCalories: dailyMacroValues.calories,
+            dailyProtein: dailyMacroValues.protein,
+            dailyCarbs: dailyMacroValues.carbs,
+            dailyFat: dailyMacroValues.fat,
+          ),
+        ),
         onDeletePressed: () => firebase.deleteUserMetrics(
           onlyMetricsAndMacros: false,
           onlyMacros: true,

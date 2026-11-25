@@ -9,7 +9,6 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import '../../models/weight_track/weight_track.dart';
 import '../../services/firebase_service.dart';
-import '../../util/analytics.dart';
 import '../../util/null_state.dart';
 import '../../util/snackbars.dart';
 import '../../util/weight_track.dart';
@@ -326,12 +325,6 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     );
 
     if (success) {
-      unawaited(
-        firebase.analytics.countHealthInteraction(
-          HealthAnalyticsEvent.weightEntrySaved,
-        ),
-      );
-
       additionalWeightTracks = mergeWeightTracks(
         [...additionalWeightTracks, newWeightTrack],
       );
@@ -363,12 +356,6 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     );
 
     if (success) {
-      unawaited(
-        firebase.analytics.countHealthInteraction(
-          HealthAnalyticsEvent.weightEntryDeleted,
-        ),
-      );
-
       latestWeightTracks = latestWeightTracks
           .where(
             (entry) => entry.id != weightTrack.id,
@@ -402,34 +389,26 @@ class WeightsController extends ValueNotifier<({List<WeightTrack> weightTracks, 
     required BuildContext context,
     required double initialWeight,
     required String weightTrackId,
-  }) async {
-    unawaited(
-      firebase.analytics.countHealthInteraction(
-        HealthAnalyticsEvent.weightEntryOpened,
-      ),
-    );
+  }) async => showBlurredModalBottomSheet(
+    context: context,
+    builder: (sheetContext) => WeightsAddWeightSheet(
+      key: ValueKey(weightTrackId),
+      initialWeight: initialWeight,
+      onSavePressed: ({required newWeight, required dateTime}) {
+        HapticFeedback.lightImpact();
+        addWeightTrack(
+          weightTrackId: weightTrackId,
+          dateTime: dateTime,
+          weight: newWeight,
+          context: context,
+        );
 
-    return showBlurredModalBottomSheet(
-      context: context,
-      builder: (sheetContext) => WeightsAddWeightSheet(
-        key: ValueKey(weightTrackId),
-        initialWeight: initialWeight,
-        onSavePressed: ({required newWeight, required dateTime}) {
-          HapticFeedback.lightImpact();
-          addWeightTrack(
-            weightTrackId: weightTrackId,
-            dateTime: dateTime,
-            weight: newWeight,
-            context: context,
-          );
-
-          if (sheetContext.mounted) {
-            Navigator.of(sheetContext).pop();
-          }
-        },
-      ),
-    );
-  }
+        if (sheetContext.mounted) {
+          Navigator.of(sheetContext).pop();
+        }
+      },
+    ),
+  );
 
   /// Updates `state`
   void updateState({

@@ -5,7 +5,7 @@
  */
 
 import {initializeApp} from "firebase-admin/app";
-import {FieldValue, getFirestore} from "firebase-admin/firestore";
+import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
 import {getStorage} from "firebase-admin/storage";
 import {region} from "firebase-functions/v1";
@@ -22,49 +22,6 @@ import {
 } from "./meal-ai";
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
-
-const healthInteractionCounters = new Set([
-  "weight_entry_opened",
-  "weight_entry_saved",
-  "weight_entry_deleted",
-  "weight_chart_range_changed",
-  "step_permission_result",
-  "step_history_permission_result",
-  "walks_chart_range_changed",
-  "walks_retry_tapped",
-  "profile_settings_saved",
-  "nutrition_goals_opened",
-  "nutrition_goals_saved",
-]);
-
-const stepPermissionOutcomes = new Set(["granted", "denied", "unavailable", "unknown", "error"]);
-
-/** Counts a supported interaction without storing user-level events or identifiers */
-export const countHealthInteraction = onCall(
-  {region: "europe-west8", enforceAppCheck: true},
-  async (request) => {
-    if (request.auth === undefined) {
-      throw new HttpsError("unauthenticated", "Authentication is required");
-    }
-
-    const {event, outcome} = request.data ?? {};
-    if (typeof event !== "string" || !healthInteractionCounters.has(event)) {
-      throw new HttpsError("invalid-argument", "Unknown analytics counter");
-    }
-
-    const isPermission = event === "step_permission_result" || event === "step_history_permission_result";
-    if (isPermission ? typeof outcome !== "string" || !stepPermissionOutcomes.has(outcome) : outcome !== undefined) {
-      throw new HttpsError("invalid-argument", "Invalid analytics outcome");
-    }
-
-    const counter = isPermission ? `${event}_${outcome}` : event;
-    await getFirestore().collection("analyticsCounters").doc("healthInteractions").set(
-      {[counter]: FieldValue.increment(1)},
-      {merge: true},
-    );
-    return null;
-  },
-);
 
 /** Recursively removes private data after a Firebase Auth account is deleted */
 // Firebase Auth deletion is first generation and requires a first-generation region
