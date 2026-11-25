@@ -67,7 +67,6 @@ Future<void> initializeBeforeAppStart() async {
         SystemUiMode.edgeToEdge,
       ),
       initializeLocalization(),
-      initializeFirebase(),
     ],
   );
 

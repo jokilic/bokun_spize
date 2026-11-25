@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
@@ -11,33 +12,48 @@ import 'package:watch_it/watch_it.dart';
 import 'constants/durations.dart';
 import 'generated/codegen_loader.g.dart';
 import 'screens/entrance/entrance_screen.dart';
+import 'services/crashlytics_service.dart';
 import 'services/screen_service.dart';
 import 'services/theme_service.dart';
 import 'theme/extensions.dart';
 import 'theme/theme.dart';
 import 'util/dependencies.dart';
 import 'util/display_mode.dart';
+import 'util/firebase.dart';
 
+/// Initializes Firebase and starts the app with crash reporting in place
 Future<void> main() async {
   /// Initialize Flutter related tasks
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// Enable high refresh rate
-  unawaited(
-    setDisplayMode(),
-  );
-
+  CrashlyticsService? crashlytics;
   try {
+    await initializeFirebase();
+    crashlytics = CrashlyticsService(
+      crashlytics: FirebaseCrashlytics.instance,
+    )..registerErrorHandlers();
+
+    /// Enable high refresh rate
+    unawaited(
+      setDisplayMode(),
+    );
+
     await initializeBeforeAppStart();
     await registerServices();
 
     runApp(
       BokunSpizeInit(),
     );
-  } catch (error) {
+  } catch (error, stackTrace) {
     log(
       'Bokun spize startup failed',
       error: error,
+      stackTrace: stackTrace,
+    );
+    await crashlytics?.recordFatalError(
+      error,
+      stackTrace,
+      reason: 'App startup failed',
     );
   }
 }

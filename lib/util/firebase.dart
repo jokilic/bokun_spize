@@ -8,20 +8,13 @@ import '../firebase_options.dart';
 
 /// Initializes [Firebase]
 Future<void> initializeFirebase() async {
-  try {
-    if (firebase_core.Firebase.apps.isNotEmpty) {
-      return;
-    }
-
-    await firebase_core.Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (error) {
-    log(
-      'Firebase initialization failed',
-      error: error,
-    );
+  if (firebase_core.Firebase.apps.isNotEmpty) {
+    return;
   }
+
+  await firebase_core.Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 /// Initializes [Firebase App Check]
