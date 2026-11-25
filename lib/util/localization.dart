@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../generated/codegen_loader.g.dart';
+import 'crashlytics.dart';
 
 /// Initialize [EasyLocalization] & return active `locale`
 Future<Locale?> initializeLocalization() async {
@@ -41,7 +42,12 @@ Future<Locale?> initializeLocalization() async {
     await initializeDateFormatting('hr');
 
     return controller.locale;
-  } catch (error) {
+  } catch (error, stackTrace) {
+    reportHandledError(
+      error: error,
+      stackTrace: stackTrace,
+      reason: 'initialize_localization',
+    );
     log(
       'Localization initialization failed',
       error: error,

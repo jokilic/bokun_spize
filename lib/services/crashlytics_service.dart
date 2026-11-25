@@ -34,18 +34,14 @@ class CrashlyticsService {
 
   /// Reports framework errors and uncaught errors on the main isolate
   void registerErrorHandlers() {
-    FlutterError.onError = (details) => unawaited(
-      sendReport(
-        () => crashlytics.recordFlutterFatalError(details),
-      ),
+    FlutterError.onError = (details) => sendReport(
+      () => crashlytics.recordFlutterFatalError(details),
     );
 
     PlatformDispatcher.instance.onError = (error, stackTrace) {
-      unawaited(
-        recordFatalError(
-          error,
-          stackTrace,
-        ),
+      recordFatalError(
+        error,
+        stackTrace,
       );
       return true;
     };
@@ -62,6 +58,21 @@ class CrashlyticsService {
       stackTrace,
       reason: reason,
       fatal: true,
+    ),
+  );
+
+  /// Records handled errors using the error type and explicitly supplied diagnostic data
+  Future<void> recordNonFatalError({
+    required Object error,
+    required StackTrace stackTrace,
+    required String reason,
+    Iterable<String> information = const [],
+  }) => sendReport(
+    () => crashlytics.recordError(
+      error.runtimeType.toString(),
+      stackTrace,
+      reason: reason,
+      information: information,
     ),
   );
 }

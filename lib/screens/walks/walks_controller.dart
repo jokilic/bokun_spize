@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../constants/durations.dart';
 import '../../models/steps_with_date/steps_with_date.dart';
+import '../../util/crashlytics.dart';
 import '../../util/null_state.dart';
 import '../../util/steps_history.dart';
 
@@ -150,6 +151,14 @@ class WalksController
       'Walking detection failed',
       error: error,
     );
+
+    if (error is Error) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'walking_detection_failed',
+      );
+    }
   }
 
   /// Starts step refreshes and walking detection while [WalksScreen] is active

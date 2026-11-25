@@ -22,6 +22,7 @@ import '../models/notification/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
 import '../models/weight_track/weight_track.dart';
 import '../util/analytics.dart';
+import '../util/crashlytics.dart';
 import '../util/meal_image.dart';
 import '../util/meal_parse.dart';
 import '../util/timezone.dart';
@@ -215,10 +216,11 @@ class FirebaseService {
       );
 
       return true;
-    } catch (error) {
-      log(
-        'Writing notification settings failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Writing notification settings failed',
       );
       return false;
     }
@@ -235,10 +237,11 @@ class FirebaseService {
           );
 
       return true;
-    } catch (error) {
-      log(
-        'Writing contact message failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Writing contact message failed',
       );
       return false;
     }
@@ -392,7 +395,7 @@ class FirebaseService {
         user: user,
         error: null,
       );
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       final errorMessage = switch (error.code) {
         'invalid-email' => 'firebaseErrorEmailInvalid'.tr(),
         'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
@@ -404,15 +407,16 @@ class FirebaseService {
         _ => 'firebaseErrorLoginError'.tr(),
       };
 
-      logFirebaseAuthFailure('Email sign in failed', error.code);
+      logFirebaseAuthFailure('Email sign in failed', error, stackTrace);
       return (
         user: null,
         error: errorMessage,
       );
-    } catch (error) {
-      log(
-        'Email sign in failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Email sign in failed',
       );
       return (
         user: null,
@@ -438,7 +442,7 @@ class FirebaseService {
         success: true,
         error: null,
       );
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       final errorMessage = switch (error.code) {
         'invalid-email' => 'firebaseErrorEmailInvalid'.tr(),
         'user-disabled' => 'firebaseErrorUserDisabled'.tr(),
@@ -448,15 +452,16 @@ class FirebaseService {
         _ => 'firebaseErrorPasswordResetError'.tr(),
       };
 
-      logFirebaseAuthFailure('Password reset email failed', error.code);
+      logFirebaseAuthFailure('Password reset email failed', error, stackTrace);
       return (
         success: false,
         error: errorMessage,
       );
-    } catch (error) {
-      log(
-        'Password reset email failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Password reset email failed',
       );
       return (
         success: false,
@@ -530,7 +535,7 @@ class FirebaseService {
         user: null,
         error: errorMessage,
       );
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       final errorMessage = switch (error.code) {
         'account-exists-with-different-credential' => 'firebaseErrorAccountExistsWithDifferentCredential'.tr(),
         'invalid-credential' => 'firebaseErrorInvalidCredential'.tr(),
@@ -540,12 +545,13 @@ class FirebaseService {
         _ => 'firebaseGoogleErrorLoginError'.tr(),
       };
 
-      logFirebaseAuthFailure('Google sign in failed', error.code);
+      logFirebaseAuthFailure('Google sign in failed', error, stackTrace);
       return (user: null, error: errorMessage);
-    } catch (error) {
-      log(
-        'Google sign in failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Google sign in failed',
       );
       return (
         user: null,
@@ -627,7 +633,7 @@ class FirebaseService {
         );
       }
       return (user: null, error: errorMessage);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       final errorMessage = switch (error.code) {
         'account-exists-with-different-credential' => 'firebaseErrorAccountExistsWithDifferentCredential'.tr(),
         'invalid-credential' => 'firebaseErrorInvalidCredential'.tr(),
@@ -637,15 +643,16 @@ class FirebaseService {
         _ => 'firebaseAppleErrorLoginError'.tr(),
       };
 
-      logFirebaseAuthFailure('Apple sign in failed', error.code);
+      logFirebaseAuthFailure('Apple sign in failed', error, stackTrace);
       return (
         user: null,
         error: errorMessage,
       );
-    } catch (error) {
-      log(
-        'Apple sign in failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Apple sign in failed',
       );
       return (
         user: null,
@@ -672,22 +679,23 @@ class FirebaseService {
         user: user,
         error: null,
       );
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       final errorMessage = switch (error.code) {
         'operation-not-allowed' => 'firebaseErrorOperationNotAllowed'.tr(),
         'too-many-requests' => 'firebaseErrorTooManyRequests'.tr(),
         _ => 'firebaseAnonymousErrorLoginError'.tr(),
       };
 
-      logFirebaseAuthFailure('Anonymous sign in failed', error.code);
+      logFirebaseAuthFailure('Anonymous sign in failed', error, stackTrace);
       return (
         user: null,
         error: errorMessage,
       );
-    } catch (error) {
-      log(
-        'Anonymous sign in failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Anonymous sign in failed',
       );
       return (
         user: null,
@@ -733,7 +741,7 @@ class FirebaseService {
         user: user,
         error: null,
       );
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       final errorMessage = switch (error.code) {
         'email-already-in-use' => 'firebaseErrorEmailAlreadyInUse'.tr(),
         'invalid-email' => 'firebaseErrorEmailInvalid'.tr(),
@@ -743,15 +751,16 @@ class FirebaseService {
         _ => 'firebaseErrorRegisterError'.tr(),
       };
 
-      logFirebaseAuthFailure('Email registration failed', error.code);
+      logFirebaseAuthFailure('Email registration failed', error, stackTrace);
       return (
         user: null,
         error: errorMessage,
       );
-    } catch (error) {
-      log(
-        'Email registration failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Email registration failed',
       );
       return (
         user: null,
@@ -781,7 +790,13 @@ class FirebaseService {
   }
 
   /// Logs provider codes and keeps ordinary credential rejections in debug builds
-  void logFirebaseAuthFailure(String message, String code) {
+  void logFirebaseAuthFailure(String message, FirebaseAuthException error, StackTrace stackTrace) {
+    final code = error.code;
+    reportFirebaseOperationFailure(
+      error: error,
+      stackTrace: stackTrace,
+      reason: message,
+    );
     final isCredentialRejection = switch (code) {
       'invalid-email' || 'user-not-found' || 'wrong-password' || 'invalid-credential' || 'email-already-in-use' || 'weak-password' => true,
       _ => false,
@@ -849,6 +864,7 @@ class FirebaseService {
     String? email,
     String? password,
   }) async {
+    var stage = 'reauthenticate';
     unawaited(
       analytics.record(
         AnalyticsEvent.accountDeletionStarted,
@@ -909,22 +925,30 @@ class FirebaseService {
       final appleAuthorizationCode = reauthenticationResult.appleAuthorizationCode;
 
       if (appleAuthorizationCode != null) {
+        stage = 'revoke_apple_token';
         await auth.revokeTokenWithAuthorizationCode(
           appleAuthorizationCode,
         );
       }
 
       if (provider == AuthProvider.google) {
+        stage = 'disconnect_google';
         await googleSignIn.disconnect();
       }
 
+      stage = 'delete_account';
       await user.delete();
       unawaited(
         analytics.logDeleteAccount(),
       );
 
       return true;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportFirebaseOperationFailure(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'account_deletion_$stage',
+      );
       unawaited(
         analytics.record(
           AnalyticsEvent.accountDeletionFailed,
@@ -1090,10 +1114,11 @@ class FirebaseService {
       );
 
       return true;
-    } catch (error) {
-      log(
-        'Writing user metrics failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Writing user metrics failed',
       );
       return false;
     }
@@ -1153,10 +1178,11 @@ class FirebaseService {
       );
 
       return true;
-    } catch (error) {
-      log(
-        'Updating user metrics failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Updating user metrics failed',
       );
       return false;
     }
@@ -1347,10 +1373,11 @@ class FirebaseService {
       await collection.doc(newMeal.id).set(mealData);
 
       return true;
-    } catch (error) {
-      log(
-        'Writing meal failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Writing meal failed',
       );
       return false;
     }
@@ -1377,10 +1404,11 @@ class FirebaseService {
       });
 
       return true;
-    } catch (error) {
-      log(
-        'Writing AI meal request failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Writing AI meal request failed',
       );
       return false;
     }
@@ -1442,6 +1470,14 @@ class FirebaseService {
       });
       final data = response.data;
 
+      if (data is! Map || data['success'] is! bool) {
+        reportHandledError(
+          error: const FormatException(),
+          stackTrace: StackTrace.current,
+          reason: 'invalid_ai_meal_response',
+        );
+      }
+
       if (data is Map && data['success'] == true) {
         final metrics = switch (data['metrics']) {
           {
@@ -1481,7 +1517,7 @@ class FirebaseService {
         failure: failure,
         metrics: null,
       );
-    } on FirebaseFunctionsException catch (error) {
+    } on FirebaseFunctionsException catch (error, stackTrace) {
       if (error.code == 'resource-exhausted') {
         final quotaError = AIMealQuotaError.tryParse(error.details);
 
@@ -1490,6 +1526,11 @@ class FirebaseService {
         }
       }
 
+      reportFirebaseOperationFailure(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'generate_ai_meal',
+      );
       log(
         'AI meal callable request failed',
         error: error.code,
@@ -1500,7 +1541,12 @@ class FirebaseService {
         failure: MealSaveFailure.request,
         metrics: null,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportFirebaseOperationFailure(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'generate_ai_meal',
+      );
       log(
         'AI meal callable request failed',
         error: error.runtimeType,
@@ -1528,10 +1574,11 @@ class FirebaseService {
       await collection.doc(newMeal.id).set(newMeal.toLocalizedMap());
 
       return true;
-    } catch (error) {
-      log(
-        'Updating meal failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Updating meal failed',
       );
       return false;
     }
@@ -1556,10 +1603,11 @@ class FirebaseService {
       });
 
       return true;
-    } catch (error) {
-      log(
-        'Updating meal date and time failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Updating meal date and time failed',
       );
       return false;
     }
@@ -1591,10 +1639,11 @@ class FirebaseService {
       }
 
       return true;
-    } catch (error) {
-      log(
-        'Deleting meal failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Deleting meal failed',
       );
       return false;
     }
@@ -1677,16 +1726,18 @@ class FirebaseService {
         imageStoragePath: storagePath,
         imageBlurHash: await imageBlurHashFuture,
       );
-    } on FirebaseException catch (error) {
-      log(
-        'Uploading meal image failed',
+    } on FirebaseException catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Uploading meal image failed',
       );
       return null;
-    } catch (error) {
-      log(
-        'Uploading meal image failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Uploading meal image failed',
       );
       return null;
     }
@@ -1813,10 +1864,11 @@ class FirebaseService {
       await collection.doc(newWeightTrack.id).set(newWeightTrack.toMap());
 
       return true;
-    } catch (error) {
-      log(
-        'Writing weight track failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Writing weight track failed',
       );
       return false;
     }
@@ -1836,10 +1888,11 @@ class FirebaseService {
       await collection.doc(newWeightTrack.id).set(newWeightTrack.toMap());
 
       return true;
-    } catch (error) {
-      log(
-        'Updating weight track failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Updating weight track failed',
       );
       return false;
     }
@@ -1859,12 +1912,63 @@ class FirebaseService {
       await collection.doc(weightTrack.id).delete();
 
       return true;
-    } catch (error) {
-      log(
-        'Deleting weight track failed',
+    } catch (error, stackTrace) {
+      logAndReportFirebaseFailure(
         error: error,
+        stackTrace: stackTrace,
+        message: 'Deleting weight track failed',
       );
       return false;
     }
+  }
+
+  /// Logs an operation failure and reports it when it indicates an unexpected problem
+  void logAndReportFirebaseFailure({
+    required Object error,
+    required StackTrace stackTrace,
+    required String message,
+  }) {
+    log(
+      message,
+      error: error,
+    );
+    reportFirebaseOperationFailure(
+      error: error,
+      stackTrace: stackTrace,
+      reason: message,
+    );
+  }
+
+  /// Reports app errors and SDK codes that indicate a backend or configuration problem
+  void reportFirebaseOperationFailure({
+    required Object error,
+    required StackTrace stackTrace,
+    required String reason,
+  }) {
+    if (error is SocketException || error is TimeoutException) {
+      return;
+    }
+
+    final code = error is FirebaseException ? error.code : null;
+    const reportableCodes = {
+      'data-loss',
+      'failed-precondition',
+      'internal',
+      'internal-error',
+      'operation-not-allowed',
+      'permission-denied',
+      'unauthorized',
+    };
+
+    if (code != null && !reportableCodes.contains(code)) {
+      return;
+    }
+
+    reportHandledError(
+      error: error,
+      stackTrace: stackTrace,
+      reason: reason,
+      information: [if (code != null) 'firebase_code=$code'],
+    );
   }
 }

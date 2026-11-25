@@ -14,6 +14,7 @@ import '../models/notification/notification_payload.dart';
 import '../models/notification/notification_settings.dart';
 import '../util/analytics.dart';
 import '../util/app_version.dart';
+import '../util/crashlytics.dart';
 import '../util/device_info.dart';
 import '../util/timezone.dart';
 import 'analytics_service.dart';
@@ -117,6 +118,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
   String? registrationLocale;
 
   int registrationRetryAttempt = 0;
+  bool registrationFailureReported = false;
   bool announcementTopicsReconciled = false;
   bool announcementTopicLoaded = false;
 
@@ -165,7 +167,12 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         handleUnregistration,
         onError: handleUnregistrationError,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'subscribe_to_fcm_registrations',
+      );
       log(
         'Subscribing to FCM registrations failed',
         error: notificationErrorCode(error),
@@ -279,7 +286,12 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         handleMessageInteraction,
         onError: handleMessageStreamError,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'subscribe_to_opened_fcm_messages',
+      );
       log(
         'Subscribing to opened FCM messages failed',
         error: notificationErrorCode(error),
@@ -312,7 +324,12 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
         badge: useNativePresentation,
         sound: useNativePresentation,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'configure_fcm_foreground_presentation',
+      );
       log(
         'Configuring FCM foreground presentation failed',
         error: notificationErrorCode(error),
@@ -519,14 +536,27 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
 
       activeUserId = user.uid;
       registrationRetryAttempt = 0;
+      registrationFailureReported = false;
       registrationRetryTimer?.cancel();
 
       await synchronizeAnnouncementTopics(locale);
-    } catch (error) {
+    } catch (error, stackTrace) {
       log(
         'Synchronizing the notification registration failed',
         error: notificationErrorCode(error),
       );
+      if (!registrationFailureReported && registrationRetryAttempt >= registrationRetryDelays.length) {
+        registrationFailureReported = true;
+        reportHandledError(
+          error: error,
+          stackTrace: stackTrace,
+          reason: 'notification_registration_repeated_failure',
+          information: [
+            'code=${notificationErrorCode(error)}',
+            'retry_count=$registrationRetryAttempt',
+          ],
+        );
+      }
       scheduleRegistrationRetry();
     }
   }
@@ -572,6 +602,7 @@ class NotificationService extends ValueNotifier<AuthorizationStatus> with Widget
     activeUserId = null;
     registrationRetryTimer?.cancel();
     registrationRetryAttempt = 0;
+    registrationFailureReported = false;
 
     await registrationSynchronization;
     await notificationSettingsSubscription?.cancel();

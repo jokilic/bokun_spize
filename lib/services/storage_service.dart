@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../screens/account/account_controller.dart';
+import '../util/crashlytics.dart';
 import '../util/typedefs.dart';
 
 class StorageService extends ValueNotifier<({CalendarDays calendarDays, MealOpenedNumbers mealOpenedNumbers, SettingsValues settingsValues})> {
@@ -61,7 +62,12 @@ class StorageService extends ValueNotifier<({CalendarDays calendarDays, MealOpen
                 .firstOrNull ??
             defaultTheme,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'initialize_preferences',
+      );
       log(
         'StorageService initialization failed',
         error: error,

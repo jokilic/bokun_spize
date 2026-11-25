@@ -61,7 +61,10 @@ class MealsAppBar extends StatelessWidget {
           /// ICON
           ///
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              print('Yoyo error happening');
+              throw Exception('some message here');
+            },
             icon: const PhosphorIcon(
               PhosphorIconsBold.bowlFood,
               size: 24,

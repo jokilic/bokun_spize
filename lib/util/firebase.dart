@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/foundation.dart';
 
 import '../firebase_options.dart';
+import 'crashlytics.dart';
 
 /// Initializes [Firebase]
 Future<void> initializeFirebase() async {
@@ -24,7 +25,12 @@ Future<void> initializeFirebaseAppCheck() async {
       providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
       providerApple: kDebugMode ? const AppleDebugProvider() : const AppleDeviceCheckProvider(),
     );
-  } catch (error) {
+  } catch (error, stackTrace) {
+    reportHandledError(
+      error: error,
+      stackTrace: stackTrace,
+      reason: 'initialize_app_check',
+    );
     log(
       'Firebase App Check initialization failed',
       error: error,

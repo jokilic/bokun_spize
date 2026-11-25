@@ -16,6 +16,7 @@ import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/extensions.dart';
 import '../../util/analytics.dart';
+import '../../util/crashlytics.dart';
 import '../../util/date_time.dart';
 import '../../util/null_state.dart';
 import '../../util/parse.dart';
@@ -344,7 +345,12 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
 
         return false;
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'prepare_ai_meal_save',
+      );
       log(
         'Adding AI meal failed',
         error: error,
@@ -578,7 +584,12 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         );
       }
       return mealUpdated && outcome.success;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'save_manual_meal',
+      );
       recordFailure(
         MealSaveFailure.persistence,
       );
@@ -667,7 +678,12 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       }
 
       return mealUpdated;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      reportHandledError(
+        error: error,
+        stackTrace: stackTrace,
+        reason: 'save_manual_meal_edit',
+      );
       log(
         'Updating manual meal failed',
         error: error,
