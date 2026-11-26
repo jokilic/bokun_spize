@@ -27,12 +27,6 @@ import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 
 import { getAIIntegerSetting } from "./ai-config.ts";
-import {
-  ProjectAIQuotaExceeded,
-  reserveProjectAICall,
-  reserveProjectAICallInTransaction,
-  UTC_DAY_MILLIS,
-} from "./project-ai-quota.ts";
 
 /** Localized text generated once for each supported app language */
 export interface GeneratedLocalizedText {
@@ -133,8 +127,7 @@ export type AIMealGenerationClaim =
   | { status: "busy" }
   | { status: "not-ready" }
   | { status: "invalid-input" }
-  | { status: "rate-limited"; retryAtMillis: number; message: string }
-  | { status: "project-rate-limited"; retryAtMillis: number; message: string };
+  | { status: "rate-limited"; retryAtMillis: number; message: string };
 
 /** Uploaded image information persisted with a generated meal */
 export interface UploadedMealImage {
@@ -192,6 +185,7 @@ export const AI_MEAL_GENERATION_LEASE_DURATION_MS = 10 * 60 * 1000;
 export const AI_MEAL_MINUTE_LIMIT = 3;
 export const AI_MEAL_DAILY_LIMIT = 25;
 export const AI_MEAL_ROLLING_WINDOW_MS = 60 * 1000;
+export const UTC_DAY_MILLIS = 24 * 60 * 60 * 1000;
 
 /** Maximum time before an interrupted callable request is marked failed */
 export const AI_MEAL_REQUEST_TIMEOUT_MS = 15 * 60 * 1000;
@@ -549,11 +543,10 @@ export async function generateMealWithModel(
   }
 }
 
-/** Uses the meal claim's first slot and reserves another only for a transient fallback */
+/** Retries once with the fallback model after a transient provider failure */
 export async function generateMeal(
   input: MealGenerationInput,
   models: Pick<GoogleGenAI["models"], "generateContent"> = createMealAIClient().models,
-  reserveFallback: () => Promise<void> = reserveProjectAICall,
 ): Promise<GeneratedMealResult> {
   try {
     return await generateMealWithModel(models, MEAL_AI_PRIMARY_MODEL, input);
@@ -566,7 +559,6 @@ export async function generateMeal(
   // The alternate model can mistake a caption for food in an unrelated photo
   const fallbackModel = input.imageBase64 === null ? MEAL_AI_TEXT_FALLBACK_MODEL : MEAL_AI_PRIMARY_MODEL;
   await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 500));
-  await reserveFallback();
   return generateMealWithModel(models, fallbackModel, input, 2);
 }
 
@@ -652,13 +644,6 @@ export function getMealGenerationError(languageCode: string): string {
     "Generiranje obroka nije uspjelo, pokušaj ponovno";
 }
 
-/** Returns the localized error shown when the shared Gemini allowance runs out */
-export function getProjectAIUnavailableMessage(languageCode: string): string {
-  return languageCode === "en" ?
-    "Temporarily unavailable, try later" :
-    "Privremeno nedostupno, pokušaj kasnije";
-}
-
 /** Returns a localized message when the photo contains no recognizable food or drink */
 export function getNoFoodInImageError(languageCode: string): string {
   return languageCode === "en" ?
@@ -716,7 +701,7 @@ export function getAIMealQuota(attempts: Timestamp[], nowMillis: number): {
   };
 }
 
-/** Claims one meal and reserves both the user quota and the first Gemini call */
+/** Claims one meal and records an attempt against the user's quota */
 export async function claimPendingAIMeal(
   mealReference: DocumentReference<DocumentData>,
   leaseId: string,
@@ -787,17 +772,6 @@ export async function claimPendingAIMeal(
       return {
         status: "rate-limited",
         retryAtMillis: quota.retryAtMillis,
-        message,
-      };
-    }
-
-    const projectRetryAtMillis = await reserveProjectAICallInTransaction(mealReference.firestore, transaction);
-    if (projectRetryAtMillis !== null) {
-      const message = getProjectAIUnavailableMessage(languageCode);
-      rejectPendingAIMeal(transaction, mealReference, claimSnapshot.exists ? claimReference : null, message);
-      return {
-        status: "project-rate-limited",
-        retryAtMillis: projectRetryAtMillis,
         message,
       };
     }
@@ -1019,7 +993,7 @@ export async function processCallableAIMeal(
     throw new HttpsError("failed-precondition", "Meal is not ready for generation");
   }
 
-  if (claim.status === "rate-limited" || claim.status === "project-rate-limited") {
+  if (claim.status === "rate-limited") {
     throw new HttpsError("resource-exhausted", claim.message, {
       retryAtMillis: claim.retryAtMillis,
       reason: claim.status,
@@ -1057,8 +1031,7 @@ export async function processCallableAIMeal(
 
     const failure = generationOutcome.reason;
     const noFoodInImage = failure instanceof NoFoodInImageError;
-    const projectQuotaExceeded = failure instanceof ProjectAIQuotaExceeded;
-    if (!noFoodInImage && !projectQuotaExceeded) {
+    if (!noFoodInImage) {
       logger.write({
         severity: "ERROR",
         message: "AI meal generation failed",
@@ -1068,9 +1041,9 @@ export async function processCallableAIMeal(
       });
     }
 
-    const message = projectQuotaExceeded ? getProjectAIUnavailableMessage(input.languageCode) :
-      noFoodInImage ? getNoFoodInImageError(input.languageCode) :
-        getMealGenerationError(input.languageCode);
+    const message = noFoodInImage ?
+      getNoFoodInImageError(input.languageCode) :
+      getMealGenerationError(input.languageCode);
     await finalizePendingAIMeal(mealReference, leaseId, {
       isLoading: false,
       errors: [message],
@@ -1078,12 +1051,6 @@ export async function processCallableAIMeal(
       aiGenerationRequestedAt: FieldValue.delete(),
     });
 
-    if (projectQuotaExceeded) {
-      throw new HttpsError("resource-exhausted", message, {
-        retryAtMillis: failure.retryAtMillis,
-        reason: "project-rate-limited",
-      });
-    }
     return { success: false };
   }
 

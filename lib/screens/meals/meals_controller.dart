@@ -271,10 +271,6 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         return;
       }
 
-      final message = switch (error.reason) {
-        AIMealQuotaReason.project => 'aiProjectLimitReached',
-        AIMealQuotaReason.personal => 'aiMealLimitReached',
-      };
       final retryAt = getDateString(
         date: error.retryAt.toLocal(),
         dateFormat: 'dd MMM, HH:mm',
@@ -284,7 +280,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
 
       showSnackbar(
         context,
-        text: message.tr(
+        text: 'aiMealLimitReached'.tr(
           args: [retryAt],
         ),
         icon: PhosphorIconsBold.warningOctagon,

@@ -46,7 +46,6 @@
     "nutritionalValues": "Nutritional values",
     "mealAddFailure": "Couldn't add the meal",
     "aiMealLimitReached": "Limit reached. Try again at {}",
-    "aiProjectLimitReached": "Temporarily unavailable. Try again at {}",
     "mealUpdateFailure": "Couldn't save the meal changes",
     "mealDeleteFailure": "Couldn't delete the meal",
     "weightAddFailure": "Couldn't log the weight",

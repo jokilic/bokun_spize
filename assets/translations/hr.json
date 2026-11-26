@@ -46,7 +46,6 @@
     "nutritionalValues": "Nutritivne vrijednosti",
     "mealAddFailure": "Obrok nije moguće dodati",
     "aiMealLimitReached": "Dosegnuto je ograničenje. Pokušaj ponovno u {}",
-    "aiProjectLimitReached": "Privremeno nedostupno. Pokušaj ponovno u {}",
     "mealUpdateFailure": "Promjene obroka nije moguće spremiti",
     "mealDeleteFailure": "Obrok nije moguće izbrisati",
     "weightAddFailure": "Nije moguće zabilježiti težinu",

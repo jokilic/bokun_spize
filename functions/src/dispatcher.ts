@@ -41,7 +41,6 @@ import {
   buildAndStoreDailySummary,
   getDailySummaryPeriod,
 } from "./daily-summary";
-import {ProjectAIQuotaExceeded} from "./project-ai-quota";
 import {
   getDate,
   getDispatchId,
@@ -51,7 +50,7 @@ import {
 } from "./scheduling";
 
 /** Reason a reserved notification is completed without contacting FCM */
-export type DispatchSkipReason = "weight_recorded" | "stale" | "ai_quota_exhausted";
+export type DispatchSkipReason = "weight_recorded" | "stale";
 
 /** Immutable context created when a due occurrence is successfully reserved */
 export interface ReservedDispatch {
@@ -115,7 +114,6 @@ export interface NotificationDispatchActivity {
   failedDispatches: number;
   failedDeviceCleanups: number;
   failedQueries: number;
-  quotaSkippedSummaries: number;
 }
 
 /** Starts an empty set of notification dispatch counts */
@@ -126,7 +124,6 @@ export function createNotificationDispatchActivity(): NotificationDispatchActivi
     failedDispatches: 0,
     failedDeviceCleanups: 0,
     failedQueries: 0,
-    quotaSkippedSummaries: 0,
   };
 }
 
@@ -748,24 +745,6 @@ export async function processDueSettings(
     const failedDeviceCleanups = await deleteInvalidDevices(result.invalidDeviceReferences);
     activity.failedDeviceCleanups += failedDeviceCleanups;
   } catch (error) {
-    if (dispatch !== null && error instanceof ProjectAIQuotaExceeded) {
-      activity.quotaSkippedSummaries += 1;
-      try {
-        await completeSkippedDispatch(dispatch, "ai_quota_exhausted");
-        return;
-      } catch (writeError) {
-        activity.failedDispatches += 1;
-        logger.write({
-          severity: "ERROR",
-          message: "Recording notification quota skip failed",
-          errorCode: getDeliveryErrorCode(writeError),
-          type: definition.type,
-          settingsPath: settingsDocument.ref.path,
-        });
-        throw writeError;
-      }
-    }
-
     activity.failedDispatches += 1;
     logger.write({
       severity: "ERROR",
@@ -858,9 +837,8 @@ export async function dispatchDueNotifications(
     activity.failedDeviceDeliveries > 0 ||
     activity.failedDispatches > 0 ||
     activity.failedDeviceCleanups > 0 ||
-    activity.failedQueries > 0 ||
-    activity.quotaSkippedSummaries > 0
+    activity.failedQueries > 0
   ) {
-    logger.warn("Notification dispatch run completed with failures or quota skips", {...activity});
+    logger.warn("Notification dispatch run completed with failures", {...activity});
   }
 }

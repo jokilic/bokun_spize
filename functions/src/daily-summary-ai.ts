@@ -6,13 +6,11 @@ import { ApiError, GoogleGenAI } from "@google/genai";
 import { getApp } from "firebase-admin/app";
 import {
   DocumentData,
-  type Firestore,
   Timestamp,
 } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 
 import {getAIIntegerSetting} from "./ai-config";
-import {reserveProjectAICall} from "./project-ai-quota";
 
 /** Complete Firestore meal record supplied to Gemini */
 export interface DailySummaryMeal {
@@ -176,7 +174,6 @@ export function getDailySummaryProjectId(): string | undefined {
 /** Generates localized notification bodies and reports the successful fallback model */
 export async function generateDailySummaryBodies(
   meals: DailySummaryMeal[],
-  firestore: Firestore,
 ): Promise<GeneratedDailySummaryResult> {
   const project = getDailySummaryProjectId();
 
@@ -194,8 +191,6 @@ export async function generateDailySummaryBodies(
   const failures: string[] = [];
 
   for (const model of AI_MODEL_NAMES) {
-    await reserveProjectAICall(firestore);
-
     let stage = "request";
     try {
       const response = await ai.models.generateContent({

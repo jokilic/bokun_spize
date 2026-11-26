@@ -1519,7 +1519,9 @@ class FirebaseService {
       );
     } on FirebaseFunctionsException catch (error, stackTrace) {
       if (error.code == 'resource-exhausted') {
-        final quotaError = AIMealQuotaError.tryParse(error.details);
+        final quotaError = AIMealQuotaError.tryParse(
+          error.details,
+        );
 
         if (quotaError != null) {
           throw quotaError;
