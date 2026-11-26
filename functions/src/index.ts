@@ -5,6 +5,7 @@
  */
 
 import {initializeApp} from "firebase-admin/app";
+import {getAuth} from "firebase-admin/auth";
 import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
 import {getStorage} from "firebase-admin/storage";
@@ -13,6 +14,12 @@ import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
+import {
+  ACCOUNT_DELETION_JOBS,
+  enqueueAccountDeletion,
+  hasRecentAuthentication,
+  resumeAccountDeletions,
+} from "./account-deletion";
 import {dispatchDueNotifications} from "./dispatcher";
 import {synchronizeNotificationSchedule} from "./schedule-sync";
 import {
@@ -23,7 +30,7 @@ import {
 // Use Application Default Credentials supplied by the Cloud Functions runtime
 initializeApp();
 
-/** Recursively removes private data after a Firebase Auth account is deleted */
+/** Queues cleanup for older clients and accounts deleted outside the app */
 // Firebase Auth deletion is first generation and requires a first-generation region
 export const cleanupDeletedUser = region("europe-west1")
   .runWith({
@@ -32,18 +39,68 @@ export const cleanupDeletedUser = region("europe-west1")
     failurePolicy: true,
   })
   .auth.user().onDelete(async (user) => {
-    const firestore = getFirestore();
-    const userDocument = firestore.collection("users").doc(user.uid);
-    const userStoragePrefix = `users/${user.uid}/`;
-
-    // Both operations are idempotent so failed event deliveries can retry safely
-    await Promise.all([
-      firestore.recursiveDelete(userDocument),
-      getStorage().bucket(APP_STORAGE_BUCKET).deleteFiles({
-        prefix: userStoragePrefix,
-      }),
-    ]);
+    await enqueueAccountDeletion(getFirestore(), user.uid, true);
   });
+
+/** Accepts a deletion request after client-side provider revocation */
+export const requestAccountDeletion = onCall(
+  {region: "europe-west8", enforceAppCheck: true},
+  async (request) => {
+    const auth = request.auth;
+    if (auth === undefined) {
+      throw new HttpsError("unauthenticated", "Authentication is required");
+    }
+    if (request.data?.expectedUid !== auth.uid) {
+      throw new HttpsError("permission-denied", "The signed-in account changed");
+    }
+
+    const firestore = getFirestore();
+    const existingJob = await firestore.collection(ACCOUNT_DELETION_JOBS).doc(auth.uid).get();
+    if (existingJob.exists) {
+      return {accepted: true};
+    }
+    if (!hasRecentAuthentication(auth.token.auth_time)) {
+      throw new HttpsError("failed-precondition", "Sign in again before deleting your account");
+    }
+
+    // Check revocation before creating a job from a still-unexpired ID token
+    try {
+      await getAuth().verifyIdToken(auth.rawToken, true);
+    } catch (error) {
+      if (error instanceof Error && "code" in error &&
+        (error.code === "auth/id-token-revoked" || error.code === "auth/id-token-expired" ||
+          error.code === "auth/user-not-found" || error.code === "auth/user-disabled")) {
+        throw new HttpsError("unauthenticated", "Sign in again before deleting your account");
+      }
+      throw error;
+    }
+
+    await enqueueAccountDeletion(firestore, auth.uid);
+    return {accepted: true};
+  },
+);
+
+/** Resumes queued deletion work without requiring the client's token or connection */
+export const resumeQueuedAccountDeletions = onSchedule(
+  {
+    schedule: "every 5 minutes",
+    region: "europe-west1",
+    memory: "512MiB",
+    timeoutSeconds: 540,
+    maxInstances: 1,
+    concurrency: 1,
+  },
+  async () => {
+    const bucket = getStorage().bucket(APP_STORAGE_BUCKET);
+    await resumeAccountDeletions(getFirestore(), getAuth(), async (userId) => {
+      await bucket.deleteFiles({
+        prefix: `users/${userId}/`,
+        versions: true,
+        force: true,
+      });
+    });
+  },
+);
 
 /** Generates one authenticated meal while uploading its optional image concurrently */
 export const generateAIMeal = onCall(

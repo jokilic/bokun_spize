@@ -26,6 +26,7 @@ import { getStorage } from "firebase-admin/storage";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 
+import { ACCOUNT_DELETION_JOBS } from "./account-deletion.ts";
 import { getAIIntegerSetting } from "./ai-config.ts";
 
 /** Localized text generated once for each supported app language */
@@ -709,9 +710,15 @@ export async function claimPendingAIMeal(
   hasImage: boolean,
 ): Promise<AIMealGenerationClaim> {
   const claimReference = getAIMealGenerationClaimReference(mealReference);
-  const quotaReference = claimReference.parent.parent!.collection("aiUsage").doc("mealGeneration");
+  const userReference = claimReference.parent.parent!;
+  const quotaReference = userReference.collection("aiUsage").doc("mealGeneration");
+  const deletionReference = mealReference.firestore.collection(ACCOUNT_DELETION_JOBS).doc(userReference.id);
 
   return mealReference.firestore.runTransaction<AIMealGenerationClaim>(async (transaction) => {
+    if ((await transaction.get(deletionReference)).exists) {
+      return {status: "not-ready"};
+    }
+
     const mealSnapshot = await transaction.get(mealReference);
     const mealData = mealSnapshot.data();
 

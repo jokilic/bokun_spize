@@ -83,6 +83,8 @@ We may share Your personal information in the following situations:
 ## Retention of Your Personal Data
 The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use Your Personal Data to the extent necessary to comply with our legal obligations (for example, if we are required to retain your data to comply with applicable laws), resolve disputes, and enforce our legal agreements and policies.
 
+We keep contact messages while your account is active unless our support team deletes them sooner. When you delete your account, we delete the contact messages associated with it, including their text, email address, and account identifier, from our live systems.
+
 The Company will also retain Usage Data for internal analysis purposes. Usage Data is generally retained for a shorter period of time, except when this data is used to strengthen the security or to improve the functionality of Our Service, or We are legally obligated to retain this data for longer time periods.
 
 ## Transfer of Your Personal Data

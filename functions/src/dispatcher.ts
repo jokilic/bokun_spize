@@ -25,6 +25,7 @@ import {
 } from "firebase-admin/messaging";
 import * as logger from "firebase-functions/logger";
 
+import {ACCOUNT_DELETION_JOBS} from "./account-deletion";
 import {
   DEVICE_ACTIVE_DAYS,
   DUE_QUERY_LIMIT,
@@ -243,6 +244,10 @@ export async function reserveDueNotification(
 
     const timezone = typeof settings.timezone === "string" ? settings.timezone : "UTC";
     const userReference = getUserReference(settingsReference);
+    const deletionReference = firestore.collection(ACCOUNT_DELETION_JOBS).doc(userReference.id);
+    if ((await transaction.get(deletionReference)).exists) {
+      return null;
+    }
     const nextAt = getNextOccurrence(now, timezone, scheduledDefinition);
 
     // One document per logical occurrence acts as the durable idempotency record
@@ -719,6 +724,9 @@ export async function processDueSettings(
         userReference,
         period,
       );
+      if (notification === null) {
+        return;
+      }
 
       // Generated bodies replace fallback copy while titles remain source-controlled
       dispatch.copy = {
@@ -734,6 +742,9 @@ export async function processDueSettings(
     }
 
     stage = "send";
+    if ((await firestore.collection(ACCOUNT_DELETION_JOBS).doc(dispatch.userId).get()).exists) {
+      return;
+    }
     activity.attemptedDeviceDeliveries += devices.length;
     const result = await sendReservedNotification(messaging, dispatch, devices);
     activity.failedDeviceDeliveries += result.failureCount;

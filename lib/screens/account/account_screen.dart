@@ -100,7 +100,7 @@ class _AccountScreenState extends State<AccountScreen> {
       () => isDeletingAccount = true,
     );
 
-    var isDeleted = false;
+    var isDeletionRequested = false;
 
     try {
       await WidgetsBinding.instance.endOfFrame;
@@ -110,7 +110,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
       final firebase = getIt.get<FirebaseService>();
 
-      isDeleted = await firebase.deleteUser(
+      isDeletionRequested = await firebase.deleteUser(
         email: firebase.userEmail,
         password: password,
       );
@@ -121,7 +121,7 @@ class _AccountScreenState extends State<AccountScreen> {
       );
     }
 
-    if (isDeleted) {
+    if (isDeletionRequested) {
       await cleanUpAfterSignOut();
     } else if (mounted) {
       setState(

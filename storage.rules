@@ -3,7 +3,9 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     function isOwner(userId) {
-      return request.auth != null && request.auth.uid == userId;
+      return request.auth != null
+        && request.auth.uid == userId
+        && !firestore.exists(/databases/(default)/documents/accountDeletionJobs/$(userId));
     }
 
     function isSupportedMealImage(fileName) {

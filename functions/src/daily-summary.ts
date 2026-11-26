@@ -9,6 +9,7 @@ import {
 } from "firebase-admin/firestore";
 import {DateTime} from "luxon";
 
+import {ACCOUNT_DELETION_JOBS} from "./account-deletion";
 import {
   DAILY_SUMMARY_MAX_FOODS_PER_MEAL,
   DAILY_SUMMARY_MAX_NAME_LENGTH,
@@ -196,7 +197,7 @@ export function buildDailySummaryNotification(
 export async function buildAndStoreDailySummary(
   userReference: DocumentReference<DocumentData>,
   period: DailySummaryPeriod,
-): Promise<DailySummaryNotification> {
+): Promise<DailySummaryNotification | null> {
   const start = Timestamp.fromDate(period.start);
   const end = Timestamp.fromDate(period.end);
   const mealSnapshot = await userReference
@@ -222,7 +223,15 @@ export async function buildAndStoreDailySummary(
     methodOfCreation: generatedSummary.modelName,
   };
 
-  await userReference.collection("dailySummaries").doc(period.summaryKey).set(summary);
-
-  return notification;
+  const firestore = userReference.firestore;
+  const deletionReference = firestore.collection(ACCOUNT_DELETION_JOBS).doc(userReference.id);
+  const summaryReference = userReference.collection("dailySummaries").doc(period.summaryKey);
+  return firestore.runTransaction(async (transaction) => {
+    // Generation may finish after an account deletion has been accepted
+    if ((await transaction.get(deletionReference)).exists) {
+      return null;
+    }
+    transaction.set(summaryReference, summary);
+    return notification;
+  });
 }

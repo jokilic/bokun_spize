@@ -858,7 +858,7 @@ class FirebaseService {
     });
   }
 
-  /// Deletes the current user's data and Firebase account
+  /// Requests durable deletion of the current user's account and signs out locally
   /// Email users must provide [email] and [password] for reauthentication
   Future<bool> deleteUser({
     String? email,
@@ -922,6 +922,9 @@ class FirebaseService {
         return false;
       }
 
+      stage = 'refresh_token';
+      await user.getIdToken(true);
+
       final appleAuthorizationCode = reauthenticationResult.appleAuthorizationCode;
 
       if (appleAuthorizationCode != null) {
@@ -936,11 +939,26 @@ class FirebaseService {
         await googleSignIn.disconnect();
       }
 
-      stage = 'delete_account';
-      await user.delete();
+      stage = 'request_deletion';
+      await functions.httpsCallable('requestAccountDeletion').call({
+        'expectedUid': user.uid,
+      });
       unawaited(
         analytics.logDeleteAccount(),
       );
+
+      // The backend owns the job once the callable acknowledges it
+      if (auth.currentUser?.uid == user.uid) {
+        try {
+          await auth.signOut();
+        } catch (error, stackTrace) {
+          reportFirebaseOperationFailure(
+            error: error,
+            stackTrace: stackTrace,
+            reason: 'account_deletion_sign_out',
+          );
+        }
+      }
 
       return true;
     } catch (error, stackTrace) {
