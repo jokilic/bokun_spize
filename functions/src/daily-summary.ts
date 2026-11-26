@@ -10,7 +10,13 @@ import {
 import {DateTime} from "luxon";
 
 import {
+  DAILY_SUMMARY_MAX_FOODS_PER_MEAL,
+  DAILY_SUMMARY_MAX_NAME_LENGTH,
+  DAILY_SUMMARY_MAX_UNIT_LENGTH,
+  DailySummaryFood,
+  DailySummaryLabel,
   DailySummaryMeal,
+  DailySummaryNutrition,
   GeneratedDailySummaryBodies,
   generateDailySummaryBodies,
 } from "./daily-summary-ai";
@@ -62,6 +68,101 @@ export function isCompletedDailySummaryMeal(data: DocumentData): boolean {
     hasMealName;
 }
 
+/** Normalizes whitespace and bounds a single label without splitting a surrogate pair */
+export function normalizeDailySummaryLabel(value: unknown, maximumLength: number): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  return value.replace(/[\s\p{Cc}\p{Cf}]+/gu, " ")
+    .trim()
+    .slice(0, maximumLength)
+    .replace(/[\uD800-\uDFFF]/gu, "")
+    .trimEnd() || undefined;
+}
+
+/** Keeps a plain label or just the two supported locale keys */
+export function readDailySummaryLabel(value: unknown, maximumLength: number): DailySummaryLabel | undefined {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return normalizeDailySummaryLabel(value, maximumLength);
+  }
+
+  const localized = value as Record<string, unknown>;
+  const en = normalizeDailySummaryLabel(localized.en, maximumLength);
+  const hr = normalizeDailySummaryLabel(localized.hr, maximumLength);
+  return en === undefined && hr === undefined ? undefined : {en, hr};
+}
+
+/** Recognizes valid portion and nutrition values without coercing strings */
+export function isDailySummaryNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+/** Keeps the four meal nutrition values when the complete set is valid */
+export function readDailySummaryNutrition(value: unknown): DailySummaryNutrition | undefined {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const {calories, protein, carbs, fat} = value as Record<string, unknown>;
+  if (
+    !isDailySummaryNumber(calories) ||
+    !isDailySummaryNumber(protein) ||
+    !isDailySummaryNumber(carbs) ||
+    !isDailySummaryNumber(fat)
+  ) {
+    return undefined;
+  }
+
+  return {calories, protein, carbs, fat};
+}
+
+/** Keeps a named food and its valid portion fields */
+export function readDailySummaryFood(value: unknown): DailySummaryFood | undefined {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const food = value as Record<string, unknown>;
+  const name = readDailySummaryLabel(food.name, DAILY_SUMMARY_MAX_NAME_LENGTH);
+  if (name === undefined) {
+    return undefined;
+  }
+
+  return {
+    name,
+    quantity: isDailySummaryNumber(food.quantity) ? food.quantity : undefined,
+    unit: readDailySummaryLabel(food.unit, DAILY_SUMMARY_MAX_UNIT_LENGTH),
+  };
+}
+
+/** Projects a completed Firestore meal onto the summary allowlist */
+export function readDailySummaryMeal(data: DocumentData): DailySummaryMeal | undefined {
+  if (!isCompletedDailySummaryMeal(data)) {
+    return undefined;
+  }
+
+  const name = readDailySummaryLabel(data.name, DAILY_SUMMARY_MAX_NAME_LENGTH);
+  if (name === undefined) {
+    return undefined;
+  }
+
+  const foods: DailySummaryFood[] = [];
+  if (Array.isArray(data.foods)) {
+    for (const value of data.foods) {
+      const food = readDailySummaryFood(value);
+      if (food !== undefined) {
+        foods.push(food);
+      }
+      if (foods.length === DAILY_SUMMARY_MAX_FOODS_PER_MEAL) {
+        break;
+      }
+    }
+  }
+
+  return {name, foods, nutrition: readDailySummaryNutrition(data.nutrition)};
+}
+
 /** Resolves yesterday's exact local-day bounds for a summary occurrence */
 export function getDailySummaryPeriod(
   scheduledAt: Date,
@@ -103,16 +204,13 @@ export async function buildAndStoreDailySummary(
     .where("createdAt", ">=", start)
     .where("createdAt", "<", end)
     .orderBy("createdAt", "asc")
+    .select("name", "foods", "nutrition", "isLoading", "errors")
     .get();
-  const mealDocuments: DailySummaryMeal[] = mealSnapshot.docs
-    .filter((document) => isCompletedDailySummaryMeal(document.data()))
-    .map((document) => ({
-      documentId: document.id,
-      data: document.data(),
-    }));
-  const generatedSummary = await generateDailySummaryBodies(
-    mealDocuments,
-  );
+  const meals = mealSnapshot.docs.flatMap((document) => {
+    const meal = readDailySummaryMeal(document.data());
+    return meal === undefined ? [] : [meal];
+  });
+  const generatedSummary = await generateDailySummaryBodies(meals);
   const notification = buildDailySummaryNotification(
     generatedSummary.bodies,
   );
