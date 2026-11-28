@@ -9,6 +9,7 @@ import {
   hasRecentAuthentication,
   processAccountDeletion,
 } from "../src/account-deletion";
+import {AI_MEAL_QUOTA_DOCUMENT_ID} from "../src/meal-ai";
 
 /** Exercises the five-minute window against the original authentication time */
 it("requires recent authentication", () => {
@@ -34,7 +35,7 @@ describe.skipIf(process.env.FIRESTORE_EMULATOR_HOST === undefined)("account dele
     const job = firestore.collection(ACCOUNT_DELETION_JOBS).doc(userId);
     const user = firestore.collection("users").doc(userId);
     const nested = user.collection("mealGenerationClaims").doc("missing-parent").collection("leases").doc("orphan");
-    const quota = user.collection("aiUsage").doc("mealGeneration");
+    const quota = user.collection("mealGenerationClaims").doc(AI_MEAL_QUOTA_DOCUMENT_ID);
     const contact = firestore.collection("contactMessages").doc(userId);
     const unrelated = firestore.collection("contactMessages").doc(randomUUID());
     await Promise.all([

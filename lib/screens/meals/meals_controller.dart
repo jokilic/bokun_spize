@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../models/meal/ai_meal_quota_error.dart';
 import '../../models/meal/meal.dart';
+import '../../models/meal/meal_metadata.dart';
 import '../../services/analytics_service.dart';
 import '../../services/firebase_service.dart';
 import '../../services/storage_service.dart';
@@ -315,7 +316,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       id: newMealId,
       createdAt: result.dateTime!,
       originalText: words == null || words.isEmpty ? null : words,
-      methodOfCreation: 'ai',
+      metadata: createMealMetadata(MealCreationMethod.ai),
       isLoading: true,
     );
 
@@ -522,6 +523,10 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
           newMeal: passedMeal.copyWith(
             id: newMealId,
             createdAt: dateTime,
+            metadata: createMealMetadata(
+              MealCreationMethod.copied,
+              copiedFromMealId: passedMeal.id,
+            ),
           ),
           preserveLocalizedData: true,
         );
@@ -538,7 +543,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
       final loadingMeal = Meal(
         id: newMealId,
         createdAt: dateTime,
-        methodOfCreation: 'manual',
+        metadata: createMealMetadata(MealCreationMethod.manual),
         isLoading: true,
       );
 
@@ -620,10 +625,10 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
           result.imageFile == null &&
           result.imageStoragePath == passedMeal.imageStoragePath;
 
-      /// Update only the shared timestamp so localized `en` and `hr` data remains intact
+      /// Update the meal date and edit metadata while preserving localized text
       if (hasOnlyDateTimeChanges) {
         final mealUpdated = await firebase.updateMealDateTime(
-          mealId: passedMeal.id,
+          meal: passedMeal,
           createdAt: dateTime,
         );
 
@@ -651,6 +656,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
 
       final mealUpdated = await firebase.updateMeal(
         newMeal: outcome.meal,
+        isEdit: true,
       );
 
       if (mealUpdated) {
@@ -715,7 +721,7 @@ class MealsController extends ValueNotifier<({DateTime requestedDate, DateTime? 
         emoji: loadingMeal.emoji,
         color: loadingMeal.color,
         originalText: loadingMeal.originalText,
-        methodOfCreation: loadingMeal.methodOfCreation,
+        metadata: loadingMeal.metadata,
         name: result.name,
         nutrition: result.nutrition,
         foods: result.foods,

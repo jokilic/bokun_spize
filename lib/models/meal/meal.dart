@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../util/color.dart';
 import 'food.dart';
+import 'meal_metadata.dart';
 import 'nutrition.dart';
 
 class Meal {
@@ -20,13 +21,14 @@ class Meal {
   final List<String>? errors;
   final String? imageStoragePath;
   final String? imageBlurHash;
-  final String? methodOfCreation;
+  final MealMetadata metadata;
   final Map<String, dynamic>? localizedData;
 
   Meal({
     required this.id,
     required this.createdAt,
     required this.isLoading,
+    required this.metadata,
     this.originalText,
     this.name,
     this.emoji,
@@ -36,7 +38,6 @@ class Meal {
     this.errors,
     this.imageStoragePath,
     this.imageBlurHash,
-    this.methodOfCreation,
     this.localizedData,
   });
 
@@ -53,7 +54,7 @@ class Meal {
     List<String>? errors,
     String? imageStoragePath,
     String? imageBlurHash,
-    String? methodOfCreation,
+    MealMetadata? metadata,
     Map<String, dynamic>? localizedData,
   }) => Meal(
     id: id ?? this.id,
@@ -68,7 +69,7 @@ class Meal {
     errors: errors ?? this.errors,
     imageStoragePath: imageStoragePath ?? this.imageStoragePath,
     imageBlurHash: imageBlurHash ?? this.imageBlurHash,
-    methodOfCreation: methodOfCreation ?? this.methodOfCreation,
+    metadata: metadata ?? this.metadata,
     localizedData: localizedData ?? this.localizedData,
   );
 
@@ -100,7 +101,7 @@ class Meal {
     errors: errors,
     imageStoragePath: imageStoragePath,
     imageBlurHash: imageBlurHash,
-    methodOfCreation: map['methodOfCreation'] as String?,
+    metadata: parseMealMetadata(map),
     localizedData: localizedData,
   );
 
@@ -110,6 +111,7 @@ class Meal {
     return json.encode({
       ...data,
       'createdAt': createdAt.toIso8601String(),
+      'metadata': metadata.toMap(forJson: true),
     });
   }
 
@@ -126,7 +128,7 @@ class Meal {
     'errors': errors,
     'imageStoragePath': imageStoragePath,
     'imageBlurHash': imageBlurHash,
-    'methodOfCreation': methodOfCreation,
+    'metadata': metadata.toMap(),
   };
 
   Map<String, dynamic> toLocalizedMap() {
@@ -169,7 +171,7 @@ class Meal {
 
   @override
   String toString() =>
-      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, imageBlurHash: $imageBlurHash, methodOfCreation: $methodOfCreation, localizedData: $localizedData)';
+      'Meal(id: $id, name: $name, emoji: $emoji, createdAt: $createdAt, nutrition: $nutrition, foods: $foods, originalText: $originalText, isLoading: $isLoading, errors: $errors, imageStoragePath: $imageStoragePath, imageBlurHash: $imageBlurHash, metadata: $metadata, localizedData: $localizedData)';
 
   @override
   bool operator ==(Object other) =>
@@ -187,7 +189,7 @@ class Meal {
           errors == other.errors &&
           imageStoragePath == other.imageStoragePath &&
           imageBlurHash == other.imageBlurHash &&
-          methodOfCreation == other.methodOfCreation &&
+          metadata == other.metadata &&
           localizedData == other.localizedData;
 
   @override
@@ -203,6 +205,6 @@ class Meal {
       errors.hashCode ^
       imageStoragePath.hashCode ^
       imageBlurHash.hashCode ^
-      methodOfCreation.hashCode ^
+      metadata.hashCode ^
       localizedData.hashCode;
 }

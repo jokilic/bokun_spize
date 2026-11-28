@@ -188,6 +188,9 @@ export const AI_MEAL_DAILY_LIMIT = 25;
 export const AI_MEAL_ROLLING_WINDOW_MS = 60 * 1000;
 export const UTC_DAY_MILLIS = 24 * 60 * 60 * 1000;
 
+/** Shared quota state in the server-only claims collection, outside the UUID meal IDs */
+export const AI_MEAL_QUOTA_DOCUMENT_ID = "_quota";
+
 /** Maximum time before an interrupted callable request is marked failed */
 export const AI_MEAL_REQUEST_TIMEOUT_MS = 15 * 60 * 1000;
 
@@ -672,6 +675,12 @@ export function getAIMealGenerationClaimReference(
   return userReference.collection("mealGenerationClaims").doc(mealReference.id);
 }
 
+/** Recognizes loading AI requests written by either version of the meal schema */
+export function isPendingAIMeal(data: DocumentData | undefined): data is DocumentData {
+  return data?.isLoading === true &&
+    (data.metadata?.methodOfCreation ?? data.methodOfCreation) === "ai";
+}
+
 /** Keeps the timestamps needed by both limits and finds when another meal can start */
 export function getAIMealQuota(attempts: Timestamp[], nowMillis: number): {
   retainedAttempts: Timestamp[];
@@ -711,7 +720,7 @@ export async function claimPendingAIMeal(
 ): Promise<AIMealGenerationClaim> {
   const claimReference = getAIMealGenerationClaimReference(mealReference);
   const userReference = claimReference.parent.parent!;
-  const quotaReference = userReference.collection("aiUsage").doc("mealGeneration");
+  const quotaReference = claimReference.parent.doc(AI_MEAL_QUOTA_DOCUMENT_ID);
   const deletionReference = mealReference.firestore.collection(ACCOUNT_DELETION_JOBS).doc(userReference.id);
 
   return mealReference.firestore.runTransaction<AIMealGenerationClaim>(async (transaction) => {
@@ -722,11 +731,7 @@ export async function claimPendingAIMeal(
     const mealSnapshot = await transaction.get(mealReference);
     const mealData = mealSnapshot.data();
 
-    if (
-      !mealSnapshot.exists ||
-      mealData?.isLoading !== true ||
-      mealData.methodOfCreation !== "ai"
-    ) {
+    if (!isPendingAIMeal(mealData)) {
       return {
         status: "not-ready",
       };
@@ -812,6 +817,8 @@ export function rejectPendingAIMeal(
   transaction.update(mealReference, {
     isLoading: false,
     errors: [message],
+    metadata: { methodOfCreation: "ai" },
+    methodOfCreation: FieldValue.delete(),
     aiGenerationLanguage: FieldValue.delete(),
     aiGenerationRequestedAt: FieldValue.delete(),
   });
@@ -839,16 +846,16 @@ export async function finalizePendingAIMeal(
     const mealSnapshot = await transaction.get(mealReference);
     const mealData = mealSnapshot.data();
 
-    if (
-      mealSnapshot.exists &&
-      mealData?.isLoading === true &&
-      mealData.methodOfCreation === "ai"
-    ) {
-      transaction.update(mealReference, updates);
+    const isPending = isPendingAIMeal(mealData);
+    if (isPending) {
+      transaction.update(mealReference, {
+        ...updates,
+        methodOfCreation: FieldValue.delete(),
+      });
     }
 
     transaction.delete(claimReference);
-    return mealSnapshot.exists;
+    return isPending;
   });
 }
 
@@ -920,9 +927,7 @@ export async function failExpiredAIMealRequest(
     const requestedAt = mealData?.aiGenerationRequestedAt;
 
     if (
-      !mealSnapshot.exists ||
-      mealData?.isLoading !== true ||
-      mealData.methodOfCreation !== "ai" ||
+      !isPendingAIMeal(mealData) ||
       !(requestedAt instanceof Timestamp) ||
       requestedAt.toMillis() > cutoff.toMillis()
     ) {
@@ -932,10 +937,14 @@ export async function failExpiredAIMealRequest(
     transaction.update(mealReference, {
       isLoading: false,
       errors: [getMealGenerationError(mealData.aiGenerationLanguage === "hr" ? "hr" : "en")],
+      metadata: { methodOfCreation: "ai" },
+      methodOfCreation: FieldValue.delete(),
       aiGenerationLanguage: FieldValue.delete(),
       aiGenerationRequestedAt: FieldValue.delete(),
     });
-    transaction.delete(claimReference);
+    if (claimReference.id !== AI_MEAL_QUOTA_DOCUMENT_ID) {
+      transaction.delete(claimReference);
+    }
     return true;
   });
 }
@@ -951,7 +960,6 @@ export async function cleanupExpiredAIMealRequests(
   const snapshot = await firestore
     .collectionGroup("meals")
     .where("isLoading", "==", true)
-    .where("methodOfCreation", "==", "ai")
     .where("aiGenerationRequestedAt", "<=", cutoff)
     .limit(AI_MEAL_CLEANUP_LIMIT)
     .get();
@@ -1012,14 +1020,14 @@ export async function processCallableAIMeal(
   }
 
   const generationStartedAt = performance.now();
+  let duration = 0;
   const generationPromise = generateMeal({
     text: claim.text,
     imageBase64: input.image?.base64 ?? null,
     imageContentType: input.image?.contentType ?? null,
-  }).then((result) => ({
-    ...result,
-    durationMs: Math.round(performance.now() - generationStartedAt),
-  }));
+  }).finally(() => {
+    duration = Math.round(performance.now() - generationStartedAt);
+  });
   const imageUploadPromise = input.image === null ?
     Promise.resolve<UploadedMealImage | null>(null) :
     uploadAIMealImage(userId, input.mealId, input.image);
@@ -1054,6 +1062,7 @@ export async function processCallableAIMeal(
     await finalizePendingAIMeal(mealReference, leaseId, {
       isLoading: false,
       errors: [message],
+      metadata: { methodOfCreation: "ai", duration },
       aiGenerationLanguage: FieldValue.delete(),
       aiGenerationRequestedAt: FieldValue.delete(),
     });
@@ -1080,7 +1089,12 @@ export async function processCallableAIMeal(
     ...generationOutcome.value.meal,
     imageStoragePath: uploadedImage?.storagePath ?? null,
     imageBlurHash: uploadedImage?.blurHash ?? null,
-    methodOfCreation: generationOutcome.value.modelName,
+    metadata: {
+      methodOfCreation: "ai",
+      duration,
+      model: generationOutcome.value.modelName,
+      attempt: generationOutcome.value.attempt,
+    },
     isLoading: false,
     errors: imageUploadFailed ? [getMealImageUploadError(input.languageCode)] : null,
     aiGenerationLanguage: FieldValue.delete(),
@@ -1104,7 +1118,7 @@ export async function processCallableAIMeal(
     metrics: {
       attempt: generationOutcome.value.attempt,
       model: generationOutcome.value.modelName,
-      durationMs: generationOutcome.value.durationMs,
+      durationMs: duration,
       backendDurationMs: Math.round(performance.now() - backendStartedAt),
       foodCount: generationOutcome.value.meal.foods.length,
     },

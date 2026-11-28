@@ -9,10 +9,6 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "methodOfCreation",
-          "order": "ASCENDING"
-        },
-        {
           "fieldPath": "aiGenerationRequestedAt",
           "order": "ASCENDING"
         }

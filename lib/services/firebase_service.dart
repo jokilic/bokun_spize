@@ -17,6 +17,7 @@ import 'package:uuid/uuid.dart';
 import '../models/contact_message/contact_message.dart';
 import '../models/meal/ai_meal_quota_error.dart';
 import '../models/meal/meal.dart';
+import '../models/meal/meal_metadata.dart';
 import '../models/notification/daily_summary.dart';
 import '../models/notification/notification_settings.dart';
 import '../models/user_metrics/user_metrics.dart';
@@ -1279,7 +1280,7 @@ class FirebaseService {
             ),
           );
       final manualDocuments = snapshot.docs.where(
-        (document) => document.data()['methodOfCreation'] == 'manual',
+        (document) => parseMealMetadata(document.data()).methodOfCreation == MealCreationMethod.manual,
       );
 
       for (var offset = 0; offset < manualDocuments.length; offset += 300) {
@@ -1581,7 +1582,10 @@ class FirebaseService {
   }
 
   /// Updates a `meal` in [Firebase]
-  Future<bool> updateMeal({required Meal newMeal}) async {
+  Future<bool> updateMeal({
+    required Meal newMeal,
+    bool isEdit = false,
+  }) async {
     try {
       final user = auth.currentUser;
 
@@ -1591,7 +1595,15 @@ class FirebaseService {
 
       final collection = firestore.collection('users').doc(user.uid).collection('meals');
 
-      await collection.doc(newMeal.id).set(newMeal.toLocalizedMap());
+      final data = newMeal.toLocalizedMap();
+      if (isEdit) {
+        data['metadata'] = {
+          ...newMeal.metadata.toMap(),
+          'lastEditedAt': FieldValue.serverTimestamp(),
+        };
+      }
+
+      await collection.doc(newMeal.id).set(data);
 
       return true;
     } catch (error, stackTrace) {
@@ -1604,9 +1616,9 @@ class FirebaseService {
     }
   }
 
-  /// Updates only a meal's shared creation date while preserving localized data
+  /// Updates a meal's date and edit metadata while preserving its other fields
   Future<bool> updateMealDateTime({
-    required String mealId,
+    required Meal meal,
     required DateTime createdAt,
   }) async {
     try {
@@ -1616,10 +1628,15 @@ class FirebaseService {
         return false;
       }
 
-      final document = firestore.collection('users').doc(user.uid).collection('meals').doc(mealId);
+      final document = firestore.collection('users').doc(user.uid).collection('meals').doc(meal.id);
 
       await document.update({
         'createdAt': Timestamp.fromDate(createdAt),
+        'metadata': {
+          ...meal.metadata.toMap(),
+          'lastEditedAt': FieldValue.serverTimestamp(),
+        },
+        'methodOfCreation': FieldValue.delete(),
       });
 
       return true;

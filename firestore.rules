@@ -94,6 +94,37 @@ service cloud.firestore {
         && data.hr.size() <= maxLength;
     }
 
+    // Validate meal provenance and optional AI generation details
+    function isValidMealMetadata(metadata) {
+      return metadata is map
+        && metadata.keys().hasOnly([
+          'methodOfCreation',
+          'duration',
+          'model',
+          'attempt',
+          'copiedFromMealId',
+          'lastEditedAt',
+        ])
+        && metadata.get('methodOfCreation', null) in ['ai', 'manual', 'copied', 'unknown']
+        && (
+          !metadata.keys().hasAny(['duration', 'model', 'attempt'])
+          || (
+            metadata.methodOfCreation == 'ai'
+            && (!('duration' in metadata) || (metadata.duration is int && metadata.duration >= 0))
+            && (!('model' in metadata) || (metadata.model is string && metadata.model.size() <= 200))
+            && (!('attempt' in metadata) || (metadata.attempt is int && metadata.attempt > 0))
+          )
+        )
+        && (
+          metadata.methodOfCreation == 'copied'
+            ? metadata.get('copiedFromMealId', null) is string
+              && metadata.copiedFromMealId.size() > 0
+              && metadata.copiedFromMealId.size() <= 1500
+            : !('copiedFromMealId' in metadata)
+        )
+        && (!('lastEditedAt' in metadata) || metadata.lastEditedAt is timestamp);
+    }
+
     // Validate manual or compact bilingual meal fields and callable metadata
     function isValidMeal(data, userId, mealId) {
       let fields = [
@@ -109,6 +140,7 @@ service cloud.firestore {
         'errors',
         'imageStoragePath',
         'imageBlurHash',
+        'metadata',
         'methodOfCreation',
         'aiGenerationLanguage',
         'aiGenerationRequestedAt',
@@ -143,7 +175,11 @@ service cloud.firestore {
         // Firestore Rules cannot validate every element type in an arbitrary list
         && (data.foods == null || (data.foods is list && data.foods.size() <= 200))
         && isOptionalString(data.originalText, 50000)
-        && isOptionalString(data.get('methodOfCreation', null), 200)
+        && (
+          'metadata' in data
+            ? !('methodOfCreation' in data) && isValidMealMetadata(data.metadata)
+            : isOptionalString(data.get('methodOfCreation', null), 200)
+        )
         && isOptionalString(data.get('imageBlurHash', null), 100)
         && data.isLoading is bool
         && (data.errors == null || (data.errors is list && data.errors.size() <= 100))
@@ -154,7 +190,7 @@ service cloud.firestore {
             && data.aiGenerationLanguage is string
             && data.aiGenerationLanguage in ['en', 'hr']
             && data.aiGenerationRequestedAt is timestamp
-            && data.methodOfCreation == 'ai'
+            && data.get('metadata', data).get('methodOfCreation', null) == 'ai'
             && data.isLoading == true
           )
         )
@@ -321,10 +357,6 @@ service cloud.firestore {
       }
 
       match /mealGenerationClaims/{mealId} {
-        allow read, write: if false;
-      }
-
-      match /aiUsage/{quotaId} {
         allow read, write: if false;
       }
 

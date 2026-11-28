@@ -6,6 +6,7 @@ import {
   buildMealContentParts,
   generateMeal,
   getAIMealQuota,
+  isPendingAIMeal,
   MAX_AI_MEAL_DESCRIPTION_LENGTH,
   MEAL_AI_PRIMARY_MODEL,
   MEAL_AI_TEXT_FALLBACK_MODEL,
@@ -196,6 +197,16 @@ describe("AI meal generation cost controls", () => {
     await expect(generateMeal(photoMeal, {generateContent})).rejects.toThrow(error);
     expect(generateContent).toHaveBeenCalledTimes(1);
   });
+});
+
+/** Keeps AI claims and cleanup compatible with both meal schemas */
+it("recognizes pending AI meals with nested or legacy creation metadata", () => {
+  const aiMetadata = {methodOfCreation: "ai"};
+
+  expect(isPendingAIMeal({isLoading: true, metadata: aiMetadata})).toBe(true);
+  expect(isPendingAIMeal({isLoading: true, ...aiMetadata})).toBe(true);
+  expect(isPendingAIMeal({isLoading: false, metadata: aiMetadata})).toBe(false);
+  expect(isPendingAIMeal({isLoading: true, metadata: {methodOfCreation: "manual"}})).toBe(false);
 });
 
 /** Covers the quota boundaries used by the meal claim transaction */

@@ -64,6 +64,7 @@ dependencies:
   pedometer: 4.2.0
   permission_handler: 13.0.2
   phosphor_icons: 3.0.1
+  purchases_flutter: 12.0.0
   scroll_datetime_picker: 0.2.2
   shared_preferences: 2.5.6
   sign_in_with_apple: 8.2.0
